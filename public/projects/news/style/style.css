@@ -1,0 +1,126 @@
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+*:not(input) {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+h1, h2 {
+  font-family: "Spectral", serif;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+h3 {
+  font-family: "Spectral", serif;
+  margin: 0.5rem;
+}
+
+p {
+  font-family: "Roboto", sans-serif;
+  margin: 0.5rem;
+}
+
+body {
+  background-color: #cccccc;
+}
+
+main {
+  width: 600px;
+  margin: auto;
+}
+
+section {
+  margin-top: 3rem;
+  margin-bottom: 8rem;
+}
+
+section h2 {
+  margin-bottom: 0.5rem;
+}
+
+section article {
+  margin-bottom: 0.5rem;
+  background-color: white;
+  padding: 1rem;
+}
+
+section div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+section div article {
+  width: 32%;
+}
+
+#news h2 {
+  background-color: #2980b9;
+}
+
+#buzz h2 {
+  background-color: #c0392b;
+}
+
+#sport h2 {
+  background-color: #27ae60;
+}
+
+#economy h2 {
+  background-color: #16a085;
+}
+
+nav {
+  background-color: #b3b3b3;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 4.5rem;
+  padding: 1rem;
+}
+
+nav ul {
+  list-style: none;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+nav ul a {
+  padding: 20px 50px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: white;
+  margin: 0.5rem;
+}
+
+nav ul a[href="#news"] {
+  background-color: #2980b9;
+}
+
+nav ul a[href="#buzz"] {
+  background-color: #c0392b;
+}
+
+nav ul a[href="#sport"] {
+  background-color: #27ae60;
+}
+
+nav ul a[href="#economy"] {
+  background-color: #16a085;
+}
+/*# sourceMappingURL=style.css.map */

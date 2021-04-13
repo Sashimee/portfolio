@@ -1,0 +1,203 @@
+/* iMarty's reset*/
+
+*:not(input) {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+
+/*General Settings*/
+
+* {
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+h2 {
+    font-size: 2.5rem;
+}
+
+h3 {
+    border-bottom: 1px dotted #e782a4;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+body {
+    font-family: 'Cookie', cursive;
+    background-color: #2a8878;
+    text-align: center;
+    color: #feebda;
+    margin: 0;
+}
+
+a {
+    color: #991d42;
+    text-decoration: none;
+}
+
+.cupcake {
+    padding: 1rem;
+}
+
+
+/*Element Settings*/
+
+article {
+    background-color: #feebda;
+    color: #e782a4;
+    margin: 0.5rem;
+    padding: 0.5rem;
+}
+
+main>div>* {
+    padding-top: 1rem;
+}
+
+input {
+    border: none;
+    background-color: #2a8878;
+    border-radius: 0.2rem;
+    color: #feebda;
+}
+
+ul {
+    display: none;
+}
+
+header {
+    background-color: #0c7973;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+}
+
+header>img {
+    width: 20px;
+}
+
+footer {
+    padding: 2rem;
+}
+
+
+/*Class settings*/
+
+.cupcake {
+    width: 40%;
+}
+
+.img_only_desk {
+    display: none;
+}
+
+
+/****Responsive Design*/
+
+
+/*Tablet mode*/
+
+@media screen and (min-width: 800px) {
+    .fa-bars {
+        display: none;
+    }
+    header {
+        justify-content: center;
+    }
+    .intro {
+        text-align: left;
+        /*position: relative;*/
+        max-width: 60%;
+    }
+    main {
+        position: relative;
+    }
+    .cupcake {
+        position: absolute;
+        top: 1rem;
+        right: 0;
+        width: 12rem;
+    }
+    .flextainer {
+        display: flex;
+        justify-content: space-around;
+        width: 500px;
+        flex-wrap: wrap;
+    }
+    .center {
+        display: flex;
+        justify-content: center;
+    }
+    .flextainer article {
+        width: 200px;
+        flex-wrap: wrap;
+    }
+    .intro>* {
+        margin-left: 10px;
+    }
+    ul {
+        display: flex;
+        list-style: none;
+        background-color: #feebda;
+        color: #991d42;
+        justify-content: space-evenly;
+    }
+}
+
+
+/*Desktop mode*/
+
+@media screen and (min-width: 1200px) {
+    ul {
+        justify-content: right;
+    }
+    .intro {
+        text-align: left;
+        max-width: 100%;
+    }
+    header {
+        justify-content: right;
+    }
+    li {
+        padding: 0 1rem;
+    }
+    .cupcake {
+        position: fixed;
+        top: 0.25rem;
+        left: 0.5rem;
+        width: 5rem;
+    }
+    .img_only_desk {
+        display: inline;
+        position: absolute;
+        top: -1.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    article {
+        position: relative;
+        padding-top: 2rem;
+    }
+    .intro p {
+        column-count: 2;
+        column-width: 100px;
+    }
+    .intro {
+        width: 500px;
+    }
+    .introflextainer {
+        display: flex;
+        justify-content: space-around;
+    }
+    .center {
+        display: block;
+    }
+    .flextainer {
+        width: unset;
+        justify-content: center;
+    }
+}

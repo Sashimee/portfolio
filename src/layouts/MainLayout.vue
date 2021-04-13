@@ -12,7 +12,7 @@
           v-if="leftMode == true"
         />
         <q-toolbar-title>
-          <span class="name">Alex Baskewitsch</span><span class="dot">.</span>
+          <span class="name">Alex Baskewitsch</span><span class="dot">;</span>
         </q-toolbar-title>
 
         <q-btn

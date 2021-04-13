@@ -1,37 +1,43 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-select
-      class="my-card q-mt-xl"
-      outlined
-      v-model="categorySelect"
-      :options="categories"
-      dense
-      label="Category"
-    >
-    </q-select>
-    <div class="q-pa-md row items-start justify-center q-gutter-md q-mb-xl">
-      <transition-group appear enter-active-class="animated pulse">
+  <q-page class="flex flex-start column">
+    <div class="row justify-center q-mt-xl">
+      <q-select
+        class="my-card q-mt-xl"
+        outlined
+        v-model="categorySelect"
+        :options="categories"
+        dense
+        label="Category"
+      >
+      </q-select>
+    </div>
+    <div class="q-pa-md row items-start justify-center">
+      <transition-group
+        class="row items-start justify-center space-between"
+        appear
+        enter-active-class="animated pulse"
+      >
         <q-card
           class="my-card"
           v-for="project in projectsList"
           :key="project.name"
         >
           <q-card-section class="info_chip">
-            <q-chip outline dense color="primary" icon="fas fa-tint"
+            <q-chip dense color="accent" icon="fas fa-tint"
               ><div class="text">{{ project.type }}</div></q-chip
             >
           </q-card-section>
           <!-- Image for external links -->
           <q-img
             v-if="project.target == 'external'"
-            src="https://cdn.quasar.dev/img/parallax2.jpg"
+            :src="'/screenshots/' + project.img + '.png'"
           >
             <div class="absolute-bottom">
               <div class="text-h6">{{ project.name }}</div>
             </div>
           </q-img>
           <!-- Image for internal links -->
-          <q-img v-else :src="'~assets/screenshots/' + project.link + '.PNG'">
+          <q-img v-else :src="'/screenshots/' + project.link + '.png'">
             <div class="absolute-bottom">
               <div class="text-h6">{{ project.name }}</div>
             </div>
@@ -69,42 +75,42 @@ export default {
       projects: [],
       categorySelect: "",
       projectsData: [
-        {
-          name: "TooDooD",
-          type: "php",
-          link: "/projects/toodood",
-          target: "internal"
-        },
-        {
-          name: "PHP Input Validation",
-          type: "php",
-          link: "/projects/input",
-          target: "internal"
-        },
-        {
-          name: "Pokémon Ajax Call",
-          type: "php",
-          link: "/projects/ajax",
-          target: "internal"
-        },
-        {
-          name: "Sorting of an array",
-          type: "php",
-          link: "/projects/sorting",
-          target: "internal"
-        },
-        {
-          name: "Rack",
-          type: "hardware",
-          link: "/projects/rack",
-          target: "external"
-        },
-        {
-          name: "Mikrotik Networking",
-          type: "networking",
-          link: "/projects/networking",
-          target: "external"
-        },
+        // {
+        //   name: "TooDooD",
+        //   type: "php",
+        //   link: "/projects/toodood",
+        //   target: "internal"
+        // },
+        // {
+        //   name: "PHP Input Validation",
+        //   type: "php",
+        //   link: "/projects/input",
+        //   target: "internal"
+        // },
+        // {
+        //   name: "Pokémon Ajax Call",
+        //   type: "php",
+        //   link: "/projects/ajax",
+        //   target: "internal"
+        // },
+        // {
+        //   name: "Sorting of an array",
+        //   type: "php",
+        //   link: "/projects/sorting",
+        //   target: "internal"
+        // },
+        // {
+        //   name: "Rack",
+        //   type: "hardware",
+        //   link: "/projects/rack",
+        //   target: "external"
+        // },
+        // {
+        //   name: "Mikrotik Networking",
+        //   type: "networking",
+        //   link: "/projects/networking",
+        //   target: "external"
+        // },
         {
           name: "Pet4U",
           type: "Templates",
@@ -118,6 +124,7 @@ export default {
           name: "About Blank Generator",
           type: "Live Site",
           link: "http://aboutblankgenerator.com",
+          img: "blank",
           target: "external",
           tags: ["css", "html", "responsive", "self-hosted"],
           info:
@@ -127,6 +134,7 @@ export default {
           name: "Peinture.lu",
           type: "Live Site",
           link: "http://www.peinture.lu",
+          img: "peinture",
           tags: ["wordpress", "migration", "css", "html", "responsive"],
           target: "external",
           info:
@@ -136,6 +144,7 @@ export default {
           name: "Dawa",
           type: "Live Site",
           link: "http://www.dawa.lu",
+          img: "dawa",
           tags: [
             "laravel",
             "sql",
@@ -148,7 +157,50 @@ export default {
           target: "external",
           info:
             "Massive Thanks to Laurent Bourgeois, Aurélien Pal and Ilyes Satouri for this awesome collaboration. This is the project that validated my Full Stack Developer skills with Numericall."
-        }
+        },
+        {
+          name: "News Site",
+          type: "Templates",
+          link: "news",
+          tags: [
+            "html",
+            "css",
+            "non-responsive",
+            "self-hosted"
+          ],
+          target: "internal",
+          info:
+            "Tiny example of a news site."
+        },
+        {
+          name: "Bootstrap Site",
+          type: "Templates",
+          link: "x1",
+          tags: [
+            "html",
+            "css",
+            "bootstrap",
+            "responsive",
+            "self-hosted"
+          ],
+          target: "internal",
+          info:
+            "Example of a full bootstrap site."
+        },
+        {
+          name: "Responsive Cupcake",
+          type: "Templates",
+          link: "cupcake",
+          tags: [
+            "html",
+            "css",
+            "responsive",
+            "self-hosted"
+          ],
+          target: "internal",
+          info:
+            "Tiny responsive cupcake site."
+        },
       ]
     };
   },
@@ -191,15 +243,18 @@ export default {
 <style lang="sass">
 .my-card
   width: 250px
+  margin: 1rem
+  overflow: hidden
+  .q-img
+    height: 200px
+    &:hover
+      transform: scale(1.05,1.05)
+      transition-duration: 0.5s
 .info_chip
-  // border-top-left-radius: unset
-  // border-top-right-radius: unset
-  // border-bottom-left-radius: unset
-  // border-bottom-right-radius: unset
   position: absolute
   top: -0.5rem
   right: -0.5rem
-  z-index: 2999
+  z-index: 1999
 .q-chip--dense .q-chip__icon
   font-size: 0.75rem
 </style>

@@ -1,0 +1,93 @@
+$background: #cccccc
+$news: #2980b9
+$buzz: #c0392b
+$sport: #27ae60
+$economy: #16a085
+
+$titles: 'Spectral', serif
+$texts: 'Roboto', sans-serif
+
+*
+    box-sizing: border-box
+
+*:not(input)
+    margin: 0
+    padding: 0
+    border: 0
+
+h1, h2, 
+    font-family: $titles
+    text-align: center
+    text-transform: uppercase
+
+h3 
+    font-family: $titles
+    margin: 0.5rem
+
+p 
+    font-family: $texts
+    margin: 0.5rem
+
+body
+    background-color: $background
+
+main 
+    width: 600px
+    margin: auto
+
+section
+    margin-top: 3rem
+    margin-bottom: 8rem
+    h2 
+        margin-bottom: 0.5rem
+    article
+        margin-bottom: 0.5rem
+        background-color: white
+        padding: 1rem
+    div
+        display: flex
+        justify-content: space-between
+        article
+            width: 32%
+
+#news
+    h2 
+        background-color: $news
+
+#buzz
+    h2 
+        background-color: $buzz
+
+#sport
+    h2 
+        background-color: $sport
+
+#economy
+    h2 
+        background-color: $economy
+
+nav
+    background-color: darken($background, 10)
+    display: flex
+    justify-content: space-between
+    align-items: center
+    height: 4.5rem
+    padding: 1rem
+    ul
+        list-style: none
+        display: flex
+        a
+            padding: 20px 50px
+            text-transform: uppercase
+            text-decoration: none
+            color: white
+            margin: 0.5rem
+        a[href="#news"]
+            background-color: $news
+        a[href="#buzz"]
+            background-color: $buzz
+        a[href="#sport"]
+            background-color: $sport
+        a[href="#economy"]
+            background-color: $economy
+

@@ -11,21 +11,22 @@
       ></q-input>
 
       <q-input
+        v-model="email"
+        label="Your email *"
         filled
-        type="number"
-        v-model="age"
-        label="Your age *"
+        type="email"
+        hint="Email"
         lazy-rules
-        :rules="[
-          val => (val !== null && val !== '') || 'Please type your age',
-          val => (val > 0 && val < 100) || 'Please type a real age'
-        ]"
-      ></q-input>
+        :rules="[val => !!val || 'Email is missing', isValidEmail]"
+      />
 
-      <q-toggle
-        v-model="accept"
-        label="I accept the license and terms"
-      ></q-toggle>
+      <q-input
+        v-model="text"
+        filled
+        type="textarea"
+        lazy-rules
+        :rules="[val => (val && val.length > 0) || 'Please type something']"
+      />
 
       <div>
         <q-btn label="Submit" type="submit" color="primary"></q-btn>
@@ -47,36 +48,30 @@ export default {
   data() {
     return {
       name: null,
-      age: null,
-
-      accept: false
-    }
+      text: null,
+      email: null
+    };
   },
   methods: {
-    onSubmit () {
-      if (this.accept !== true) {
-        this.$q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: 'You need to accept the license and terms first'
-        })
-      }
-      else {
-        this.$q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: 'Submitted'
-        })
-      }
+    isValidEmail() {
+      // https://forum.quasar-framework.org/topic/5062/email-validation-using-quasar-itself/3
+      const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
+      return emailPattern.test(this.email) || "Invalid email";
+    },
+    onSubmit() {
+      this.$q.notify({
+        color: "green-4",
+        textColor: "white",
+        icon: "cloud_done",
+        message: "Submitted"
+      });
     },
 
-    onReset () {
-      this.name = null
-      this.age = null
-      this.accept = false
+    onReset() {
+      this.name = null;
+      this.text = null;
+      this.email = null;
     }
-  },
+  }
 };
 </script>
