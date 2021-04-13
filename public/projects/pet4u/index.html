@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pet4U</title>
+    <!--Bootstrap import c.f. https://getbootstrap.com/docs/4.4/getting-started/introduction/-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!--Font Awesome Icons import below, used a cdn for good availability-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css">
+    <!--Font Import from the google css-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Coiny&display=swap">
+    <!--Link to the css file which is generated from a sass file-->
+    <link rel="stylesheet" href="style/style.css">
+</head>
+
+<body>
+    <!--Header part - FIXED-->
+    <header>
+        <h1>Pet4U</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#species">Species</a></li>
+                <li><a href="#animalz">Animals</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <!--Main part-->
+    <main>
+        <h2>Get a pet for your life</h2>
+        <!--Div for the content block-->
+        <div>
+            <section>
+                <!--HOME SECTION-->
+                <!--The below anchor is there on every section and hidden on the final page to adjust for the body margins due to the fixed header and footer of the page-->
+                <a class="anchor" id="home"></a>
+                <!-- Span as a flex container to nicely align the paw and the h3 title, also at the beginning of every section-->
+                <div class="align-div">
+                    <i class="fas fa-paw"></i>
+                    <h3>Rehome a pet</h3>
+                </div class="align-div">
+                <!--Wrapper for side by side layout-->
+                <div class="home-wrapper">
+                    <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-target="#carouselIndicators" data-slide-to="0" class="active"></li>
+                            <li data-target="#carouselIndicators" data-slide-to="1"></li>
+                            <li data-target="#carouselIndicators" data-slide-to="2"></li>
+                            <li data-target="#carouselIndicators" data-slide-to="3"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="images/species-dog.jpg" class="d-block w-100" alt="dog">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/species-cat.jpg" class="d-block w-100" alt="cat">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/species-horse.jpg" class="d-block w-100" alt="horse">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/species-rabbit.jpg" class="d-block w-100" alt="rabbit">
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselIndicators" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                    <div id="home-wrapper__information">
+                        <p>Established in 1999, Help-A-Pet is a nonprofit organization with a single purpose: to provide financial assistance for the medical care of pets whose owners are unable to afford the expense. Our efforts focus on serving low-income
+                            disabled, elderly and working families, nationwide.</p>
+                        <p>We find homes for unwanted cats, dogs, small pets and horses across the UK and our tailor-made service means we help each pet find the right person for them.</p>
+                        <p>Our tiny staff handles the administrative duties, application review, and communicates with owners and veterinarians to save the lives of pets from low-income families. But, YOU are also a huge part of our organization. The funding
+                            that is able to support these pets comes directly from generous and compassionate people like you. We bring the pets to you, and YOU do the magic.</p>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <!--SPECIES SECTION-->
+                <a class="anchor" id="species"></a>
+                <div class="align-div">
+                    <i class="fas fa-paw"></i>
+                    <h3>Species</h3>
+                </div class="align-div">
+                <div class="species__flex">
+                    <figure>
+                        <img src="images/species-dog.jpg" alt="Dog">
+                        <figcaption><strong>Dog</strong></figcaption>
+                    </figure>
+                    <figure>
+                        <img src="images/species-cat.jpg" alt="Cat">
+                        <figcaption><strong>Cat</strong></figcaption>
+                    </figure>
+                    <figure>
+                        <img src="images/species-horse.jpg" alt="Horse">
+                        <figcaption><strong>Horse</strong></figcaption>
+                    </figure>
+                    <figure>
+                        <img src="images/species-rabbit.jpg" alt="Rabbit">
+                        <figcaption><strong>Rabbit</strong></figcaption>
+                    </figure>
+                </div>
+            </section>
+            <section id="animals">
+                <!--Animals SECTION-->
+                <a class="anchor" id="animalz"></a>
+                <div class="align-div">
+                    <i class="fas fa-paw"></i>
+                    <h3>Animals</h3>
+                </div class="align-div">
+                <div class="cards">
+                    <article class="mockup card">
+                        <img src="images/animals/cats/cat-1.jpg" alt="cat">
+                        <h5>Cat</h5>
+                    </article>
+                </div>
+            </section>
+            <section id="contact">
+                <!--CONTACT SECTION-->
+                <div class="align-div">
+                    <i class="fas fa-paw"></i>
+                    <h3>Contact</h3>
+                </div class="align-div">
+                <!--Flex container for layout-->
+                <div class="contact__flex">
+                    <div>
+                        <article>
+                            <h4>Address</h4>
+                            <p>1 Chemin des Mineurs Oeutranges</p>
+                            <p>57100 Thionville</p>
+                            <p>03 82 50 31 45</p>
+                        </article>
+                        <article>
+                            <h4>Get Contacted</h4>
+                            <form action="get-contacted.php">
+                                <input type="email" name="mail" id="email" placeholder="e-mail">
+                                <!--1. A drop-down select menu with the names of the animals-->
+                                <select name="animal-choice" id="animal-choice">
+                                    <option value="nothing" id="initial-option">Select an animal</option>
+                                </select>
+                                <!--2. A text box for explaining the reasons for adoptions  -->
+                                <textarea name="contact-input" id="contact-textarea" placeholder="Your reason..."></textarea>
+                                <input type="submit" value="Send">
+                            </form>
+                        </article>
+                    </div>
+                    <article>
+                        <!--Iframe obtained through google maps for the map implementation-->
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2596.126035586657!2d6.1144754160681405!3d49.40652217934504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x479524d641a41fa7%3A0x76a85282d65a07f5!2sLa%20Soci%C3%A9t%C3%A9%20Protectrice%20des%20Animaux%20(SPA)%20-%20refuge%20de%20Thionville!5e0!3m2!1sen!2slu!4v1580471023225!5m2!1sen!2slu"></iframe>
+                    </article>
+                </div>
+            </section>
+        </div>
+    </main>
+    <!-- Opening Hours popup made before ... commented out because too buggy ... I'll leave the script here, you can try the function if you like to ...
+    <script src="scripts/opening.js"></script> -->
+    <!--Footer part - FIXED-->
+    <footer><span>Copyright left for Ward.</span></footer>
+    <!--Jquery needed not the same than in bootstrap documentation because I need it also for my normal javascript-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!--Bootstrap imports c.f. https://getbootstrap.com/docs/4.4/getting-started/introduction/-->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <!-- Data import-->
+    <script src="scripts/datas.js"></script>
+    <!-- Main script import-->
+    <script src="scripts/main.js"></script>
+</body>
+
+</html>

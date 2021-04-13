@@ -1,12 +1,20 @@
 <template>
   <q-page class="flex flex-center">
-    <iframe src="/projects/test/index.html" class="iframe"></iframe>
+    <iframe :src="'/projects/' + link + '/index.html'" class="iframe"></iframe>
   </q-page>
 </template>
 
 <script>
 export default {
-  name: "PageIndex"
+  name: "PageIndex",
+  data() {
+    return {
+      link: ""
+    };
+  },
+  mounted() {
+    this.link = this.$route.params.shortcode
+  }
 };
 </script>
 
