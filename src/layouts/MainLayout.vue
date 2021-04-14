@@ -58,14 +58,14 @@
             </q-item-section>
             <q-item-section>About me</q-item-section>
           </q-item>
-
+          <q-separator />
           <q-item clickable v-ripple @click="link('/projects')">
             <q-item-section avatar>
               <q-icon name="far fa-thumbs-up"></q-icon>
             </q-item-section>
             <q-item-section>Projects</q-item-section>
           </q-item>
-
+          <q-separator />
           <q-item clickable v-ripple @click="link('/contact')">
             <q-item-section avatar>
               <q-icon name="far fa-paper-plane"></q-icon>
@@ -198,5 +198,4 @@ export default {
   border: 1px solid $primary
   border-radius: 3px
   // background-color: lighten($primary, 75)
-
 </style>

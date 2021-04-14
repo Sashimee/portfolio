@@ -69,20 +69,26 @@
           <q-card-actions>
             <div class="ellipsis tags_list">
               <span v-for="(tag, i) in project.tags" :key="i"
-                ><q-badge color="primary" class="q-mr-sm">
+                ><q-badge color="info" text-color="dark" class="q-mr-sm">
                   {{ tag }}
                 </q-badge></span
               >
             </div>
             <q-space />
-            <q-btn
-              color="accent"
-              round
-              flat
-              dense
-              :icon="!!expanded[p] ? 'keyboard_arrow_up' : 'fas fa-info-circle'"
-              @click="expand(p)"
-            />
+            <q-turn-transition>
+              <q-fab
+                class="detail_button"
+                color="accent"
+                round
+                flat
+                dense
+                :ripple="false"
+                icon="keyboard_arrow_down"
+                active-icon="keyboard_arrow_up"
+                @click="expand(p)"
+                transition-show="rotate"
+              />
+            </q-turn-transition>
           </q-card-actions>
           <!-- expandable part with info about project -->
           <q-slide-transition>
@@ -293,4 +299,9 @@ export default {
 
 .tags_list
   width: 85%
+
+.detail_button:hover
+  transform: scale(1.4,1.4)
+  transition-duration: 0.3s
+  // background: white
 </style>
