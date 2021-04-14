@@ -8,16 +8,20 @@ const routes = [
       { path: "/contact", component: () => import("pages/Contact.vue") },
       {
         path: "/projects/:shortcode",
-        component: () => import("src/pages/projects/Show.vue")
+        component: () => import("pages/projects/Show.vue")
+      },
+      {
+        path: "/*",
+        component: () => import("pages/Error404.vue")
       }
     ]
-  },
+  }
   // Always leave this as last one,
   // but you can also remove it
-  {
-    path: "*",
-    component: () => import("pages/Error404.vue")
-  }
+  // {
+  //   path: "*",
+  //   component: () => import("pages/Error404.vue")
+  // }
 ];
 
 export default routes;

@@ -19,7 +19,7 @@
       >
         <q-card
           class="my-card"
-          v-for="project in projectsList"
+          v-for="(project, p) in projectsList"
           :key="project.name"
         >
           <q-card-section class="info_chip">
@@ -31,36 +31,68 @@
           <q-img
             v-if="project.target == 'external'"
             :src="'/screenshots/' + project.img + '.png'"
+            @click="gotoProject(project)"
           >
             <div class="absolute-bottom">
               <div class="text-h6">{{ project.name }}</div>
             </div>
+            <div class="colored_visit fit">
+              <p>
+                <q-icon
+                  size="md"
+                  class="text-white"
+                  name="fas fa-hand-pointer"
+                />
+              </p>
+            </div>
           </q-img>
           <!-- Image for internal links -->
-          <q-img v-else :src="'/screenshots/' + project.link + '.png'">
+          <q-img
+            v-else
+            :src="'/screenshots/' + project.link + '.png'"
+            @click="gotoProject(project)"
+          >
             <div class="absolute-bottom">
               <div class="text-h6">{{ project.name }}</div>
+            </div>
+            <div class="colored_visit fit">
+              <p>
+                <q-icon
+                  size="md"
+                  class="text-white"
+                  name="fas fa-hand-pointer"
+                />
+              </p>
             </div>
           </q-img>
 
           <q-card-actions>
+            <div class="ellipsis tags_list">
+              <span v-for="(tag, i) in project.tags" :key="i"
+                ><q-badge color="primary" class="q-mr-sm">
+                  {{ tag }}
+                </q-badge></span
+              >
+            </div>
+            <q-space />
             <q-btn
-              v-if="project.target == 'external'"
+              color="accent"
+              round
               flat
-              type="a"
-              :href="project.link"
-              target="_blank"
-              >Visit</q-btn
-            >
-            <q-btn
-              v-else
-              :to="{
-                path: '/projects/' + project.link
-              }"
-              flat
-              >Visit</q-btn
-            >
+              dense
+              :icon="!!expanded[p] ? 'keyboard_arrow_up' : 'fas fa-info-circle'"
+              @click="expand(p)"
+            />
           </q-card-actions>
+          <!-- expandable part with info about project -->
+          <q-slide-transition>
+            <div v-show="expanded[p]">
+              <q-separator />
+              <q-card-section class="text-subitle2">
+                {{ project.info }}
+              </q-card-section>
+            </div>
+          </q-slide-transition>
         </q-card>
       </transition-group>
     </div>
@@ -74,6 +106,7 @@ export default {
     return {
       projects: [],
       categorySelect: "",
+      expanded: [],
       projectsData: [
         // {
         //   name: "TooDooD",
@@ -112,13 +145,14 @@ export default {
         //   target: "external"
         // },
         {
-          name: "Pet4U",
-          type: "Templates",
-          link: "pet4u",
-          target: "internal",
-          tags: ["js", "css", "html", "non-responsive", "self-hosted"],
+          name: "Dawa",
+          type: "Live Site",
+          link: "http://www.dawa.lu",
+          img: "dawa",
+          tags: ["laravel", "responsive", "secure"],
+          target: "external",
           info:
-            "Simple contact page layout. HTML structure respecting best practices. Contact form and Google Maps integration."
+            "Massive Thanks to Laurent Bourgeois, Aurélien Pal and Ilyes Satouri for this awesome collaboration. This is the project that validated my Full Stack Developer skills with Numericall."
         },
         {
           name: "About Blank Generator",
@@ -126,87 +160,72 @@ export default {
           link: "http://aboutblankgenerator.com",
           img: "blank",
           target: "external",
-          tags: ["css", "html", "responsive", "self-hosted"],
+          tags: ["css", "responsive"],
           info:
             'After some research I found out the "about blank" research query was made all around the world. (https://trends.google.fr/trends/explore?q=about%20blank) This led me to realize this site to see if I could be on top of the search rankings with SEO.'
+        },
+        {
+          name: "Bootstrap Site",
+          type: "Template",
+          link: "x1",
+          tags: ["css", "bootstrap", "responsive"],
+          target: "internal",
+          info: "Example of a full bootstrap site."
+        },
+        {
+          name: "Pet4U",
+          type: "Template",
+          link: "pet4u",
+          target: "internal",
+          tags: ["js", "css"],
+          info:
+            "Simple contact page layout. HTML structure respecting best practices. Contact form and Google Maps integration."
+        },
+        {
+          name: "News Site",
+          type: "Template",
+          link: "news",
+          tags: ["css"],
+          target: "internal",
+          info: "Tiny example of a news site."
+        },
+        {
+          name: "Responsive Cupcake",
+          type: "Template",
+          link: "cupcake",
+          tags: ["css", "responsive"],
+          target: "internal",
+          info: "Tiny responsive cupcake site."
         },
         {
           name: "Peinture.lu",
           type: "Live Site",
           link: "http://www.peinture.lu",
           img: "peinture",
-          tags: ["wordpress", "migration", "css", "html", "responsive"],
+          tags: ["wordpress", "css", "responsive"],
           target: "external",
           info:
             "I migrated this Wordpress site to another hosting provider (OVH) and had only acces to a raw export of the site + database. I also added a picture gallery and did some bugfixing. Original site was made by Dotcom."
-        },
-        {
-          name: "Dawa",
-          type: "Live Site",
-          link: "http://www.dawa.lu",
-          img: "dawa",
-          tags: [
-            "laravel",
-            "sql",
-            "game",
-            "responsive",
-            "secure login",
-            "ssl",
-            "self-hosted"
-          ],
-          target: "external",
-          info:
-            "Massive Thanks to Laurent Bourgeois, Aurélien Pal and Ilyes Satouri for this awesome collaboration. This is the project that validated my Full Stack Developer skills with Numericall."
-        },
-        {
-          name: "News Site",
-          type: "Templates",
-          link: "news",
-          tags: [
-            "html",
-            "css",
-            "non-responsive",
-            "self-hosted"
-          ],
-          target: "internal",
-          info:
-            "Tiny example of a news site."
-        },
-        {
-          name: "Bootstrap Site",
-          type: "Templates",
-          link: "x1",
-          tags: [
-            "html",
-            "css",
-            "bootstrap",
-            "responsive",
-            "self-hosted"
-          ],
-          target: "internal",
-          info:
-            "Example of a full bootstrap site."
-        },
-        {
-          name: "Responsive Cupcake",
-          type: "Templates",
-          link: "cupcake",
-          tags: [
-            "html",
-            "css",
-            "responsive",
-            "self-hosted"
-          ],
-          target: "internal",
-          info:
-            "Tiny responsive cupcake site."
-        },
+        }
       ]
     };
   },
   methods: {
-    goto(project) {
-      console.log(project);
+    gotoProject(project) {
+      switch (project.target) {
+        case "internal":
+          this.$router.push("/projects/" + project.link);
+          break;
+        case "external":
+          window.open(project.link);
+          break;
+
+        default:
+          break;
+      }
+    },
+    expand(p) {
+      this.$set(this.expanded, p, !this.expanded[p]);
     },
     sync() {
       this.projects = this.projectsData;
@@ -231,16 +250,20 @@ export default {
     projectsList() {
       if (this.categorySelect == "All") {
         return this.projects;
+      } else {
+        return this.projects.filter(project => {
+          return project.type.match(this.categorySelect);
+        });
       }
-      return this.projects.filter(project => {
-        return project.type.match(this.categorySelect);
-      });
     }
   }
 };
 </script>
 
 <style lang="sass">
+.colored_visit
+  display: none
+
 .my-card
   width: 250px
   margin: 1rem
@@ -248,13 +271,26 @@ export default {
   .q-img
     height: 200px
     &:hover
+      cursor: pointer
       transform: scale(1.05,1.05)
       transition-duration: 0.5s
+      .colored_visit
+        display: flex
+        flex-direction: column
+        justify-content: center
+        align-items: center
+        background-color: $primary
+        opacity: 0.6
+
 .info_chip
   position: absolute
   top: -0.5rem
   right: -0.5rem
   z-index: 1999
+
 .q-chip--dense .q-chip__icon
   font-size: 0.75rem
+
+.tags_list
+  width: 85%
 </style>

@@ -3,7 +3,7 @@
     <div>
       <h3>Hi, I'm <span>Alex</span>,</h3>
       <h5>a Full Stack Web Developer.</h5>
-      <h6>I like to use :</h6>
+      <h6>I like :</h6>
     </div>
     <div class="row justify-center chips_list">
       <q-chip size="18px" color="accent" icon="fab fa-laravel">
@@ -42,12 +42,14 @@
     </div>
     <div class="row">
       <q-btn
+      push
         class="action_button"
         color="primary"
-        label="See my projects"
+        label="My projects"
         to="/projects"
       />
       <q-btn
+      push
         class="action_button"
         color="primary"
         label="Contact me"
@@ -68,4 +70,10 @@ export default {
   margin: 1rem
 .chips_list
   max-width: 360px
+
+.q-chip--dark
+  color: black
+
+.body--dark
+  background-color: $dark
 </style>

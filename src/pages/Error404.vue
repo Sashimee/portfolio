@@ -1,5 +1,5 @@
 <template>
-  <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
+  <div class="text-center q-pa-md flex flex-center">
     <div>
       <div style="font-size: 30vh">
         404
@@ -11,8 +11,8 @@
 
       <q-btn
         class="q-mt-xl"
-        color="white"
-        text-color="blue"
+        color="primary"
+        text-color="white"
         unelevated
         to="/"
         label="Go Home"
@@ -23,7 +23,12 @@
 </template>
 
 <script>
+import { axios } from "boot/axios";
+
 export default {
-  name: 'Error404'
+  name: 'Error404',
+  methods: {
+    
+  },
 }
 </script>

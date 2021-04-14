@@ -1,34 +1,45 @@
 <template>
   <q-page class="flex flex-center">
-    <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+    <div v-if="loading">
+      <q-spinner-pie color="primary" size="2em" />
+      <q-tooltip :offset="[0, 8]">QSpinnerPie</q-tooltip>
+    </div>
+    <q-form v-else @submit="onSubmit" @reset="onReset" class="form_design">
       <q-input
-        filled
+        standout
         v-model="name"
         label="Your name *"
-        hint="Name and surname"
         lazy-rules
-        :rules="[val => (val && val.length > 0) || 'Please type something']"
+        :rules="[
+          val => (val && val.length > 0) || 'Please type something',
+          val => val.length < 1024 || 'Name too long'
+        ]"
       ></q-input>
 
       <q-input
+        class="q-mt-sm"
         v-model="email"
         label="Your email *"
-        filled
+        standout
         type="email"
-        hint="Email"
         lazy-rules
         :rules="[val => !!val || 'Email is missing', isValidEmail]"
       />
 
       <q-input
-        v-model="text"
-        filled
+        class="q-mt-sm"
+        v-model="message"
+        label="Your message *"
+        standout
         type="textarea"
         lazy-rules
-        :rules="[val => (val && val.length > 0) || 'Please type something']"
+        :rules="[
+          val => (val && val.length > 0) || 'Please type something',
+          val => val.length < 5120 || val.length + '/5120'
+        ]"
       />
 
-      <div>
+      <div class="row justify-around q-mt-md">
         <q-btn label="Submit" type="submit" color="primary"></q-btn>
         <q-btn
           label="Reset"
@@ -43,13 +54,16 @@
 </template>
 
 <script>
+import { api } from "boot/axios";
+
 export default {
   name: "PageIndex",
   data() {
     return {
       name: null,
-      text: null,
-      email: null
+      message: null,
+      email: null,
+      loading: false
     };
   },
   methods: {
@@ -59,19 +73,46 @@ export default {
       return emailPattern.test(this.email) || "Invalid email";
     },
     onSubmit() {
-      this.$q.notify({
-        color: "green-4",
-        textColor: "white",
-        icon: "cloud_done",
-        message: "Submitted"
-      });
+      this.loading = true;
+      api
+        .post("/mail", {
+          name: this.name,
+          message: this.message,
+          email: this.email
+        })
+        .then(response => {
+          this.loading = false;
+          this.onReset();
+          this.$q.notify({
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: "Submitted"
+          });
+        })
+        .catch(error => {
+          this.loading = false;
+          this.$q.notify({
+            color: "red-4",
+            textColor: "black",
+            icon: "cloud_done",
+            message: "Error while submitting : " + error
+          });
+        });
     },
 
     onReset() {
       this.name = null;
-      this.text = null;
+      this.message = null;
       this.email = null;
     }
   }
 };
 </script>
+
+<style lang="sass">
+.form_design
+  width: 85%
+  max-width: 400px
+  min-width: 300px
+</style>

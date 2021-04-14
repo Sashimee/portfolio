@@ -46,6 +46,7 @@
       overlay
       bordered
       content-class="column"
+      class="blurry"
     >
       <!-- drawer content -->
       <div class="column justify_custom">
@@ -195,4 +196,7 @@ export default {
   margin: 2rem 1rem
   padding: 1rem
   border: 1px solid $primary
+  border-radius: 3px
+  // background-color: lighten($primary, 75)
+
 </style>
