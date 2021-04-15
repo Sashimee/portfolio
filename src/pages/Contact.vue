@@ -25,7 +25,6 @@
         lazy-rules
         :rules="[val => !!val || 'Email is missing', isValidEmail]"
       />
-
       <q-input
         class="q-mt-sm"
         v-model="message"
@@ -48,6 +47,12 @@
           flat
           class="q-ml-sm"
         ></q-btn>
+        <p class="q-mt-md" >
+          This site is protected by reCAPTCHA and the Google
+          <a :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'" href="https://policies.google.com/privacy">Privacy Policy</a> and
+          <a :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'" href="https://policies.google.com/terms">Terms of Service</a>
+          apply.
+        </p>
       </div>
     </q-form>
   </q-page>
@@ -55,6 +60,7 @@
 
 <script>
 import { api } from "boot/axios";
+import { VueReCaptcha } from "vue-recaptcha-v3";
 
 export default {
   name: "PageIndex",
@@ -67,18 +73,34 @@ export default {
     };
   },
   methods: {
+    async recaptcha() {
+      // (optional) Wait until recaptcha has been loaded.
+      await this.$recaptchaLoaded();
+
+      // Execute reCAPTCHA with action "login".
+      const token = await this.$recaptcha("submit");
+
+      // Do stuff with the received token.
+      return token;
+    },
     isValidEmail() {
       // https://forum.quasar-framework.org/topic/5062/email-validation-using-quasar-itself/3
       const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
       return emailPattern.test(this.email) || "Invalid email";
     },
-    onSubmit() {
+    async onSubmit() {
       this.loading = true;
+      // (optional) Wait until recaptcha has been loaded.
+      await this.$recaptchaLoaded();
+
+      // Execute reCAPTCHA with action "login".
+      const tokenz = await this.$recaptcha("submit");
       api
         .post("/mail", {
           name: this.name,
           message: this.message,
-          email: this.email
+          email: this.email,
+          token: tokenz
         })
         .then(response => {
           this.loading = false;
@@ -96,7 +118,7 @@ export default {
             color: "red-4",
             textColor: "black",
             icon: "cloud_done",
-            message: "Error while submitting : " + error
+            message: "" + error
           });
         });
     },
@@ -105,6 +127,12 @@ export default {
       this.name = null;
       this.message = null;
       this.email = null;
+    },
+    mounted() {
+      const recaptcha = this.$recaptchaInstance;
+
+      // Hide reCAPTCHA badge:
+      recaptcha.hideBadge();
     }
   }
 };
@@ -115,4 +143,8 @@ export default {
   width: 85%
   max-width: 400px
   min-width: 300px
+.g_link_white
+  color: white
+.g_link_black
+  color: black
 </style>

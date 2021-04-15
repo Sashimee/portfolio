@@ -6,9 +6,9 @@
 // Configuration for your app
 // https://v1.quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
-const ESLintPlugin = require('eslint-webpack-plugin')
+const ESLintPlugin = require("eslint-webpack-plugin");
 
-module.exports = function (/* ctx */) {
+module.exports = function(/* ctx */) {
   return {
     // https://v1.quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
@@ -99,7 +99,7 @@ module.exports = function (/* ctx */) {
 
     // animations: 'all', // --- includes all animations
     // https://v1.quasar.dev/options/animations
-    animations: 'all',
+    animations: "all",
 
     // https://v1.quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {
@@ -113,7 +113,13 @@ module.exports = function (/* ctx */) {
       manifest: {
         name: `Alex Baskewitsch`,
         short_name: `Alex Baskewitsch`,
-        description: `My personal portfolio`,
+        description: `Alex,
+
+a Full Stack Web Developer.
+
+IT is his passion. Most of his work is self-hosted.
+
+His goal is to progress in a DevOps mindset.`,
         display: "standalone",
         orientation: "portrait",
         background_color: "#ffffff",
@@ -188,4 +194,4 @@ module.exports = function (/* ctx */) {
       }
     }
   };
-}
+};

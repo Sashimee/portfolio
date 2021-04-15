@@ -46,7 +46,7 @@
       overlay
       bordered
       content-class="column"
-      class="blurry"
+      class="blurry slower"
     >
       <!-- drawer content -->
       <div class="column justify_custom">
@@ -104,8 +104,11 @@
       </div>
     </q-drawer>
 
-    <q-page-container>
-      <router-view />
+    <q-page-container class="slower noflow">
+      <transition enter-active-class="animated fadeInUpBig">
+        <!-- Wrapping only one DOM element, defined by QBtn -->
+        <router-view />
+      </transition>
     </q-page-container>
 
     <q-footer class="bg-primary text-white">
@@ -147,7 +150,7 @@ export default {
   },
   methods: {
     link(target) {
-      this.$router.push(target);
+      this.$router.push(target).catch(err => {});
     },
     toggleLeftMode() {
       // If it was enabled change the prop value
@@ -161,6 +164,10 @@ export default {
     toggleDarkMode() {
       this.$q.dark.toggle();
     }
+  },
+  mounted() {
+    this.toggleDarkMode();
+    this.darkMode = true;
   }
 };
 </script>
@@ -183,7 +190,7 @@ export default {
 
 .upper_footer
   position: absolute
-  top: -24px
+  top: -23px
   width: 0
   height: 0
   border-bottom: 24px solid $primary
@@ -198,4 +205,8 @@ export default {
   border: 1px solid $primary
   border-radius: 3px
   // background-color: lighten($primary, 75)
+.slower
+  --animate-duration: 0.6s
+.noflow
+  overflow: hidden
 </style>

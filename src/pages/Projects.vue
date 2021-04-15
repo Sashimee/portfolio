@@ -67,28 +67,27 @@
           </q-img>
 
           <q-card-actions>
+            <!-- Tags -->
             <div class="ellipsis tags_list">
               <span v-for="(tag, i) in project.tags" :key="i"
-                ><q-badge color="info" text-color="dark" class="q-mr-sm">
+                ><q-badge color="primary" class="q-mr-sm">
                   {{ tag }}
                 </q-badge></span
               >
             </div>
             <q-space />
-            <q-turn-transition>
-              <q-fab
-                class="detail_button"
-                color="accent"
-                round
-                flat
-                dense
-                :ripple="false"
-                icon="keyboard_arrow_down"
-                active-icon="keyboard_arrow_up"
-                @click="expand(p)"
-                transition-show="rotate"
-              />
-            </q-turn-transition>
+            <q-fab
+              class="detail_button"
+              color="accent"
+              round
+              flat
+              dense
+              :ripple="false"
+              icon="keyboard_arrow_down"
+              active-icon="keyboard_arrow_up"
+              @click="expand(p)"
+              transition-show="rotate"
+            />
           </q-card-actions>
           <!-- expandable part with info about project -->
           <q-slide-transition>
@@ -158,7 +157,7 @@ export default {
           tags: ["laravel", "responsive", "secure"],
           target: "external",
           info:
-            "Massive Thanks to Laurent Bourgeois, Aurélien Pal and Ilyes Satouri for this awesome collaboration. This is the project that validated my Full Stack Developer skills with Numericall."
+            "Massive Thanks to Laurent Bourgeois, Aurélien Pal and Ilyes Satouri for this awesome collaboration. This is the project that validated our Full Stack Developer skills with Numericall."
         },
         {
           name: "About Blank Generator",
@@ -168,7 +167,7 @@ export default {
           target: "external",
           tags: ["css", "responsive"],
           info:
-            'After some research I found out the "about blank" research query was made all around the world. (https://trends.google.fr/trends/explore?q=about%20blank) This led me to realize this site to see if I could be on top of the search rankings with SEO.'
+            'After some research I found out the "about blank" research query was made all around the world. (https://trends.google.fr/trends/explore?q=about%20blank) This led me to create this site to see if I could be on top of the search rankings with SEO.'
         },
         {
           name: "Bootstrap Site",
@@ -204,6 +203,14 @@ export default {
           info: "Tiny responsive cupcake site."
         },
         {
+          name: "Liberty",
+          type: "Template",
+          link: "liberty",
+          tags: ["css"],
+          target: "internal",
+          info: "Nice presentation Template."
+        },
+        {
           name: "Peinture.lu",
           type: "Live Site",
           link: "http://www.peinture.lu",
@@ -212,6 +219,16 @@ export default {
           target: "external",
           info:
             "I migrated this Wordpress site to another hosting provider (OVH) and had only acces to a raw export of the site + database. I also added a picture gallery and did some bugfixing. Original site was made by Dotcom."
+        },
+        {
+          name: "Old Portfolio",
+          type: "Archive",
+          link: "https://github.com/Sashimee/ProPort",
+          img: "old_portfolio",
+          tags: ["responsive", "php"],
+          target: "external",
+          info:
+            "My Old Portfolio. I created my own CSS framework and added different sub-projects. Included are API calls, a Todo list and a contact form."
         }
       ]
     };
