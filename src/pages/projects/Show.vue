@@ -14,7 +14,7 @@
     </q-page-sticky>
     <iframe
       ref="iframeRef"
-      :src="'/projects/' + link + '/index.html'"
+      :src="'/projects_folder/' + link + '/index.html'"
       class="iframe"
     ></iframe>
   </q-page>
