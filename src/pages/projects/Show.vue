@@ -1,16 +1,13 @@
 <template>
   <q-page class="flex flex-center">
-    <q-page-sticky position="top-left" :offset="[100, 100]">
+    <q-page-sticky position="top-right" :offset="[20, 20]">
       <q-btn
-        fab
         icon="fas fa-undo"
         color="accent"
         label="Back"
         label-position="right"
         to="/projects"
       ></q-btn>
-    </q-page-sticky>
-    <q-page-sticky position="top-right" :offset="[100, 100]">
     </q-page-sticky>
     <iframe
       ref="iframeRef"

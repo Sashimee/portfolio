@@ -63,8 +63,25 @@
           </q-bar>
 
           <q-card-section class="q-pt-none">
+            <div class="column choices" v-if="this.functionalCookies">
+              <q-toggle
+                v-model="trackingCookies"
+                checked-icon="check"
+                color="accent"
+                label="Tracking Cookies"
+                unchecked-icon="clear"
+                @input="toggleTracking()"
+              />
+              <q-toggle
+                v-model="functionalCookies"
+                checked-icon="check"
+                color="accent"
+                label="Functional Cookies / All cookies"
+                unchecked-icon="clear"
+                @input="toggleFunctional()"
+              />
+            </div>
             <h2>Privacy Policy</h2>
-
             <p>
               At this internet site, accessible from
               <a
@@ -76,7 +93,6 @@
               Privacy Policy document contains types of information that is
               collected and recorded by Alex Baskewitsch and how we use it.
             </p>
-
             <p>
               If you have additional questions or require more information about
               our Privacy Policy, do not hesitate to contact us. Our Privacy
@@ -88,10 +104,8 @@
                 >GDPR Privacy Policy Generator from GDPRPrivacyNotice.com</a
               >
             </p>
-
-            <h3>General Data Protection Regulation (GDPR)</h3>
+            <h4>General Data Protection Regulation (GDPR)</h4>
             <p>We are a Data Controller of your information.</p>
-
             <p>
               <a
                 target="_blank"
@@ -144,7 +158,6 @@
                 needs to comply with the law
               </li>
             </ul>
-
             <p>
               <a
                 target="_blank"
@@ -158,7 +171,6 @@
               with our legal obligations, resolve disputes, and enforce our
               policies.
             </p>
-
             <p>
               If you are a resident of the European Economic Area (EEA), you
               have certain data protection rights. If you wish to be informed
@@ -180,9 +192,7 @@
               <li>The right to data portability</li>
               <li>The right to withdraw consent</li>
             </ul>
-
-            <h3>Log Files</h3>
-
+            <h4>Log Files</h4>
             <p>
               Alex Baskewitsch follows a standard procedure of using log files.
               These files log visitors when they visit websites. All hosting
@@ -195,9 +205,7 @@
               trends, administering the site, tracking users' movement on the
               website, and gathering demographic information.
             </p>
-
-            <h3>Cookies and Web Beacons</h3>
-
+            <h4>Cookies and Web Beacons</h4>
             <p>
               Like any other website, Alex Baskewitsch uses 'cookies'. These
               cookies are used to store information including visitors'
@@ -206,7 +214,6 @@
               users' experience by customizing our web page content based on
               visitors' browser type and/or other information.
             </p>
-
             <p>
               For more general information on cookies, please read
               <a
@@ -216,14 +223,11 @@
                 >"What Are Cookies"</a
               >.
             </p>
-
-            <h3>Privacy Policies</h3>
-
-            <P
-              >You may consult this list to find the Privacy Policy for each of
-              the advertising partners of Alex Baskewitsch.</P
-            >
-
+            <h4>Privacy Policies</h4>
+            <p>
+              You may consult this list to find the Privacy Policy for each of
+              the advertising partners of Alex Baskewitsch.
+            </p>
             <p>
               Third-party ad servers or ad networks uses technologies like
               cookies, JavaScript, or Web Beacons that are used in their
@@ -234,14 +238,11 @@
               advertising campaigns and/or to personalize the advertising
               content that you see on websites that you visit.
             </p>
-
             <p>
               Note that Alex Baskewitsch has no access to or control over these
               cookies that are used by third-party advertisers.
             </p>
-
-            <h3>Third Party Privacy Policies</h3>
-
+            <h4>Third Party Privacy Policies</h4>
             <p>
               Alex Baskewitsch's Privacy Policy does not apply to other
               advertisers or websites. Thus, we are advising you to consult the
@@ -249,23 +250,19 @@
               more detailed information. It may include their practices and
               instructions about how to opt-out of certain options.
             </p>
-
             <p>
               You can choose to disable cookies through your individual browser
               options. To know more detailed information about cookie management
               with specific web browsers, it can be found at the browsers'
               respective websites.
             </p>
-
-            <h3>Children's Information</h3>
-
+            <h4>Children's Information</h4>
             <p>
               Another part of our priority is adding protection for children
               while using the internet. We encourage parents and guardians to
               observe, participate in, and/or monitor and guide their online
               activity.
             </p>
-
             <p>
               Alex Baskewitsch does not knowingly collect any Personal
               Identifiable Information from children under the age of 13. If you
@@ -274,9 +271,7 @@
               we will do our best efforts to promptly remove such information
               from our records.
             </p>
-
-            <h3>Online Privacy Policy Only</h3>
-
+            <h4>Online Privacy Policy Only</h4>
             <p>
               Our Privacy Policy applies only to our online activities and is
               valid for visitors to our website with regards to the information
@@ -284,9 +279,7 @@
               is not applicable to any information collected offline or via
               channels other than this website.
             </p>
-
-            <h3>Consent</h3>
-
+            <h4>Consent</h4>
             <p>
               By using our website, you hereby consent to our Privacy Policy and
               agree to its terms.
@@ -464,12 +457,56 @@ export default {
       side_choice: "right",
       persistent: false,
       dialog: false,
-      maximizedToggle: true
+      maximizedToggle: true,
+      trackingCookies: false,
+      functionalCookies: false
     };
   },
   methods: {
+    toggleTracking() {
+      switch (this.trackingCookies) {
+        case true:
+          this.$q.cookies.set("accepted_tracking_cookies", true, {
+            expires: 365,
+            sameSite: "Strict"
+          });
+          bootstrap().then(gtag => {
+            this.$gtag.pageview({
+              page_path: this.$route.path // For the first tracking
+            });
+          });
+          break;
+        case false:
+          this.$q.cookies.set("accepted_tracking_cookies", false, {
+            expires: 365,
+            sameSite: "Strict"
+          });
+          this.$q.cookies.remove("_gat_gtag_UA_159981361_1", {
+            domain: ".baskewitsch.lu"
+          });
+          this.$q.cookies.remove("_ga", { domain: ".baskewitsch.lu" });
+          this.$q.cookies.remove("_gid", { domain: ".baskewitsch.lu" });
+          break;
+
+        default:
+          break;
+      }
+    },
+    toggleFunctional() {
+      this.$q.cookies.remove("accepted_tracking_cookies");
+      this.trackingCookies = false;
+      this.$q.cookies.remove("_gat_gtag_UA_159981361_1", {
+        domain: ".baskewitsch.lu"
+      });
+      this.$q.cookies.remove("_ga", { domain: ".baskewitsch.lu" });
+      this.$q.cookies.remove("_gid", { domain: ".baskewitsch.lu" });
+      this.dialog = false;
+      this.persistent = true;
+    },
     acceptAll() {
       bootstrap().then(gtag => {
+        this.trackingCookies = true;
+        this.functionalCookies = true;
         this.$q.cookies.set("accepted_tracking_cookies", true, {
           expires: 365,
           sameSite: "Strict"
@@ -480,7 +517,7 @@ export default {
       });
     },
     acceptFunctional() {
-      console.log("Functional accepted");
+      this.functionalCookies = true;
       this.$q.cookies.set("accepted_tracking_cookies", false, {
         expires: 365,
         sameSite: "Strict"
@@ -507,6 +544,20 @@ export default {
     this.darkMode = true;
     if (!this.$q.cookies.has("accepted_tracking_cookies")) {
       this.persistent = true;
+    }
+    if (
+      this.$q.cookies.has("accepted_tracking_cookies") &&
+      this.$q.cookies.get("accepted_tracking_cookies") === true
+    ) {
+      this.trackingCookies = true;
+      this.functionalCookies = true;
+    }
+    if (
+      this.$q.cookies.has("accepted_tracking_cookies") &&
+      this.$q.cookies.get("accepted_tracking_cookies") === false
+    ) {
+      this.trackingCookies = false;
+      this.functionalCookies = true;
     }
   }
 };
@@ -555,4 +606,11 @@ export default {
   --animate-duration: 0.6s
 .noflow
   overflow: hidden
+.choices
+  background: $dark
+  max-width: 200px
+  margin-top: 3rem
+  border: 1px solid black
+  border-border-radius: 3px
+  padding-bottom: 5px
 </style>

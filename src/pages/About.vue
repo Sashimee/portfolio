@@ -136,7 +136,6 @@ export default {
   },
   methods: {
     goto(link) {
-      // console.log(link);
       window.open(link);
     }
   }

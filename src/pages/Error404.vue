@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import { axios } from "boot/axios";
 import { bootstrap } from "vue-gtag";
 
 export default {

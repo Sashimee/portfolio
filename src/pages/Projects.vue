@@ -23,7 +23,7 @@
           :key="project.name"
         >
           <q-card-section class="info_chip">
-            <q-chip dense color="accent" icon="fas fa-cog"
+            <q-chip dense color="accent" icon="far fa-dot-circle"
               ><div class="text">{{ project.type }}</div></q-chip
             >
           </q-card-section>
@@ -127,6 +127,16 @@ export default {
         //   link: "/projects/networking",
         //   target: "external"
         // },
+        {
+          name: "Baskewitsch.lu",
+          type: "Live Site",
+          link: "https://github.com/Sashimee/portfolio",
+          img: "baskewitsch.lu",
+          tags: ["Vue.js", "RGPD", "laravel"],
+          target: "external",
+          info:
+            "Personal Portfolio Project. Made with Quasar.dev - Google Analytics - Laravel Backend - reCaptcha v3 - axios. Deployed in different virtual machines in my vmware node."
+        },
         {
           name: "Dawa",
           type: "Live Site",
@@ -236,7 +246,6 @@ export default {
     this.sync();
     if (this.$q.cookies.get("accepted_tracking_cookies") === true) {
       bootstrap().then(gtag => {
-        console.log(gtag);
         this.$gtag.pageview({
           page_path: "/projects"
         });
