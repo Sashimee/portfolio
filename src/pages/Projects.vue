@@ -115,13 +115,6 @@ export default {
       categorySelect: "",
       expanded: [],
       projectsData: [
-       
-        // {
-        //   name: "Sorting of an array",
-        //   type: "php",
-        //   link: "/projects/sorting",
-        //   target: "internal"
-        // },
         // {
         //   name: "Rack",
         //   type: "hardware",

@@ -1,24 +1,50 @@
 <template>
   <q-page class="flex flex-center">
-    Test
-    <p>
-      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Suscipit id,
-      ipsa eum ea mollitia, voluptatum possimus eligendi expedita dignissimos
-      nemo rem dolorem temporibus, in aliquid facilis modi tempora officiis
-      debitis!
-    </p>
-    <p>
-      Animi possimus atque nemo, illo, distinctio accusantium sed commodi
-      explicabo nulla inventore deserunt, perferendis porro cupiditate ipsa quam
-      tenetur? Nulla, distinctio. Nulla nam veniam incidunt nostrum totam optio
-      voluptatibus blanditiis!
-    </p>
-    <p>
-      Perferendis doloremque quisquam et repellat odit obcaecati, nulla sunt
-      fuga corporis illum nam veritatis aut autem! Quibusdam eveniet neque
-      veniam accusamus animi. Nobis adipisci quis reprehenderit dolorum,
-      explicabo officiis porro.
-    </p>
+    <h6>I like to use:</h6>
+    <div class="row justify-center chips_list">
+      <q-chip size="12px" color="accent" icon="fab fa-laravel">
+        Laravel
+      </q-chip>
+      <q-chip size="12px" color="accent" icon="fab fa-vuejs">
+        VueJs
+      </q-chip>
+      <q-chip size="12px" color="accent" icon="fab fa-sass">
+        Sass
+      </q-chip>
+      <q-chip size="12px" color="accent" icon="fab fa-html5">
+        HTML
+      </q-chip>
+      <q-chip size="12px" color="accent" icon="fab fa-css3">
+        CSS
+      </q-chip>
+      <q-chip size="12px" color="accent" icon="fab fa-js">
+        Javascript
+      </q-chip>
+      <q-chip size="12px" color="accent" icon="fab fa-php">
+        PHP
+      </q-chip>
+      <q-chip size="12px" color="accent" icon="fab fa-angular">
+        Angular
+      </q-chip>
+      <q-chip size="12px" color="accent" icon="fab fa-microsoft">
+        VSCode
+      </q-chip>
+      <q-chip size="12px" color="accent" icon="fab fa-github">
+        GitHub
+      </q-chip>
+      <q-chip size="12px" color="accent" icon="fab fa-wordpress">
+        Wordpress
+      </q-chip>
+      <q-chip size="12px" color="accent" icon="fas fa-server">
+        VMware
+      </q-chip>
+      <q-chip size="12px" color="accent" icon="fab fa-linux">
+        Linux
+      </q-chip>
+      <q-chip size="12px" color="accent" icon="fas fa-network-wired">
+        Mikrotik
+      </q-chip>
+    </div>
   </q-page>
 </template>
 

@@ -112,11 +112,13 @@ export default {
           token: tokenz
         })
         .then(response => {
-          gtag("event", "sent", {
-            event_category: "message",
-            event_label: "Message Sent",
-            value: 1
-          });
+          if (this.$q.cookies.get("accepted_tracking_cookies") === true) {
+            this.$gtag.query("event", "sent", {
+              event_category: "message",
+              event_label: "Message Sent",
+              value: 1
+            });
+          }
           this.loading = false;
           this.onReset();
           this.$q.notify({
@@ -127,11 +129,13 @@ export default {
           });
         })
         .catch(error => {
-          gtag("event", "notsent", {
-            event_category: "message",
-            event_label: "Message Not Sent",
-            value: 1
-          });
+          if (this.$q.cookies.get("accepted_tracking_cookies") === true) {
+            this.$gtag.query("event", "not_sent", {
+              event_category: "message",
+              event_label: "Message Not Sent",
+              value: 1
+            });
+          }
           this.loading = false;
           this.$q.notify({
             color: "red-4",

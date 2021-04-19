@@ -8,55 +8,19 @@
         <strong>self-hosted</strong>.
       </p>
       <p>My goal is to progress in a <strong>DevOps</strong> mindset.</p>
+      <div class="row justify-end more_button">
+        <q-btn
+          flat
+          color="dark"
+          padding="xs"
+          label="More ..."
+          to="/about"
+        />
+      </div>
     </div>
     <div class="row">
       <q-btn push class="action_button" label="My projects" to="/projects" />
       <q-btn push class="action_button" label="Contact me" to="/contact" />
-    </div>
-    <h6>I like to use:</h6>
-    <div class="row justify-center chips_list">
-      <q-chip size="12px" color="accent" icon="fab fa-laravel">
-        Laravel
-      </q-chip>
-      <q-chip size="12px" color="accent" icon="fab fa-vuejs">
-        VueJs
-      </q-chip>
-      <q-chip size="12px" color="accent" icon="fab fa-sass">
-        Sass
-      </q-chip>
-      <q-chip size="12px" color="accent" icon="fab fa-html5">
-        HTML
-      </q-chip>
-      <q-chip size="12px" color="accent" icon="fab fa-css3">
-        CSS
-      </q-chip>
-      <q-chip size="12px" color="accent" icon="fab fa-js">
-        Javascript
-      </q-chip>
-      <q-chip size="12px" color="accent" icon="fab fa-php">
-        PHP
-      </q-chip>
-      <q-chip size="12px" color="accent" icon="fab fa-angular">
-        Angular
-      </q-chip>
-      <q-chip size="12px" color="accent" icon="fab fa-microsoft">
-        VSCode
-      </q-chip>
-      <q-chip size="12px" color="accent" icon="fab fa-github">
-        GitHub
-      </q-chip>
-      <q-chip size="12px" color="accent" icon="fab fa-wordpress">
-        Wordpress
-      </q-chip>
-      <q-chip size="12px" color="accent" icon="fas fa-server">
-        VMware
-      </q-chip>
-      <q-chip size="12px" color="accent" icon="fab fa-linux">
-        Linux
-      </q-chip>
-      <q-chip size="12px" color="accent" icon="fas fa-network-wired">
-        Mikrotik
-      </q-chip>
     </div>
   </q-page>
 </template>
@@ -74,7 +38,7 @@ export default {
         });
       });
     }
-  },
+  }
 };
 </script>
 
@@ -94,4 +58,7 @@ export default {
 
 h6
   margin: 1.5rem
+.more_button
+  max-width: 350px
+  width: 100%
 </style>
