@@ -47,8 +47,7 @@ export default {
   margin: 1rem
   background: lighten($accent, 10)
   color: black
-.chips_list
-  max-width: 600px
+
 
 .q-chip--dark
   color: black
