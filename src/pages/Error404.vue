@@ -24,11 +24,19 @@
 
 <script>
 import { axios } from "boot/axios";
+import { bootstrap } from "vue-gtag";
 
 export default {
-  name: 'Error404',
-  methods: {
-    
-  },
-}
+  name: "Error404",
+  methods: {},
+  mounted() {
+    if (this.$q.cookies.get("accepted_tracking_cookies") === true) {
+      bootstrap().then(gtag => {
+        this.$gtag.pageview({
+          page_path: "/404"
+        });
+      });
+    }
+  }
+};
 </script>

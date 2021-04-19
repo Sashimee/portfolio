@@ -10,30 +10,18 @@
       <p>My goal is to progress in a <strong>DevOps</strong> mindset.</p>
     </div>
     <div class="row">
-      <q-btn
-        push
-        class="action_button"
-        color="accent"
-        label="My projects"
-        to="/projects"
-      />
-      <q-btn
-        push
-        class="action_button"
-        color="accent"
-        label="Contact me"
-        to="/contact"
-      />
+      <q-btn push class="action_button" label="My projects" to="/projects" />
+      <q-btn push class="action_button" label="Contact me" to="/contact" />
     </div>
     <h6>I like to use:</h6>
     <div class="row justify-center chips_list">
-      <q-chip size="13px" color="accent" icon="fab fa-laravel">
+      <q-chip size="12px" color="accent" icon="fab fa-laravel">
         Laravel
       </q-chip>
-      <q-chip size="13px" color="accent" icon="fab fa-vuejs">
+      <q-chip size="12px" color="accent" icon="fab fa-vuejs">
         VueJs
       </q-chip>
-      <q-chip size="13px" color="accent" icon="fab fa-sass">
+      <q-chip size="12px" color="accent" icon="fab fa-sass">
         Sass
       </q-chip>
       <q-chip size="12px" color="accent" icon="fab fa-html5">
@@ -74,14 +62,27 @@
 </template>
 
 <script>
+import { bootstrap } from "vue-gtag";
+
 export default {
-  name: "PageIndex"
+  name: "PageIndex",
+  mounted() {
+    if (this.$q.cookies.get("accepted_tracking_cookies") === true) {
+      bootstrap().then(gtag => {
+        this.$gtag.pageview({
+          page_path: "/"
+        });
+      });
+    }
+  },
 };
 </script>
 
 <style lang="sass">
 .action_button
   margin: 1rem
+  background: lighten($accent, 10)
+  color: black
 .chips_list
   max-width: 600px
 

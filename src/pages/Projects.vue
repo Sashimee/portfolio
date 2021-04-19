@@ -23,7 +23,7 @@
           :key="project.name"
         >
           <q-card-section class="info_chip">
-            <q-chip dense color="accent" icon="fas fa-tint"
+            <q-chip dense color="accent" icon="fas fa-cog"
               ><div class="text">{{ project.type }}</div></q-chip
             >
           </q-card-section>
@@ -105,32 +105,17 @@
 </template>
 
 <script>
+import { bootstrap } from "vue-gtag";
+
 export default {
-  name: "PageIndex",
+  name: "PageProjects",
   data() {
     return {
       projects: [],
       categorySelect: "",
       expanded: [],
       projectsData: [
-        // {
-        //   name: "TooDooD",
-        //   type: "php",
-        //   link: "/projects/toodood",
-        //   target: "internal"
-        // },
-        // {
-        //   name: "PHP Input Validation",
-        //   type: "php",
-        //   link: "/projects/input",
-        //   target: "internal"
-        // },
-        // {
-        //   name: "Pokémon Ajax Call",
-        //   type: "php",
-        //   link: "/projects/ajax",
-        //   target: "internal"
-        // },
+       
         // {
         //   name: "Sorting of an array",
         //   type: "php",
@@ -256,6 +241,14 @@ export default {
   },
   mounted() {
     this.sync();
+    if (this.$q.cookies.get("accepted_tracking_cookies") === true) {
+      bootstrap().then(gtag => {
+        console.log(gtag);
+        this.$gtag.pageview({
+          page_path: "/projects"
+        });
+      });
+    }
   },
   computed: {
     categories() {

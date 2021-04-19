@@ -1,5 +1,50 @@
 <template>
   <q-layout view="hHh lpR fFf">
+    <!-- RGPD Dialog -->
+    <div class="q-pa-md q-gutter-sm">
+      <q-dialog
+        v-model="persistent"
+        persistent
+        transition-show="scale"
+        transition-hide="scale"
+      >
+        <q-card class="bg-primary text-white full-width">
+          <q-card-section>
+            <div class="text-h6">Cookies & Tracking</div>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none">
+            This site uses functional cookies and/or tracking cookies.<br />
+            You have two choices. First one is to accept only functional cookies
+            which are required for the basic usage of the website and the second
+            possible option is to Accept All Cookies.<br />
+            You can always change this option by accessing the RGPD Info and
+            settings page.<br />
+            Your choice is valid for one year or until you delete your browser
+            cookies.<br />
+            <a href="/rgpd" class="g_link_white">More info.</a>
+          </q-card-section>
+
+          <q-card-actions align="right" class="bg-dark q-pb-md q-pt-md">
+            <q-btn
+              flat
+              color="primary"
+              label="Accept Functional Cookies"
+              v-close-popup
+              @click="acceptFunctional"
+            />
+            <q-btn
+              outline
+              rounded
+              color="accent"
+              label="Accept All Cookies"
+              v-close-popup
+              @click="acceptAll"
+            />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+    </div>
     <q-header class="bg-primary text-white" height-hint="98">
       <q-toolbar>
         <q-btn
@@ -12,7 +57,8 @@
           v-if="leftMode == true"
         />
         <q-toolbar-title>
-          <span class="name">Alex Baskewitsch</span><span class="dot">;</span>
+          <span class="name" @click="link('/')">Alex Baskewitsch</span
+          ><span class="dot">;</span>
         </q-toolbar-title>
 
         <q-btn
@@ -34,7 +80,8 @@
       </q-toolbar>
 
       <q-tabs align="center" class="gt-sm">
-        <q-route-tab to="/" label="About me" />
+        <q-route-tab to="/" label="Home" />
+        <q-route-tab to="/about" label="About me" />
         <q-route-tab to="/projects" label="Projects" />
         <q-route-tab to="/contact" label="Contact" />
       </q-tabs>
@@ -56,7 +103,14 @@
             <q-item-section avatar>
               <q-icon name="far fa-user"></q-icon>
             </q-item-section>
-            <q-item-section>About me</q-item-section>
+            <q-item-section>Home</q-item-section>
+          </q-item>
+          <q-separator />
+          <q-item clickable v-ripple @click="link('/about')">
+            <q-item-section avatar>
+              <q-icon name="far fa-user"></q-icon>
+            </q-item-section>
+            <q-item-section>About Me</q-item-section>
           </q-item>
           <q-separator />
           <q-item clickable v-ripple @click="link('/projects')">
@@ -139,16 +193,36 @@
 </template>
 
 <script>
+import { bootstrap } from "vue-gtag";
+
 export default {
   data() {
     return {
       side: false,
       leftMode: false,
       darkMode: false,
-      side_choice: "right"
+      side_choice: "right",
+      persistent: false
     };
   },
   methods: {
+    acceptAll() {
+      bootstrap().then(gtag => {
+        this.$q.cookies.set("accepted_tracking_cookies", true, {
+          expires: 365
+        });
+        this.$gtag.pageview({
+          page_path: "/"
+        });
+        console.log(this.$route);
+      });
+    },
+    acceptFunctional() {
+      console.log("Functional accepted");
+      this.$q.cookies.set("accepted_tracking_cookies", false, {
+        expires: 365
+      });
+    },
     link(target) {
       this.$router.push(target).catch(err => {});
     },
@@ -168,14 +242,20 @@ export default {
   mounted() {
     this.toggleDarkMode();
     this.darkMode = true;
+    if (!this.$q.cookies.has("accepted_tracking_cookies")) {
+      this.persistent = true;
+    }
   }
 };
 </script>
 
 <style lang="sass">
+.g_link_white
+  color: white
 .name
   font-family: 'lexend'
   text-transform: uppercase
+  cursor: pointer
 .dot
   color: $accent
 

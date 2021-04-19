@@ -47,10 +47,19 @@
           flat
           class="q-ml-sm"
         ></q-btn>
-        <p class="q-mt-md" >
+        <p class="q-mt-md">
           This site is protected by reCAPTCHA and the Google
-          <a :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'" href="https://policies.google.com/privacy">Privacy Policy</a> and
-          <a :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'" href="https://policies.google.com/terms">Terms of Service</a>
+          <a
+            :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'"
+            href="https://policies.google.com/privacy"
+            >Privacy Policy</a
+          >
+          and
+          <a
+            :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'"
+            href="https://policies.google.com/terms"
+            >Terms of Service</a
+          >
           apply.
         </p>
       </div>
@@ -60,10 +69,10 @@
 
 <script>
 import { api } from "boot/axios";
-import { VueReCaptcha } from "vue-recaptcha-v3";
+import { bootstrap } from "vue-gtag";
 
 export default {
-  name: "PageIndex",
+  name: "PageContact",
   data() {
     return {
       name: null,
@@ -103,6 +112,11 @@ export default {
           token: tokenz
         })
         .then(response => {
+          gtag("event", "sent", {
+            event_category: "message",
+            event_label: "Message Sent",
+            value: 1
+          });
           this.loading = false;
           this.onReset();
           this.$q.notify({
@@ -113,6 +127,11 @@ export default {
           });
         })
         .catch(error => {
+          gtag("event", "notsent", {
+            event_category: "message",
+            event_label: "Message Not Sent",
+            value: 1
+          });
           this.loading = false;
           this.$q.notify({
             color: "red-4",
@@ -127,12 +146,15 @@ export default {
       this.name = null;
       this.message = null;
       this.email = null;
-    },
-    mounted() {
-      const recaptcha = this.$recaptchaInstance;
-
-      // Hide reCAPTCHA badge:
-      recaptcha.hideBadge();
+    }
+  },
+  mounted() {
+    if (this.$q.cookies.get("accepted_tracking_cookies") === true) {
+      bootstrap().then(gtag => {
+        this.$gtag.pageview({
+          page_path: "/contact"
+        });
+      });
     }
   }
 };

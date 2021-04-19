@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import VueGtag from "vue-gtag";
 
 import routes from "./routes";
 import { VueReCaptcha } from "vue-recaptcha-v3";
@@ -8,6 +9,12 @@ Vue.use(VueRouter);
 
 // For more options see below
 Vue.use(VueReCaptcha, { siteKey: "6LfnC4kaAAAAAEzdI0EOMI4d6AWcuQu8M_F4Ez3i" });
+
+// Vue Gtag
+Vue.use(VueGtag, {
+  config: { id: "UA-159981361-1" },
+  bootstrap: false
+});
 
 /*
  * If not building with SSR mode, you can

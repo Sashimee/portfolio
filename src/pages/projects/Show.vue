@@ -21,8 +21,10 @@
 </template>
 
 <script>
+import { bootstrap } from "vue-gtag";
+
 export default {
-  name: "PageIndex",
+  name: "PageShowProject",
   data() {
     return {
       link: ""
@@ -31,6 +33,13 @@ export default {
   mounted() {
     this.link = this.$route.params.shortcode;
     this.$refs.iframeRef.addEventListener("load", this.iframeLoad);
+    if (this.$q.cookies.get("accepted_tracking_cookies") === true) {
+      bootstrap().then(gtag => {
+        this.$gtag.pageview({
+          page_path: "/projects/" + this.link
+        });
+      });
+    }
   },
   methods: {
     iframeLoad() {
