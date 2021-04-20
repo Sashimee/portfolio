@@ -58,7 +58,15 @@
             <q-space />
 
             <q-btn dense flat icon="close" v-close-popup>
-              <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
+              <q-tooltip
+                content-class="bg-accent text-black"
+                :offset="[10, 10]"
+                :delay="1000"
+                transition-show="flip-right"
+                transition-hide="flip-right"
+              >
+                Close
+              </q-tooltip>
             </q-btn>
           </q-bar>
 
@@ -71,7 +79,16 @@
                 label="Tracking Cookies"
                 unchecked-icon="clear"
                 @input="toggleTracking()"
-              />
+                ><q-tooltip
+                  content-class="bg-accent text-black"
+                  :offset="[10, 10]"
+                  :delay="1000"
+                  transition-show="flip-right"
+                  transition-hide="flip-right"
+                >
+                  Toggle Tracking Cookies
+                </q-tooltip></q-toggle
+              >
               <q-toggle
                 v-model="functionalCookies"
                 checked-icon="check"
@@ -79,7 +96,16 @@
                 label="Functional Cookies / All cookies"
                 unchecked-icon="clear"
                 @input="toggleFunctional()"
-              />
+                ><q-tooltip
+                  content-class="bg-accent text-black"
+                  :offset="[10, 10]"
+                  :delay="1000"
+                  transition-show="flip-right"
+                  transition-hide="flip-right"
+                >
+                  Toggle Functional Cookies
+                </q-tooltip></q-toggle
+              >
             </div>
             <h2>Privacy Policy</h2>
             <p>
@@ -300,7 +326,16 @@
           v-if="leftMode == true"
         />
         <q-toolbar-title>
-          <span class="name" @click="link('/')">Alex Baskewitsch</span
+          <span class="name" @click="link('/')"
+            >Alex Baskewitsch<q-tooltip
+              content-class="bg-accent text-black"
+              :offset="[10, 10]"
+              :delay="1000"
+              transition-show="flip-right"
+              transition-hide="flip-right"
+            >
+              Navigate Home
+            </q-tooltip></span
           ><span class="dot">;</span>
         </q-toolbar-title>
 
@@ -319,14 +354,65 @@
           icon="far fa-moon"
           color="accent"
           @input="toggleDarkMode()"
-        ></q-toggle>
+          ><q-tooltip
+            content-class="bg-accent text-black"
+            anchor="center left"
+            self="center right"
+            :offset="[10, 10]"
+            :delay="1000"
+            transition-show="flip-right"
+            transition-hide="flip-right"
+          >
+            Toggle Dark Mode
+          </q-tooltip></q-toggle
+        >
       </q-toolbar>
 
       <q-tabs align="center" class="gt-sm">
-        <q-route-tab to="/" label="Home" />
-        <q-route-tab to="/about" label="About me" />
-        <q-route-tab to="/projects" label="Projects" />
-        <q-route-tab to="/contact" label="Contact" />
+        <q-route-tab to="/" label="Home"
+          ><q-tooltip
+            content-class="bg-accent text-black"
+            :offset="[10, 10]"
+            :delay="1000"
+            transition-show="flip-right"
+            transition-hide="flip-right"
+          >
+            Navigate Home
+          </q-tooltip></q-route-tab
+        >
+        <q-route-tab to="/about" label="About me"
+          ><q-tooltip
+            content-class="bg-accent text-black"
+            :offset="[10, 10]"
+            :delay="1000"
+            transition-show="flip-right"
+            transition-hide="flip-right"
+          >
+            Know more about me
+          </q-tooltip></q-route-tab
+        >
+        <q-route-tab to="/projects" label="Projects"
+          ><q-tooltip
+            content-class="bg-accent text-black"
+            :offset="[10, 10]"
+            :delay="1000"
+            transition-show="flip-right"
+            transition-hide="flip-right"
+          >
+            Explore my projects
+          </q-tooltip></q-route-tab
+        >
+        <q-route-tab to="/contact" label="Contact"
+          ><q-tooltip
+            content-class="bg-accent text-black"
+            :offset="[10, 10]"
+            :delay="1000"
+            transition-show="flip-right"
+            transition-hide="flip-right"
+          >
+            Contact me
+          </q-tooltip></q-route-tab
+        >
       </q-tabs>
       <div class="lower_header"></div>
     </q-header>
@@ -416,7 +502,13 @@
       <q-toolbar>
         <q-toolbar-title
           ><q-btn flat @click="dialog = true" size="sm"
-            >Legal info</q-btn
+            >Legal info<q-tooltip
+              content-class="bg-accent text-black"
+              :delay="1000"
+              transition-show="flip-right"
+              transition-hide="flip-right"
+              >Legal info & settings
+            </q-tooltip></q-btn
           ></q-toolbar-title
         >
         <div class="text-caption q-mr-xl gt-sm">
@@ -430,7 +522,16 @@
           type="a"
           href="https://www.linkedin.com/in/abask/"
           target="_blank"
-        ></q-btn>
+          ><q-tooltip
+            content-class="bg-accent text-black"
+            :offset="[10, 10]"
+            :delay="1000"
+            transition-show="flip-right"
+            transition-hide="flip-right"
+          >
+            Contact me on linkedIn
+          </q-tooltip></q-btn
+        >
         <q-btn
           flat
           round
@@ -439,7 +540,16 @@
           type="a"
           href="https://github.com/Sashimee"
           target="_blank"
-        ></q-btn>
+          ><q-tooltip
+            content-class="bg-accent text-black"
+            :offset="[10, 10]"
+            :delay="1000"
+            transition-show="flip-right"
+            transition-hide="flip-right"
+          >
+            Visit my github
+          </q-tooltip></q-btn
+        >
       </q-toolbar>
     </q-footer>
   </q-layout>
@@ -559,7 +669,10 @@ export default {
       this.trackingCookies = false;
       this.functionalCookies = true;
     }
-  }
+  },
+  created() {
+    this.$q.addressbarColor.set("#264653")
+  },
 };
 </script>
 

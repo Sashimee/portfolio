@@ -10,8 +10,8 @@
       <p>
         I was born in <strong>'86</strong> and grew up with
         <strong>IT</strong> always on my side. As a strong self-learner I
-        acquired a lot of my knowledge by creating personal projects and working in
-        <strong>IT</strong> related fields.
+        acquired a lot of my knowledge by creating personal projects and working
+        in <strong>IT</strong> related fields.
       </p>
 
       <p>These are the things that float my boat :</p>
@@ -27,19 +27,48 @@
         :icon="tool.icon"
         @click.prevent="goto(tool.link)"
       >
-        {{ tool.label }}
+        {{ tool.label
+        }}<q-tooltip
+          content-class="bg-accent text-black"
+          :offset="[10, 10]"
+          :delay="1000"
+          transition-show="flip-right"
+          transition-hide="flip-right"
+        >
+          Know more about {{ tool.label }}
+        </q-tooltip>
       </q-chip>
     </div>
     <div
       class="column justify-start chips_list q-ml-sm q-mr-sm q-mt-md q-mb-md"
     >
       <p>
-        You can discover more by contacting me <strong>or</strong> you can take a look at my
-        personal <strong>projects</strong> :
+        You can discover more by contacting me <strong>or</strong> you can take
+        a look at my personal <strong>projects</strong> :
       </p>
       <div class="row flex-center">
-        <q-btn push class="action_button" label="My projects" to="/projects" />
-        <q-btn push class="action_button" label="Contact me" to="/contact" />
+        <q-btn push class="action_button" label="My projects" to="/projects"
+          ><q-tooltip
+            content-class="bg-accent text-black"
+            :offset="[10, 10]"
+            :delay="1000"
+            transition-show="flip-right"
+            transition-hide="flip-right"
+          >
+            Explore my projects
+          </q-tooltip></q-btn
+        >
+        <q-btn push class="action_button" label="Contact me" to="/contact"
+          ><q-tooltip
+            content-class="bg-accent text-black"
+            :offset="[10, 10]"
+            :delay="1000"
+            transition-show="flip-right"
+            transition-hide="flip-right"
+          >
+            Contact me
+          </q-tooltip></q-btn
+        >
       </div>
     </div>
   </q-page>
@@ -145,4 +174,9 @@ export default {
 <style lang="sass">
 .chips_list
   max-width: 600px
+
+.action_button
+  margin: 1rem
+  background: lighten($accent, 10)
+  color: black
 </style>

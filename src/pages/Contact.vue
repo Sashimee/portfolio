@@ -2,7 +2,9 @@
   <q-page class="flex flex-center">
     <div v-if="loading">
       <q-spinner-pie color="primary" size="2em" />
-      <q-tooltip :offset="[0, 8]">QSpinnerPie</q-tooltip>
+      <q-tooltip content-class="bg-accent text-black" :offset="[0, 8]"
+        >QSpinnerPie</q-tooltip
+      >
     </div>
     <q-form v-else @submit="onSubmit" @reset="onReset" class="form_design">
       <q-input
@@ -39,14 +41,28 @@
       />
 
       <div class="row justify-around q-mt-md">
-        <q-btn label="Submit" type="submit" color="primary"></q-btn>
-        <q-btn
-          label="Reset"
-          type="reset"
-          color="primary"
-          flat
-          class="q-ml-sm"
-        ></q-btn>
+        <q-btn label="Submit" type="submit" color="primary"
+          ><q-tooltip
+            content-class="bg-accent text-black"
+            :offset="[10, 10]"
+            :delay="1000"
+            transition-show="flip-right"
+            transition-hide="flip-right"
+          >
+            Send the form
+          </q-tooltip></q-btn
+        >
+        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm"
+          ><q-tooltip
+            content-class="bg-accent text-black"
+            :offset="[10, 10]"
+            :delay="1000"
+            transition-show="flip-right"
+            transition-hide="flip-right"
+          >
+            Reset the form
+          </q-tooltip></q-btn
+        >
         <p class="q-mt-md">
           This site is protected by reCAPTCHA and the Google
           <a

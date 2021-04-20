@@ -32,7 +32,15 @@
             v-if="project.target == 'external'"
             :src="'/screenshots/' + project.img + '.png'"
             @click="gotoProject(project)"
-          >
+            ><q-tooltip
+              content-class="bg-accent text-black"
+              :offset="[10, 10]"
+              :delay="1000"
+              transition-show="flip-right"
+              transition-hide="flip-right"
+            >
+              Visit the project {{ project.name }}
+            </q-tooltip>
             <div class="absolute-bottom">
               <div class="text-h6">{{ project.name }}</div>
             </div>
@@ -51,7 +59,15 @@
             v-else
             :src="'/screenshots/' + project.link + '.png'"
             @click="gotoProject(project)"
-          >
+            ><q-tooltip
+              content-class="bg-accent text-black"
+              :offset="[10, 10]"
+              :delay="1000"
+              transition-show="flip-right"
+              transition-hide="flip-right"
+            >
+              Visit the project {{ project.name }}
+            </q-tooltip>
             <div class="absolute-bottom">
               <div class="text-h6">{{ project.name }}</div>
             </div>
@@ -87,7 +103,7 @@
               active-icon="keyboard_arrow_up"
               @click="expand(p)"
               transition-show="rotate"
-            />
+            ></q-fab>
           </q-card-actions>
           <!-- expandable part with info about project -->
           <q-slide-transition>

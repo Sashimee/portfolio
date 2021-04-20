@@ -9,18 +9,44 @@
       </p>
       <p>My goal is to progress in a <strong>DevOps</strong> mindset.</p>
       <div class="row justify-end more_button">
-        <q-btn
-          flat
-          color="dark"
-          padding="xs"
-          label="More ..."
-          to="/about"
-        />
+        <q-btn flat color="dark" padding="xs" label="More ..." to="/about"
+          ><q-tooltip
+            content-class="bg-accent text-black"
+            :offset="[10, 10]"
+            :delay="1000"
+            transition-show="flip-right"
+            transition-hide="flip-right"
+            anchor="center left"
+            self="center right"
+          >
+            Know more about me
+          </q-tooltip></q-btn
+        >
       </div>
     </div>
     <div class="row">
-      <q-btn push class="action_button" label="My projects" to="/projects" />
-      <q-btn push class="action_button" label="Contact me" to="/contact" />
+      <q-btn push class="action_button" label="My projects" to="/projects"
+        ><q-tooltip
+          content-class="bg-accent text-black"
+          :offset="[10, 10]"
+          :delay="1000"
+          transition-show="flip-right"
+          transition-hide="flip-right"
+        >
+          Explore my projects
+        </q-tooltip></q-btn
+      >
+      <q-btn push class="action_button" label="Contact me" to="/contact"
+        ><q-tooltip
+          content-class="bg-accent text-black"
+          :offset="[10, 10]"
+          :delay="1000"
+          transition-show="flip-right"
+          transition-hide="flip-right"
+        >
+          Contact me
+        </q-tooltip></q-btn
+      >
     </div>
   </q-page>
 </template>
