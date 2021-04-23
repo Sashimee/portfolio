@@ -1,15 +1,14 @@
 <template>
   <q-page class="flex items-center justify-center column">
     <div>
-      <h3>Hi, I'm <span>Alex</span>,</h3>
-      <h5>a Full Stack Web <strong>Developer</strong>.</h5>
+      <h3>{{ $t("home.hi") }}</h3>
+      <h5>{{ $t("home.designation") }}</h5>
       <p>
-        IT is my <strong>passion</strong>. Most of my work is
-        <strong>self-hosted</strong>.
+        {{ $t("home.detail_1") }}
       </p>
-      <p>My goal is to progress in a <strong>DevOps</strong> mindset.</p>
+      <p>{{ $t("home.detail_2") }}</p>
       <div class="row justify-end more_button">
-        <q-btn flat color="dark" padding="xs" label="More ..." to="/about"
+        <q-btn flat color="dark" padding="xs" :label="$t('home.more')" to="/about"
           ><q-tooltip
             content-class="bg-accent text-black"
             :offset="[10, 10]"
@@ -19,13 +18,17 @@
             anchor="center left"
             self="center right"
           >
-            Know more about me
+            {{ $t("home.more_tooltip") }}
           </q-tooltip></q-btn
         >
       </div>
     </div>
     <div class="row">
-      <q-btn push class="action_button" label="My projects" to="/projects"
+      <q-btn
+        push
+        class="action_button"
+        :label="$t('buttons.projects')"
+        to="/projects"
         ><q-tooltip
           content-class="bg-accent text-black"
           :offset="[10, 10]"
@@ -33,10 +36,10 @@
           transition-show="flip-right"
           transition-hide="flip-right"
         >
-          Explore my projects
+          {{ $t("buttons.projects_tooltip") }}
         </q-tooltip></q-btn
       >
-      <q-btn push class="action_button" label="Contact me" to="/contact"
+      <q-btn push class="action_button" :label="$t('buttons.contact')" to="/contact"
         ><q-tooltip
           content-class="bg-accent text-black"
           :offset="[10, 10]"
@@ -44,7 +47,7 @@
           transition-show="flip-right"
           transition-hide="flip-right"
         >
-          Contact me
+          {{ $t("buttons.contact_tooltip") }}
         </q-tooltip></q-btn
       >
     </div>
@@ -53,6 +56,7 @@
 
 <script>
 import { bootstrap } from "vue-gtag";
+import { i18n } from "src/boot/i18n";
 
 export default {
   name: "PageIndex",

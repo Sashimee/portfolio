@@ -2,6 +2,7 @@
   <q-layout view="hHh lpR fFf">
     <!-- RGPD Dialog -->
     <div class="q-pa-md q-gutter-sm">
+      <!-- RGPD Popup -->
       <q-dialog
         v-model="persistent"
         persistent
@@ -46,6 +47,7 @@
           </q-card-actions>
         </q-card>
       </q-dialog>
+      <!-- Legal chapters and settings -->
       <q-dialog
         v-model="dialog"
         persistent
@@ -56,7 +58,7 @@
         <q-card class="bg-primary text-white">
           <q-bar>
             <q-space />
-
+            <!-- Popup close -->
             <q-btn dense flat icon="close" v-close-popup>
               <q-tooltip
                 content-class="bg-accent text-black"
@@ -71,7 +73,9 @@
           </q-bar>
 
           <q-card-section class="q-pt-none">
+            <!-- Tracking settings -->
             <div class="column choices" v-if="this.functionalCookies">
+              <h6>Settings</h6>
               <q-toggle
                 v-model="trackingCookies"
                 checked-icon="check"
@@ -314,8 +318,10 @@
         </q-card>
       </q-dialog>
     </div>
+    <!-- Header -->
     <q-header class="bg-primary text-white" height-hint="98">
       <q-toolbar>
+        <!-- Button for left mode -->
         <q-btn
           dense
           flat
@@ -329,6 +335,8 @@
           <span class="name" @click="link('/')"
             >Alex Baskewitsch<q-tooltip
               content-class="bg-accent text-black"
+              anchor="center right"
+              self="center left"
               :offset="[10, 10]"
               :delay="1000"
               transition-show="flip-right"
@@ -348,6 +356,18 @@
           class="lt-md"
           v-if="leftMode == false"
         />
+        <!-- Language select -->
+        <q-select
+          v-model="lang"
+          :options="langOptions"
+          dense
+          borderless
+          emit-value
+          map-options
+          options-dense
+          style="min-width: 150px"
+        />
+        <!-- Dark mode togle only when greater than small screen -->
         <q-toggle
           class="gt-sm"
           v-model="darkMode"
@@ -502,7 +522,7 @@
       <q-toolbar>
         <q-toolbar-title
           ><q-btn flat @click="dialog = true" size="sm"
-            >Legal info<q-tooltip
+            >Legal info & Settings<q-tooltip
               content-class="bg-accent text-black"
               :delay="1000"
               transition-show="flip-right"
@@ -569,8 +589,18 @@ export default {
       dialog: false,
       maximizedToggle: true,
       trackingCookies: false,
-      functionalCookies: false
+      functionalCookies: false,
+      lang: this.$i18n.locale,
+      langOptions: [
+        { value: "en-us", label: "English" },
+        { value: "fr", label: "Français" }
+      ]
     };
+  },
+  watch: {
+    lang(lang) {
+      this.$i18n.locale = lang;
+    }
   },
   methods: {
     toggleTracking() {
@@ -671,8 +701,8 @@ export default {
     }
   },
   created() {
-    this.$q.addressbarColor.set("#264653")
-  },
+    this.$q.addressbarColor.set("#264653");
+  }
 };
 </script>
 
@@ -721,9 +751,9 @@ export default {
   overflow: hidden
 .choices
   background: $dark
-  max-width: 200px
+  max-width: 624px
   margin-top: 3rem
   border: 1px solid black
-  border-border-radius: 3px
-  padding-bottom: 5px
+  border-radius: 5px
+  padding-bottom: 24px
 </style>

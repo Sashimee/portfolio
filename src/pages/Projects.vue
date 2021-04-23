@@ -91,6 +91,7 @@
                 </q-badge></span
               >
             </div>
+            <q-btn label="Carousel" color="primary" @click="openDialog(p)" />
             <q-space />
             <q-fab
               class="detail_button"
@@ -114,6 +115,10 @@
               </q-card-section>
             </div>
           </q-slide-transition>
+          <!-- Details dialog -->
+          <q-dialog v-model="details_dialog[p]" class="flex-center" full-height full-width>
+            <div class="details_dialog">{{ project.info }}</div>
+          </q-dialog>
         </q-card>
       </transition-group>
     </div>
@@ -127,6 +132,7 @@ export default {
   name: "PageProjects",
   data() {
     return {
+      details_dialog: [],
       projects: [],
       categorySelect: "",
       expanded: [],
@@ -254,6 +260,9 @@ export default {
     expand(p) {
       this.$set(this.expanded, p, !this.expanded[p]);
     },
+    openDialog(p) {
+      this.$set(this.details_dialog, p, !this.details_dialog[p]);
+    },
     sync() {
       this.projects = this.projectsData;
     }
@@ -332,4 +341,7 @@ export default {
   transform: scale(1.4,1.4)
   transition-duration: 0.3s
   // background: white
+.details_dialog
+  background-color: $dark
+  margin: auto
 </style>

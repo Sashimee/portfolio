@@ -19,7 +19,7 @@ module.exports = function(/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v1.quasar.dev/quasar-cli/boot-files
-    boot: ["axios", "addressbar-color", "gtag", "recap"],
+    boot: ["axios", "addressbar-color", "gtag", "recap", "i18n"],
 
     // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.sass"],
@@ -32,7 +32,7 @@ module.exports = function(/* ctx */) {
       // 'themify',
       // 'line-awesome',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
-      
+
       "roboto-font", // optional, you are not bound to it
       "material-icons", // optional, you are not bound to it
       "fontawesome-v5"
