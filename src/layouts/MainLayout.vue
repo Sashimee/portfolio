@@ -360,13 +360,26 @@
         <q-select
           v-model="lang"
           :options="langOptions"
+          :label="$t('layout.language')"
           dense
           borderless
           emit-value
           map-options
           options-dense
           style="min-width: 150px"
-        />
+        >
+          <q-tooltip
+            content-class="bg-accent text-black"
+            anchor="center left"
+            self="center right"
+            :offset="[10, 10]"
+            :delay="1000"
+            transition-show="flip-right"
+            transition-hide="flip-right"
+          >
+            Change language
+          </q-tooltip>
+        </q-select>
         <!-- Dark mode togle only when greater than small screen -->
         <q-toggle
           class="gt-sm"
