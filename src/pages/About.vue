@@ -1,20 +1,9 @@
 <template>
-  <q-page class="flex flex-center column q-mt-xs q-mb-md">
+  <q-page class="flex flex-center column q-mt-xs q-mb-md q-pa-sm">
     <div class="column justify-start chips_list q-ml-sm q-mr-sm">
-      <p>
-        My goal is to have a part in the evolution of the
-        <strong>technology</strong>, nowadays present in all our lives.
-        Specifically, I want to assist developing useful and innovative
-        applications in a <strong>DevOps</strong> approach.
-      </p>
-      <p>
-        I was born in <strong>'86</strong> and grew up with
-        <strong>IT</strong> always on my side. As a strong self-learner I
-        acquired a lot of my knowledge by creating personal projects and working
-        in <strong>IT</strong> related fields.
-      </p>
-
-      <p>These are the things that float my boat :</p>
+      <div class="paragraphs" v-html="$t('about.paragraph_1')"></div>
+      <div class="paragraphs" v-html="$t('about.paragraph_2')"></div>
+      <div class="paragraphs" v-html="$t('about.list_label')"></div>
     </div>
     <div class="row justify-center chips_list">
       <q-chip
@@ -42,12 +31,9 @@
     <div
       class="column justify-start chips_list q-ml-sm q-mr-sm q-mt-md q-mb-md"
     >
-      <p>
-        You can discover more by contacting me <strong>or</strong> you can take
-        a look at my personal <strong>projects</strong> :
-      </p>
+    <div class="paragraphs" v-html="$t('about.incentive')"></div>
       <div class="row flex-center">
-        <q-btn push class="action_button" label="My projects" to="/projects"
+        <q-btn push class="action_button" :label="$t('buttons.projects')" to="/projects"
           ><q-tooltip
             content-class="bg-accent text-black"
             :offset="[10, 10]"
@@ -55,10 +41,21 @@
             transition-show="flip-right"
             transition-hide="flip-right"
           >
-            Explore my projects
+          {{ $t("buttons.projects_tooltip") }}
           </q-tooltip></q-btn
         >
-        <q-btn push class="action_button" label="Contact me" to="/contact"
+        <q-btn push class="action_button" :label="$t('buttons.blog')" to="/blog"
+        ><q-tooltip
+          content-class="bg-accent text-black"
+          :offset="[10, 10]"
+          :delay="1000"
+          transition-show="flip-right"
+          transition-hide="flip-right"
+        >
+          {{ $t("buttons.blog_tooltip") }}
+        </q-tooltip></q-btn
+      >
+        <q-btn push class="action_button" :label="$t('buttons.contact')" to="/contact"
           ><q-tooltip
             content-class="bg-accent text-black"
             :offset="[10, 10]"
@@ -66,7 +63,7 @@
             transition-show="flip-right"
             transition-hide="flip-right"
           >
-            Contact me
+          {{ $t("buttons.contact_tooltip") }}
           </q-tooltip></q-btn
         >
       </div>
@@ -179,4 +176,7 @@ export default {
   margin: 1rem
   background: lighten($accent, 10)
   color: black
+
+.paragraphs
+  padding-bottom: 1rem
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex items-center justify-center column">
+  <q-page class="flex items-center justify-center column q-pa-sm">
     <div>
       <h3>{{ $t("home.hi") }}</h3>
       <h5>{{ $t("home.designation") }}</h5>
@@ -7,7 +7,8 @@
         {{ $t("home.detail_1") }}
       </p>
       <p>{{ $t("home.detail_2") }}</p>
-      <div class="row justify-end more_button">
+    </div>
+      <div class="row justify-center more_button">
         <q-btn flat color="dark" padding="xs" :label="$t('home.more')" to="/about"
           ><q-tooltip
             content-class="bg-accent text-black"
@@ -22,8 +23,19 @@
           </q-tooltip></q-btn
         >
       </div>
-    </div>
-    <div class="row">
+
+    <div class="row justify-center items-center">
+      <q-btn push class="action_button" :label="$t('buttons.blog')" to="/blog"
+        ><q-tooltip
+          content-class="bg-accent text-black"
+          :offset="[10, 10]"
+          :delay="1000"
+          transition-show="flip-right"
+          transition-hide="flip-right"
+        >
+          {{ $t("buttons.blog_tooltip") }}
+        </q-tooltip></q-btn
+      >
       <q-btn
         push
         class="action_button"

@@ -44,15 +44,7 @@
             <div class="absolute-bottom">
               <div class="text-h6">{{ project.name }}</div>
             </div>
-            <div class="colored_visit fit">
-              <p>
-                <q-icon
-                  size="md"
-                  class="text-white"
-                  name="fas fa-hand-pointer"
-                />
-              </p>
-            </div>
+
           </q-img>
           <!-- Image for internal links -->
           <q-img
@@ -71,15 +63,7 @@
             <div class="absolute-bottom">
               <div class="text-h6">{{ project.name }}</div>
             </div>
-            <div class="colored_visit fit">
-              <p>
-                <q-icon
-                  size="md"
-                  class="text-white"
-                  name="fas fa-hand-pointer"
-                />
-              </p>
-            </div>
+
           </q-img>
 
           <q-card-actions>
@@ -91,7 +75,7 @@
                 </q-badge></span
               >
             </div>
-            <q-btn label="Carousel" color="primary" @click="openDialog(p)" />
+            <!--<q-btn label="Carousel" color="primary" @click="openDialog(p)" />-->
             <q-space />
             <q-fab
               class="detail_button"
