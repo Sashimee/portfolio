@@ -459,7 +459,7 @@ export default {
           info: this.$t('projects.texts.old')
         }
       ];
-      if (this.categorySelect == "All") {
+      if (this.categorySelect == "All" || this.categorySelect == "Tous") {
         return projects;
       } else {
         return projects.filter(project => {
