@@ -357,17 +357,23 @@
           v-if="leftMode == false"
         />
         <!-- Language select -->
+
+        
         <q-select
         class="gt-sm"
+        label-color="white"
+        dark
           v-model="lang"
           :options="langOptions"
           :label="$t('layout.language')"
-          dense
-          borderless
           emit-value
           map-options
+          dense
           options-dense
+          borderless
+          standout
           style="min-width: 150px"
+          :input-style="{ color: '#ff0000' }"
         >
           <q-tooltip
             content-class="bg-accent text-black"
@@ -557,7 +563,7 @@
           </q-item>
         </q-list>
         <div class="text-caption">
-          © 2021 - All Rights Reserved.
+          © 2021-2023 - All Rights Reserved.
         </div>
       </div>
     </q-drawer>
@@ -584,7 +590,7 @@
           ></q-toolbar-title
         >
         <div class="text-caption q-mr-xl gt-sm">
-          © 2021 - Alex Baskewitsch - All Rights Reserved.
+          © 2021-2023 - Alex Baskewitsch - All Rights Reserved.
         </div>
         <q-btn
           flat
@@ -644,7 +650,7 @@ export default {
       functionalCookies: false,
       lang: this.$i18n.locale,
       langOptions: [
-        { value: "en-us", label: "English" },
+        { value: "en", label: "English" },
         { value: "fr", label: "Français" }
       ]
     };

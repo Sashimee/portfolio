@@ -29,56 +29,6 @@ export default {
           Title: "Hi",
           Short: "YO",
           link: "/blog/article"
-        },
-        {
-          Title: "Hi2",
-          Short: "YO",
-          link: "/blog/article"
-        },
-        {
-          Title: "Hi2",
-          Short: "YO",
-          link: "/blog/article"
-        },
-        {
-          Title: "Hi2",
-          Short: "YO",
-          link: "/blog/article"
-        },
-        {
-          Title: "Hi2",
-          Short: "YO",
-          link: "/blog/article"
-        },
-        {
-          Title: "Hi2",
-          Short: "YO",
-          link: "/blog/article"
-        },
-        {
-          Title: "Hi2",
-          Short: "YO",
-          link: "/blog/article"
-        },
-        {
-          Title: "Hi2",
-          Short: "YO",
-          link: "/blog/article"
-        },
-        {
-          Title: "Hi2",
-          Short: "YO",
-          link: "/blog/article"
-        },
-        {
-          Title: "Hi2",
-          Short: "YO",
-          link: "/blog/article"
-        },
-        {
-          Title: "Hi2",
-          Short: "YO",
-          link: "/blog/article"
         }
       ]
     }

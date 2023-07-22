@@ -77,18 +77,17 @@
             </div>
             <!--<q-btn label="Carousel" color="primary" @click="openDialog(p)" />-->
             <q-space />
-            <q-fab
+            <q-btn
               class="detail_button"
               color="accent"
               round
               flat
               dense
-              :ripple="false"
-              icon="keyboard_arrow_down"
-              active-icon="keyboard_arrow_up"
               @click="expand(p)"
+              :icon="expanded[p] ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
               transition-show="rotate"
-            ></q-fab>
+              style="max-width: 40px; max-height: 40px;"
+            ></q-btn>
           </q-card-actions>
           <!-- expandable part with info about project -->
           <q-slide-transition>
@@ -113,6 +112,57 @@
 import { bootstrap } from "vue-gtag";
 
 export default {
+  // meta: {
+  //   // sets document title
+  //   title: 'Index Page',
+  //   // optional; sets final title as "Index Page - My Website", useful for multiple level meta
+  //   titleTemplate: title => `${title} - My Website`,
+
+  //   // meta tags
+  //   meta: {
+  //     description: { name: 'description', content: 'Page 1' },
+  //     keywords: { name: 'keywords', content: 'Quasar website' },
+  //     equiv: { 'http-equiv': 'Content-Type', content: 'text/html; charset=UTF-8' },
+  //     // note: for Open Graph type metadata you will need to use SSR, to ensure page is rendered by the server
+  //     ogTitle:  {
+  //       name: 'og:title',
+  //       // optional; similar to titleTemplate, but allows templating with other meta properties
+  //       template (ogTitle) {
+  //         return `${ogTitle} - My Website`
+  //       }
+  //     }
+  //   },
+
+  //   // CSS tags
+  //   link: {
+  //     material: { rel: 'stylesheet', href: 'https://fonts.googleapis.com/icon?family=Material+Icons' }
+  //   },
+
+  //   // JS tags
+  //   script: {
+  //     ldJson: {
+  //       type: 'application/ld+json',
+  //       innerHTML: `{ "@context": "http://schema.org" }`
+  //     }
+  //   },
+
+  //   // <html> attributes
+  //   htmlAttr: {
+  //     'xmlns:cc': 'http://creativecommons.org/ns#', // generates <html xmlns:cc="http://creativecommons.org/ns#">,
+  //     empty: undefined // generates <html empty>
+  //   },
+
+  //   // <body> attributes
+  //   bodyAttr: {
+  //     'action-scope': 'xyz', // generates <body action-scope="xyz">
+  //     empty: undefined // generates <body empty>
+  //   },
+
+  //   // <noscript> tags
+  //   noscript: {
+  //     default: 'This is content for browsers with no JS (or disabled JS)'
+  //   }
+  // },
   name: "PageProjects",
   data() {
     return {
@@ -314,17 +364,18 @@ export default {
   top: -0.5rem
   right: -0.5rem
   z-index: 1999
+  pointer-events: none
 
 .q-chip--dense .q-chip__icon
   font-size: 0.75rem
 
 .tags_list
   width: 85%
-
+.detail_button
+  //width: 37px
+  //height: 37px
 .detail_button:hover
-  transform: scale(1.4,1.4)
-  transition-duration: 0.3s
-  // background: white
+
 .details_dialog
   background-color: $dark
   margin: auto

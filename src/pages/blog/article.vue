@@ -1,8 +1,17 @@
 <template>
-    <q-page class="flex flex-center column q-mt-xs q-mb-md q-pa-sm">
-        <div class="column justify-start chips_list q-ml-sm q-mr-sm">
+  <q-page class="flex flex-center column q-mt-xs q-mb-md q-pa-sm">
+    <div class="column justify-start article-width q-ml-sm q-mr-sm">
       <div class="paragraphs" v-html="$t('blogPost.title')"></div>
-      <div class="paragraphs" v-html="$t('blogPost.paragraph1')"></div>
+      <div class="row flex justify-center">
+        <q-img src="~assets/gc_info_fr.png" loading="lazy" spinner-color="white" style="max-width: 300px; max-height: 300px;"
+          @click="imageDialog = true"></q-img><q-dialog v-model="imageDialog">
+          <q-card><img src="~assets/gc_info_fr.png" loading="lazy" spinner-color="white"></q-card>
+
+        </q-dialog>
+        
+        
+        <div class="paragraphs" v-html="$t('blogPost.paragraph1')"></div>
+      </div>
       <div class="paragraphs" v-html="$t('blogPost.paragraph2')"></div>
       <div class="paragraphs" v-html="$t('blogPost.paragraph3')"></div>
       <div class="paragraphs" v-html="$t('blogPost.paragraph4')"></div>
@@ -33,63 +42,51 @@
       <div class="paragraphs" v-html="$t('blogPost.source9')"></div>
       <div class="paragraphs" v-html="$t('blogPost.source10')"></div>
     </div>
-      <div class="row justify-center chips_list">
-        <q-chip
-          v-for="source in sources_list"
-          v-bind:key="source.label"
-          clickable
-          size="12px"
-          color="accent"
-          class="text-black"
-          :icon="source.icon"
-          @click.prevent="goto(source.link)"
-        >
-          {{ source.label }}
-          <q-tooltip
-            content-class="bg-accent text-black"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
-            Know more about {{ source.label }}
-          </q-tooltip>
-        </q-chip>
-      </div>
-    </q-page>
-  </template>
+    <div class="row justify-center chips_list">
+      <q-chip v-for="source in sources_list" v-bind:key="source.label" clickable size="12px" color="accent"
+        class="text-black" :icon="source.icon" @click.prevent="goto(source.link)">
+        {{ source.label }}
+        <q-tooltip content-class="bg-accent text-black" :offset="[10, 10]" :delay="1000" transition-show="flip-right"
+          transition-hide="flip-right">
+          Know more about {{ source.label }}
+        </q-tooltip>
+      </q-chip>
+    </div>
+  </q-page>
+</template>
   
-  <script>
-  export default {
-    name: "article",
-    data() {
-      return {
-        sources_list: [
-          {
-            label: "Source 1",
-            icon: "fas fa-external-link-alt",
-            link: "https://www.example.com/source1"
-          },
-          {
-            label: "Source 2",
-            icon: "fas fa-external-link-alt",
-            link: "https://www.example.com/source2"
-          },
-          // ... add more sources as needed
-        ]
-      };
-    },
-    methods: {
-      goto(link) {
-        window.open(link);
-      }
+<script>
+export default {
+  name: "article",
+  data() {
+    return {
+      imageDialog: false,
+      sources_list: [
+        {
+          label: "Source 1",
+          icon: "fas fa-external-link-alt",
+          link: "https://www.example.com/source1"
+        },
+        {
+          label: "Source 2",
+          icon: "fas fa-external-link-alt",
+          link: "https://www.example.com/source2"
+        },
+        // ... add more sources as needed
+      ]
+    };
+  },
+  methods: {
+    goto(link) {
+      window.open(link);
     }
-  };
-  </script>
+  }
+};
+</script>
   
-  <style lang="sass">
-  .chips_list
-    max-width: 600px
+<style lang="sass">
+  .article-width
+    max-width: 900px
   
   .paragraphs
     padding-bottom: 1rem
