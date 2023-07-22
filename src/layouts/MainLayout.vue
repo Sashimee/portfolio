@@ -3,12 +3,7 @@
     <!-- RGPD Dialog -->
     <div class="q-pa-md q-gutter-sm">
       <!-- RGPD Popup -->
-      <q-dialog
-        v-model="persistent"
-        persistent
-        transition-show="scale"
-        transition-hide="scale"
-      >
+      <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
         <q-card class="bg-primary text-white full-width">
           <q-card-section>
             <div class="text-h6">Cookies & Tracking</div>
@@ -23,50 +18,24 @@
             settings page.<br />
             Your choice is valid for one year or until you delete your browser
             cookies.<br />
-            <a href="#" class="g_link_white" @click.prevent="dialog = true"
-              >More info.</a
-            >
+            <a href="#" class="g_link_white" @click.prevent="dialog = true">More info.</a>
           </q-card-section>
 
           <q-card-actions align="right" class="bg-dark q-pb-md q-pt-md">
-            <q-btn
-              flat
-              color="primary"
-              label="Accept Functional Cookies"
-              v-close-popup
-              @click="acceptFunctional"
-            />
-            <q-btn
-              outline
-              rounded
-              color="accent"
-              label="Accept All Cookies"
-              v-close-popup
-              @click="acceptAll"
-            />
+            <q-btn flat color="primary" label="Accept Functional Cookies" v-close-popup @click="acceptFunctional" />
+            <q-btn outline rounded color="accent" label="Accept All Cookies" v-close-popup @click="acceptAll" />
           </q-card-actions>
         </q-card>
       </q-dialog>
       <!-- Legal chapters and settings -->
-      <q-dialog
-        v-model="dialog"
-        persistent
-        maximized
-        transition-show="slide-up"
-        transition-hide="slide-down"
-      >
+      <q-dialog v-model="dialog" persistent maximized transition-show="slide-up" transition-hide="slide-down">
         <q-card class="bg-primary text-white">
           <q-bar>
             <q-space />
             <!-- Popup close -->
             <q-btn dense flat icon="close" v-close-popup>
-              <q-tooltip
-                content-class="bg-accent text-black"
-                :offset="[10, 10]"
-                :delay="1000"
-                transition-show="flip-right"
-                transition-hide="flip-right"
-              >
+              <q-tooltip content-class="bg-accent text-black" :offset="[10, 10]" :delay="1000"
+                transition-show="flip-right" transition-hide="flip-right">
                 Close
               </q-tooltip>
             </q-btn>
@@ -76,50 +45,23 @@
             <!-- Tracking settings -->
             <div class="column choices" v-if="this.functionalCookies">
               <h6>Settings</h6>
-              <q-toggle
-                v-model="trackingCookies"
-                checked-icon="check"
-                color="accent"
-                label="Tracking Cookies"
-                unchecked-icon="clear"
-                @input="toggleTracking()"
-                ><q-tooltip
-                  content-class="bg-accent text-black"
-                  :offset="[10, 10]"
-                  :delay="1000"
-                  transition-show="flip-right"
-                  transition-hide="flip-right"
-                >
+              <q-toggle v-model="trackingCookies" checked-icon="check" color="accent" label="Tracking Cookies"
+                unchecked-icon="clear" @input="toggleTracking()"><q-tooltip content-class="bg-accent text-black"
+                  :offset="[10, 10]" :delay="1000" transition-show="flip-right" transition-hide="flip-right">
                   Toggle Tracking Cookies
-                </q-tooltip></q-toggle
-              >
-              <q-toggle
-                v-model="functionalCookies"
-                checked-icon="check"
-                color="accent"
-                label="Functional Cookies / All cookies"
-                unchecked-icon="clear"
-                @input="toggleFunctional()"
-                ><q-tooltip
-                  content-class="bg-accent text-black"
-                  :offset="[10, 10]"
-                  :delay="1000"
-                  transition-show="flip-right"
-                  transition-hide="flip-right"
-                >
+                </q-tooltip></q-toggle>
+              <q-toggle v-model="functionalCookies" checked-icon="check" color="accent"
+                label="Functional Cookies / All cookies" unchecked-icon="clear" @input="toggleFunctional()"><q-tooltip
+                  content-class="bg-accent text-black" :offset="[10, 10]" :delay="1000" transition-show="flip-right"
+                  transition-hide="flip-right">
                   Toggle Functional Cookies
-                </q-tooltip></q-toggle
-              >
+                </q-tooltip></q-toggle>
             </div>
             <h2>Privacy Policy</h2>
             <p>
               At this internet site, accessible from
-              <a
-                target="_blank"
-                class="g_link_white"
-                href="https://baskewitsch.lu"
-                >https://baskewitsch.lu</a
-              >, one of our main priorities is the privacy of our visitors. This
+              <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>, one of our
+              main priorities is the privacy of our visitors. This
               Privacy Policy document contains types of information that is
               collected and recorded by Alex Baskewitsch and how we use it.
             </p>
@@ -127,22 +69,13 @@
               If you have additional questions or require more information about
               our Privacy Policy, do not hesitate to contact us. Our Privacy
               Policy was generated with the help of
-              <a
-                target="_blank"
-                class="g_link_white"
-                href="https://www.gdprprivacynotice.com/"
-                >GDPR Privacy Policy Generator from GDPRPrivacyNotice.com</a
-              >
+              <a target="_blank" class="g_link_white" href="https://www.gdprprivacynotice.com/">GDPR Privacy Policy
+                Generator from GDPRPrivacyNotice.com</a>
             </p>
             <h4>General Data Protection Regulation (GDPR)</h4>
             <p>We are a Data Controller of your information.</p>
             <p>
-              <a
-                target="_blank"
-                class="g_link_white"
-                href="https://baskewitsch.lu"
-                >https://baskewitsch.lu</a
-              >
+              <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>
               legal basis for collecting and using the personal information
               described in this Privacy Policy depends on the Personal
               Information we collect and the specific context in which we
@@ -150,51 +83,26 @@
             </p>
             <ul>
               <li>
-                <a
-                  target="_blank"
-                  class="g_link_white"
-                  href="https://baskewitsch.lu"
-                  >https://baskewitsch.lu</a
-                >
+                <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>
                 needs to perform a contract with you
               </li>
               <li>
                 You have given
-                <a
-                  target="_blank"
-                  class="g_link_white"
-                  href="https://baskewitsch.lu"
-                  >https://baskewitsch.lu</a
-                >
+                <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>
                 permission to do so
               </li>
               <li>
                 Processing your personal information is in
-                <a
-                  target="_blank"
-                  class="g_link_white"
-                  href="https://baskewitsch.lu"
-                  >https://baskewitsch.lu</a
-                >
+                <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>
                 legitimate interests
               </li>
               <li>
-                <a
-                  target="_blank"
-                  class="g_link_white"
-                  href="https://baskewitsch.lu"
-                  >https://baskewitsch.lu</a
-                >
+                <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>
                 needs to comply with the law
               </li>
             </ul>
             <p>
-              <a
-                target="_blank"
-                class="g_link_white"
-                href="https://baskewitsch.lu"
-                >https://baskewitsch.lu</a
-              >
+              <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>
               will retain your personal information only for as long as is
               necessary for the purposes set out in this Privacy Policy. We will
               retain and use your information to the extent necessary to comply
@@ -246,12 +154,8 @@
             </p>
             <p>
               For more general information on cookies, please read
-              <a
-                target="_blank"
-                class="g_link_white"
-                href="https://www.privacypolicyonline.com/what-are-cookies/"
-                >"What Are Cookies"</a
-              >.
+              <a target="_blank" class="g_link_white" href="https://www.privacypolicyonline.com/what-are-cookies/">"What
+                Are Cookies"</a>.
             </p>
             <h4>Privacy Policies</h4>
             <p>
@@ -322,159 +226,60 @@
     <q-header class="bg-primary text-white" height-hint="98">
       <q-toolbar>
         <!-- Button for left mode -->
-        <q-btn
-          dense
-          flat
-          round
-          icon="menu"
-          @click="side = !side"
-          class="lt-lg"
-          v-if="leftMode == true"
-        />
+        <q-btn dense flat round icon="menu" @click="side = !side" class="lt-lg" v-if="leftMode == true" />
         <q-toolbar-title>
-          <span class="name" @click="link('/')"
-            >Alex Baskewitsch<q-tooltip
-              content-class="bg-accent text-black"
-              anchor="center right"
-              self="center left"
-              :offset="[10, 10]"
-              :delay="1000"
-              transition-show="flip-right"
-              transition-hide="flip-right"
-            >
+          <span class="name" @click="link('/')">Alex Baskewitsch<q-tooltip content-class="bg-accent text-black"
+              anchor="center right" self="center left" :offset="[10, 10]" :delay="1000" transition-show="flip-right"
+              transition-hide="flip-right">
               Navigate Home
-            </q-tooltip></span
-          ><span class="dot">;</span>
+            </q-tooltip></span><span class="dot">;</span>
         </q-toolbar-title>
 
-        <q-btn
-          dense
-          flat
-          round
-          icon="menu"
-          @click="side = !side"
-          class="lt-md"
-          v-if="leftMode == false"
-        />
+        <q-btn dense flat round icon="menu" @click="side = !side" class="lt-md" v-if="leftMode == false" />
         <!-- Language select -->
 
-        
-        <q-select
-        class="gt-sm"
-        label-color="white"
-        dark
-          v-model="lang"
-          :options="langOptions"
-          :label="$t('layout.language')"
-          emit-value
-          map-options
-          dense
-          options-dense
-          borderless
-          standout
-          style="min-width: 150px"
-          :input-style="{ color: '#ff0000' }"
-        >
-          <q-tooltip
-            content-class="bg-accent text-black"
-            anchor="center left"
-            self="center right"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
+
+        <q-select class="gt-sm" label-color="white" dark v-model="lang" :options="langOptions"
+          :label="$t('layout.language')" emit-value map-options dense options-dense borderless standout
+          style="min-width: 150px" :input-style="{ color: '#ff0000' }">
+          <q-tooltip content-class="bg-accent text-black" anchor="center left" self="center right" :offset="[10, 10]"
+            :delay="1000" transition-show="flip-right" transition-hide="flip-right">
             Change language
           </q-tooltip>
         </q-select>
         <!-- Dark mode togle only when greater than small screen -->
-        <q-toggle
-          class="gt-sm"
-          v-model="darkMode"
-          icon="far fa-moon"
-          color="accent"
-          @input="toggleDarkMode()"
-          ><q-tooltip
-            content-class="bg-accent text-black"
-            anchor="center left"
-            self="center right"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
+        <q-toggle class="gt-sm" v-model="darkMode" icon="far fa-moon" color="accent" @input="toggleDarkMode()"><q-tooltip
+            content-class="bg-accent text-black" anchor="center left" self="center right" :offset="[10, 10]" :delay="1000"
+            transition-show="flip-right" transition-hide="flip-right">
             Toggle Dark Mode
-          </q-tooltip></q-toggle
-        >
+          </q-tooltip></q-toggle>
       </q-toolbar>
 
       <q-tabs align="center" class="gt-sm">
-        <q-route-tab to="/" label="Home"
-          ><q-tooltip
-            content-class="bg-accent text-black"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
-            Navigate Home
-          </q-tooltip></q-route-tab
-        >
-        <q-route-tab to="/about" label="About me"
-          ><q-tooltip
-            content-class="bg-accent text-black"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
-            Know more about me
-          </q-tooltip></q-route-tab
-        >
-        <q-route-tab to="/blog" label="Blog"
-          ><q-tooltip
-            content-class="bg-accent text-black"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
-            Read my blog
-          </q-tooltip></q-route-tab
-        >
-        <q-route-tab to="/projects" label="Projects"
-          ><q-tooltip
-            content-class="bg-accent text-black"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
-            Explore my projects
-          </q-tooltip></q-route-tab
-        >
-        <q-route-tab to="/contact" label="Contact"
-          ><q-tooltip
-            content-class="bg-accent text-black"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
-            Contact me
-          </q-tooltip></q-route-tab
-        >
+        <q-route-tab to="/" :label="$t('layout.home')"><q-tooltip content-class="bg-accent text-black" :offset="[10, 10]"
+            :delay="1000" transition-show="flip-right" transition-hide="flip-right">
+            {{ $t('layout.home_tooltip') }}
+          </q-tooltip></q-route-tab>
+        <q-route-tab to="/about" :label="$t('layout.about')"><q-tooltip content-class="bg-accent text-black"
+            :offset="[10, 10]" :delay="1000" transition-show="flip-right" transition-hide="flip-right">
+            {{ $t('layout.about_tooltip') }}
+          </q-tooltip></q-route-tab>
+        <q-route-tab to="/blog" :label="$t('layout.blog')"><q-tooltip content-class="bg-accent text-black"
+            :offset="[10, 10]" :delay="1000" transition-show="flip-right" transition-hide="flip-right">
+            {{ $t('layout.blog_tooltip') }}
+          </q-tooltip></q-route-tab>
+        <q-route-tab to="/projects" :label="$t('layout.projects')"><q-tooltip content-class="bg-accent text-black"
+            :offset="[10, 10]" :delay="1000" transition-show="flip-right" transition-hide="flip-right">
+            {{ $t('layout.projects_tooltip') }}
+          </q-tooltip></q-route-tab>
+        <q-route-tab to="/contact" :label="$t('layout.contact')"><q-tooltip content-class="bg-accent text-black"
+            :offset="[10, 10]" :delay="1000" transition-show="flip-right" transition-hide="flip-right">
+            {{ $t('layout.contact_tooltip') }}
+          </q-tooltip></q-route-tab>
       </q-tabs>
       <div class="lower_header"></div>
     </q-header>
-    <q-drawer
-      v-model="side"
-      :side="side_choice"
-      overlay
-      bordered
-      content-class="column"
-      class="blurry slower"
-    >
+    <q-drawer v-model="side" :side="side_choice" overlay bordered content-class="column" class="blurry slower">
       <!-- drawer content -->
       <div class="column justify_custom">
         <q-list bordered>
@@ -483,69 +288,57 @@
             <q-item-section avatar>
               <q-icon name="fas fa-home"></q-icon>
             </q-item-section>
-            <q-item-section>Home</q-item-section>
+            <q-item-section>{{ $t('layout.home') }}</q-item-section>
           </q-item>
           <q-separator />
           <q-item clickable v-ripple @click="link('/about')">
             <q-item-section avatar>
               <q-icon name="fas fa-user"></q-icon>
             </q-item-section>
-            <q-item-section>About Me</q-item-section>
+            <q-item-section>{{ $t('layout.about') }}</q-item-section>
+          </q-item>
+          <q-separator />
+          <q-item clickable v-ripple @click="link('/blog')">
+            <q-item-section avatar>
+              <q-icon name="fas fa-book"></q-icon>
+            </q-item-section>
+            <q-item-section>{{ $t('layout.blog') }}</q-item-section>
           </q-item>
           <q-separator />
           <q-item clickable v-ripple @click="link('/projects')">
             <q-item-section avatar>
               <q-icon name="fas fa-tasks"></q-icon>
             </q-item-section>
-            <q-item-section>Projects</q-item-section>
+            <q-item-section>{{ $t('layout.projects') }}</q-item-section>
           </q-item>
           <q-separator />
           <q-item clickable v-ripple @click="link('/contact')">
             <q-item-section avatar>
               <q-icon name="fas fa-paper-plane"></q-icon>
             </q-item-section>
-            <q-item-section>Contact</q-item-section>
+            <q-item-section>{{ $t('layout.contact') }}</q-item-section>
           </q-item>
+          <q-separator />
+          <q-separator />
           <q-item>
             <!-- Language select -->
-            <q-select
-          v-model="lang"
-          :options="langOptions"
-          :label="$t('layout.language')"
-          dense
-          borderless
-          emit-value
-          map-options
-          options-dense
-          style="min-width: 150px"
-        >
-          <q-tooltip
-            content-class="bg-accent text-black"
-            anchor="center left"
-            self="center right"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
-            Change language
-          </q-tooltip>
-        </q-select>
+            <q-select v-model="lang" :options="langOptions" :label="$t('layout.language')" dense borderless emit-value
+              map-options options-dense style="min-width: 150px">
+              <q-tooltip content-class="bg-accent text-black" anchor="center left" self="center right" :offset="[10, 10]"
+                :delay="1000" transition-show="flip-right" transition-hide="flip-right">
+                Change language
+              </q-tooltip>
+            </q-select>
           </q-item>
         </q-list>
-                
+
         <q-list bordered>
           <q-item tag="label" v-ripple>
             <q-item-section>
               <q-item-label>Dark Mode</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-toggle
-                color="accent"
-                v-model="darkMode"
-                val="mode"
-                @input="toggleDarkMode()"
-              ></q-toggle>
+              <q-toggle color="accent" v-model="darkMode" val="mode" @input="toggleDarkMode()"></q-toggle>
             </q-item-section>
           </q-item>
           <q-item tag="label" v-ripple>
@@ -553,12 +346,7 @@
               <q-item-label>Left Hand Mode</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-toggle
-                color="accent"
-                v-model="leftMode"
-                val="mode"
-                @input="toggleLeftMode()"
-              ></q-toggle>
+              <q-toggle color="accent" v-model="leftMode" val="mode" @input="toggleLeftMode()"></q-toggle>
             </q-item-section>
           </q-item>
         </q-list>
@@ -578,56 +366,23 @@
     <q-footer class="bg-primary text-white">
       <div class="upper_footer"></div>
       <q-toolbar>
-        <q-toolbar-title
-          ><q-btn flat @click="dialog = true" size="sm"
-            >Legal info & Settings<q-tooltip
-              content-class="bg-accent text-black"
-              :delay="1000"
-              transition-show="flip-right"
-              transition-hide="flip-right"
-              >Legal info & settings
-            </q-tooltip></q-btn
-          ></q-toolbar-title
-        >
+        <q-toolbar-title><q-btn flat @click="dialog = true" size="sm">Legal info & Settings<q-tooltip
+              content-class="bg-accent text-black" :delay="1000" transition-show="flip-right"
+              transition-hide="flip-right">Legal info & settings
+            </q-tooltip></q-btn></q-toolbar-title>
         <div class="text-caption q-mr-xl gt-sm">
           © 2021-2023 - Alex Baskewitsch - All Rights Reserved.
         </div>
-        <q-btn
-          flat
-          round
-          dense
-          icon="fab fa-linkedin-in"
-          type="a"
-          href="https://www.linkedin.com/in/abask/"
-          target="_blank"
-          ><q-tooltip
-            content-class="bg-accent text-black"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
+        <q-btn flat round dense icon="fab fa-linkedin-in" type="a" href="https://www.linkedin.com/in/abask/"
+          target="_blank"><q-tooltip content-class="bg-accent text-black" :offset="[10, 10]" :delay="1000"
+            transition-show="flip-right" transition-hide="flip-right">
             Contact me on linkedIn
-          </q-tooltip></q-btn
-        >
-        <q-btn
-          flat
-          round
-          dense
-          icon="fab fa-github"
-          type="a"
-          href="https://github.com/Sashimee"
-          target="_blank"
-          ><q-tooltip
-            content-class="bg-accent text-black"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
+          </q-tooltip></q-btn>
+        <q-btn flat round dense icon="fab fa-github" type="a" href="https://github.com/Sashimee"
+          target="_blank"><q-tooltip content-class="bg-accent text-black" :offset="[10, 10]" :delay="1000"
+            transition-show="flip-right" transition-hide="flip-right">
             Visit my github
-          </q-tooltip></q-btn
-        >
+          </q-tooltip></q-btn>
       </q-toolbar>
     </q-footer>
   </q-layout>
@@ -657,7 +412,7 @@ export default {
   },
   watch: {
     lang(lang) {
-      this.$i18n.locale = lang;
+      this.$i18n.locale = this.lang;
     }
   },
   methods: {
@@ -722,7 +477,7 @@ export default {
       });
     },
     link(target) {
-      this.$router.push(target).catch(err => {});
+      this.$router.push(target).catch(err => { });
     },
     toggleLeftMode() {
       // If it was enabled change the prop value

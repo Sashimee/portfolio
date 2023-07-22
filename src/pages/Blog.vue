@@ -9,7 +9,7 @@
       </q-img>
 
       <q-card-section>
-        {{ lorem }}
+        {{post.Title2}}
       </q-card-section>
     </q-card>
     </div>
@@ -17,37 +17,34 @@
 </template>
 
 <script>
+import i18n from 'src/boot/i18n';
 import { bootstrap } from "vue-gtag";
+import VueI18n from 'vue-i18n';
 export default {
   name: "PageBlog",
   data() {
     return {
-      postsList: [],
       lorem: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      blogData: [
-        {
-          Title: "Hi",
-          Short: "YO",
-          link: "/blog/article"
-        }
-      ]
     }
   },
   methods: {
-    sync() {
-      this.postsList = this.blogData
-    },
     goto(link) {
       this.$router.push(link);
       }
   },
   computed: {
     postsCards(){
-      return this.postsList
+      let blogData = [
+        {
+          Title: this.$t('blogPost1.title'),
+          Title2: this.$t('blogPost1.title2'),
+          link: this.$t('blogPost1.link')
+        }
+      ]
+      return blogData
     }
   },
     mounted() {
-    this.sync();
     if (this.$q.cookies.get("accepted_tracking_cookies") === true) {
       bootstrap().then(gtag => {
         this.$gtag.pageview({
@@ -61,11 +58,11 @@ export default {
 
 <style lang="sass" scoped>
 .my-card
-  width: 250px
+  width: 350px
   margin: 1rem
   overflow: hidden
   .q-img
-    height: 200px
+    height: 350px
     &:hover
       cursor: pointer
       transform: scale(1.05,1.05)

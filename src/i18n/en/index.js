@@ -3,13 +3,24 @@
 export default {
   layout: {
     language: "Language",
-    home_tooltip: "Navigate Home"
+    home: "Home",
+    home_tooltip: "Navigate Home",
+    about: "About",
+    about_tooltip: "Know more about me",
+    blog: "Blog",
+    blog_tooltip: "Read my articles",
+    projects: "Projects",
+    projects_tooltip: "Explore my projects",
+    contact: "Contact",
+    contact_tooltip: "Contact me"
   },
   home: {
     hi: "Hi, I'm Alex,",
     designation: "a tech and ecology enthusiast",
-    detail_1: "IT is my passion and I love working on projects that align with my values.",
-    detail_2: "My goal? To combine technology and ecology for a greener future.",
+    detail_1:
+      "IT is my passion and I love working on projects that align with my values.",
+    detail_2:
+      "My goal? To combine technology and ecology for a greener future.",
     more: "More...",
     more_tooltip: "Get to know me better"
   },
@@ -22,40 +33,83 @@ export default {
     incentive:
       "You can discover more by contacting me or taking a look at my personal projects:"
   },
-  blogPost: {
-    title: "The Future of Fintech: How Green Coding Can Revolutionize the Industry",
-    paragraph1: "Green coding, or green coding, is an effective and sustainable approach to environmental conservation. It encourages the creation of computer algorithms that consume a minimum of energy. With the constant increase in digitization, the use of data centers will also increase. It is therefore absolutely necessary to power these data centers with carbon-free and renewable energy and to reduce the energy needed to power websites.",
-    paragraph2: "What is green coding?",
-    paragraph3: "Green coding is a recent term popularized by various organizations for their intention towards environmental conservation. It allows programmers and developers to create code or computer algorithms that can consume a minimum of energy. Software engineers must take into account two types of algorithms when producing such algorithms:",
-    paragraph4: "Structural considerations: These are energy measures related to code blocks.",
-    paragraph5: "Behavioral considerations: This is energy consumption related to usage scenarios, such as browsing the Twitter feed, sending an email, etc.",
-    paragraph6: "Instead of implementing new principles against existing practices, software engineers plan to write and design code to balance functionality and energy use. When a device processes more code at a given time, a higher level of carbon emissions occurs.",
-    paragraph7: "Green coding and Fintech",
-    paragraph8: "Fintech, or financial technology, is a sector that has experienced rapid and continuous growth. It has transformed the way we make financial transactions, whether for payments, loans, investments or even insurance. However, like all technology, fintech has an environmental impact. The servers that power these services consume a large amount of energy, which results in carbon emissions.",
-    paragraph9: "This is where green coding comes into play. By optimizing the code that powers these financial services, we can reduce the amount of energy needed to run them. This can be done in several ways, for example by reducing the number of lines of code, optimizing algorithms to run faster, and using more energy-efficient programming languages.",
-    paragraph10: "Applications of green coding in Fintech",
-    paragraph11: "The application of green coding in fintech can take many forms. For example, companies can optimize their applications so that they consume less energy when used on mobile devices. This can involve making the application more responsive, reducing the amount of data it uses, or ensuring that it does not unnecessarily use the device's resources.",
-    paragraph12: "In addition, companies can also seek to make their data centers more environmentally friendly. This can involve using more energy-efficient servers, optimizing server usage to reduce energy waste, or even using renewable energy to power data centers.",
-    paragraph13: "Finally, green coding can also involve the use of more environmentally friendly blockchain technologies. Blockchain is a key technology in many fintech services, but it is also known for its high energy consumption. However, there are more environmentally friendly alternatives, such as proof of stake, which consume much less energy than the traditional proof of work used by blockchains like Bitcoin.",
-    paragraph14: "Challenges of green coding in Fintech",
-    paragraph15: "Although green coding offers many benefits, it also presents challenges. First, it can be difficult to measure the energy efficiency of a code. This is due to the fact that energy efficiency can depend on many factors, such as the hardware on which the code is run, the way the code is written, and even the way the user interacts with the application.",
-    paragraph16: "In addition, it can be difficult to convince companies to invest in green coding. While green coding can reduce long-term costs by reducing energy consumption, it may require an initial investment to rewrite or optimize existing code.",
-    paragraph17: "Finally, it can also be difficult to find developers with the skills needed to write green code. Green coding is a relatively new skill, and it can be difficult to find developers who have both fintech experience and knowledge of green coding.",
-    paragraph18: "Conclusion",
-    paragraph19: "Despite these challenges, green coding has enormous potential to transform the fintech industry. By reducing the energy consumption of financial services, we can not only reduce our environmental impact, but also make these services more accessible. After all, less energy means less costs, which can help reduce fees for users.",
-    paragraph20: "Green coding is still an emerging practice, but with time and investment, it has the potential to become the standard in the fintech industry. By investing in green coding now, companies can not only reduce their environmental impact, but also position themselves as leaders in an industry that is increasingly aware of its environmental impact.",
-    source1: "[^1^] Source: https://www.example.com/source1",
-    source2: "[^2^] Source: https://www.example.com/source2",
-    source3: "[^3^] Source: https://www.example.com/source3",
-    source4: "[^4^] Source: https://www.example.com/source4",
-    source5: "[^5^] Source: https://www.example.com/source5",
-    source6: "[^6^] Source: https://www.example.com/source6",
-    source7: "[^7^] Source: https://www.example.com/source7",
-    source8: "[^8^] Source: https://www.example.com/source8",
-    source9: "[^9^] Source: https://www.example.com/source9",
-    source10: "[^10^] Source: https://www.example.com/source10"
-   },
-  
+  blog: {},
+  projects: {
+    categories: {
+      label: "Category",
+      all: "All",
+      live: "Live Site",
+      template: "Template",
+      archive: "Archive"
+    },
+    texts: {
+      baskewitsch:
+        "Personal Portfolio Project. Made with Quasar.dev - Google Analytics - Laravel Backend - reCaptcha v3 - axios. Deployed in different virtual machines in my vmware node.",
+      dawa:
+        "Massive Thanks to Laurent Bourgeois, Aurélien Pal and Ilyes Satouri for this awesome collaboration. This is the project that validated our Full Stack Developer skills with Numericall.",
+      abg:
+        'After some research I found out the "about blank" research query was made all around the world. (https://trends.google.fr/trends/explore?q=about%20blank) This led me to create this site to see if I could be on top of the search rankings with SEO.',
+      boot: "Example of a full bootstrap site.",
+      pet:
+        "Simple contact page layout. HTML structure respecting best practices. Contact form and Google Maps integration.",
+      news: "Tiny example of a news site.",
+      cupcake: "Tiny responsive cupcake site.",
+      liberty: "Nice presentation Template.",
+      peinture:
+        "I migrated this Wordpress site to another hosting provider (OVH) and had only acces to a raw export of the site + database. I also added a picture gallery and did some bugfixing. Original site was made by Dotcom.",
+      old:
+        "My Old Portfolio. I created my own CSS framework and added different sub-projects. Included are API calls, a Todo list and a contact form."
+    }
+  },
+  contact: {
+    name: "Your name *",
+    email: "Your email *",
+    message: "Your message *",
+    submit: "Submit",
+    submit_tooltip: "Send the form",
+    reset: "Reset",
+    reset_tooltip: "Reset the form",
+    disclaimer_start: "This site is protected by reCAPTCHA and the Google ",
+    disclaimer_link_1: "Privacy Policy",
+    disclaimer_middle: " and ",
+    disclaimer_link_2: "Terms of Service",
+    disclaimer_end: " apply.",
+    please_type: "Please type something",
+    missing_email: "Email is missing",
+    name_long: "Name too long"
+  },
+  blogPost1: {
+    link: "/blog/article",
+    title: "The future of Fintech",
+    title2:
+      "How Green Coding can revolutionise the industry",
+    sections: [
+      {
+        title: "Introduction",
+        paragraphs: ["Fintechs, companies operating in the field of financial technologies, like many other entities in our modern world, are fundamentally dependent on their IT structure. Within this structure, we find the programming code that is essential to its activity. It is this very code that directly generates a major part of the greenhouse gas emissions emitted by this industry", "Green Coding is a different, efficient approach to IT development that aims for sustainability. This method requires the creation of computer algorithms that consume a minimum of energy. With the constant increase in digitalisation and all IT needs, the use of data centres will also increase."]
+      },
+      {
+        title: "What exactly is Green Coding?",
+        paragraphs: ["Green Coding is a recent term popularised by various organisations for their intention to conserve the environment. It enables coders, programmers, developers and engineers to take a more ecological view of the algorithms they create. To this end, they need to take two major factors into account:", "- Structural considerations: These are directly linked to the blocks of code and the infrastructure that surrounds them", "- Behavioural considerations: Linked to the usage scenario, for example consulting the LinkedIn feed, sending an e-mail, etc.", "Code designers therefore need to review existing practices, improve what is already in place and design new methods that balance functionality and energy use."]
+      },
+      {
+        title: "Green Coding and Fintech",
+        paragraphs: ["Fintech has grown very rapidly and continuously. It has transformed the way we do financial transactions, whether for payments, loans, investments or even insurance. However, like any technology, fintech has an environmental impact. The servers that power these services consume large amounts of energy, resulting in greenhouse gas emissions", "So that's where Green Coding comes in. By optimising the code that powers these financial services, we can reduce the amount of energy needed to run them. This can be done in a number of ways, for example by reducing the number of lines of code, optimising algorithms to run faster and using more energy-efficient programming languages."]
+      },
+      {
+        title: "Applications of Green Coding in Fintech",
+        paragraphs: ["The application of these principles in Fintech can take several forms. For example, companies can optimise their applications so that they consume less energy when used on mobile devices. This may involve making the application more responsive, reducing the amount of data it uses or ensuring that it does not use the device's resources unnecessarily", "In addition, companies can also seek to make their data centres greener. Through the use of more energy efficient servers, optimising the use of servers to reduce energy wastage, or even using renewable energy to power data centres.", "Finally, Green Coding can also involve the use of greener blockchain technologies. Blockchain is a key technology in many fintech services, but it is also notorious for its high energy consumption. However, there are greener alternatives; technologies that consume much less energy than those used by blockchains, such as Bitcoin."]
+      },
+      {
+        title: "Green Coding challenges in Fintech",
+        paragraphs: ["Although Green Coding offers many advantages, it also presents challenges. Firstly, it can be difficult to measure the energy efficiency of a code. This is because energy efficiency can depend on many factors, such as the hardware on which the code is run, the way the code is written, and even the way the user interacts with the application.", "In addition, it can be difficult to convince companies to invest in Green Coding. Although it can cut costs in the long term by reducing energy consumption, it may require an initial investment to rewrite or optimise existing code.", "Finally, it can also be difficult to find developers with the necessary skills. Green Coding is a relatively new skill, and it can be difficult to find developers who have both fintech experience and knowledge of Green Coding."]
+      },
+      {
+        title: "Conclusion",
+        paragraphs: ["Despite these challenges, Green Coding has enormous potential to transform the fintech industry. By reducing the energy consumption of financial services, we can not only reduce our environmental impact, but also make these services more accessible. After all, less energy means less cost, which can mean lower fees for users.", "Green Coding is still an emerging practice, but with time and investment, it has the potential to become the norm in the fintech industry. By investing in Green Coding now, companies can not only reduce their environmental impact, but also position themselves as leaders in an industry that is increasingly conscious of its environmental impact."]
+      }
+    ]
+  },
   buttons: {
     projects: "My Projects",
     projects_tooltip: "Explore my projects",

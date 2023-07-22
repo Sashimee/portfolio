@@ -2,81 +2,40 @@
   <q-page class="flex flex-center">
     <div v-if="loading">
       <q-spinner-pie color="primary" size="2em" />
-      <q-tooltip content-class="bg-accent text-black" :offset="[0, 8]"
-        >QSpinnerPie</q-tooltip
-      >
+      <q-tooltip content-class="bg-accent text-black" :offset="[0, 8]">QSpinnerPie</q-tooltip>
     </div>
     <q-form v-else @submit="onSubmit" @reset="onReset" class="form_design">
-      <q-input
-        standout
-        v-model="name"
-        label="Your name *"
-        lazy-rules
-        :rules="[
-          val => (val && val.length > 0) || 'Please type something',
-          val => val.length < 1024 || 'Name too long'
-        ]"
-      ></q-input>
+      <q-input standout v-model="name" :label="$t('contact.name')" lazy-rules :rules="[
+        val => (val && val.length > 0) || $t('contact.please_type'),
+        val => val.length < 1024 || $t('contact.name_long')
+      ]"></q-input>
 
-      <q-input
-        class="q-mt-sm"
-        v-model="email"
-        label="Your email *"
-        standout
-        type="email"
-        lazy-rules
-        :rules="[val => !!val || 'Email is missing', isValidEmail]"
-      />
-      <q-input
-        class="q-mt-sm"
-        v-model="message"
-        label="Your message *"
-        standout
-        type="textarea"
-        lazy-rules
+      <q-input class="q-mt-sm" v-model="email" :label="$t('contact.email')" standout type="email" lazy-rules
+        :rules="[val => !!val || $t('contact.missing_email'), isValidEmail]" />
+      <q-input class="q-mt-sm" v-model="message" :label="$t('contact.message')" standout type="textarea" lazy-rules
         :rules="[
-          val => (val && val.length > 0) || 'Please type something',
+          val => (val && val.length > 0) || $t('contact.please_type'),
           val => val.length < 5120 || val.length + '/5120'
-        ]"
-      />
+        ]" />
 
       <div class="row justify-around q-mt-md">
-        <q-btn label="Submit" type="submit" color="primary"
-          ><q-tooltip
-            content-class="bg-accent text-black"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
-            Send the form
-          </q-tooltip></q-btn
-        >
-        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm"
-          ><q-tooltip
-            content-class="bg-accent text-black"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
-            Reset the form
-          </q-tooltip></q-btn
-        >
+        <q-btn :label="$t('contact.submit')" type="submit" color="primary"><q-tooltip content-class="bg-accent text-black"
+            :offset="[10, 10]" :delay="1000" transition-show="flip-right" transition-hide="flip-right">
+            {{ $t('contact.submit_tooltip') }}
+          </q-tooltip></q-btn>
+        <q-btn :label="$t('contact.reset')" type="reset" color="primary" flat class="q-ml-sm"><q-tooltip
+            content-class="bg-accent text-black" :offset="[10, 10]" :delay="1000" transition-show="flip-right"
+            transition-hide="flip-right">
+            {{ $t('contact.reset_tooltip') }}
+          </q-tooltip></q-btn>
         <p class="q-mt-md">
-          This site is protected by reCAPTCHA and the Google
-          <a
-            :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'"
-            href="https://policies.google.com/privacy"
-            >Privacy Policy</a
-          >
-          and
-          <a
-            :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'"
-            href="https://policies.google.com/terms"
-            >Terms of Service</a
-          >
-          apply.
+          {{ $t('contact.disclaimer_start') }}
+          <a :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'"
+            href="https://policies.google.com/privacy">{{ $t('contact.disclaimer_link_1') }}</a>
+          {{ $t('contact.disclaimer_middle') }}
+          <a :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'"
+            href="https://policies.google.com/terms">{{ $t('contact.disclaimer_link_2') }}</a>
+          {{ $t('contact.disclaimer_end') }}
         </p>
       </div>
     </q-form>
