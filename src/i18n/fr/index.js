@@ -16,7 +16,7 @@ export default {
   },
   home: {
     hi: "Salut, je suis Alex,",
-    designation: "un passionné d'informatique et d'écologie",
+    designation: "un passionné d'informatique éco-responsable",
     detail_1:
       "L'informatique est mon moteur et j'adore travailler sur des projets qui correspondent à mes valeurs.",
     detail_2:
@@ -26,7 +26,7 @@ export default {
   },
   about: {
     paragraph_1:
-      "Je suis convaincu que la technologie peut jouer un rôle majeur dans la lutte contre le changement climatique. C'est pourquoi je me suis spécialisé dans le 'Green Coding', une approche qui vise à réduire l'empreinte carbone du secteur informatique.",
+      "Je suis convaincu que la technologie peut jouer un rôle majeur dans la lutte contre le changement climatique. C'est pourquoi je me suis spécialisé dans le '<strong>Green Coding</strong>', une approche qui vise à réduire l'empreinte carbone du secteur informatique.",
     paragraph_2:
       "Né en '86, j'ai toujours été fasciné par l'informatique. Autodidacte, j'ai acquis une grande partie de mes connaissances en travaillant sur des projets personnels et en explorant différents domaines de l'informatique.",
     list_label: "Voici ce qui me motive :",
@@ -81,35 +81,66 @@ export default {
   },
   blogPost1: {
     link: "/blog/article",
+    back: "Retour vers le blog",
     title: "L'avenir de la Fintech",
     title2:
-      "De quelle manière le Green Coding peut révolutionner l’industrie.",
+      "De quelle manière le <strong>Green Coding</strong> peut révolutionner l’industrie.",
     sections: [
       {
         title: "Introduction",
-        paragraphs: ["La Fintech, sociétés œuvrant dans le domaine des technologies financières, comme bien d’autres entités de notre présent moderne, est fondamentalement dépendante de sa structure informatique. Au sein de celle-ci, on peut retrouver le code de programmation, essentiel à son activité. C’est ce même code qui engendre directement une majeure partie des émissions de gaz à effet de serre émis par cette industrie.", "Le codage vert, ou Green Coding est une approche différente, efficace et vise la durabilité dans le développement informatique. Cette méthode demande la création d’algorithmes informatiques qui consomment un minimum d’énergie. Avec l’augmentation constante de la digitalisation et de tous les besoins informatiques l’utilisation des centres de données va également augmenter."]
+        paragraphs: [
+          "La Fintech, sociétés œuvrant dans le domaine des technologies financières, comme bien d’autres entités de notre présent moderne, est fondamentalement dépendante de sa structure informatique. Au sein de celle-ci, on peut retrouver le code de programmation, essentiel à son activité. C’est ce même code qui engendre directement une majeure partie des émissions de gaz à effet de serre émis par cette industrie.",
+          "Le codage vert, ou <strong>Green Coding</strong> est une approche différente, efficace et vise la durabilité dans le développement informatique. Cette méthode demande la création d’algorithmes informatiques qui consomment un minimum d’énergie. Avec l’augmentation constante de la digitalisation et de tous les besoins informatiques l’utilisation des centres de données va également augmenter."
+        ],
+        img: "future"
       },
       {
-        title: "Qu’est-ce que le Green Coding au juste ?",
-        paragraphs: ["Le Green Coding est un terme récent popularisé par diverses organisations pour leur intention envers la conservation de l’environnement. Celui-ci permet aux codeurs, programmeurs, développeurs et ingénieurs d’avoir une vue plus écologique sur les algorithmes qu’ils créent. A cette fin ceux-ci doivent prendre en compte deux facteurs majeurs :", "-	Considérations structurelles : Celles-ci sont liées directement aux blocs de code et l’infrastructure qui les entoure", "-	Considérations comportementales : Liées au scénario d’utilisation, par exemple la consultation du fil LinkedIn, l’envoi d’un e-mail, etc…", "Les créateurs de code doivent ainsi revoir les pratiques existantes, améliorer ce qui est déjà en place et concevoir de nouvelles méthodes équilibrant la fonctionnalité et l’utilisation énergétique."]
+        title: "Qu’est-ce que le <strong>Green Coding</strong> au juste ?",
+        paragraphs: [
+          "Le <strong>Green Coding</strong> est un terme récent popularisé par diverses organisations pour leur intention envers la conservation de l’environnement. Celui-ci permet aux codeurs, programmeurs, développeurs et ingénieurs d’avoir une vue plus écologique sur les algorithmes qu’ils créent. A cette fin ceux-ci doivent prendre en compte deux facteurs majeurs :",
+          "-	Considérations structurelles : Celles-ci sont liées directement aux blocs de code et l’infrastructure qui les entoure",
+          "-	Considérations comportementales : Liées au scénario d’utilisation, par exemple la consultation du fil LinkedIn, l’envoi d’un e-mail, etc…",
+          "Les créateurs de code doivent ainsi revoir les pratiques existantes, améliorer ce qui est déjà en place et concevoir de nouvelles méthodes équilibrant la fonctionnalité et l’utilisation énergétique."
+        ],
+        img: "search"
       },
       {
-        title: "Le Green Coding et la Fintech",
-        paragraphs: ["La fintech a connu une croissance très rapide et continue. Elle a transformé notre façon de faire des transactions financières, que ce soit pour les paiements, les prêts, les investissements ou même les assurances. Cependant, comme toute technologie, la fintech a un impact environnemental. Les serveurs qui alimentent ces services consomment une grande quantité d'énergie, ce qui entraîne des émissions de gaz à effet de serre.", "C’est donc là qu’intervient le Green Coding. En optimisant le code qui alimente ces services financiers, nous pouvons réduire la quantité d'énergie nécessaire pour les faire fonctionner. Cela peut se faire de plusieurs façons, par exemple en réduisant le nombre de lignes de code, en optimisant les algorithmes pour qu'ils s'exécutent plus rapidement et en utilisant des langages de programmation plus efficaces sur le plan énergétique."]
+        title: "Le <strong>Green Coding</strong> et la Fintech",
+        paragraphs: [
+          "La fintech a connu une croissance très rapide et continue. Elle a transformé notre façon de faire des transactions financières, que ce soit pour les paiements, les prêts, les investissements ou même les assurances. Cependant, comme toute technologie, la fintech a un impact environnemental. Les serveurs qui alimentent ces services consomment une grande quantité d'énergie, ce qui entraîne des émissions de gaz à effet de serre.",
+          "C’est donc là qu’intervient le <strong>Green Coding</strong>. En optimisant le code qui alimente ces services financiers, nous pouvons réduire la quantité d'énergie nécessaire pour les faire fonctionner. Cela peut se faire de plusieurs façons, par exemple en réduisant le nombre de lignes de code, en optimisant les algorithmes pour qu'ils s'exécutent plus rapidement et en utilisant des langages de programmation plus efficaces sur le plan énergétique."
+        ],
+        img: "fintech"
       },
       {
-        title: "Applications du Green Coding dans la Fintech",
-        paragraphs: ["L’application de ces principes dans la Fintech peut prendre plusieurs formes. Par exemple, les entreprises peuvent optimiser leurs applications pour qu'elles consomment moins d'énergie lorsqu'elles sont utilisées sur des appareils mobiles. Cela peut impliquer de rendre l'application plus réactive, de réduire la quantité de données qu'elle utilise ou de s'assurer qu'elle n'utilise pas inutilement les ressources de l'appareil.","De plus, les entreprises peuvent également chercher à rendre leurs centres de données plus écologiques. Via l'utilisation de serveurs plus économes en énergie, l'optimisation de l'utilisation des serveurs pour réduire le gaspillage d'énergie, ou même l'utilisation d'énergies renouvelables pour alimenter les centres de données.","Enfin, le Green Coding peut également impliquer l'utilisation de technologies blockchain plus écologiques. La blockchain est une technologie clé dans de nombreux services fintech, mais elle est également connue pour sa consommation d'énergie élevée. Cependant, il existe des alternatives plus écologiques ; des technologies qui consomment beaucoup moins d'énergie que celles utilisées par des blockchains, comme notamment Bitcoin."]
+        title: "Applications du <strong>Green Coding</strong> dans la Fintech",
+        paragraphs: [
+          "L’application de ces principes dans la Fintech peut prendre plusieurs formes. Par exemple, les entreprises peuvent optimiser leurs applications pour qu'elles consomment moins d'énergie lorsqu'elles sont utilisées sur des appareils mobiles. Cela peut impliquer de rendre l'application plus réactive, de réduire la quantité de données qu'elle utilise ou de s'assurer qu'elle n'utilise pas inutilement les ressources de l'appareil.",
+          "De plus, les entreprises peuvent également chercher à rendre leurs centres de données plus écologiques. Via l'utilisation de serveurs plus économes en énergie, l'optimisation de l'utilisation des serveurs pour réduire le gaspillage d'énergie, ou même l'utilisation d'énergies renouvelables pour alimenter les centres de données.",
+          "Enfin, le <strong>Green Coding</strong> peut également impliquer l'utilisation de technologies blockchain plus écologiques. La blockchain est une technologie clé dans de nombreux services fintech, mais elle est également connue pour sa consommation d'énergie élevée. Cependant, il existe des alternatives plus écologiques ; des technologies qui consomment beaucoup moins d'énergie que celles utilisées par des blockchains, comme notamment Bitcoin."
+        ],
+        img: "apps"
       },
       {
-        title: "Défis du Green Coding dans la Fintech",
-        paragraphs: ["Bien qu’offrant de nombreux avantages, le Green Coding présente également des défis. Tout d'abord, il peut être difficile de mesurer l'efficacité énergétique d'un code. Cela est dû au fait que l'efficacité énergétique peut dépendre de nombreux facteurs, comme le matériel sur lequel le code est exécuté, la façon dont le code est écrit, et même la façon dont l'utilisateur interagit avec l'application.", "De plus, il peut être difficile de convaincre les entreprises d'investir dans le Green Coding. Bien que celui-ci puisse réduire les coûts à long terme en réduisant la consommation d'énergie, il peut nécessiter un investissement initial pour réécrire ou optimiser le code existant.", "Enfin, il peut également être difficile de trouver des développeurs avec les compétences nécessaires. Le Green Coding est une compétence relativement nouvelle, et il peut être difficile de trouver des développeurs qui ont à la fois une expérience en fintech et une connaissance du Green Coding."]
+        title: "Défis du <strong>Green Coding</strong> dans la Fintech",
+        paragraphs: [
+          "Bien qu’offrant de nombreux avantages, le <strong>Green Coding</strong> présente également des défis. Tout d'abord, il peut être difficile de mesurer l'efficacité énergétique d'un code. Cela est dû au fait que l'efficacité énergétique peut dépendre de nombreux facteurs, comme le matériel sur lequel le code est exécuté, la façon dont le code est écrit, et même la façon dont l'utilisateur interagit avec l'application.",
+          "De plus, il peut être difficile de convaincre les entreprises d'investir dans le <strong>Green Coding</strong>. Bien que celui-ci puisse réduire les coûts à long terme en réduisant la consommation d'énergie, il peut nécessiter un investissement initial pour réécrire ou optimiser le code existant.",
+          "Enfin, il peut également être difficile de trouver des développeurs avec les compétences nécessaires. Le <strong>Green Coding</strong> est une compétence relativement nouvelle, et il peut être difficile de trouver des développeurs qui ont à la fois une expérience en fintech et une connaissance du <strong>Green Coding</strong>."
+        ],
+        img: "challenges"
       },
       {
         title: "Conclusion",
-        paragraphs: ["Malgré ces défis, le Green Coding a un potentiel énorme pour transformer l'industrie de la fintech. En réduisant la consommation d'énergie des services financiers, nous pouvons non seulement réduire notre impact environnemental, mais aussi rendre ces services plus accessibles. Après tout, moins d'énergie signifie moins de coûts, ce qui peut permettre de réduire les frais pour les utilisateurs.", "Le Green Coding est encore une pratique émergente, mais avec le temps et l'investissement, il a le potentiel de devenir la norme dans l'industrie de la fintech. En investissant dans le Green Coding maintenant, les entreprises peuvent non seulement réduire leur impact environnemental, mais aussi se positionner comme des leaders dans une industrie de plus en plus consciente de son impact environnemental."]
+        paragraphs: [
+          "Malgré ces défis, le <strong>Green Coding</strong> a un potentiel énorme pour transformer l'industrie de la fintech. En réduisant la consommation d'énergie des services financiers, nous pouvons non seulement réduire notre impact environnemental, mais aussi rendre ces services plus accessibles. Après tout, moins d'énergie signifie moins de coûts, ce qui peut permettre de réduire les frais pour les utilisateurs.",
+          "Le <strong>Green Coding</strong> est encore une pratique émergente, mais avec le temps et l'investissement, il a le potentiel de devenir la norme dans l'industrie de la fintech. En investissant dans le <strong>Green Coding</strong> maintenant, les entreprises peuvent non seulement réduire leur impact environnemental, mais aussi se positionner comme des leaders dans une industrie de plus en plus consciente de son impact environnemental."
+        ],
+        img: ""
       }
-    ]
+    ],
+    incentive:
+      "Afin d'être tenu au courant de l'actualité de mon blog, veuillez enter votre adresse email :"
   },
   buttons: {
     projects: "Mes Projets",

@@ -2,14 +2,13 @@
   <q-page class="flex flex-center">
     <div class="q-pa-md row items-start justify-center">
       <q-card class="my-card" v-for="(post) in postsCards" :key="post.Title">
-      <q-img src="https://cdn.quasar.dev/img/parallax2.jpg" @click="goto(post.link)">
+      <q-img src="~assets/gc_info_fr.png" @click="goto(post.link)">
         <div class="absolute-bottom text-h6">
           {{post.Title}}
         </div>
       </q-img>
 
-      <q-card-section>
-        {{post.Title2}}
+      <q-card-section v-html="post.Title2">
       </q-card-section>
     </q-card>
     </div>

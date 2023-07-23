@@ -5,7 +5,7 @@
       <q-tooltip content-class="bg-accent text-black" :offset="[0, 8]">QSpinnerPie</q-tooltip>
     </div>
     <q-form v-else @submit="onSubmit" @reset="onReset" class="form_design">
-      <q-input standout v-model="name" :label="$t('contact.name')" lazy-rules :rules="[
+      <q-input autofocus standout v-model="name" :label="$t('contact.name')" lazy-rules :rules="[
         val => (val && val.length > 0) || $t('contact.please_type'),
         val => val.length < 1024 || $t('contact.name_long')
       ]"></q-input>
@@ -23,18 +23,18 @@
             :offset="[10, 10]" :delay="1000" transition-show="flip-right" transition-hide="flip-right">
             {{ $t('contact.submit_tooltip') }}
           </q-tooltip></q-btn>
-        <q-btn :label="$t('contact.reset')" type="reset" color="primary" flat class="q-ml-sm"><q-tooltip
+        <q-btn :label="$t('contact.reset')" type="reset" color="primary" outline class="q-ml-sm"><q-tooltip
             content-class="bg-accent text-black" :offset="[10, 10]" :delay="1000" transition-show="flip-right"
             transition-hide="flip-right">
             {{ $t('contact.reset_tooltip') }}
           </q-tooltip></q-btn>
         <p class="q-mt-md">
           {{ $t('contact.disclaimer_start') }}
-          <a :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'"
-            href="https://policies.google.com/privacy">{{ $t('contact.disclaimer_link_1') }}</a>
+          <a :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'" href="https://policies.google.com/privacy">{{
+            $t('contact.disclaimer_link_1') }}</a>
           {{ $t('contact.disclaimer_middle') }}
-          <a :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'"
-            href="https://policies.google.com/terms">{{ $t('contact.disclaimer_link_2') }}</a>
+          <a :class="$q.dark.isActive ? 'g_link_white' : 'g_link_black'" href="https://policies.google.com/terms">{{
+            $t('contact.disclaimer_link_2') }}</a>
           {{ $t('contact.disclaimer_end') }}
         </p>
       </div>
@@ -136,6 +136,11 @@ export default {
       });
     }
   }
+  //watch: {
+  // name: function (e) {
+  //  console.log(this.name)
+  // },
+
 };
 </script>
 
