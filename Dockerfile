@@ -7,17 +7,18 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci || npm install
 
-# Copy source code and build SPA output
+# Copy source code
 COPY . .
+
+# Enable legacy OpenSSL provider for Node 17+ / Webpack compatibility
+ENV NODE_OPTIONS=--openssl-legacy-provider
 RUN npx quasar build
 
 # Step 2: Production web server using NGINX
 FROM nginx:alpine AS production-stage
 
-# Copy compiled static assets from build-stage to NGINX root directory
 COPY --from=build-stage /app/dist/spa /usr/share/nginx/html
 
-# Config for Vue Router History Mode (redirects 404s back to index.html)
 RUN echo 'server { \
     listen 80; \
     location / { \
