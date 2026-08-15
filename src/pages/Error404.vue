@@ -1,12 +1,12 @@
 <template>
-  <div class="text-center q-pa-md flex flex-center">
+  <q-page class="text-center q-pa-md flex flex-center">
     <div>
       <div style="font-size: 30vh">
         404
       </div>
 
       <div class="text-h2" style="opacity:.4">
-        Oops. Nothing here...
+        {{ $t("notFound.message") }}
       </div>
 
       <q-btn
@@ -15,27 +15,27 @@
         text-color="white"
         unelevated
         to="/"
-        label="Go Home"
+        :label="$t('notFound.home')"
         no-caps
       />
     </div>
-  </div>
+  </q-page>
 </template>
 
 <script>
-import { bootstrap } from "vue-gtag";
+import { useRoute } from "vue-router";
+import { usePageMeta } from "@/composables/use-page-meta";
 
 export default {
-  name: "Error404",
-  methods: {},
-  mounted() {
-    if (this.$q.cookies.get("accepted_tracking_cookies") === true) {
-      bootstrap().then(gtag => {
-        this.$gtag.pageview({
-          page_path: "/404"
-        });
-      });
-    }
+  name: "ErrorNotFound",
+  setup() {
+    const route = useRoute();
+    usePageMeta({
+      titleKey: "seo.notFound.title",
+      descriptionKey: "seo.notFound.description",
+      path: () => route.path,
+      noindex: true
+    });
   }
 };
 </script>

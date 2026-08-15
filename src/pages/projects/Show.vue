@@ -4,46 +4,44 @@
       <q-btn
         icon="fas fa-undo"
         color="accent"
-        label="Back"
+        :label="$t('projects.back')"
         label-position="right"
         to="/projects"
       ></q-btn>
     </q-page-sticky>
     <iframe
-      ref="iframeRef"
-      :src="'/projects_folder/' + link + '/index.html'"
+      v-if="project"
+      :src="'/projects_folder/' + project.link + '/index.html'"
+      :title="project.name"
       class="iframe"
     ></iframe>
   </q-page>
 </template>
 
 <script>
-import { bootstrap } from "vue-gtag";
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import { usePageMeta } from "@/composables/use-page-meta";
+import projectsData from "@/data/projects";
 
 export default {
   name: "PageShowProject",
-  data() {
-    return {
-      link: ""
-    };
-  },
-  mounted() {
-    this.link = this.$route.params.shortcode;
-    this.$refs.iframeRef.addEventListener("load", this.iframeLoad);
-    if (this.$q.cookies.get("accepted_tracking_cookies") === true) {
-      bootstrap().then(gtag => {
-        this.$gtag.pageview({
-          page_path: "/projects/" + this.link
-        });
-      });
-    }
-  },
-  methods: {
-    iframeLoad() {
-      if (this.$refs.iframeRef.contentDocument.title == "Error") {
-        this.$router.push("/404");
-      }
-    }
+  setup() {
+    const route = useRoute();
+    // The route guard in src/router/routes.js already rejected unknown
+    // shortcodes, so there is always a match here.
+    const project = computed(() =>
+      projectsData.find(p => p.target === "internal" && p.link === route.params.shortcode)
+    );
+
+    usePageMeta({
+      title: () => project.value.name,
+      descriptionKey: "seo.project.description",
+      path: () => route.path,
+      image: () => "/screenshots/" + project.value.img + ".png"
+    });
+
+    return { project };
   }
 };
 </script>

@@ -3,7 +3,7 @@
 export default {
   layout: {
     language: "Langue",
-    home: "Acceuil",
+    home: "Accueil",
     home_tooltip: "Retour à l'accueil",
     about: "à propos",
     about_tooltip: "En savoir plus à propos de moi",
@@ -35,6 +35,9 @@ export default {
   },
   blog: {},
   projects: {
+    visit: "Visiter le projet {name}",
+    back: "Retour aux projets",
+    details: "Afficher les détails du projet",
     categories: {
       label: "Catégories",
       all: "Tous",
@@ -77,7 +80,10 @@ export default {
     disclaimer_end: " de reCAPTCHA et de Google.",
     please_type: "Veuillez écrire quelque chose",
     missing_email: "Il manque l'email",
-    name_long: "Le nom est trop long"
+    name_long: "Le nom est trop long",
+    invalid_email: "Email invalide",
+    sent: "Message envoyé",
+    not_sent: "Le message n'a pas pu être envoyé, veuillez réessayer plus tard"
   },
   blogPost1: {
     link: "/blog/article",
@@ -141,6 +147,43 @@ export default {
     ],
     incentive:
       "Afin d'être tenu au courant de l'actualité de mon blog, veuillez enter votre adresse email :"
+  },
+  seo: {
+    home: {
+      title: "Accueil",
+      description:
+        "Alex Baskewitsch, développeur web full stack passionné de green coding. Découvrez mes projets, mon blog et comment me contacter."
+    },
+    about: {
+      title: "À propos",
+      description:
+        "Développeur autodidacte, spécialisé dans le Green Coding pour réduire l'empreinte carbone du secteur informatique."
+    },
+    projects: {
+      title: "Projets",
+      description:
+        "Sites en ligne, templates et expérimentations archivées : une sélection de mes projets web."
+    },
+    project: {
+      description: "Zoom sur un des projets web réalisés par Alex Baskewitsch."
+    },
+    blog: {
+      title: "Blog",
+      description: "Articles sur le Green Coding, l'informatique durable et le développement web."
+    },
+    contact: {
+      title: "Contact",
+      description:
+        "Contactez Alex Baskewitsch pour un projet, une question ou une collaboration."
+    },
+    notFound: {
+      title: "Page introuvable",
+      description: "Cette page n'existe pas ou a été déplacée."
+    }
+  },
+  notFound: {
+    message: "Oups. Il n'y a rien ici...",
+    home: "Retour à l'accueil"
   },
   buttons: {
     projects: "Mes Projets",

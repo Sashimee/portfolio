@@ -35,6 +35,9 @@ export default {
   },
   blog: {},
   projects: {
+    visit: "Visit the project {name}",
+    back: "Back to projects",
+    details: "Show project details",
     categories: {
       label: "Category",
       all: "All",
@@ -76,7 +79,10 @@ export default {
     disclaimer_end: " apply.",
     please_type: "Please type something",
     missing_email: "Email is missing",
-    name_long: "Name too long"
+    name_long: "Name too long",
+    invalid_email: "Invalid email",
+    sent: "Message sent",
+    not_sent: "The message could not be sent, please try again later"
   },
   blogPost1: {
     link: "/blog/article",
@@ -139,6 +145,43 @@ export default {
     ],
     incentive:
       "To be kept updated on the latest articles on my blog, please enter your email:"
+  },
+  seo: {
+    home: {
+      title: "Home",
+      description:
+        "Alex Baskewitsch, full stack web developer and green coding enthusiast. Discover my projects, my blog and how to reach me."
+    },
+    about: {
+      title: "About",
+      description:
+        "Self-taught developer, specialised in Green Coding to reduce the carbon footprint of the IT industry."
+    },
+    projects: {
+      title: "Projects",
+      description:
+        "Live sites, templates and archived experiments: a selection of the web projects I have built."
+    },
+    project: {
+      description: "A closer look at one of the web projects built by Alex Baskewitsch."
+    },
+    blog: {
+      title: "Blog",
+      description: "Articles about Green Coding, sustainable IT and web development."
+    },
+    contact: {
+      title: "Contact",
+      description:
+        "Get in touch with Alex Baskewitsch about a project, a question or a collaboration."
+    },
+    notFound: {
+      title: "Page not found",
+      description: "This page does not exist or has moved."
+    }
+  },
+  notFound: {
+    message: "Oops. Nothing here...",
+    home: "Go Home"
   },
   buttons: {
     projects: "My Projects",
