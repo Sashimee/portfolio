@@ -40,19 +40,37 @@ docker run --rm -p 8080:80 portfolio
 
 ## Design
 
+The direction is **low-carbon editorial**: the site argues for green coding, so
+it is built to look like what it argues for — ink on warm paper, one-pixel
+rules, oversized display type against monospace metadata, and a single acid
+accent. No decorative imagery, no gradients, no animation library.
+
 The whole UI is driven by CSS custom properties declared once in
-`src/css/app.sass` (`--bg`, `--surface`, `--ink*`, `--brand*`, radii, shadows,
-`--step-0..5` for fluid typography). Dark mode only overrides those variables
-under `body.body--dark`, so a component never hardcodes a colour.
+`src/css/app.sass` (`--bg`, `--surface`, `--ink*`, `--acc*`, `--hairline`,
+radii, shadows, `--step--1..6` for fluid typography). Dark mode only overrides
+those variables under `body.body--dark`, so a component never hardcodes a
+colour.
 
 A few deliberate choices:
 
-- **No webfont for body copy.** Lexend (self-hosted) is used for display text,
-  everything else falls back to the system stack — no network round trip.
-- **No animate.css, no Roboto.** Transitions are a handful of hand-written
-  keyframes, all disabled under `prefers-reduced-motion`.
+- **`--acc` is never text on the page background.** The lime only appears as a
+  fill (with `--acc-ink` on top), a rule or a highlight; `--brand` is the
+  contrast-safe green used for actual coloured text.
+- **No webfont for body copy.** Lexend (self-hosted, three weights) is used for
+  display text, everything else falls back to the system stack — no network
+  round trip. Metadata is set in the system monospace stack.
+- **No animate.css, no Roboto.** Entrances are one `IntersectionObserver`
+  (`src/composables/use-reveal.js`) plus a handful of hand-written keyframes,
+  all neutralised under `prefers-reduced-motion`. The reveal's initial
+  `opacity: 0` is scoped to `html.has-reveal`, a class the observer adds itself,
+  so content is never hidden when JS does not run.
 - **Screenshots are WebP** (~800 KB in total, down from 39 MB of PNG/JPEG),
-  lazy-loaded and cropped with `aspect-ratio` so the grid never reflows.
+  lazy-loaded and cropped with `aspect-ratio` so nothing reflows.
+
+The project index (`src/components/ProjectIndex.vue`) is the signature: numbered
+rows that invert to the accent on hover, with a single screenshot preview
+tracking the cursor. Below 900px — or on any coarse pointer — that preview has
+no trigger, so the thumbnail moves back inline into each row instead.
 
 ## Known issue
 

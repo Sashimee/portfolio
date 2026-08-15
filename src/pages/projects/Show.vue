@@ -1,17 +1,18 @@
 <template>
   <q-page v-if="project" class="preview">
     <section class="section--tight container">
+      <q-btn
+        class="app-btn app-btn--quiet preview__back"
+        no-caps
+        flat
+        icon="arrow_back"
+        to="/projects"
+        :label="$t('projects.back')"
+      />
+
       <div class="preview__head">
-        <q-btn
-          class="app-btn app-btn--quiet preview__back"
-          no-caps
-          flat
-          icon="arrow_back"
-          to="/projects"
-          :label="$t('projects.back')"
-        />
         <div>
-          <p class="overline">{{ $t('projects.preview') }}</p>
+          <p class="eyebrow">{{ $t('projects.preview') }}</p>
           <h1 class="title-lg">{{ project.name }}</h1>
         </div>
         <q-btn
@@ -29,7 +30,7 @@
 
       <!-- Faux chrome de navigateur : le rendu d'une démo statique est plus
            lisible quand on voit tout de suite que c'est un site dans le site. -->
-      <div class="card preview__frame">
+      <div class="preview__frame">
         <div class="preview__bar">
           <span class="preview__dots" aria-hidden="true"><i></i><i></i><i></i></span>
           <span class="preview__url">{{ source }}</span>
@@ -72,30 +73,31 @@ export default {
 </script>
 
 <style lang="sass">
-.preview__head
-  display: flex
-  flex-wrap: wrap
-  align-items: center
-  gap: 1rem
-  margin-bottom: 1.5rem
-
-  .overline
-    margin-bottom: 0.25rem
-
-  .app-btn--ghost
-    margin-left: auto
-
-// Le bouton retour occupe sa propre ligne : on recale son contenu à gauche.
 .preview__back
-  flex-basis: 100%
-  margin-left: -0.75rem
+  margin-bottom: 1.5rem
+  margin-left: -0.5rem
 
   .q-btn__content
     justify-content: flex-start
 
+.preview__head
+  display: flex
+  flex-wrap: wrap
+  align-items: flex-end
+  justify-content: space-between
+  gap: 1rem
+  padding-bottom: clamp(1.25rem, 2.5vw, 2rem)
+  border-bottom: var(--hairline) solid var(--border-strong)
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem)
+
+  .eyebrow
+    margin-bottom: 0.75rem
+
 .preview__frame
   overflow: hidden
-  padding: 0
+  border: var(--hairline) solid var(--border-strong)
+  border-radius: var(--radius)
+  background: var(--surface)
 
   iframe
     display: block
@@ -108,23 +110,24 @@ export default {
   display: flex
   align-items: center
   gap: 0.75rem
-  padding: 0.6rem 0.9rem
-  border-bottom: 1px solid var(--border)
+  padding: 0.65rem 0.9rem
+  border-bottom: var(--hairline) solid var(--border)
   background: var(--surface-2)
 
 .preview__dots
   display: inline-flex
-  gap: 0.3rem
+  gap: 0.35rem
 
   i
-    width: 10px
-    height: 10px
+    width: 9px
+    height: 9px
     border-radius: 50%
-    background: var(--border-strong)
+    border: var(--hairline) solid var(--border-strong)
 
 .preview__url
   font-family: var(--font-mono)
-  font-size: 0.75rem
+  font-size: 0.72rem
+  letter-spacing: 0.02em
   color: var(--ink-3)
   overflow: hidden
   text-overflow: ellipsis

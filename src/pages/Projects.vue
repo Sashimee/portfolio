@@ -1,15 +1,15 @@
 <template>
   <q-page class="projects">
     <section class="section container">
-      <header class="section-head">
-        <div>
-          <p class="eyebrow reveal">{{ $t('projects.eyebrow') }}</p>
-          <h1 class="title-xl reveal" style="--d: 0.05s">{{ $t('seo.projects.title') }}</h1>
-          <p class="lead reveal" style="--d: 0.1s">{{ $t('projects.lead') }}</p>
-        </div>
+      <header class="projects__head">
+        <p class="eyebrow">{{ $t('projects.eyebrow') }}</p>
+        <h1 class="title-xl">
+          <span class="reveal-line"><span>{{ $t('seo.projects.title') }}</span></span>
+        </h1>
+        <p class="lead" data-reveal style="--d: 0.15s">{{ $t('projects.lead') }}</p>
       </header>
 
-      <div class="filters reveal" style="--d: 0.14s" role="group" :aria-label="$t('projects.categories.label')">
+      <div class="filters" role="group" :aria-label="$t('projects.categories.label')">
         <button
           v-for="category in categories"
           :key="category.value"
@@ -24,27 +24,31 @@
         </button>
       </div>
 
-      <transition-group tag="div" class="grid grid--cards projects__grid" name="cards" appear>
-        <project-card v-for="project in projectsList" :key="project.name" :project="project" />
-      </transition-group>
+      <!-- La clé porte la catégorie : changer de filtre remonte un index neuf,
+           donc rejoue l'animation d'entrée au lieu de permuter des lignes. -->
+      <transition name="swap" mode="out-in">
+        <project-index :key="categorySelect" :projects="projectsList" />
+      </transition>
     </section>
   </q-page>
 </template>
 
 <script>
-import ProjectCard from '@/components/ProjectCard.vue'
+import ProjectIndex from '@/components/ProjectIndex.vue'
 import { usePageMeta } from '@/composables/use-page-meta'
+import { useReveal } from '@/composables/use-reveal'
 import projectsData, { PROJECT_CATEGORIES } from '@/data/projects'
 
 export default {
   name: 'PageProjects',
-  components: { ProjectCard },
+  components: { ProjectIndex },
   setup() {
     usePageMeta({
       titleKey: 'seo.projects.title',
       descriptionKey: 'seo.projects.description',
       path: '/projects'
     })
+    useReveal()
   },
   data() {
     return {
@@ -77,59 +81,57 @@ export default {
 </script>
 
 <style lang="sass">
+.projects__head
+  max-width: 34ch
+  margin-bottom: clamp(2rem, 4vw, 3rem)
+
 .filters
   display: flex
   flex-wrap: wrap
-  gap: 0.5rem
-  margin-bottom: clamp(1.5rem, 3vw, 2.25rem)
+  gap: 0.4rem
+  padding-bottom: clamp(1.25rem, 2.5vw, 2rem)
 
 .filters__item
   display: inline-flex
-  align-items: center
+  align-items: baseline
   gap: 0.45rem
-  padding: 0.5rem 1rem
-  font: inherit
-  font-size: 0.9rem
+  padding: 0.45rem 0.9rem
+  font-family: var(--font-mono)
+  font-size: 0.72rem
   font-weight: 500
+  letter-spacing: 0.1em
+  text-transform: uppercase
   color: var(--ink-2)
-  background: var(--surface)
-  border: 1px solid var(--border)
+  background: transparent
+  border: var(--hairline) solid var(--border)
   border-radius: var(--radius-pill)
   cursor: pointer
-  transition: color 0.25s, border-color 0.25s, background 0.25s
+  transition: color 0.3s, border-color 0.3s, background 0.3s
 
   &:hover
     color: var(--ink)
     border-color: var(--border-strong)
 
   &.is-active
-    color: var(--brand-on)
-    background: var(--brand)
+    color: var(--acc-ink)
+    background: var(--acc)
     border-color: transparent
 
 .filters__count
-  font-size: 0.72rem
+  font-size: 0.62rem
   font-variant-numeric: tabular-nums
-  opacity: 0.7
+  opacity: 0.6
 
-.projects__grid
-  position: relative
+.swap-enter-active
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)
 
-.cards-enter-active
-  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1)
+.swap-leave-active
+  transition: opacity 0.18s ease
 
-// Pas de `position: absolute` sur les sorties : hors de la grille, la carte
-// perdrait sa largeur de colonne et s'étirerait sur toute la ligne.
-.cards-leave-active
-  transition: opacity 0.2s ease
-
-.cards-enter-from
+.swap-enter-from
   opacity: 0
-  transform: translateY(12px)
+  transform: translateY(10px)
 
-.cards-leave-to
+.swap-leave-to
   opacity: 0
-
-.cards-move
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)
 </style>

@@ -24,7 +24,26 @@ export default {
     more: "More about me",
     featured_eyebrow: "Selected work",
     featured_title: "Projects that are live",
-    featured_all: "All projects"
+    featured_all: "All projects",
+    colophon_eyebrow: "Colophon",
+    colophon_title: "This site runs on what it argues for",
+    colophon: [
+      {
+        title: "No tracker until you say yes",
+        body:
+          "Analytics is only fetched once you accept it. Decline, and the script is never requested at all."
+      },
+      {
+        title: "One typeface, three weights",
+        body:
+          "Lexend is self-hosted for display text. Everything else uses the fonts already on your device — no extra round trip."
+      },
+      {
+        title: "Images cropped, compressed, deferred",
+        body:
+          "Every screenshot is WebP, lazy-loaded and given a fixed ratio, so nothing reflows while the page fills in."
+      }
+    ]
   },
   about: {
     eyebrow: "About",
@@ -126,7 +145,10 @@ export default {
     navigate: "Navigate",
     elsewhere: "Elsewhere",
     legal: "Legal info & cookies",
-    built: "Built with Vue 3 & Quasar"
+    built: "Built with Vue 3 & Quasar",
+    cta_eyebrow: "Next step",
+    cta: "Let's build something lighter",
+    top: "Back to top"
   },
   blogPost1: {
     link: "/blog/article",

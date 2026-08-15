@@ -1,8 +1,8 @@
 import { defineBoot } from '#q-app'
 import { AddressbarColor, Dark } from 'quasar'
 
-const LIGHT = '#f6f8fa'
-const DARK = '#0a0d12'
+const LIGHT = '#f1efe9'
+const DARK = '#0b0c0a'
 
 /** Aligne la couleur de la barre d'adresse sur le thème courant. */
 export function syncAddressbarColor() {

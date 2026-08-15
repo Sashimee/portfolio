@@ -4,20 +4,21 @@
 // Le reste de l'identité vit dans src/css/app.sass sous forme de custom
 // properties CSS, pour pouvoir basculer clair/sombre sans recompiler.
 
-// Vert « green coding », assombri juste ce qu'il faut pour rester lisible
-// sur fond blanc (contraste AA sur du texte blanc en bouton plein).
-$primary: #03875f
-$secondary: #5b6472
-$accent: #00c08b
+// $primary sert de couleur de texte/icône dans les composants Quasar : c'est
+// donc la déclinaison lisible du vert, pas l'accent acide (--acc), qui n'est
+// utilisable qu'en aplat.
+$primary: #2f6b33
+$secondary: #4b4e45
+$accent: #c7f24d
 
-$dark: #12171f
-$dark-page: #0a0d12
+$dark: #131511
+$dark-page: #0b0c0a
 
-$positive: #16a34a
-$negative: #e5484d
-$info: #6ea8fe
-$warning: #f5a524
+$positive: #2f6b33
+$negative: #b3261e
+$info: #4b4e45
+$warning: #a2700a
 
-// Rayons partagés avec les tokens CSS (--radius-*)
-$generic-border-radius: 14px
+// Formes anguleuses : les contours sont portés par les filets, pas les coins.
+$generic-border-radius: 4px
 $button-border-radius: 999px

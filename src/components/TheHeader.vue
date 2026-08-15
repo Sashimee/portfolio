@@ -3,94 +3,93 @@
     <div class="container site-header__bar">
       <router-link to="/" class="brand" :aria-label="$t('layout.home')">
         <span class="brand__mark" aria-hidden="true">AB</span>
-        <span class="brand__name">Alex Baskewitsch<span class="brand__dot">.</span></span>
+        <span class="brand__name">Alex Baskewitsch</span>
       </router-link>
 
       <nav class="nav gt-sm" :aria-label="$t('layout.menu')">
         <router-link
-          v-for="item in navigation"
+          v-for="(item, position) in navigation"
           :key="item.to"
           :to="item.to"
           class="nav__link"
           :class="{ 'is-active': isActive(item) }"
         >
+          <span class="nav__num">{{ String(position + 1).padStart(2, '0') }}</span>
           {{ $t(item.labelKey) }}
         </router-link>
       </nav>
 
       <div class="site-header__actions">
-        <q-btn
-          class="icon-btn"
-          flat
-          round
-          dense
-          :icon="darkMode ? 'light_mode' : 'dark_mode'"
+        <!-- Deux langues seulement : un sélecteur segmenté est plus direct
+             qu'un menu déroulant, et se lit d'un coup d'œil. -->
+        <div class="segmented gt-sm" role="group" :aria-label="$t('layout.language')">
+          <button
+            v-for="option in localeOptions"
+            :key="option.value"
+            type="button"
+            class="segmented__item"
+            :class="{ 'is-active': option.value === locale }"
+            :aria-pressed="option.value === locale"
+            :title="option.label"
+            @click="pickLocale(option.value)"
+          >
+            {{ option.value.toUpperCase() }}
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="theme-toggle"
           :aria-label="$t('layout.theme')"
+          :aria-pressed="darkMode"
           @click="toggleDark"
-        />
-
-        <q-btn-dropdown
-          class="lang-btn gt-sm"
-          flat
-          dense
-          no-caps
-          unelevated
-          :label="locale.toUpperCase()"
-          :aria-label="$t('layout.language')"
-          dropdown-icon="expand_more"
         >
-          <q-list dense>
-            <q-item
-              v-for="option in localeOptions"
-              :key="option.value"
-              v-close-popup
-              clickable
-              :active="option.value === locale"
-              active-class="lang-btn__active"
-              @click="pickLocale(option.value)"
-            >
-              <q-item-section>{{ option.label }}</q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
+          <q-icon :name="darkMode ? 'light_mode' : 'dark_mode'" size="16px" />
+        </button>
 
-        <q-btn
-          class="icon-btn lt-md"
-          flat
-          round
-          dense
-          icon="menu"
-          :aria-label="$t('layout.menu')"
-          @click="drawer = true"
-        />
+        <button type="button" class="menu-toggle lt-md" :aria-expanded="menu" @click="menu = true">
+          {{ $t('layout.menu') }}
+          <span class="menu-toggle__bars" aria-hidden="true"><i></i><i></i></span>
+        </button>
       </div>
     </div>
   </q-header>
 
-  <!-- Le tiroir est un frère de l'en-tête : imbriqué dedans, le backdrop-filter
-       du header créerait un bloc conteneur et casserait son position: fixed. -->
-  <q-drawer v-model="drawer" side="right" overlay behavior="mobile" :width="320" class="site-drawer">
-    <div class="site-drawer__inner">
-      <div class="site-drawer__top">
-        <span class="eyebrow">{{ $t('layout.menu') }}</span>
-        <q-btn flat round dense icon="close" :aria-label="$t('layout.close')" @click="drawer = false" />
+  <!-- Le panneau est un frère de l'en-tête : imbriqué dedans, le
+       backdrop-filter du header créerait un bloc conteneur et casserait son
+       position: fixed. -->
+  <transition name="overlay">
+    <div
+      v-if="menu"
+      class="menu-overlay"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="$t('layout.menu')"
+    >
+      <div class="container menu-overlay__top">
+        <span class="mono muted">{{ $t('layout.menu') }}</span>
+        <button type="button" class="menu-toggle" :aria-label="$t('layout.close')" @click="menu = false">
+          {{ $t('layout.close') }}
+          <span class="menu-toggle__bars is-close" aria-hidden="true"><i></i><i></i></span>
+        </button>
       </div>
 
-      <nav class="site-drawer__nav" :aria-label="$t('layout.menu')">
+      <nav class="container menu-overlay__nav" :aria-label="$t('layout.menu')">
         <router-link
-          v-for="item in navigation"
+          v-for="(item, position) in navigation"
           :key="item.to"
           :to="item.to"
-          class="site-drawer__link"
+          class="menu-overlay__link"
           :class="{ 'is-active': isActive(item) }"
-          @click="drawer = false"
+          :style="`--d: ${0.05 + position * 0.05}s`"
+          @click="menu = false"
         >
-          <q-icon :name="item.icon" size="18px" />
+          <span class="menu-overlay__num">{{ String(position + 1).padStart(2, '0') }}</span>
           {{ $t(item.labelKey) }}
         </router-link>
       </nav>
 
-      <div class="site-drawer__foot">
+      <div class="container menu-overlay__foot">
         <div class="segmented" role="group" :aria-label="$t('layout.language')">
           <button
             v-for="option in localeOptions"
@@ -98,6 +97,7 @@
             type="button"
             class="segmented__item"
             :class="{ 'is-active': option.value === locale }"
+            :aria-pressed="option.value === locale"
             @click="pickLocale(option.value)"
           >
             {{ option.value.toUpperCase() }}
@@ -114,12 +114,12 @@
             rel="noopener"
             :aria-label="link.label"
           >
-            <q-icon :name="link.icon" size="18px" />
+            <q-icon :name="link.icon" size="16px" />
           </a>
         </div>
       </div>
     </div>
-  </q-drawer>
+  </transition>
 </template>
 
 <script>
@@ -135,19 +135,25 @@ export default {
   name: 'TheHeader',
   data() {
     return {
-      drawer: false,
+      menu: false,
       scrolled: false,
       darkMode: Dark.isActive,
       locale: currentLocale(),
       socialLinks,
       navigation: [
-        { to: '/', labelKey: 'layout.home', icon: 'fas fa-house', exact: true },
-        { to: '/about', labelKey: 'layout.about', icon: 'fas fa-user' },
-        { to: '/projects', labelKey: 'layout.projects', icon: 'fas fa-layer-group' },
-        { to: '/blog', labelKey: 'layout.blog', icon: 'fas fa-book-open' },
-        { to: '/contact', labelKey: 'layout.contact', icon: 'fas fa-paper-plane' }
+        { to: '/', labelKey: 'layout.home', exact: true },
+        { to: '/about', labelKey: 'layout.about' },
+        { to: '/projects', labelKey: 'layout.projects' },
+        { to: '/blog', labelKey: 'layout.blog' },
+        { to: '/contact', labelKey: 'layout.contact' }
       ],
       localeOptions: AVAILABLE_LOCALES.map(value => ({ value, label: LOCALE_LABELS[value] || value }))
+    }
+  },
+  watch: {
+    // Le panneau couvre l'écran : la page ne doit pas défiler derrière lui.
+    menu(open) {
+      document.body.classList.toggle('is-locked', open)
     }
   },
   methods: {
@@ -157,7 +163,7 @@ export default {
     },
     pickLocale(value) {
       this.locale = setLocale(value)
-      this.drawer = false
+      this.menu = false
     },
     toggleDark() {
       this.darkMode = !this.darkMode
@@ -167,30 +173,38 @@ export default {
     },
     onScroll() {
       this.scrolled = window.scrollY > 8
+    },
+    onKeydown(event) {
+      if (event.key === 'Escape') this.menu = false
     }
   },
   mounted() {
     window.addEventListener('scroll', this.onScroll, { passive: true })
+    window.addEventListener('keydown', this.onKeydown)
     this.onScroll()
   },
   beforeUnmount() {
     window.removeEventListener('scroll', this.onScroll)
+    window.removeEventListener('keydown', this.onKeydown)
+    document.body.classList.remove('is-locked')
   }
 }
 </script>
 
 <style lang="sass">
+body.is-locked
+  overflow: hidden
+
 .site-header
   background: var(--header-bg)
   color: var(--ink)
-  backdrop-filter: saturate(180%) blur(14px)
-  -webkit-backdrop-filter: saturate(180%) blur(14px)
-  border-bottom: 1px solid transparent
-  transition: border-color 0.3s, box-shadow 0.3s
+  backdrop-filter: saturate(160%) blur(12px)
+  -webkit-backdrop-filter: saturate(160%) blur(12px)
+  border-bottom: var(--hairline) solid transparent
+  transition: border-color 0.4s
 
   &.is-scrolled
     border-bottom-color: var(--border)
-    box-shadow: var(--shadow-sm)
 
 .site-header__bar
   display: flex
@@ -201,151 +215,217 @@ export default {
 .site-header__actions
   display: flex
   align-items: center
-  gap: 0.35rem
+  gap: 0.6rem
   margin-left: auto
 
 .brand
   display: inline-flex
   align-items: center
-  gap: 0.6rem
+  gap: 0.65rem
   color: var(--ink)
   text-decoration: none
   font-family: var(--font-display)
   font-weight: 600
-  letter-spacing: -0.01em
+  letter-spacing: -0.025em
 
 .brand__name
-  font-size: 0.98rem
+  font-size: 1rem
 
   @media (max-width: 420px)
     display: none
 
-.brand__dot
-  color: var(--brand-vivid)
-
+// Navigation : pas de pilule, des libellés en monospace numérotés, soulignés
+// à l'accent quand ils sont actifs.
 .nav
   display: flex
   align-items: center
-  gap: 0.15rem
+  gap: 0.35rem
   margin-inline: auto
-  padding: 0.25rem
-  border: 1px solid var(--border)
-  border-radius: var(--radius-pill)
-  background: var(--surface)
-  box-shadow: var(--shadow-sm)
 
 .nav__link
   position: relative
-  padding: 0.45rem 0.95rem
-  border-radius: var(--radius-pill)
-  font-size: 0.9rem
+  display: inline-flex
+  align-items: baseline
+  gap: 0.45rem
+  padding: 0.5rem 0.8rem
+  font-family: var(--font-mono)
+  font-size: 0.75rem
   font-weight: 500
+  letter-spacing: 0.1em
+  text-transform: uppercase
   color: var(--ink-2)
   text-decoration: none
-  transition: color 0.25s, background 0.25s
+  transition: color 0.3s
+
+  &::after
+    content: ''
+    position: absolute
+    left: 0.8rem
+    right: 0.8rem
+    bottom: 0.3rem
+    height: 2px
+    background: var(--acc)
+    transform: scaleX(0)
+    transform-origin: 0 50%
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)
 
   &:hover
     color: var(--ink)
-    background: var(--surface-2)
+
+  &:hover::after,
+  &.is-active::after
+    transform: scaleX(1)
 
   &.is-active
-    color: var(--brand-on)
-    background: var(--brand)
+    color: var(--ink)
 
-.icon-btn.q-btn
+.nav__num
+  font-size: 0.62rem
+  color: var(--ink-3)
+
+.theme-toggle
+  display: grid
+  place-items: center
+  width: 34px
+  height: 34px
+  padding: 0
+  border: var(--hairline) solid var(--border)
+  border-radius: 50%
+  background: transparent
   color: var(--ink-2)
+  cursor: pointer
+  transition: color 0.3s, background 0.3s, border-color 0.3s
 
   &:hover
-    color: var(--brand)
+    color: var(--acc-ink)
+    background: var(--acc)
+    border-color: transparent
 
-.lang-btn.q-btn
-  font-weight: 600
-  font-size: 0.8rem
-  letter-spacing: 0.04em
-  color: var(--ink-2)
-  border: 1px solid var(--border)
+.segmented
+  display: inline-flex
+  padding: 2px
+  border: var(--hairline) solid var(--border)
   border-radius: var(--radius-pill)
-  padding: 0.15rem 0.3rem 0.15rem 0.7rem
 
-.lang-btn__active
-  color: var(--brand)
-  font-weight: 600
+.segmented__item
+  padding: 0.3rem 0.7rem
+  border: 0
+  border-radius: var(--radius-pill)
+  background: transparent
+  color: var(--ink-3)
+  font-family: var(--font-mono)
+  font-size: 0.7rem
+  font-weight: 500
+  letter-spacing: 0.08em
+  cursor: pointer
+  transition: color 0.3s, background 0.3s
 
-.site-drawer
-  background: var(--bg)
-  border-left: 1px solid var(--border)
+  &.is-active
+    color: var(--acc-ink)
+    background: var(--acc)
 
-.site-drawer__inner
+.menu-toggle
+  display: inline-flex
+  align-items: center
+  gap: 0.6rem
+  padding: 0.45rem 0.5rem 0.45rem 0.85rem
+  border: 0
+  background: transparent
+  color: var(--ink)
+  font-family: var(--font-mono)
+  font-size: 0.72rem
+  font-weight: 500
+  letter-spacing: 0.12em
+  text-transform: uppercase
+  cursor: pointer
+
+.menu-toggle__bars
+  display: grid
+  gap: 4px
+  width: 20px
+
+  i
+    height: 1.5px
+    background: currentColor
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)
+
+  &.is-close i
+    &:first-child
+      transform: translateY(2.75px) rotate(45deg)
+
+    &:last-child
+      transform: translateY(-2.75px) rotate(-45deg)
+
+.menu-toggle:hover .menu-toggle__bars:not(.is-close) i:last-child
+  transform: translateX(4px)
+
+// Panneau plein écran : la navigation devient l'écran, en très grand.
+.menu-overlay
+  position: fixed
+  inset: 0
+  z-index: 7000
   display: flex
   flex-direction: column
-  gap: 2rem
-  height: 100%
-  padding: 1.25rem
+  padding-block: 1.1rem clamp(1.5rem, 5vh, 3rem)
   background: var(--bg)
   color: var(--ink)
+  overflow-y: auto
 
-.site-drawer__top
+.menu-overlay__top
   display: flex
   align-items: center
   justify-content: space-between
+  padding-bottom: 1.1rem
+  border-bottom: var(--hairline) solid var(--border)
 
-  .eyebrow
-    margin: 0
-
-.site-drawer__nav
+.menu-overlay__nav
   display: flex
   flex-direction: column
-  gap: 0.25rem
+  margin-top: auto
+  margin-bottom: auto
+  padding-block: 2rem
 
-.site-drawer__link
+.menu-overlay__link
   display: flex
-  align-items: center
-  gap: 0.75rem
-  padding: 0.8rem 0.9rem
-  border-radius: var(--radius-sm)
+  align-items: baseline
+  gap: 1rem
+  padding-block: clamp(0.5rem, 1.6vh, 0.9rem)
   font-family: var(--font-display)
-  font-size: 1.15rem
+  font-size: clamp(2.25rem, 12vw, 4.5rem)
   font-weight: 500
+  letter-spacing: -0.045em
+  line-height: 1
   color: var(--ink)
   text-decoration: none
-
-  .q-icon
-    color: var(--ink-3)
+  animation: line-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both
+  animation-delay: var(--d, 0s)
 
   &.is-active
-    background: var(--brand-soft)
+    color: var(--ink-3)
+
+  &:active
     color: var(--brand)
 
-    .q-icon
-      color: var(--brand)
+.menu-overlay__num
+  font-family: var(--font-mono)
+  font-size: 0.75rem
+  letter-spacing: 0.1em
+  color: var(--ink-3)
 
-.site-drawer__foot
+.menu-overlay__foot
   display: flex
   align-items: center
   justify-content: space-between
   gap: 1rem
-  margin-top: auto
+  padding-top: 1.25rem
+  border-top: var(--hairline) solid var(--border)
 
-.segmented
-  display: inline-flex
-  padding: 3px
-  border: 1px solid var(--border)
-  border-radius: var(--radius-pill)
-  background: var(--surface)
+.overlay-enter-active,
+.overlay-leave-active
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)
 
-.segmented__item
-  padding: 0.35rem 0.9rem
-  border: 0
-  border-radius: var(--radius-pill)
-  background: transparent
-  color: var(--ink-2)
-  font: inherit
-  font-size: 0.8rem
-  font-weight: 600
-  cursor: pointer
-
-  &.is-active
-    color: var(--brand-on)
-    background: var(--brand)
-
+.overlay-enter-from,
+.overlay-leave-to
+  opacity: 0
+  transform: translate3d(0, -1.5rem, 0)
 </style>

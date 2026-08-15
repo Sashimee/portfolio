@@ -24,7 +24,26 @@ export default {
     more: "En savoir plus",
     featured_eyebrow: "Sélection",
     featured_title: "Des projets en ligne",
-    featured_all: "Tous les projets"
+    featured_all: "Tous les projets",
+    colophon_eyebrow: "Colophon",
+    colophon_title: "Ce site applique ce qu'il défend",
+    colophon: [
+      {
+        title: "Aucun traceur avant votre accord",
+        body:
+          "Les statistiques ne sont chargées qu'une fois que vous les acceptez. En cas de refus, le script n'est jamais demandé."
+      },
+      {
+        title: "Une police, trois graisses",
+        body:
+          "Lexend est auto-hébergée pour les titres. Tout le reste utilise les polices déjà présentes sur votre appareil — aucun aller-retour réseau."
+      },
+      {
+        title: "Images recadrées, compressées, différées",
+        body:
+          "Chaque capture est en WebP, chargée à la demande et dans un ratio fixe : rien ne bouge pendant que la page se remplit."
+      }
+    ]
   },
   about: {
     eyebrow: "À propos",
@@ -129,7 +148,10 @@ export default {
     navigate: "Navigation",
     elsewhere: "Ailleurs",
     legal: "Informations légales & cookies",
-    built: "Construit avec Vue 3 & Quasar"
+    built: "Construit avec Vue 3 & Quasar",
+    cta_eyebrow: "La suite",
+    cta: "Construisons quelque chose de plus léger",
+    top: "Haut de page"
   },
   blogPost1: {
     link: "/blog/article",

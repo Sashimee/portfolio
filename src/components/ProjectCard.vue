@@ -1,5 +1,5 @@
 <template>
-  <article class="project card card--interactive">
+  <article class="project">
     <div class="project__media">
       <img
         :src="`/screenshots/${project.img}.webp`"
@@ -7,7 +7,7 @@
         loading="lazy"
         decoding="async"
       />
-      <span class="tag tag--brand project__type">{{ project.type }}</span>
+      <span class="project__type mono">{{ project.type }}</span>
     </div>
 
     <div class="project__body">
@@ -17,8 +17,8 @@
         </router-link>
         <a v-else class="stretched-link" :href="project.link" target="_blank" rel="noopener">
           {{ project.name }}
-          <q-icon name="north_east" size="15px" />
         </a>
+        <q-icon :name="isInternal ? 'arrow_forward' : 'north_east'" size="16px" />
       </h3>
 
       <p v-if="project.info" class="project__info">{{ project.info }}</p>
@@ -46,15 +46,19 @@ export default {
 </script>
 
 <style lang="sass">
+// Affiche plutôt que carte : l'image porte, le texte se pose dessous sur un
+// filet. Pas de fond, pas d'ombre — c'est le survol qui matérialise le bloc.
 .project
+  position: relative
   display: flex
   flex-direction: column
-  overflow: hidden
 
 .project__media
   position: relative
-  aspect-ratio: 16 / 10
+  aspect-ratio: 4 / 3
   overflow: hidden
+  border: var(--hairline) solid var(--border)
+  border-radius: var(--radius)
   background: var(--surface-2)
 
   img
@@ -62,41 +66,70 @@ export default {
     height: 100%
     object-fit: cover
     object-position: top center
-    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)
 
-.project:hover .project__media img
-  transform: scale(1.05)
+  // Voile qui se lève au survol : l'image gagne en présence sans changer de
+  // taille de mise en page.
+  &::after
+    content: ''
+    position: absolute
+    inset: 0
+    background: var(--acc)
+    mix-blend-mode: multiply
+    opacity: 0
+    transition: opacity 0.45s
+
+.project:hover .project__media img,
+.project:focus-within .project__media img
+  transform: scale(1.04)
+
+.project:hover .project__media::after,
+.project:focus-within .project__media::after
+  opacity: 0.14
 
 .project__type
   position: absolute
-  top: 0.75rem
-  left: 0.75rem
-  background: var(--surface)
-  backdrop-filter: blur(6px)
+  left: 0.7rem
+  bottom: 0.7rem
+  padding: 0.25rem 0.6rem
+  border-radius: var(--radius-pill)
+  color: var(--acc-ink)
+  background: var(--acc)
+  font-size: 0.65rem
+  letter-spacing: 0.08em
 
 .project__body
   display: flex
   flex-direction: column
-  gap: 0.6rem
-  padding: 1.15rem 1.25rem 1.35rem
+  gap: 0.65rem
+  padding-top: 1rem
 
 .project__title
+  display: flex
+  align-items: baseline
+  justify-content: space-between
+  gap: 0.75rem
   margin: 0
-  font-size: 1.1rem
+  font-size: var(--step-2)
+  font-weight: 500
+  letter-spacing: -0.03em
 
   a
-    display: inline-flex
-    align-items: center
-    gap: 0.35rem
     color: var(--ink)
     text-decoration: none
 
-    &:hover
-      color: var(--brand)
+  .q-icon
+    flex-shrink: 0
+    color: var(--ink-3)
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s
+
+.project:hover .project__title .q-icon
+  color: var(--ink)
+  transform: translate(3px, -3px)
 
 .project__info
   margin: 0
-  font-size: 0.9rem
+  font-size: 0.92rem
   line-height: 1.55
   color: var(--ink-3)
   display: -webkit-box
@@ -105,7 +138,7 @@ export default {
   overflow: hidden
 
 .project__tags
-  margin: 0.25rem 0 0
+  margin: 0.2rem 0 0
   padding: 0
   list-style: none
   gap: 0.4rem

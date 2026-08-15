@@ -1,18 +1,24 @@
 // =============================================================================
-// Système de design
+// Système de design — « low-carbon editorial »
 // -----------------------------------------------------------------------------
-// 1. Polices (Lexend en display, pile système en texte courant : zéro requête
-//    réseau supplémentaire, ce qui est cohérent avec le propos du site)
-// 2. Tokens (couleurs, rayons, ombres, échelle typographique fluide)
+// Le site défend le green coding : il doit en avoir l'air. D'où un parti pris
+// d'imprimé — encre sur papier, filets d'un pixel, très grandes capitales en
+// display contre des méta en monospace — plutôt qu'un énième dégradé SaaS.
+// Aucune image décorative, aucune librairie d'animation : tout le mouvement
+// tient dans quelques keyframes et un IntersectionObserver.
+//
+// 1. Polices
+// 2. Tokens (couleurs, filets, rayons, échelle typographique fluide)
 // 3. Base (reset doux, typographie, focus)
-// 4. Primitives réutilisées par toutes les pages (.container, .card, .app-btn…)
+// 4. Primitives partagées (.container, .card, .app-btn, .idx…)
 // 5. Surcharges Quasar
 // Le style propre à un écran reste dans son SFC.
 // =============================================================================
 
 // 1. Polices ------------------------------------------------------------------
-// Lexend n'habille que les titres : seules les graisses réellement utilisées
-// (500 / 600 / 700) sont embarquées.
+// Lexend n'habille que le display : seules les graisses réellement utilisées
+// (500 / 600 / 700) sont embarquées. Le texte courant et les méta n'ajoutent
+// aucune requête réseau (piles système).
 
 @font-face
   font-family: 'Lexend'
@@ -42,86 +48,89 @@
 html
   --font-display: 'Lexend', system-ui, sans-serif
   --font-body: system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, 'Cascadia Mono', monospace
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, 'Cascadia Mono', 'Roboto Mono', monospace
 
-  // Échelle typographique fluide : plus de media queries pour la taille du texte
+  // Échelle fluide : aucune media query pour la taille du texte.
+  // --step-6 n'existe que pour les titres pleine page (accueil, 404).
+  --step--1: clamp(0.78rem, 0.75rem + 0.12vw, 0.85rem)
   --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem)
-  --step-1: clamp(1.125rem, 1.06rem + 0.32vw, 1.3125rem)
-  --step-2: clamp(1.35rem, 1.22rem + 0.6vw, 1.75rem)
-  --step-3: clamp(1.65rem, 1.4rem + 1.1vw, 2.4rem)
-  --step-4: clamp(2rem, 1.5rem + 2.2vw, 3.25rem)
-  --step-5: clamp(2.6rem, 1.6rem + 4.2vw, 5rem)
+  --step-1: clamp(1.125rem, 1.05rem + 0.36vw, 1.35rem)
+  --step-2: clamp(1.35rem, 1.2rem + 0.7vw, 1.85rem)
+  --step-3: clamp(1.7rem, 1.36rem + 1.5vw, 2.75rem)
+  --step-4: clamp(2.2rem, 1.5rem + 3.1vw, 4.25rem)
+  --step-5: clamp(3rem, 1.6rem + 6.4vw, 7.5rem)
+  --step-6: clamp(4rem, 1rem + 13vw, 15rem)
 
-  --radius-xs: 8px
-  --radius-sm: 12px
-  --radius: 18px
-  --radius-lg: 26px
+  // Anguleux plutôt qu'arrondi : le rayon est presque nul, les formes sont
+  // définies par les filets, pas par les coins.
+  --radius-xs: 2px
+  --radius-sm: 3px
+  --radius: 4px
+  --radius-lg: 6px
   --radius-pill: 999px
 
-  --container: 1160px
-  --container-narrow: 720px
-  --header-height: 68px
+  --container: 1440px
+  --container-narrow: 760px
+  --gutter: clamp(1.25rem, 4vw, 4rem)
+  --header-height: 72px
+  --hairline: 1px
 
-  --bg: #f6f8fa
-  --bg-tint: #eceff4
-  --surface: #ffffff
-  --surface-2: #f1f4f8
-  --border: rgba(14, 17, 22, 0.10)
-  --border-strong: rgba(14, 17, 22, 0.20)
-  --ink: #0e1116
-  --ink-2: #414b57
-  --ink-3: #6b7684
+  // Papier chaud / encre presque noire. Les gris sont désaturés vers le vert
+  // pour rester dans la même famille que l'accent.
+  --bg: #f1efe9
+  --bg-tint: #e9e6de
+  --surface: #fbfaf7
+  --surface-2: #e6e3da
+  --border: rgba(18, 19, 15, 0.16)
+  --border-strong: rgba(18, 19, 15, 0.38)
+  --ink: #12130f
+  --ink-2: #4b4e45
+  --ink-3: #7c8074
 
-  --brand: #03875f
-  --brand-vivid: #00c08b
-  --brand-on: #ffffff
-  --brand-soft: rgba(0, 192, 139, 0.14)
-  --brand-line: rgba(0, 192, 139, 0.38)
-  --gradient: linear-gradient(104deg, #03875f 0%, #00c08b 46%, #4f9dff 100%)
+  // L'accent est un vert acide : il ne sert JAMAIS de couleur de texte sur le
+  // fond de page (contraste insuffisant), uniquement en aplat avec --acc-ink
+  // par-dessus, en filet ou en surlignage. --brand reste la déclinaison
+  // lisible en texte, pour les liens et les icônes.
+  --acc: #c7f24d
+  --acc-ink: #12130f
+  --acc-soft: rgba(199, 242, 77, 0.30)
+  --brand: #2f6b33
+  --brand-line: rgba(18, 19, 15, 0.38)
 
-  --glow-a: rgba(0, 192, 139, 0.38)
-  --glow-b: rgba(79, 157, 255, 0.28)
-  --glow-c: rgba(126, 231, 135, 0.30)
+  --shadow-sm: 0 1px 2px rgba(18, 19, 15, 0.06)
+  --shadow-md: 0 18px 40px -28px rgba(18, 19, 15, 0.45)
+  --shadow-lg: 0 40px 90px -50px rgba(18, 19, 15, 0.55)
 
-  --shadow-sm: 0 1px 2px rgba(13, 18, 28, 0.05), 0 1px 3px rgba(13, 18, 28, 0.06)
-  --shadow-md: 0 10px 30px -14px rgba(13, 18, 28, 0.28)
-  --shadow-lg: 0 32px 70px -32px rgba(13, 18, 28, 0.40)
-
-  --header-bg: rgba(255, 255, 255, 0.72)
-  --overlay: rgba(10, 13, 18, 0.55)
+  --header-bg: rgba(241, 239, 233, 0.82)
+  --overlay: rgba(18, 19, 15, 0.94)
 
   color-scheme: light
   scrollbar-gutter: stable
   -webkit-text-size-adjust: 100%
 
 body.body--dark
-  --bg: #0a0d12
-  --bg-tint: #0e131a
-  --surface: #12171f
-  --surface-2: #171d27
-  --border: rgba(255, 255, 255, 0.10)
-  --border-strong: rgba(255, 255, 255, 0.22)
-  --ink: #e8edf4
-  --ink-2: #aeb8c6
-  --ink-3: #7e8899
+  --bg: #0b0c0a
+  --bg-tint: #101210
+  --surface: #131511
+  --surface-2: #1b1e18
+  --border: rgba(237, 235, 226, 0.18)
+  --border-strong: rgba(237, 235, 226, 0.42)
+  --ink: #edebe2
+  --ink-2: #b0b2a6
+  --ink-3: #7f8378
 
-  --brand: #2ee6a8
-  --brand-vivid: #2ee6a8
-  --brand-on: #04140f
-  --brand-soft: rgba(46, 230, 168, 0.14)
-  --brand-line: rgba(46, 230, 168, 0.40)
-  --gradient: linear-gradient(104deg, #2ee6a8 0%, #7ee787 44%, #6ea8fe 100%)
+  --acc: #cbf54f
+  --acc-ink: #0b0c0a
+  --acc-soft: rgba(203, 245, 79, 0.18)
+  --brand: #cbf54f
+  --brand-line: rgba(203, 245, 79, 0.45)
 
-  --glow-a: rgba(46, 230, 168, 0.30)
-  --glow-b: rgba(110, 168, 254, 0.26)
-  --glow-c: rgba(126, 231, 135, 0.22)
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5)
+  --shadow-md: 0 18px 40px -26px rgba(0, 0, 0, 0.9)
+  --shadow-lg: 0 44px 96px -50px rgba(0, 0, 0, 0.95)
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4)
-  --shadow-md: 0 12px 34px -16px rgba(0, 0, 0, 0.75)
-  --shadow-lg: 0 36px 80px -36px rgba(0, 0, 0, 0.85)
-
-  --header-bg: rgba(10, 13, 18, 0.64)
-  --overlay: rgba(0, 0, 0, 0.65)
+  --header-bg: rgba(11, 12, 10, 0.82)
+  --overlay: rgba(6, 7, 5, 0.96)
 
   color-scheme: dark
 
@@ -138,7 +147,7 @@ html:focus-within
 body
   font-family: var(--font-body)
   font-size: var(--step-0)
-  line-height: 1.65
+  line-height: 1.6
   color: var(--ink)
   background-color: var(--bg)
   -webkit-font-smoothing: antialiased
@@ -147,26 +156,30 @@ body
 h1, h2, h3, h4, h5, h6, .font-display
   font-family: var(--font-display)
   font-weight: 600
-  line-height: 1.1
-  letter-spacing: -0.02em
+  line-height: 1.05
+  letter-spacing: -0.03em
   color: var(--ink)
 
 p
   margin: 0 0 1rem
 
 a
-  color: var(--brand)
+  color: var(--ink)
   text-decoration-color: var(--brand-line)
-  text-underline-offset: 3px
+  text-underline-offset: 4px
+  text-decoration-thickness: 1px
 
 ::selection
-  background: var(--brand-soft)
-  color: var(--ink)
+  background: var(--acc)
+  color: var(--acc-ink)
 
 *:focus-visible
-  outline: 2px solid var(--brand-vivid)
+  outline: 2px solid var(--ink)
   outline-offset: 3px
-  border-radius: 4px
+  border-radius: 2px
+
+body.body--dark *:focus-visible
+  outline-color: var(--acc)
 
 img
   max-width: 100%
@@ -177,49 +190,56 @@ img
   width: 100%
   max-width: var(--container)
   margin-inline: auto
-  padding-inline: clamp(1rem, 4vw, 2rem)
+  padding-inline: var(--gutter)
 
 .container--narrow
   max-width: var(--container-narrow)
 
 .section
-  padding-block: clamp(3rem, 7vw, 6rem)
+  padding-block: clamp(3.5rem, 7vw, 7rem)
 
 .section--tight
-  padding-block: clamp(2rem, 4vw, 3.5rem)
+  padding-block: clamp(2.5rem, 5vw, 4.5rem)
 
+// Méta en monospace : tout ce qui n'est ni titre ni texte courant (numéros,
+// libellés de section, tags, légendes).
+.mono
+  font-family: var(--font-mono)
+  font-size: var(--step--1)
+  font-weight: 500
+  letter-spacing: 0.1em
+  text-transform: uppercase
+
+// Libellé de section, précédé d'un tiret plutôt que d'une pastille.
 .eyebrow
   display: inline-flex
   align-items: center
-  gap: 0.55rem
-  margin: 0 0 1rem
-  padding: 0.3rem 0.85rem 0.3rem 0.6rem
-  font-size: 0.78rem
-  font-weight: 600
-  letter-spacing: 0.08em
+  gap: 0.7rem
+  margin: 0 0 1.25rem
+  font-family: var(--font-mono)
+  font-size: var(--step--1)
+  font-weight: 500
+  letter-spacing: 0.14em
   text-transform: uppercase
-  color: var(--ink-2)
-  background: var(--brand-soft)
-  border: 1px solid var(--brand-line)
-  border-radius: var(--radius-pill)
+  color: var(--ink-3)
 
   &::before
     content: ''
-    width: 7px
-    height: 7px
-    border-radius: 50%
-    background: var(--brand-vivid)
-    box-shadow: 0 0 0 3px var(--brand-soft)
+    width: 1.75rem
+    height: var(--hairline)
+    background: var(--border-strong)
 
 .display
   font-size: var(--step-5)
   font-weight: 600
-  letter-spacing: -0.035em
-  line-height: 1.02
+  letter-spacing: -0.045em
+  line-height: 0.92
   margin: 0
 
 .title-xl
   font-size: var(--step-4)
+  letter-spacing: -0.04em
+  line-height: 0.98
   margin: 0
 
 .title-lg
@@ -230,23 +250,16 @@ img
   font-size: var(--step-2)
   margin: 0
 
-.text-gradient
-  background: var(--gradient)
-  -webkit-background-clip: text
-  background-clip: text
-  color: transparent
-
 .lead
   font-size: var(--step-1)
-  line-height: 1.6
+  line-height: 1.5
   color: var(--ink-2)
-  max-width: 60ch
+  max-width: 46ch
 
-// Chapô placé juste après un titre de page
 .display + .lead,
 .title-xl + .lead,
 .title-lg + .lead
-  margin-top: 1rem
+  margin-top: 1.5rem
 
 .muted
   color: var(--ink-3)
@@ -255,6 +268,7 @@ img
   max-width: 68ch
   color: var(--ink-2)
   font-size: var(--step-1)
+  line-height: 1.7
 
   strong
     color: var(--ink)
@@ -263,24 +277,15 @@ img
   a
     font-weight: 500
 
+// Carte : un rectangle, un filet, pas d'ombre au repos.
 .card
   position: relative
   background: var(--surface)
-  border: 1px solid var(--border)
+  border: var(--hairline) solid var(--border)
   border-radius: var(--radius)
-  box-shadow: var(--shadow-sm)
 
 .card--pad
-  padding: clamp(1.25rem, 3vw, 2rem)
-
-.card--interactive
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s, border-color 0.35s
-
-  &:hover,
-  &:focus-within
-    transform: translateY(-4px)
-    border-color: var(--brand-line)
-    box-shadow: var(--shadow-lg)
+  padding: clamp(1.5rem, 3vw, 2.5rem)
 
 // Lien qui recouvre toute une carte : la carte entière devient cliquable sans
 // imbriquer de contenu dans un <a> et sans casser la navigation clavier.
@@ -294,34 +299,30 @@ img
   display: inline-flex
   align-items: center
   gap: 0.35rem
-  padding: 0.2rem 0.6rem
-  font-size: 0.75rem
+  padding: 0.25rem 0.6rem
+  font-family: var(--font-mono)
+  font-size: 0.7rem
   font-weight: 500
-  letter-spacing: 0.01em
+  letter-spacing: 0.06em
+  text-transform: uppercase
   color: var(--ink-2)
-  background: var(--surface-2)
-  border: 1px solid var(--border)
+  background: transparent
+  border: var(--hairline) solid var(--border)
   border-radius: var(--radius-pill)
-
-.tag--brand
-  color: var(--brand)
-  background: var(--brand-soft)
-  border-color: var(--brand-line)
 
 // Monogramme, réutilisé par l'en-tête et le pied de page
 .brand__mark
   display: grid
   place-items: center
-  width: 34px
-  height: 34px
-  border-radius: 11px
-  font-family: var(--font-display)
-  font-weight: 600
-  font-size: 0.8rem
-  letter-spacing: 0.02em
-  color: var(--brand-on)
-  background: var(--gradient)
-  box-shadow: 0 6px 18px -8px var(--glow-a)
+  width: 30px
+  height: 30px
+  border-radius: var(--radius-sm)
+  font-family: var(--font-mono)
+  font-weight: 700
+  font-size: 0.72rem
+  letter-spacing: 0.04em
+  color: var(--acc-ink)
+  background: var(--acc)
 
 .icon-link
   display: grid
@@ -330,59 +331,60 @@ img
   height: 38px
   border-radius: 50%
   color: var(--ink-2)
-  border: 1px solid var(--border)
-  transition: color 0.25s, border-color 0.25s, transform 0.25s
+  border: var(--hairline) solid var(--border)
+  transition: color 0.3s, background 0.3s, border-color 0.3s
 
   &:hover
-    color: var(--brand)
-    border-color: var(--brand-line)
-    transform: translateY(-2px)
+    color: var(--acc-ink)
+    background: var(--acc)
+    border-color: transparent
 
-// Petit intertitre en capitales
 .overline
-  margin: 0 0 0.75rem
-  font-size: 0.78rem
-  font-weight: 600
-  letter-spacing: 0.1em
+  margin: 0 0 0.9rem
+  font-family: var(--font-mono)
+  font-size: var(--step--1)
+  font-weight: 500
+  letter-spacing: 0.14em
   text-transform: uppercase
   color: var(--ink-3)
 
-// En-tête de section : titre à gauche, action facultative à droite
+// En-tête de section : filet, numéro/libellé à gauche, titre + action ensuite.
 .section-head
   display: flex
   flex-wrap: wrap
   align-items: flex-end
   justify-content: space-between
-  gap: 1rem
-  margin-bottom: clamp(1.5rem, 3vw, 2.5rem)
-
-  .eyebrow
-    margin-bottom: 0.6rem
+  gap: 1.5rem
+  padding-top: 1.5rem
+  border-top: var(--hairline) solid var(--border-strong)
+  margin-bottom: clamp(2rem, 4vw, 3.5rem)
 
 .chip-link
   display: inline-flex
   align-items: center
-  gap: 0.4rem
-  padding: 0.35rem 0.8rem
-  font-size: 0.85rem
-  font-weight: 500
+  gap: 0.5rem
+  padding: 0.4rem 0.85rem
+  font-family: var(--font-mono)
+  font-size: 0.75rem
+  letter-spacing: 0.04em
   color: var(--ink-2)
-  background: var(--surface-2)
-  border: 1px solid var(--border)
+  background: transparent
+  border: var(--hairline) solid var(--border)
   border-radius: var(--radius-pill)
   text-decoration: none
-  transition: color 0.2s, border-color 0.2s, transform 0.2s
+  transition: color 0.3s, background 0.3s, border-color 0.3s
 
   .q-icon
     color: var(--ink-3)
+    transition: color 0.3s
 
   &:hover
-    color: var(--brand)
-    border-color: var(--brand-line)
-    transform: translateY(-2px)
+    color: var(--acc-ink)
+    background: var(--acc)
+    border-color: transparent
 
     .q-icon
-      color: var(--brand)
+      color: var(--acc-ink)
 
 .link-button
   padding: 0
@@ -392,16 +394,20 @@ img
   font: inherit
   cursor: pointer
   text-align: left
+  text-decoration: underline
+  text-decoration-color: var(--border)
+  text-underline-offset: 4px
 
   &:hover
-    color: var(--brand)
+    color: var(--ink)
+    text-decoration-color: var(--acc)
 
 .grid
   display: grid
-  gap: clamp(1rem, 2.5vw, 1.75rem)
+  gap: clamp(1rem, 2vw, 1.5rem)
 
 .grid--cards
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr))
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr))
 
 .cluster
   display: flex
@@ -409,105 +415,265 @@ img
   gap: 0.6rem
 
 // Boutons : on garde q-btn pour le ripple et l'accessibilité, on remplace
-// entièrement son habillage Material.
+// entièrement son habillage Material. Le libellé est en monospace, la flèche
+// avance au survol.
 .app-btn.q-btn
-  font-family: var(--font-body)
-  font-weight: 600
-  font-size: 0.95rem
-  letter-spacing: 0
+  font-family: var(--font-mono)
+  font-weight: 500
+  font-size: 0.78rem
+  letter-spacing: 0.12em
+  text-transform: uppercase
   border-radius: var(--radius-pill)
-  padding: 0.7rem 1.4rem
+  padding: 0.85rem 1.5rem
   min-height: 0
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s, background 0.25s, border-color 0.25s
+  transition: color 0.3s, background 0.3s, border-color 0.3s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)
 
   .q-btn__content
-    gap: 0.5rem
+    gap: 0.7rem
+
+  .q-icon
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)
+
+  &:hover .q-icon
+    transform: translateX(3px)
+
+.app-btn--primary.q-btn
+  color: var(--acc-ink)
+  background: var(--acc)
 
   &:hover
     transform: translateY(-2px)
 
-.app-btn--primary.q-btn
-  color: var(--brand-on)
-  background: var(--brand)
-  box-shadow: 0 10px 24px -12px var(--glow-a)
-
-  &:hover
-    box-shadow: 0 16px 32px -12px var(--glow-a)
-
 .app-btn--ghost.q-btn
   color: var(--ink)
   background: transparent
-  border: 1px solid var(--border-strong)
+  border: var(--hairline) solid var(--border-strong)
 
   &:hover
-    border-color: var(--brand-line)
-    background: var(--brand-soft)
+    color: var(--acc-ink)
+    background: var(--acc)
+    border-color: transparent
 
 .app-btn--quiet.q-btn
   color: var(--ink-2)
-  padding-inline: 0.75rem
+  padding-inline: 0.5rem
 
   &:hover
-    color: var(--brand)
+    color: var(--ink)
 
-// Décor : nappes de couleur floutées, sans image ni librairie.
-.aurora
+// Décor : guides de colonnes, en filets. Remplace les nappes floutées, qui
+// coûtaient trois `filter: blur(90px)` animés en permanence.
+.grid-guides
   position: absolute
   inset: 0
-  overflow: hidden
-  pointer-events: none
   z-index: 0
+  pointer-events: none
+  display: grid
+  grid-template-columns: repeat(4, 1fr)
+  max-width: var(--container)
+  margin-inline: auto
+  padding-inline: var(--gutter)
 
-  &::before,
-  &::after
-    content: ''
-    position: absolute
-    width: 46rem
-    height: 46rem
-    border-radius: 50%
-    filter: blur(90px)
-    opacity: 0.75
+  span
+    border-left: var(--hairline) solid var(--border)
+    opacity: 0.6
 
-  &::before
-    top: -22rem
-    left: -14rem
-    background: radial-gradient(circle at 30% 30%, var(--glow-a), transparent 62%)
-    animation: drift-a 26s ease-in-out infinite alternate
+    &:last-child
+      border-right: var(--hairline) solid var(--border)
 
-  &::after
-    top: -16rem
-    right: -18rem
-    background: radial-gradient(circle at 70% 30%, var(--glow-b), transparent 62%)
-    animation: drift-b 32s ease-in-out infinite alternate
+  @media (max-width: 720px)
+    grid-template-columns: repeat(2, 1fr)
 
-@keyframes drift-a
+// Index numéroté : la présentation type des projets. Chaque ligne est un
+// filet, un numéro, un titre qui se décale au survol.
+.idx
+  margin: 0
+  padding: 0
+  list-style: none
+  border-top: var(--hairline) solid var(--border)
+
+.idx__row
+  position: relative
+  border-bottom: var(--hairline) solid var(--border)
+
+.idx__link
+  position: relative
+  z-index: 1
+  display: grid
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto
+  align-items: center
+  gap: clamp(0.75rem, 2vw, 2rem)
+  padding-block: clamp(1.1rem, 2.2vw, 1.9rem)
+  color: var(--ink)
+  text-decoration: none
+  transition: color 0.35s
+
+  @media (max-width: 720px)
+    grid-template-columns: 2.75rem minmax(0, 1fr)
+
+// Aplat qui monte depuis le bas au survol : la ligne entière s'inverse.
+.idx__row::before
+  content: ''
+  position: absolute
+  inset: 0
+  background: var(--acc)
+  transform: scaleY(0)
+  transform-origin: 50% 100%
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)
+
+.idx__row:hover::before,
+.idx__row:focus-within::before
+  transform: scaleY(1)
+
+.idx__row:hover .idx__link,
+.idx__row:focus-within .idx__link
+  color: var(--acc-ink)
+
+.idx__num
+  font-family: var(--font-mono)
+  font-size: var(--step--1)
+  color: var(--ink-3)
+  transition: color 0.35s
+
+.idx__row:hover .idx__num,
+.idx__row:focus-within .idx__num
+  color: var(--acc-ink)
+
+.idx__name
+  font-family: var(--font-display)
+  font-size: clamp(1.4rem, 3.2vw, 2.6rem)
+  font-weight: 500
+  letter-spacing: -0.035em
+  line-height: 1
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)
+
+.idx__row:hover .idx__name,
+.idx__row:focus-within .idx__name
+  transform: translateX(clamp(0.5rem, 1.5vw, 1.25rem))
+
+.idx__meta
+  display: flex
+  align-items: center
+  gap: 1.25rem
+  font-family: var(--font-mono)
+  font-size: var(--step--1)
+  letter-spacing: 0.08em
+  text-transform: uppercase
+  color: var(--ink-3)
+  transition: color 0.35s
+
+  @media (max-width: 720px)
+    display: none
+
+.idx__row:hover .idx__meta,
+.idx__row:focus-within .idx__meta
+  color: var(--acc-ink)
+
+// Vignette du survol : suit le curseur, masquée sous 900px et sans pointeur
+// fin (l'aperçu n'aurait aucun déclencheur au tactile).
+//
+// Deux éléments imbriqués, et non un seul : le conteneur est déplacé par une
+// transform posée en JS à chaque image, l'intérieur porte l'apparition. Sur un
+// même nœud, la transform inline écraserait celle de la feuille de style.
+.idx__preview
+  position: fixed
+  top: 0
+  left: 0
+  z-index: 60
+  width: 20rem
+  margin-left: -10rem
+  margin-top: -6.875rem
+  pointer-events: none
+  will-change: transform
+
+  @media (max-width: 900px), (pointer: coarse)
+    display: none
+
+.idx__preview-inner
+  aspect-ratio: 16 / 11
+  overflow: hidden
+  border-radius: var(--radius)
+  border: var(--hairline) solid var(--border-strong)
+  background: var(--surface-2)
+  box-shadow: var(--shadow-lg)
+  opacity: 0
+  transform: scale(0.94)
+  transition: opacity 0.3s, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)
+
+  img
+    width: 100%
+    height: 100%
+    object-fit: cover
+    object-position: top center
+
+.idx__preview.is-visible .idx__preview-inner
+  opacity: 1
+  transform: scale(1)
+
+// Partout où l'aperçu flottant est désactivé, la vignette revient dans la
+// ligne : les deux media queries doivent rester identiques, faute de quoi une
+// tablette n'aurait ni l'un ni l'autre.
+.idx__thumb
+  display: none
+  grid-column: 2
+  margin-top: 0.85rem
+  aspect-ratio: 16 / 9
+  overflow: hidden
+  border-radius: var(--radius-sm)
+  border: var(--hairline) solid var(--border)
+
+  img
+    width: 100%
+    height: 100%
+    object-fit: cover
+    object-position: top center
+
+  @media (max-width: 900px), (pointer: coarse)
+    display: block
+
+// Apparition à l'entrée dans le viewport. L'état initial n'est posé que si JS
+// a pris la main (html.has-reveal), pour ne jamais masquer le contenu sinon.
+.has-reveal [data-reveal]
+  opacity: 0
+  transform: translate3d(0, 1.5rem, 0)
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)
+  transition-delay: var(--d, 0s)
+
+.has-reveal [data-reveal].is-in
+  opacity: 1
+  transform: none
+
+// Révélation ligne à ligne d'un titre : la ligne monte derrière un masque.
+// Le padding évite que le masque ne rogne accents et jambages ; la marge
+// négative le reprend pour que l'interlignage reste celui du titre.
+.reveal-line
+  display: block
+  overflow: hidden
+  padding-block: 0.08em 0.16em
+  margin-block: -0.08em -0.16em
+
+  > span
+    display: block
+    animation: line-up 1s cubic-bezier(0.16, 1, 0.3, 1) both
+    animation-delay: var(--d, 0s)
+
+@keyframes line-up
   from
-    transform: translate3d(0, 0, 0) scale(1)
+    transform: translate3d(0, 100%, 0)
   to
-    transform: translate3d(6rem, 4rem, 0) scale(1.12)
-
-@keyframes drift-b
-  from
-    transform: translate3d(0, 0, 0) scale(1.08)
-  to
-    transform: translate3d(-5rem, 3rem, 0) scale(1)
-
-// Apparition au chargement, décalée par --d
-.reveal
-  animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both
-  animation-delay: var(--d, 0s)
-
-@keyframes reveal-up
-  from
-    opacity: 0
-    transform: translate3d(0, 14px, 0)
-  to
-    opacity: 1
     transform: none
 
 // Transition entre les routes
 .page-fade-enter-active
-  animation: reveal-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both
+  animation: page-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both
+
+@keyframes page-in
+  from
+    opacity: 0
+    transform: translate3d(0, 10px, 0)
+  to
+    opacity: 1
+    transform: none
 
 .skip-link
   position: absolute
@@ -515,11 +681,15 @@ img
   top: 0.5rem
   z-index: 9000
   padding: 0.6rem 1rem
-  border-radius: var(--radius-pill)
-  background: var(--surface)
-  color: var(--ink)
-  border: 1px solid var(--border-strong)
-  transform: translateY(-160%)
+  border-radius: var(--radius-sm)
+  background: var(--acc)
+  color: var(--acc-ink)
+  font-family: var(--font-mono)
+  font-size: 0.75rem
+  text-transform: uppercase
+  letter-spacing: 0.1em
+  text-decoration: none
+  transform: translateY(-200%)
   transition: transform 0.2s
 
   &:focus
@@ -530,25 +700,52 @@ img
 .q-page
   position: relative
 
+// Champs : le contour Material est deux fois plus épais que les filets du
+// site. On le ramène à la même valeur, l'encre pleine ne servant qu'au focus.
 .q-field--outlined .q-field__control
   border-radius: var(--radius-sm)
+
+  &::before
+    border-width: var(--hairline)
+    border-color: var(--border-strong)
+
+  &::after
+    border-width: var(--hairline)
+    border-color: var(--ink)
+
+.q-field--outlined:hover .q-field__control::before
+  border-color: var(--ink-3)
+
+.q-field--outlined.q-field--focused .q-field__control::before
+  border-color: transparent
 
 .q-field__native, .q-field__prefix, .q-field__suffix, .q-field__input
   color: var(--ink)
 
+.q-field__label
+  font-family: var(--font-mono)
+  font-size: 0.8rem
+  letter-spacing: 0.06em
+  color: var(--ink-3)
+
 .q-tooltip
-  font-size: 0.78rem
+  font-family: var(--font-mono)
+  font-size: 0.72rem
+  letter-spacing: 0.04em
   border-radius: var(--radius-xs)
   background: var(--ink)
   color: var(--bg)
 
 .q-notification
   border-radius: var(--radius-sm)
+  font-family: var(--font-mono)
+  font-size: 0.8rem
 
 .grecaptcha-badge
   visibility: hidden
 
-// Respect des préférences système : plus aucune animation décorative.
+// Respect des préférences système : plus aucune animation décorative, et les
+// éléments révélés au scroll restent visibles.
 @media (prefers-reduced-motion: reduce)
   html:focus-within
     scroll-behavior: auto
@@ -559,3 +756,7 @@ img
     animation-duration: 0.001ms !important
     animation-iteration-count: 1 !important
     transition-duration: 0.001ms !important
+
+  .has-reveal [data-reveal]
+    opacity: 1
+    transform: none

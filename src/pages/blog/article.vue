@@ -13,10 +13,10 @@
       />
 
       <p class="overline">{{ $t('blog.reading_time', { minutes }) }}</p>
-      <h1 class="title-xl reveal" v-html="$t('blogPost1.title')"></h1>
-      <p class="lead reveal" style="--d: 0.06s" v-html="$t('blogPost1.title2')"></p>
+      <h1 class="title-xl article__title" v-html="$t('blogPost1.title')"></h1>
+      <p class="lead" data-reveal style="--d: 0.06s" v-html="$t('blogPost1.title2')"></p>
 
-      <figure class="article__cover reveal" style="--d: 0.1s">
+      <figure class="article__cover" data-reveal style="--d: 0.1s">
         <button type="button" class="article__zoom" :aria-label="$t('blog.zoom')" @click="imageDialog = true">
           <img :src="cover" :alt="$t('blogPost1.title')" loading="lazy" decoding="async" />
           <q-icon name="fullscreen" size="24px" />
@@ -38,7 +38,7 @@
         </section>
       </div>
 
-      <aside class="card card--pad article__newsletter">
+      <aside class="article__newsletter">
         <h2 class="title-md">{{ $t('blogPost1.incentive') }}</h2>
 
         <div v-if="loading" class="article__loading">
@@ -83,6 +83,7 @@
 <script>
 import { api } from '@/boot/axios'
 import { usePageMeta } from '@/composables/use-page-meta'
+import { useReveal } from '@/composables/use-reveal'
 import { trackEvent } from '@/utils/analytics'
 import { isValidEmail } from '@/utils/validation'
 import cover from '@/assets/gc_info_fr.webp'
@@ -97,6 +98,7 @@ export default {
       descriptionKey: 'seo.blog.description',
       path: '/blog/article'
     })
+    useReveal()
   },
   data() {
     return {
@@ -196,16 +198,16 @@ export default {
   right: 0
   z-index: 2000
   height: 2px
-  background: var(--gradient)
+  background: var(--acc)
   transform-origin: 0 50%
   will-change: transform
 
 .article__back
-  margin-bottom: 1.5rem
-  margin-left: -0.75rem
+  margin-bottom: 2rem
+  margin-left: -0.5rem
 
-.article .title-xl
-  margin-bottom: 1rem
+.article__title
+  margin-bottom: 1.25rem
 
 .article__cover
   margin: 2.5rem 0 0
@@ -215,7 +217,7 @@ export default {
   display: block
   width: 100%
   padding: 0
-  border: 1px solid var(--border)
+  border: var(--hairline) solid var(--border)
   border-radius: var(--radius)
   background: var(--surface-2)
   overflow: hidden
@@ -249,22 +251,33 @@ export default {
       opacity: 1
 
 .article__prose
-  margin-top: 3rem
+  margin-top: 3.5rem
 
   h2
-    margin: 3rem 0 1rem
-    font-size: var(--step-3)
+    margin: 3.5rem 0 1.25rem
+    font-size: var(--step-2)
+    letter-spacing: -0.025em
 
   p
-    margin-bottom: 1.25rem
+    margin-bottom: 1.35rem
 
-  // « Green Coding » est le fil rouge de l'article : on le marque à la couleur
-  // de marque plutôt qu'au gras seul.
+  // « Green Coding » est le fil rouge de l'article : on le surligne plutôt que
+  // de le mettre en couleur, qui plafonnerait le contraste.
   strong
-    color: var(--brand)
+    color: var(--ink)
+    background: linear-gradient(transparent 66%, var(--acc-soft) 66%)
 
-.article__section:first-child h2
-  margin-top: 0
+// Chaque section est introduite par un filet : le texte long reste rythmé.
+.article__section
+  padding-top: 0.5rem
+  border-top: var(--hairline) solid var(--border)
+
+  &:first-child
+    padding-top: 0
+    border-top: 0
+
+    h2
+      margin-top: 0
 
 .article__illustration
   display: block
@@ -275,10 +288,13 @@ export default {
   opacity: 0.9
 
 .article__newsletter
-  margin-top: 4rem
+  margin-top: 4.5rem
+  padding-top: clamp(1.5rem, 3vw, 2.25rem)
+  border-top: var(--hairline) solid var(--border-strong)
 
   h2
-    margin: 0 0 1.25rem
+    margin: 0 0 1.5rem
+    max-width: 34ch
 
 .article__form
   display: flex

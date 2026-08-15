@@ -1,28 +1,33 @@
 <template>
   <q-page class="contact">
-    <section class="section container">
-      <div class="aurora" aria-hidden="true"></div>
+    <div class="grid-guides" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
 
+    <section class="section container contact__section">
       <div class="contact__grid">
-        <div class="contact__intro reveal">
+        <div class="contact__intro">
           <p class="eyebrow">{{ $t('contact.eyebrow') }}</p>
-          <h1 class="title-xl">{{ $t('contact.title') }}</h1>
-          <p class="lead">{{ $t('contact.lead') }}</p>
+          <h1 class="display contact__title">
+            <span class="reveal-line"><span>{{ $t('contact.title') }}</span></span>
+          </h1>
+          <p class="lead" data-reveal style="--d: 0.15s">{{ $t('contact.lead') }}</p>
 
-          <ul class="contact__links">
+          <ul class="contact__links" data-reveal style="--d: 0.25s">
             <li v-for="link in socialLinks" :key="link.id">
               <a class="chip-link" :href="link.url" target="_blank" rel="noopener">
-                <q-icon :name="link.icon" size="15px" />
+                <q-icon :name="link.icon" size="14px" />
                 {{ link.label }}
+                <span class="muted">{{ link.handle }}</span>
               </a>
             </li>
           </ul>
         </div>
 
-        <div class="card card--pad contact__card reveal" style="--d: 0.08s">
+        <div class="contact__card" data-reveal style="--d: 0.1s">
           <div v-if="loading" class="contact__loading">
-            <q-spinner-pie color="primary" size="2.5em" />
-            <p class="muted">{{ $t('contact.sending') }}</p>
+            <q-spinner-pie color="primary" size="2em" />
+            <p class="mono muted">{{ $t('contact.sending') }}</p>
           </div>
 
           <q-form v-else class="contact__form" @submit="onSubmit" @reset="onReset">
@@ -54,7 +59,7 @@
               lazy-rules
               autogrow
               :label="$t('contact.message')"
-              :input-style="{ minHeight: '110px' }"
+              :input-style="{ minHeight: '120px' }"
               :rules="[
                 val => (val && val.length > 0) || $t('contact.please_type'),
                 val => val.length < 5120 || val.length + '/5120'
@@ -67,7 +72,7 @@
                 no-caps
                 unelevated
                 type="submit"
-                icon-right="send"
+                icon-right="arrow_forward"
                 :label="$t('contact.submit')"
               />
               <q-btn class="app-btn app-btn--quiet" no-caps flat type="reset" :label="$t('contact.reset')" />
@@ -94,6 +99,7 @@
 <script>
 import { api } from '@/boot/axios'
 import { usePageMeta } from '@/composables/use-page-meta'
+import { useReveal } from '@/composables/use-reveal'
 import socialLinks from '@/data/links'
 import { trackEvent } from '@/utils/analytics'
 import { isValidEmail } from '@/utils/validation'
@@ -106,6 +112,7 @@ export default {
       descriptionKey: 'seo.contact.description',
       path: '/contact'
     })
+    useReveal()
   },
   data() {
     return {
@@ -137,7 +144,7 @@ export default {
         trackEvent('contact_message_sent')
         this.onReset()
         this.$q.notify({
-          color: 'green-4',
+          color: 'positive',
           textColor: 'white',
           icon: 'cloud_done',
           message: this.$t('contact.sent')
@@ -145,8 +152,8 @@ export default {
       } catch (error) {
         trackEvent('contact_message_failed')
         this.$q.notify({
-          color: 'red-4',
-          textColor: 'black',
+          color: 'negative',
+          textColor: 'white',
           icon: 'cloud_off',
           message: this.$t('contact.not_sent')
         })
@@ -166,44 +173,51 @@ export default {
 </script>
 
 <style lang="sass">
-.contact .section
+.contact
   position: relative
-  display: flex
-  align-items: center
-  min-height: calc(100vh - var(--header-height) - 6rem)
   overflow: hidden
 
-.contact__grid
-  width: 100%
+.contact__section
   position: relative
   z-index: 1
+
+.contact__grid
   display: grid
-  gap: clamp(1.5rem, 4vw, 3.5rem)
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr)
+  gap: clamp(2rem, 5vw, 5rem)
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr)
   align-items: start
 
-  @media (max-width: 900px)
+  @media (max-width: 960px)
     grid-template-columns: 1fr
 
-.contact__intro
-  .lead
-    margin-bottom: 2rem
+.contact__title
+  max-width: 12ch
+  margin-bottom: 1.5rem
 
 .contact__links
   display: flex
   flex-wrap: wrap
-  gap: 0.6rem
-  margin: 0
+  gap: 0.5rem
+  margin: 2.5rem 0 0
   padding: 0
   list-style: none
+
+  .muted
+    font-size: 0.7rem
+
+// Le formulaire est posé sur un filet, pas dans une boîte : moins d'encre,
+// et il se fond dans la colonne éditoriale.
+.contact__card
+  padding-top: 1.5rem
+  border-top: var(--hairline) solid var(--border-strong)
 
 .contact__form
   display: flex
   flex-direction: column
-  gap: 0.35rem
+  gap: 0.25rem
 
 .contact__actions
-  margin-top: 0.75rem
+  margin-top: 1rem
 
 .contact__loading
   display: flex
@@ -214,5 +228,6 @@ export default {
 
 .contact__disclaimer
   margin: 1.5rem 0 0
-  font-size: 0.8rem
+  font-size: 0.78rem
+  line-height: 1.5
 </style>
