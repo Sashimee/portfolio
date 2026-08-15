@@ -4,40 +4,61 @@ export default {
   layout: {
     language: "Language",
     home: "Home",
-    home_tooltip: "Navigate Home",
     about: "About",
-    about_tooltip: "Know more about me",
     blog: "Blog",
-    blog_tooltip: "Read my articles",
     projects: "Projects",
-    projects_tooltip: "Explore my projects",
     contact: "Contact",
-    contact_tooltip: "Contact me"
+    menu: "Menu",
+    close: "Close",
+    theme: "Switch theme",
+    skip: "Skip to content"
   },
   home: {
+    eyebrow: "Green coding",
     hi: "Hi, I'm Alex,",
     designation: "a tech and ecology enthusiast",
     detail_1:
       "IT is my passion and I love working on projects that align with my values.",
     detail_2:
       "My goal? To combine technology and ecology for a greener future.",
-    more: "More...",
-    more_tooltip: "Get to know me better"
+    more: "More about me",
+    featured_eyebrow: "Selected work",
+    featured_title: "Projects that are live",
+    featured_all: "All projects"
   },
   about: {
+    eyebrow: "About",
+    title: "Full stack developer, mindful of what code costs",
     paragraph_1:
       "I'm convinced that technology can play a major role in combating climate change. That's why I've specialized in '<strong>Green Coding</strong>', an approach aimed at reducing the carbon footprint of the IT sector.",
     paragraph_2:
       "Born in '86, I've always been fascinated by IT. As a self-taught individual, I've gained much of my knowledge by working on personal projects and exploring different areas of IT.",
-    list_label: "Here's what motivates me:",
+    stack_eyebrow: "Stack",
+    list_label: "The tools I work with",
+    groups: {
+      frontend: "Front-end",
+      backend: "Back-end",
+      infra: "Infrastructure",
+      tools: "Tooling"
+    },
+    elsewhere: "Find me",
+    cta_title: "Shall we talk?",
     incentive:
       "You can discover more by contacting me or taking a look at my personal projects:"
   },
-  blog: {},
+  blog: {
+    eyebrow: "Writing",
+    lead: "Notes on green coding, sustainable IT and web development.",
+    read: "Read the article",
+    reading_time: "{minutes} min read",
+    zoom: "Enlarge the image"
+  },
   projects: {
-    visit: "Visit the project {name}",
+    eyebrow: "Work",
+    lead: "Live sites, templates and archived experiments.",
     back: "Back to projects",
-    details: "Show project details",
+    preview: "Demo",
+    open: "Open in a new tab",
     categories: {
       label: "Category",
       all: "All",
@@ -65,13 +86,15 @@ export default {
     }
   },
   contact: {
+    eyebrow: "Contact",
+    title: "Let's talk about your project",
+    lead: "A question, an idea, an urge to collaborate? Drop me a line.",
+    sending: "Sending…",
     name: "Your name *",
     email: "Your email *",
     message: "Your message *",
     submit: "Submit",
-    submit_tooltip: "Send the form",
     reset: "Reset",
-    reset_tooltip: "Reset the form",
     disclaimer_start: "This site is protected by reCAPTCHA and the Google ",
     disclaimer_link_1: "Privacy Policy",
     disclaimer_middle: " and ",
@@ -83,6 +106,27 @@ export default {
     invalid_email: "Invalid email",
     sent: "Message sent",
     not_sent: "The message could not be sent, please try again later"
+  },
+  consent: {
+    title: "Cookies & analytics",
+    body:
+      "This site uses functional cookies and, if you agree to it, analytics cookies. Your choice is kept for one year.",
+    more: "Learn more",
+    accept: "Accept all",
+    essential: "Essential only",
+    legal_title: "Legal info & settings",
+    settings: "Settings",
+    tracking_label: "Analytics cookies",
+    tracking_hint: "Google Analytics is only loaded when this option is on.",
+    revoke: "Withdraw my consent"
+  },
+  footer: {
+    tagline:
+      "Full stack web developer, green coding and sustainable IT enthusiast.",
+    navigate: "Navigate",
+    elsewhere: "Elsewhere",
+    legal: "Legal info & cookies",
+    built: "Built with Vue 3 & Quasar"
   },
   blogPost1: {
     link: "/blog/article",
@@ -181,14 +225,12 @@ export default {
   },
   notFound: {
     message: "Oops. Nothing here...",
+    hint: "The page may have moved, or the address contains a typo.",
     home: "Go Home"
   },
   buttons: {
-    projects: "My Projects",
-    projects_tooltip: "Explore my projects",
-    contact: "Contact Me",
-    contact_tooltip: "Get in touch",
-    blog: "Blog",
-    blog_tooltip: "Visit my blog"
+    projects: "My projects",
+    contact: "Contact me",
+    blog: "The blog"
   }
 };

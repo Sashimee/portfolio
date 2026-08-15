@@ -14,7 +14,9 @@ export default defineConfig(ctx => {
     css: ['app.sass'],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
-    extras: ['roboto-font', 'material-icons', 'fontawesome-v7'],
+    // Roboto n'est plus chargé : la typographie courante utilise la pile
+    // système et Lexend (auto-hébergé) pour les titres.
+    extras: ['material-icons', 'fontawesome-v7'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#build
     build: {
@@ -62,7 +64,9 @@ export default defineConfig(ctx => {
       plugins: ['AddressbarColor', 'Notify', 'Cookies', 'Meta', 'LocalStorage']
     },
 
+    // Les transitions sont écrites à la main dans src/css/app.sass :
+    // plus besoin d'embarquer animate.css en entier.
     // https://v2.quasar.dev/options/animations
-    animations: 'all'
+    animations: []
   }
 })

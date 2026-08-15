@@ -7,7 +7,7 @@
  * inside Projects.vue, once per locale-dependent computed.
  *
  * `target: "internal"` points to /public/projects_folder/<link>,
- * "external" to a full URL. Screenshots live in /public/screenshots/<img>.png.
+ * "external" to a full URL. Screenshots live in /public/screenshots/<img>.webp.
  */
 export const PROJECT_CATEGORIES = ['live', 'template', 'archive']
 

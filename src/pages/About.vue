@@ -1,181 +1,186 @@
 <template>
-  <q-page class="flex flex-center column q-mt-xs q-mb-md q-pa-sm">
-    <div class="column justify-start chips_list q-ml-sm q-mr-sm">
-      <div class="paragraphs" v-html="$t('about.paragraph_1')"></div>
-      <div class="paragraphs" v-html="$t('about.paragraph_2')"></div>
-      <div class="paragraphs" v-html="$t('about.list_label')"></div>
-    </div>
-    <div class="row justify-center chips_list">
-      <q-chip
-        v-for="tool in tools_list"
-        v-bind:key="tool.label"
-        clickable
-        size="12px"
-        color="accent"
-        class="text-black"
-        :icon="tool.icon"
-        @click.prevent="goto(tool.link)"
-      >
-        {{ tool.label
-        }}<q-tooltip
-          class="bg-accent text-black"
-          :offset="[10, 10]"
-          :delay="1000"
-          transition-show="flip-right"
-          transition-hide="flip-right"
-        >
-          Know more about {{ tool.label }}
-        </q-tooltip>
-      </q-chip>
-    </div>
-    <div
-      class="column justify-start chips_list q-ml-sm q-mr-sm q-mt-md q-mb-md"
-    >
-    <div class="paragraphs" v-html="$t('about.incentive')"></div>
-      <div class="row flex-center">
-        <q-btn push class="action_button" :label="$t('buttons.projects')" to="/projects"
-          ><q-tooltip
-            class="bg-accent text-black"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
+  <q-page class="about">
+    <section class="section container about__intro">
+      <div class="aurora" aria-hidden="true"></div>
+
+      <div class="about__grid">
+        <div>
+          <p class="eyebrow reveal">{{ $t('about.eyebrow') }}</p>
+          <h1 class="title-xl reveal" style="--d: 0.05s">{{ $t('about.title') }}</h1>
+          <div class="prose about__prose reveal" style="--d: 0.1s">
+            <p v-html="$t('about.paragraph_1')"></p>
+            <p v-html="$t('about.paragraph_2')"></p>
+          </div>
+        </div>
+
+        <aside class="card card--pad about__aside reveal" style="--d: 0.16s">
+          <h2 class="overline">{{ $t('about.elsewhere') }}</h2>
+          <a
+            v-for="link in socialLinks"
+            :key="link.id"
+            class="about__link"
+            :href="link.url"
+            target="_blank"
+            rel="noopener"
           >
-          {{ $t("buttons.projects_tooltip") }}
-          </q-tooltip></q-btn
-        >
-        <q-btn push class="action_button" :label="$t('buttons.blog')" to="/blog"
-        ><q-tooltip
-          class="bg-accent text-black"
-          :offset="[10, 10]"
-          :delay="1000"
-          transition-show="flip-right"
-          transition-hide="flip-right"
-        >
-          {{ $t("buttons.blog_tooltip") }}
-        </q-tooltip></q-btn
-      >
-        <q-btn push class="action_button" :label="$t('buttons.contact')" to="/contact"
-          ><q-tooltip
-            class="bg-accent text-black"
-            :offset="[10, 10]"
-            :delay="1000"
-            transition-show="flip-right"
-            transition-hide="flip-right"
-          >
-          {{ $t("buttons.contact_tooltip") }}
-          </q-tooltip></q-btn
-        >
+            <q-icon :name="link.icon" size="18px" />
+            <span>
+              <strong>{{ link.label }}</strong>
+              <span class="muted">{{ link.handle }}</span>
+            </span>
+            <q-icon class="about__link-arrow" name="north_east" size="16px" />
+          </a>
+
+          <q-btn
+            class="app-btn app-btn--primary full-width q-mt-md"
+            no-caps
+            unelevated
+            to="/contact"
+            :label="$t('buttons.contact')"
+          />
+        </aside>
       </div>
-    </div>
+    </section>
+
+    <section class="section--tight container">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">{{ $t('about.stack_eyebrow') }}</p>
+          <h2 class="title-lg">{{ $t('about.list_label') }}</h2>
+        </div>
+      </header>
+
+      <div class="grid grid--cards">
+        <div v-for="group in groups" :key="group.id" class="card card--pad">
+          <h3 class="overline">{{ $t('about.groups.' + group.id) }}</h3>
+          <ul class="cluster about__chips">
+            <li v-for="item in group.items" :key="item.label">
+              <a class="chip-link" :href="item.link" target="_blank" rel="noopener">
+                <q-icon :name="item.icon" size="15px" />
+                {{ item.label }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container">
+      <div class="card card--pad about__cta">
+        <div>
+          <h2 class="title-lg">{{ $t('about.cta_title') }}</h2>
+          <p class="lead">{{ $t('about.incentive') }}</p>
+        </div>
+        <div class="cluster">
+          <q-btn
+            class="app-btn app-btn--primary"
+            no-caps
+            unelevated
+            to="/projects"
+            icon-right="arrow_forward"
+            :label="$t('buttons.projects')"
+          />
+          <q-btn class="app-btn app-btn--ghost" no-caps unelevated to="/blog" :label="$t('buttons.blog')" />
+        </div>
+      </div>
+    </section>
   </q-page>
 </template>
 
 <script>
-import { usePageMeta } from "@/composables/use-page-meta";
+import { usePageMeta } from '@/composables/use-page-meta'
+import socialLinks from '@/data/links'
+import stack, { STACK_GROUPS } from '@/data/stack'
 
 export default {
-  name: "PageAbout",
+  name: 'PageAbout',
   setup() {
     usePageMeta({
-      titleKey: "seo.about.title",
-      descriptionKey: "seo.about.description",
-      path: "/about"
-    });
+      titleKey: 'seo.about.title',
+      descriptionKey: 'seo.about.description',
+      path: '/about'
+    })
   },
   data() {
-    return {
-      tools_list: [
-        {
-          label: "Laravel",
-          icon: "fab fa-laravel",
-          link: "https://laravel.com/"
-        },
-        {
-          label: "VueJs",
-          icon: "fab fa-vuejs",
-          link: "https://vuejs.org/"
-        },
-        {
-          label: "Sass",
-          icon: "fab fa-sass",
-          link: "https://sass-lang.com/"
-        },
-        {
-          label: "HTML",
-          icon: "fab fa-html5",
-          link: "https://developer.mozilla.org/fr/docs/Web/Guide/HTML/HTML5"
-        },
-        {
-          label: "CSS",
-          icon: "fab fa-css3",
-          link: "https://developer.mozilla.org/fr/docs/Web/CSS"
-        },
-        {
-          label: "Javascript",
-          icon: "fab fa-js",
-          link: "https://developer.mozilla.org/fr/docs/Web/JavaScript"
-        },
-        {
-          label: "PHP",
-          icon: "fab fa-php",
-          link: "https://www.php.net/"
-        },
-        {
-          label: "Angular",
-          icon: "fab fa-angular",
-          link: "https://angular.io/"
-        },
-        {
-          label: "VSCode",
-          icon: "fab fa-microsoft",
-          link: "https://code.visualstudio.com/"
-        },
-        {
-          label: "GitHub",
-          icon: "fab fa-github",
-          link: "https://github.com/Sashimee"
-        },
-        {
-          label: "Wordpress",
-          icon: "fab fa-wordpress",
-          link: "https://wordpress.com/fr/"
-        },
-        {
-          label: "VMware",
-          icon: "fas fa-server",
-          link: "https://www.vmware.com/"
-        },
-        {
-          label: "Linux",
-          icon: "fab fa-linux",
-          link: "https://www.linux.org/"
-        },
-        {
-          label: "Mikrotik",
-          icon: "fas fa-network-wired",
-          link: "https://mikrotik.com/"
-        }
-      ]
-    };
+    return { socialLinks }
   },
-  methods: {
-    goto(link) {
-      window.open(link);
+  computed: {
+    groups() {
+      return STACK_GROUPS.map(id => ({
+        id,
+        items: stack.filter(item => item.group === id)
+      }))
     }
   }
-};
+}
 </script>
 
 <style lang="sass">
-.chips_list
-  max-width: 600px
+.about__intro
+  position: relative
+  overflow: hidden
 
-.action_button
-  margin: 1rem
-  background: color-mix(in srgb, $accent 82%, white)
-  color: black
+.about__grid
+  position: relative
+  z-index: 1
+  display: grid
+  gap: clamp(1.5rem, 4vw, 3rem)
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr)
+  align-items: start
 
-.paragraphs
-  padding-bottom: 1rem
+  @media (max-width: 900px)
+    grid-template-columns: 1fr
+
+.about__prose
+  margin-top: 1.5rem
+
+.about__aside
+  position: sticky
+  top: calc(var(--header-height) + 1.5rem)
+
+  @media (max-width: 900px)
+    position: static
+
+.about__link
+  display: flex
+  align-items: center
+  gap: 0.75rem
+  padding: 0.75rem 0
+  color: var(--ink)
+  text-decoration: none
+  border-bottom: 1px solid var(--border)
+
+  span
+    display: flex
+    flex-direction: column
+    line-height: 1.3
+    font-size: 0.9rem
+
+  strong
+    font-weight: 600
+
+  .about__link-arrow
+    margin-left: auto
+    color: var(--ink-3)
+
+  &:hover
+    color: var(--brand)
+
+    .about__link-arrow
+      color: var(--brand)
+
+.about__chips
+  margin: 0
+  padding: 0
+  list-style: none
+
+.about__cta
+  display: flex
+  flex-wrap: wrap
+  align-items: center
+  justify-content: space-between
+  gap: 1.5rem
+
+  .lead
+    margin: 0.75rem 0 0
 </style>

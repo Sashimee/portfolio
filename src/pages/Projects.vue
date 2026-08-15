@@ -1,146 +1,135 @@
 <template>
-  <q-page class="flex flex-start column">
-    <div class="row justify-center q-mt-xl">
-      <q-select class="my-card q-mt-xl" outlined v-model="categorySelect" :options="categories" dense emit-value
-        map-options :label="$t('projects.categories.label')">
-      </q-select>
-    </div>
-    <div class="q-pa-md row items-start justify-center">
-      <transition-group class="row items-start justify-center space-between" appear enter-active-class="animated pulse">
-        <q-card class="my-card" v-for="(project, p) in projectsList" :key="project.name">
-          <q-card-section class="info_chip">
-            <q-chip dense color="accent" icon="far fa-dot-circle">
-              <div class="text">{{ project.type }}</div>
-            </q-chip>
-          </q-card-section>
-          <q-img :src="'/screenshots/' + project.img + '.png'" :alt="project.name" @click="gotoProject(project)">
-            <q-tooltip class="bg-accent text-black" :offset="[10, 10]" :delay="1000" transition-show="flip-right"
-              transition-hide="flip-right">
-              {{ $t('projects.visit', { name: project.name }) }}
-            </q-tooltip>
-            <div class="absolute-bottom">
-              <div class="text-h6">{{ project.name }}</div>
-            </div>
-          </q-img>
+  <q-page class="projects">
+    <section class="section container">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow reveal">{{ $t('projects.eyebrow') }}</p>
+          <h1 class="title-xl reveal" style="--d: 0.05s">{{ $t('seo.projects.title') }}</h1>
+          <p class="lead reveal" style="--d: 0.1s">{{ $t('projects.lead') }}</p>
+        </div>
+      </header>
 
-          <q-card-actions>
-            <!-- Tags -->
-            <div class="ellipsis tags_list">
-              <span v-for="(tag, i) in project.tags" :key="i"><q-badge color="primary" class="q-mr-sm">
-                  {{ tag }}
-                </q-badge></span>
-            </div>
-            <q-space />
-            <q-btn class="detail_button" color="accent" round flat dense @click="expand(p)"
-              :aria-label="$t('projects.details')" :icon="expanded[p] ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
-              style="max-width: 40px; max-height: 40px;"></q-btn>
-          </q-card-actions>
-          <!-- expandable part with info about project -->
-          <q-slide-transition>
-            <div v-show="expanded[p]">
-              <q-separator />
-              <q-card-section class="text-subitle2">
-                {{ project.info }}
-              </q-card-section>
-            </div>
-          </q-slide-transition>
-        </q-card>
+      <div class="filters reveal" style="--d: 0.14s" role="group" :aria-label="$t('projects.categories.label')">
+        <button
+          v-for="category in categories"
+          :key="category.value"
+          type="button"
+          class="filters__item"
+          :class="{ 'is-active': category.value === categorySelect }"
+          :aria-pressed="category.value === categorySelect"
+          @click="categorySelect = category.value"
+        >
+          {{ category.label }}
+          <span class="filters__count">{{ category.count }}</span>
+        </button>
+      </div>
+
+      <transition-group tag="div" class="grid grid--cards projects__grid" name="cards" appear>
+        <project-card v-for="project in projectsList" :key="project.name" :project="project" />
       </transition-group>
-    </div>
+    </section>
   </q-page>
 </template>
 
 <script>
-import { usePageMeta } from "@/composables/use-page-meta";
-import projectsData, { PROJECT_CATEGORIES } from "@/data/projects";
+import ProjectCard from '@/components/ProjectCard.vue'
+import { usePageMeta } from '@/composables/use-page-meta'
+import projectsData, { PROJECT_CATEGORIES } from '@/data/projects'
 
 export default {
-  name: "PageProjects",
+  name: 'PageProjects',
+  components: { ProjectCard },
   setup() {
     usePageMeta({
-      titleKey: "seo.projects.title",
-      descriptionKey: "seo.projects.description",
-      path: "/projects"
-    });
+      titleKey: 'seo.projects.title',
+      descriptionKey: 'seo.projects.description',
+      path: '/projects'
+    })
   },
   data() {
     return {
-      categorySelect: "all",
-      expanded: {}
-    };
-  },
-  methods: {
-    gotoProject(project) {
-      if (project.target === "internal") {
-        this.$router.push("/projects/" + project.link);
-        return;
-      }
-      window.open(project.link, "_blank", "noopener");
-    },
-    expand(p) {
-      this.expanded[p] = !this.expanded[p];
+      categorySelect: 'all'
     }
   },
   computed: {
     categories() {
       // Values stay language-independent, only the labels are translated.
       return [
-        { value: "all", label: this.$t("projects.categories.all") },
+        { value: 'all', label: this.$t('projects.categories.all'), count: projectsData.length },
         ...PROJECT_CATEGORIES.map(category => ({
           value: category,
-          label: this.$t("projects.categories." + category)
+          label: this.$t('projects.categories.' + category),
+          count: projectsData.filter(project => project.category === category).length
         }))
-      ];
+      ]
     },
     projectsList() {
       return projectsData
-        .filter(project => this.categorySelect === "all" || project.category === this.categorySelect)
+        .filter(project => this.categorySelect === 'all' || project.category === this.categorySelect)
         .map(project => ({
           ...project,
-          type: this.$t("projects.categories." + project.category),
-          info: this.$t("projects.texts." + project.infoKey)
-        }));
+          type: this.$t('projects.categories.' + project.category),
+          info: this.$t('projects.texts.' + project.infoKey)
+        }))
     }
   }
-};
+}
 </script>
 
 <style lang="sass">
-.colored_visit
-  display: none
+.filters
+  display: flex
+  flex-wrap: wrap
+  gap: 0.5rem
+  margin-bottom: clamp(1.5rem, 3vw, 2.25rem)
 
-.my-card
-  width: 250px
-  margin: 1rem
-  overflow: hidden
-  .q-img
-    height: 200px
-    &:hover
-      cursor: pointer
-      transform: scale(1.05,1.05)
-      transition-duration: 0.5s
-      .colored_visit
-        display: flex
-        flex-direction: column
-        justify-content: center
-        align-items: center
-        background-color: $primary
-        opacity: 0.6
+.filters__item
+  display: inline-flex
+  align-items: center
+  gap: 0.45rem
+  padding: 0.5rem 1rem
+  font: inherit
+  font-size: 0.9rem
+  font-weight: 500
+  color: var(--ink-2)
+  background: var(--surface)
+  border: 1px solid var(--border)
+  border-radius: var(--radius-pill)
+  cursor: pointer
+  transition: color 0.25s, border-color 0.25s, background 0.25s
 
-.info_chip
-  position: absolute
-  top: -0.5rem
-  right: -0.5rem
-  z-index: 1999
-  pointer-events: none
+  &:hover
+    color: var(--ink)
+    border-color: var(--border-strong)
 
-.q-chip--dense .q-chip__icon
-  font-size: 0.75rem
+  &.is-active
+    color: var(--brand-on)
+    background: var(--brand)
+    border-color: transparent
 
-.tags_list
-  width: 85%
+.filters__count
+  font-size: 0.72rem
+  font-variant-numeric: tabular-nums
+  opacity: 0.7
 
-.details_dialog
-  background-color: $dark
-  margin: auto
+.projects__grid
+  position: relative
+
+.cards-enter-active
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1)
+
+// Pas de `position: absolute` sur les sorties : hors de la grille, la carte
+// perdrait sa largeur de colonne et s'étirerait sur toute la ligne.
+.cards-leave-active
+  transition: opacity 0.2s ease
+
+.cards-enter-from
+  opacity: 0
+  transform: translateY(12px)
+
+.cards-leave-to
+  opacity: 0
+
+.cards-move
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)
 </style>

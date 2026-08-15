@@ -56,6 +56,14 @@ describe('page content', () => {
     expect(wrapper.text()).not.toContain('home.hi')
   })
 
+  // The sections used to be read with $t(), which returns a string: the whole
+  // body rendered empty.
+  it('renders the body of the blog article', async () => {
+    const wrapper = await mountAt('/blog/article')
+    expect(wrapper.text()).toContain('Introduction')
+    expect(wrapper.text()).toContain('min read')
+  })
+
   it('shows the 404 page for an unknown path', async () => {
     const wrapper = await mountAt('/nope')
     expect(wrapper.text()).toContain('404')

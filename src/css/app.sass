@@ -1,21 +1,561 @@
-// app global css in Sass form
+// =============================================================================
+// Système de design
+// -----------------------------------------------------------------------------
+// 1. Polices (Lexend en display, pile système en texte courant : zéro requête
+//    réseau supplémentaire, ce qui est cohérent avec le propos du site)
+// 2. Tokens (couleurs, rayons, ombres, échelle typographique fluide)
+// 3. Base (reset doux, typographie, focus)
+// 4. Primitives réutilisées par toutes les pages (.container, .card, .app-btn…)
+// 5. Surcharges Quasar
+// Le style propre à un écran reste dans son SFC.
+// =============================================================================
+
+// 1. Polices ------------------------------------------------------------------
+// Lexend n'habille que les titres : seules les graisses réellement utilisées
+// (500 / 600 / 700) sont embarquées.
 
 @font-face
-  font-family: ubuntu
-  src: url(./fonts/ubuntu/Ubuntu-Regular.ttf)
+  font-family: 'Lexend'
+  font-style: normal
+  font-weight: 500
+  font-display: swap
+  src: url(./fonts/lexend/Lexend-Medium.ttf) format('truetype')
 
 @font-face
-  font-family: lexend
-  src: url(./fonts/lexend/Lexend-Regular.ttf)
+  font-family: 'Lexend'
+  font-style: normal
+  font-weight: 600
+  font-display: swap
+  src: url(./fonts/lexend/Lexend-SemiBold.ttf) format('truetype')
 
-*
-  font-family: 'ubuntu'
+@font-face
+  font-family: 'Lexend'
+  font-style: normal
+  font-weight: 700
+  font-display: swap
+  src: url(./fonts/lexend/Lexend-Bold.ttf) format('truetype')
 
+// 2. Tokens -------------------------------------------------------------------
+
+// Les tokens vivent sur <html> plutôt que sur :root : la syntaxe Sass indentée
+// interprète une ligne commençant par « : » comme une propriété.
 html
-  overflow-y: scroll
+  --font-display: 'Lexend', system-ui, sans-serif
+  --font-body: system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, 'Cascadia Mono', monospace
+
+  // Échelle typographique fluide : plus de media queries pour la taille du texte
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem)
+  --step-1: clamp(1.125rem, 1.06rem + 0.32vw, 1.3125rem)
+  --step-2: clamp(1.35rem, 1.22rem + 0.6vw, 1.75rem)
+  --step-3: clamp(1.65rem, 1.4rem + 1.1vw, 2.4rem)
+  --step-4: clamp(2rem, 1.5rem + 2.2vw, 3.25rem)
+  --step-5: clamp(2.6rem, 1.6rem + 4.2vw, 5rem)
+
+  --radius-xs: 8px
+  --radius-sm: 12px
+  --radius: 18px
+  --radius-lg: 26px
+  --radius-pill: 999px
+
+  --container: 1160px
+  --container-narrow: 720px
+  --header-height: 68px
+
+  --bg: #f6f8fa
+  --bg-tint: #eceff4
+  --surface: #ffffff
+  --surface-2: #f1f4f8
+  --border: rgba(14, 17, 22, 0.10)
+  --border-strong: rgba(14, 17, 22, 0.20)
+  --ink: #0e1116
+  --ink-2: #414b57
+  --ink-3: #6b7684
+
+  --brand: #03875f
+  --brand-vivid: #00c08b
+  --brand-on: #ffffff
+  --brand-soft: rgba(0, 192, 139, 0.14)
+  --brand-line: rgba(0, 192, 139, 0.38)
+  --gradient: linear-gradient(104deg, #03875f 0%, #00c08b 46%, #4f9dff 100%)
+
+  --glow-a: rgba(0, 192, 139, 0.38)
+  --glow-b: rgba(79, 157, 255, 0.28)
+  --glow-c: rgba(126, 231, 135, 0.30)
+
+  --shadow-sm: 0 1px 2px rgba(13, 18, 28, 0.05), 0 1px 3px rgba(13, 18, 28, 0.06)
+  --shadow-md: 0 10px 30px -14px rgba(13, 18, 28, 0.28)
+  --shadow-lg: 0 32px 70px -32px rgba(13, 18, 28, 0.40)
+
+  --header-bg: rgba(255, 255, 255, 0.72)
+  --overlay: rgba(10, 13, 18, 0.55)
+
+  color-scheme: light
+  scrollbar-gutter: stable
+  -webkit-text-size-adjust: 100%
+
+body.body--dark
+  --bg: #0a0d12
+  --bg-tint: #0e131a
+  --surface: #12171f
+  --surface-2: #171d27
+  --border: rgba(255, 255, 255, 0.10)
+  --border-strong: rgba(255, 255, 255, 0.22)
+  --ink: #e8edf4
+  --ink-2: #aeb8c6
+  --ink-3: #7e8899
+
+  --brand: #2ee6a8
+  --brand-vivid: #2ee6a8
+  --brand-on: #04140f
+  --brand-soft: rgba(46, 230, 168, 0.14)
+  --brand-line: rgba(46, 230, 168, 0.40)
+  --gradient: linear-gradient(104deg, #2ee6a8 0%, #7ee787 44%, #6ea8fe 100%)
+
+  --glow-a: rgba(46, 230, 168, 0.30)
+  --glow-b: rgba(110, 168, 254, 0.26)
+  --glow-c: rgba(126, 231, 135, 0.22)
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4)
+  --shadow-md: 0 12px 34px -16px rgba(0, 0, 0, 0.75)
+  --shadow-lg: 0 36px 80px -36px rgba(0, 0, 0, 0.85)
+
+  --header-bg: rgba(10, 13, 18, 0.64)
+  --overlay: rgba(0, 0, 0, 0.65)
+
+  color-scheme: dark
+
+// 3. Base ---------------------------------------------------------------------
+
+*,
+*::before,
+*::after
+  box-sizing: border-box
+
+html:focus-within
+  scroll-behavior: smooth
 
 body
-  background-color: color-mix(in srgb, $primary 9%, white)
+  font-family: var(--font-body)
+  font-size: var(--step-0)
+  line-height: 1.65
+  color: var(--ink)
+  background-color: var(--bg)
+  -webkit-font-smoothing: antialiased
+  text-rendering: optimizeLegibility
+
+h1, h2, h3, h4, h5, h6, .font-display
+  font-family: var(--font-display)
+  font-weight: 600
+  line-height: 1.1
+  letter-spacing: -0.02em
+  color: var(--ink)
+
+p
+  margin: 0 0 1rem
+
+a
+  color: var(--brand)
+  text-decoration-color: var(--brand-line)
+  text-underline-offset: 3px
+
+::selection
+  background: var(--brand-soft)
+  color: var(--ink)
+
+*:focus-visible
+  outline: 2px solid var(--brand-vivid)
+  outline-offset: 3px
+  border-radius: 4px
+
+img
+  max-width: 100%
+
+// 4. Primitives ---------------------------------------------------------------
+
+.container
+  width: 100%
+  max-width: var(--container)
+  margin-inline: auto
+  padding-inline: clamp(1rem, 4vw, 2rem)
+
+.container--narrow
+  max-width: var(--container-narrow)
+
+.section
+  padding-block: clamp(3rem, 7vw, 6rem)
+
+.section--tight
+  padding-block: clamp(2rem, 4vw, 3.5rem)
+
+.eyebrow
+  display: inline-flex
+  align-items: center
+  gap: 0.55rem
+  margin: 0 0 1rem
+  padding: 0.3rem 0.85rem 0.3rem 0.6rem
+  font-size: 0.78rem
+  font-weight: 600
+  letter-spacing: 0.08em
+  text-transform: uppercase
+  color: var(--ink-2)
+  background: var(--brand-soft)
+  border: 1px solid var(--brand-line)
+  border-radius: var(--radius-pill)
+
+  &::before
+    content: ''
+    width: 7px
+    height: 7px
+    border-radius: 50%
+    background: var(--brand-vivid)
+    box-shadow: 0 0 0 3px var(--brand-soft)
+
+.display
+  font-size: var(--step-5)
+  font-weight: 600
+  letter-spacing: -0.035em
+  line-height: 1.02
+  margin: 0
+
+.title-xl
+  font-size: var(--step-4)
+  margin: 0
+
+.title-lg
+  font-size: var(--step-3)
+  margin: 0
+
+.title-md
+  font-size: var(--step-2)
+  margin: 0
+
+.text-gradient
+  background: var(--gradient)
+  -webkit-background-clip: text
+  background-clip: text
+  color: transparent
+
+.lead
+  font-size: var(--step-1)
+  line-height: 1.6
+  color: var(--ink-2)
+  max-width: 60ch
+
+// Chapô placé juste après un titre de page
+.display + .lead,
+.title-xl + .lead,
+.title-lg + .lead
+  margin-top: 1rem
+
+.muted
+  color: var(--ink-3)
+
+.prose
+  max-width: 68ch
+  color: var(--ink-2)
+  font-size: var(--step-1)
+
+  strong
+    color: var(--ink)
+    font-weight: 600
+
+  a
+    font-weight: 500
+
+.card
+  position: relative
+  background: var(--surface)
+  border: 1px solid var(--border)
+  border-radius: var(--radius)
+  box-shadow: var(--shadow-sm)
+
+.card--pad
+  padding: clamp(1.25rem, 3vw, 2rem)
+
+.card--interactive
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s, border-color 0.35s
+
+  &:hover,
+  &:focus-within
+    transform: translateY(-4px)
+    border-color: var(--brand-line)
+    box-shadow: var(--shadow-lg)
+
+// Lien qui recouvre toute une carte : la carte entière devient cliquable sans
+// imbriquer de contenu dans un <a> et sans casser la navigation clavier.
+.stretched-link::after
+  content: ''
+  position: absolute
+  inset: 0
+  border-radius: inherit
+
+.tag
+  display: inline-flex
+  align-items: center
+  gap: 0.35rem
+  padding: 0.2rem 0.6rem
+  font-size: 0.75rem
+  font-weight: 500
+  letter-spacing: 0.01em
+  color: var(--ink-2)
+  background: var(--surface-2)
+  border: 1px solid var(--border)
+  border-radius: var(--radius-pill)
+
+.tag--brand
+  color: var(--brand)
+  background: var(--brand-soft)
+  border-color: var(--brand-line)
+
+// Monogramme, réutilisé par l'en-tête et le pied de page
+.brand__mark
+  display: grid
+  place-items: center
+  width: 34px
+  height: 34px
+  border-radius: 11px
+  font-family: var(--font-display)
+  font-weight: 600
+  font-size: 0.8rem
+  letter-spacing: 0.02em
+  color: var(--brand-on)
+  background: var(--gradient)
+  box-shadow: 0 6px 18px -8px var(--glow-a)
+
+.icon-link
+  display: grid
+  place-items: center
+  width: 38px
+  height: 38px
+  border-radius: 50%
+  color: var(--ink-2)
+  border: 1px solid var(--border)
+  transition: color 0.25s, border-color 0.25s, transform 0.25s
+
+  &:hover
+    color: var(--brand)
+    border-color: var(--brand-line)
+    transform: translateY(-2px)
+
+// Petit intertitre en capitales
+.overline
+  margin: 0 0 0.75rem
+  font-size: 0.78rem
+  font-weight: 600
+  letter-spacing: 0.1em
+  text-transform: uppercase
+  color: var(--ink-3)
+
+// En-tête de section : titre à gauche, action facultative à droite
+.section-head
+  display: flex
+  flex-wrap: wrap
+  align-items: flex-end
+  justify-content: space-between
+  gap: 1rem
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem)
+
+  .eyebrow
+    margin-bottom: 0.6rem
+
+.chip-link
+  display: inline-flex
+  align-items: center
+  gap: 0.4rem
+  padding: 0.35rem 0.8rem
+  font-size: 0.85rem
+  font-weight: 500
+  color: var(--ink-2)
+  background: var(--surface-2)
+  border: 1px solid var(--border)
+  border-radius: var(--radius-pill)
+  text-decoration: none
+  transition: color 0.2s, border-color 0.2s, transform 0.2s
+
+  .q-icon
+    color: var(--ink-3)
+
+  &:hover
+    color: var(--brand)
+    border-color: var(--brand-line)
+    transform: translateY(-2px)
+
+    .q-icon
+      color: var(--brand)
+
+.link-button
+  padding: 0
+  border: 0
+  background: none
+  color: var(--ink-2)
+  font: inherit
+  cursor: pointer
+  text-align: left
+
+  &:hover
+    color: var(--brand)
+
+.grid
+  display: grid
+  gap: clamp(1rem, 2.5vw, 1.75rem)
+
+.grid--cards
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr))
+
+.cluster
+  display: flex
+  flex-wrap: wrap
+  gap: 0.6rem
+
+// Boutons : on garde q-btn pour le ripple et l'accessibilité, on remplace
+// entièrement son habillage Material.
+.app-btn.q-btn
+  font-family: var(--font-body)
+  font-weight: 600
+  font-size: 0.95rem
+  letter-spacing: 0
+  border-radius: var(--radius-pill)
+  padding: 0.7rem 1.4rem
+  min-height: 0
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s, background 0.25s, border-color 0.25s
+
+  .q-btn__content
+    gap: 0.5rem
+
+  &:hover
+    transform: translateY(-2px)
+
+.app-btn--primary.q-btn
+  color: var(--brand-on)
+  background: var(--brand)
+  box-shadow: 0 10px 24px -12px var(--glow-a)
+
+  &:hover
+    box-shadow: 0 16px 32px -12px var(--glow-a)
+
+.app-btn--ghost.q-btn
+  color: var(--ink)
+  background: transparent
+  border: 1px solid var(--border-strong)
+
+  &:hover
+    border-color: var(--brand-line)
+    background: var(--brand-soft)
+
+.app-btn--quiet.q-btn
+  color: var(--ink-2)
+  padding-inline: 0.75rem
+
+  &:hover
+    color: var(--brand)
+
+// Décor : nappes de couleur floutées, sans image ni librairie.
+.aurora
+  position: absolute
+  inset: 0
+  overflow: hidden
+  pointer-events: none
+  z-index: 0
+
+  &::before,
+  &::after
+    content: ''
+    position: absolute
+    width: 46rem
+    height: 46rem
+    border-radius: 50%
+    filter: blur(90px)
+    opacity: 0.75
+
+  &::before
+    top: -22rem
+    left: -14rem
+    background: radial-gradient(circle at 30% 30%, var(--glow-a), transparent 62%)
+    animation: drift-a 26s ease-in-out infinite alternate
+
+  &::after
+    top: -16rem
+    right: -18rem
+    background: radial-gradient(circle at 70% 30%, var(--glow-b), transparent 62%)
+    animation: drift-b 32s ease-in-out infinite alternate
+
+@keyframes drift-a
+  from
+    transform: translate3d(0, 0, 0) scale(1)
+  to
+    transform: translate3d(6rem, 4rem, 0) scale(1.12)
+
+@keyframes drift-b
+  from
+    transform: translate3d(0, 0, 0) scale(1.08)
+  to
+    transform: translate3d(-5rem, 3rem, 0) scale(1)
+
+// Apparition au chargement, décalée par --d
+.reveal
+  animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both
+  animation-delay: var(--d, 0s)
+
+@keyframes reveal-up
+  from
+    opacity: 0
+    transform: translate3d(0, 14px, 0)
+  to
+    opacity: 1
+    transform: none
+
+// Transition entre les routes
+.page-fade-enter-active
+  animation: reveal-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both
+
+.skip-link
+  position: absolute
+  left: 1rem
+  top: 0.5rem
+  z-index: 9000
+  padding: 0.6rem 1rem
+  border-radius: var(--radius-pill)
+  background: var(--surface)
+  color: var(--ink)
+  border: 1px solid var(--border-strong)
+  transform: translateY(-160%)
+  transition: transform 0.2s
+
+  &:focus
+    transform: none
+
+// 5. Surcharges Quasar --------------------------------------------------------
+
+.q-page
+  position: relative
+
+.q-field--outlined .q-field__control
+  border-radius: var(--radius-sm)
+
+.q-field__native, .q-field__prefix, .q-field__suffix, .q-field__input
+  color: var(--ink)
+
+.q-tooltip
+  font-size: 0.78rem
+  border-radius: var(--radius-xs)
+  background: var(--ink)
+  color: var(--bg)
+
+.q-notification
+  border-radius: var(--radius-sm)
 
 .grecaptcha-badge
   visibility: hidden
+
+// Respect des préférences système : plus aucune animation décorative.
+@media (prefers-reduced-motion: reduce)
+  html:focus-within
+    scroll-behavior: auto
+
+  *,
+  *::before,
+  *::after
+    animation-duration: 0.001ms !important
+    animation-iteration-count: 1 !important
+    transition-duration: 0.001ms !important

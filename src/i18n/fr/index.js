@@ -4,40 +4,62 @@ export default {
   layout: {
     language: "Langue",
     home: "Accueil",
-    home_tooltip: "Retour à l'accueil",
-    about: "à propos",
-    about_tooltip: "En savoir plus à propos de moi",
+    about: "À propos",
     blog: "Blog",
-    blog_tooltip: "Lisez les articles de mon blog",
     projects: "Projets",
-    projects_tooltip: "Explorez mes projets",
     contact: "Contact",
-    contact_tooltip: "Contactez-moi"
+    menu: "Menu",
+    close: "Fermer",
+    theme: "Changer de thème",
+    skip: "Aller au contenu"
   },
   home: {
+    eyebrow: "Green coding",
     hi: "Salut, je suis Alex,",
     designation: "un passionné d'informatique éco-responsable",
     detail_1:
       "L'informatique est mon moteur et j'adore travailler sur des projets qui correspondent à mes valeurs.",
     detail_2:
       "Mon objectif ? Allier technologie et écologie pour un avenir plus vert.",
-    more: "En savoir plus...",
-    more_tooltip: "Apprenez à mieux me connaître"
+    more: "En savoir plus",
+    featured_eyebrow: "Sélection",
+    featured_title: "Des projets en ligne",
+    featured_all: "Tous les projets"
   },
   about: {
+    eyebrow: "À propos",
+    title: "Développeur full stack, attentif à l'empreinte du code",
     paragraph_1:
       "Je suis convaincu que la technologie peut jouer un rôle majeur dans la lutte contre le changement climatique. C'est pourquoi je me suis spécialisé dans le '<strong>Green Coding</strong>', une approche qui vise à réduire l'empreinte carbone du secteur informatique.",
     paragraph_2:
       "Né en '86, j'ai toujours été fasciné par l'informatique. Autodidacte, j'ai acquis une grande partie de mes connaissances en travaillant sur des projets personnels et en explorant différents domaines de l'informatique.",
-    list_label: "Voici ce qui me motive :",
+    stack_eyebrow: "Stack",
+    list_label: "Les technologies que j'utilise",
+    groups: {
+      frontend: "Front-end",
+      backend: "Back-end",
+      infra: "Infrastructure",
+      tools: "Outils"
+    },
+    elsewhere: "Me retrouver",
+    cta_title: "On en discute ?",
     incentive:
       "Vous pouvez en découvrir plus en me contactant ou en jetant un œil à mes projets personnels :"
   },
-  blog: {},
+  blog: {
+    eyebrow: "Écrits",
+    lead:
+      "Des notes sur le green coding, l'informatique durable et le développement web.",
+    read: "Lire l'article",
+    reading_time: "{minutes} min de lecture",
+    zoom: "Agrandir l'image"
+  },
   projects: {
-    visit: "Visiter le projet {name}",
+    eyebrow: "Réalisations",
+    lead: "Sites en ligne, modèles et expérimentations archivées.",
     back: "Retour aux projets",
-    details: "Afficher les détails du projet",
+    preview: "Démo",
+    open: "Ouvrir dans un onglet",
     categories: {
       label: "Catégories",
       all: "Tous",
@@ -66,13 +88,15 @@ export default {
     }
   },
   contact: {
+    eyebrow: "Contact",
+    title: "Parlons de votre projet",
+    lead: "Une question, une idée, une envie de collaborer ? Écrivez-moi.",
+    sending: "Envoi en cours…",
     name: "Votre nom *",
     email: "Votre email *",
     message: "Votre message *",
     submit: "Envoyer",
-    submit_tooltip: "Envoyer le message",
     reset: "Réinitialiser",
-    reset_tooltip: "Effacer tout le contenu",
     disclaimer_start: "Ce site est protégé par la ",
     disclaimer_link_1: "Politique de confidentialité",
     disclaimer_middle: " et les ",
@@ -84,6 +108,28 @@ export default {
     invalid_email: "Email invalide",
     sent: "Message envoyé",
     not_sent: "Le message n'a pas pu être envoyé, veuillez réessayer plus tard"
+  },
+  consent: {
+    title: "Cookies & mesure d'audience",
+    body:
+      "Ce site utilise des cookies fonctionnels et, si vous l'acceptez, des cookies de mesure d'audience. Votre choix est conservé un an.",
+    more: "En savoir plus",
+    accept: "Tout accepter",
+    essential: "Essentiels uniquement",
+    legal_title: "Informations légales & paramètres",
+    settings: "Paramètres",
+    tracking_label: "Cookies de mesure d'audience",
+    tracking_hint:
+      "Google Analytics n'est chargé que si cette option est activée.",
+    revoke: "Retirer mon consentement"
+  },
+  footer: {
+    tagline:
+      "Développeur web full stack, passionné de green coding et d'informatique durable.",
+    navigate: "Navigation",
+    elsewhere: "Ailleurs",
+    legal: "Informations légales & cookies",
+    built: "Construit avec Vue 3 & Quasar"
   },
   blogPost1: {
     link: "/blog/article",
@@ -183,14 +229,12 @@ export default {
   },
   notFound: {
     message: "Oups. Il n'y a rien ici...",
+    hint: "La page a peut-être été déplacée, ou l'adresse contient une coquille.",
     home: "Retour à l'accueil"
   },
   buttons: {
-    projects: "Mes Projets",
-    projects_tooltip: "Découvrez mes projets",
-    contact: "Contactez-moi",
-    contact_tooltip: "Prenez contact",
-    blog: "Blog",
-    blog_tooltip: "Visitez mon blog"
+    projects: "Mes projets",
+    contact: "Me contacter",
+    blog: "Le blog"
   }
 };
