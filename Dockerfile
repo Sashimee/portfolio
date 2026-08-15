@@ -1,18 +1,17 @@
 # Step 1: Build stage using Node
-FROM node:20-alpine AS build-stage
+FROM node:24-alpine AS build-stage
 
 WORKDIR /app
 
 # Install dependencies
 COPY package*.json ./
-RUN npm ci || npm install
+COPY quasar.config.js ./
+RUN npm ci
 
 # Copy source code
 COPY . .
 
-# Enable legacy OpenSSL provider for Node 17+ / Webpack compatibility
-ENV NODE_OPTIONS=--openssl-legacy-provider
-RUN npx quasar build
+RUN npm run build
 
 # Step 2: Production web server using NGINX
 FROM nginx:alpine AS production-stage

@@ -1,9 +1,11 @@
-import Vue from 'vue'
+import { defineBoot } from '#q-app'
 import axios from 'axios'
 
-Vue.prototype.$axios = axios
+const api = axios.create({ baseURL: 'https://api.bask.lu/api' })
 
-const api = axios.create({ baseURL: "https://api.bask.lu/api" });
-Vue.prototype.$api = api;
+export default defineBoot(({ app }) => {
+  app.config.globalProperties.$axios = axios
+  app.config.globalProperties.$api = api
+})
 
-export { axios, api };
+export { axios, api }

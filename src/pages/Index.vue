@@ -11,7 +11,7 @@
       <div class="row justify-center more_button">
         <q-btn flat color="dark" padding="xs" :label="$t('home.more')" to="/about"
           ><q-tooltip
-            content-class="bg-accent text-black"
+            class="bg-accent text-black"
             :offset="[10, 10]"
             :delay="1000"
             transition-show="flip-right"
@@ -27,7 +27,7 @@
     <div class="row justify-center items-center">
       <q-btn push class="action_button" :label="$t('buttons.blog')" to="/blog"
         ><q-tooltip
-          content-class="bg-accent text-black"
+          class="bg-accent text-black"
           :offset="[10, 10]"
           :delay="1000"
           transition-show="flip-right"
@@ -42,7 +42,7 @@
         :label="$t('buttons.projects')"
         to="/projects"
         ><q-tooltip
-          content-class="bg-accent text-black"
+          class="bg-accent text-black"
           :offset="[10, 10]"
           :delay="1000"
           transition-show="flip-right"
@@ -53,7 +53,7 @@
       >
       <q-btn push class="action_button" :label="$t('buttons.contact')" to="/contact"
         ><q-tooltip
-          content-class="bg-accent text-black"
+          class="bg-accent text-black"
           :offset="[10, 10]"
           :delay="1000"
           transition-show="flip-right"
@@ -67,19 +67,16 @@
 </template>
 
 <script>
-import { bootstrap } from "vue-gtag";
-import { i18n } from "src/boot/i18n";
+import { usePageMeta } from "@/composables/use-page-meta";
 
 export default {
   name: "PageIndex",
-  mounted() {
-    if (this.$q.cookies.get("accepted_tracking_cookies") === true) {
-      bootstrap().then(gtag => {
-        this.$gtag.pageview({
-          page_path: "/"
-        });
-      });
-    }
+  setup() {
+    usePageMeta({
+      titleKey: "seo.home.title",
+      descriptionKey: "seo.home.description",
+      path: "/"
+    });
   }
 };
 </script>
@@ -87,7 +84,7 @@ export default {
 <style lang="sass">
 .action_button
   margin: 1rem
-  background: lighten($accent, 10)
+  background: color-mix(in srgb, $accent 82%, white)
   color: black
 
 

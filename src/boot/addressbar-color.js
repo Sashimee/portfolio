@@ -1,14 +1,6 @@
-// import something here
-
-// "async" is optional;
-// more info on params: https://quasar.dev/quasar-cli/boot-files
-// export default async (/* { app, router, Vue ... } */) => {
-  // something to do
-// }
-
-// file: /src/boot/addressbar-color.js
+import { defineBoot } from '#q-app'
 import { AddressbarColor } from 'quasar'
 
-export default () => {
-  AddressbarColor.set("#264653");
-}
+export default defineBoot(() => {
+  AddressbarColor.set('#264653')
+})

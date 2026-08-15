@@ -1,45 +1,48 @@
 {
   "name": "portfolio",
-  "version": "0.0.1",
-  "description": "My personal portfolio",
+  "version": "1.0.0",
+  "description": "Alex Baskewitsch, full stack web developer and green coding enthusiast. Projects, blog and contact.",
   "productName": "Alex Baskewitsch",
   "author": "Alex <60114079+Sashimee@users.noreply.github.com>",
+  "type": "module",
   "private": true,
   "scripts": {
-    "lint": "eslint --ext .js,.vue ./",
-    "test": "echo \"No test specified\" && exit 0"
+    "dev": "quasar dev",
+    "build": "quasar build",
+    "lint": "eslint -c ./eslint.config.js \"./src/**/*.{js,mjs,cjs,vue}\" \"./test/**/*.js\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "postinstall": "quasar prepare --silent"
   },
   "dependencies": {
-    "@quasar/extras": "^1.0.0",
-    "axios": "^0.21.1",
-    "core-js": "^3.6.5",
-    "quasar": "^1.0.0",
-    "vue-gtag": "^1.14.0",
-    "vue-i18n": "^8.24.3",
-    "vue-recaptcha-v3": "^1.9.0"
+    "@quasar/extras": "^2.0.3",
+    "axios": "^1.13.1",
+    "quasar": "^2.24.0",
+    "vue": "^3.5.22",
+    "vue-i18n": "^11.3.0",
+    "vue-recaptcha-v3": "^2.0.1",
+    "vue-router": "^5.0.6"
   },
   "devDependencies": {
-    "@quasar/app": "^2.0.0",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^7.21.0",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-vue": "^7.7.0",
-    "eslint-webpack-plugin": "^2.4.0"
+    "@eslint/js": "^10.0.1",
+    "@intlify/unplugin-vue-i18n": "^11.0.0",
+    "@quasar/app-vite": "^3.5.0",
+    "@quasar/vite-plugin": "^2.0.0",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vitest/coverage-v8": "^4.1.10",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/test-utils": "^2.4.11",
+    "autoprefixer": "^10.4.27",
+    "eslint": "^10.8.0",
+    "eslint-plugin-vue": "^10.8.0",
+    "globals": "^17.4.0",
+    "jsdom": "^28.0.0",
+    "postcss": "^8.5.8",
+    "prettier": "^3.8.1",
+    "vitest": "^4.1.10",
+    "vue-eslint-parser": "^10.4.0"
   },
-  "browserslist": [
-    "last 10 Chrome versions",
-    "last 10 Firefox versions",
-    "last 4 Edge versions",
-    "last 7 Safari versions",
-    "last 8 Android versions",
-    "last 8 ChromeAndroid versions",
-    "last 8 FirefoxAndroid versions",
-    "last 10 iOS versions",
-    "last 5 Opera versions"
-  ],
   "engines": {
-    "node": ">= 10.18.1",
-    "npm": ">= 6.13.4",
-    "yarn": ">= 1.21.1"
+    "node": ">= 26 || ^24 || ^22.12"
   }
 }

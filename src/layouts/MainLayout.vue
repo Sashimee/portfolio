@@ -34,7 +34,7 @@
             <q-space />
             <!-- Popup close -->
             <q-btn dense flat icon="close" v-close-popup>
-              <q-tooltip content-class="bg-accent text-black" :offset="[10, 10]" :delay="1000"
+              <q-tooltip class="bg-accent text-black" :offset="[10, 10]" :delay="1000"
                 transition-show="flip-right" transition-hide="flip-right">
                 Close
               </q-tooltip>
@@ -43,16 +43,16 @@
 
           <q-card-section class="q-pt-none">
             <!-- Tracking settings -->
-            <div class="column choices" v-if="this.functionalCookies">
+            <div class="column choices" v-if="functionalCookies">
               <h6>Settings</h6>
               <q-toggle v-model="trackingCookies" checked-icon="check" color="accent" label="Tracking Cookies"
-                unchecked-icon="clear" @input="toggleTracking()"><q-tooltip content-class="bg-accent text-black"
+                unchecked-icon="clear" @update:model-value="toggleTracking()"><q-tooltip class="bg-accent text-black"
                   :offset="[10, 10]" :delay="1000" transition-show="flip-right" transition-hide="flip-right">
                   Toggle Tracking Cookies
                 </q-tooltip></q-toggle>
               <q-toggle v-model="functionalCookies" checked-icon="check" color="accent"
-                label="Functional Cookies / All cookies" unchecked-icon="clear" @input="toggleFunctional()"><q-tooltip
-                  content-class="bg-accent text-black" :offset="[10, 10]" :delay="1000" transition-show="flip-right"
+                label="Functional Cookies / All cookies" unchecked-icon="clear" @update:model-value="toggleFunctional()"><q-tooltip
+                  class="bg-accent text-black" :offset="[10, 10]" :delay="1000" transition-show="flip-right"
                   transition-hide="flip-right">
                   Toggle Functional Cookies
                 </q-tooltip></q-toggle>
@@ -60,7 +60,7 @@
             <h2>Privacy Policy</h2>
             <p>
               At this internet site, accessible from
-              <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>, one of our
+              <a target="_blank" class="g_link_white" href="https://alex.baskewitsch.lu">https://alex.baskewitsch.lu</a>, one of our
               main priorities is the privacy of our visitors. This
               Privacy Policy document contains types of information that is
               collected and recorded by Alex Baskewitsch and how we use it.
@@ -75,7 +75,7 @@
             <h4>General Data Protection Regulation (GDPR)</h4>
             <p>We are a Data Controller of your information.</p>
             <p>
-              <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>
+              <a target="_blank" class="g_link_white" href="https://alex.baskewitsch.lu">https://alex.baskewitsch.lu</a>
               legal basis for collecting and using the personal information
               described in this Privacy Policy depends on the Personal
               Information we collect and the specific context in which we
@@ -83,26 +83,26 @@
             </p>
             <ul>
               <li>
-                <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>
+                <a target="_blank" class="g_link_white" href="https://alex.baskewitsch.lu">https://alex.baskewitsch.lu</a>
                 needs to perform a contract with you
               </li>
               <li>
                 You have given
-                <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>
+                <a target="_blank" class="g_link_white" href="https://alex.baskewitsch.lu">https://alex.baskewitsch.lu</a>
                 permission to do so
               </li>
               <li>
                 Processing your personal information is in
-                <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>
+                <a target="_blank" class="g_link_white" href="https://alex.baskewitsch.lu">https://alex.baskewitsch.lu</a>
                 legitimate interests
               </li>
               <li>
-                <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>
+                <a target="_blank" class="g_link_white" href="https://alex.baskewitsch.lu">https://alex.baskewitsch.lu</a>
                 needs to comply with the law
               </li>
             </ul>
             <p>
-              <a target="_blank" class="g_link_white" href="https://baskewitsch.lu">https://baskewitsch.lu</a>
+              <a target="_blank" class="g_link_white" href="https://alex.baskewitsch.lu">https://alex.baskewitsch.lu</a>
               will retain your personal information only for as long as is
               necessary for the purposes set out in this Privacy Policy. We will
               retain and use your information to the extent necessary to comply
@@ -228,7 +228,7 @@
         <!-- Button for left mode -->
         <q-btn dense flat round icon="menu" @click="side = !side" class="lt-lg" v-if="leftMode == true" />
         <q-toolbar-title>
-          <span class="name" @click="link('/')">Alex Baskewitsch<q-tooltip content-class="bg-accent text-black"
+          <span class="name" @click="link('/')">Alex Baskewitsch<q-tooltip class="bg-accent text-black"
               anchor="center right" self="center left" :offset="[10, 10]" :delay="1000" transition-show="flip-right"
               transition-hide="flip-right">
               Navigate Home
@@ -242,77 +242,76 @@
         <q-select class="gt-sm" label-color="white" dark v-model="lang" :options="langOptions"
           :label="$t('layout.language')" emit-value map-options dense options-dense borderless standout
           style="min-width: 150px" :input-style="{ color: '#ff0000' }">
-          <q-tooltip content-class="bg-accent text-black" anchor="center left" self="center right" :offset="[10, 10]"
+          <q-tooltip class="bg-accent text-black" anchor="center left" self="center right" :offset="[10, 10]"
             :delay="1000" transition-show="flip-right" transition-hide="flip-right">
             Change language
           </q-tooltip>
         </q-select>
         <!-- Dark mode togle only when greater than small screen -->
-        <q-toggle class="gt-sm" v-model="darkMode" icon="far fa-moon" color="accent" @input="toggleDarkMode()"><q-tooltip
-            content-class="bg-accent text-black" anchor="center left" self="center right" :offset="[10, 10]" :delay="1000"
+        <q-toggle class="gt-sm" v-model="darkMode" icon="far fa-moon" color="accent" @update:model-value="toggleDarkMode()"><q-tooltip
+            class="bg-accent text-black" anchor="center left" self="center right" :offset="[10, 10]" :delay="1000"
             transition-show="flip-right" transition-hide="flip-right">
             Toggle Dark Mode
           </q-tooltip></q-toggle>
       </q-toolbar>
 
       <q-tabs align="center" class="gt-sm">
-        <q-route-tab to="/" :label="$t('layout.home')"><q-tooltip content-class="bg-accent text-black" :offset="[10, 10]"
+        <q-route-tab to="/" :label="$t('layout.home')"><q-tooltip class="bg-accent text-black" :offset="[10, 10]"
             :delay="1000" transition-show="flip-right" transition-hide="flip-right">
             {{ $t('layout.home_tooltip') }}
           </q-tooltip></q-route-tab>
-        <q-route-tab to="/about" :label="$t('layout.about')"><q-tooltip content-class="bg-accent text-black"
+        <q-route-tab to="/about" :label="$t('layout.about')"><q-tooltip class="bg-accent text-black"
             :offset="[10, 10]" :delay="1000" transition-show="flip-right" transition-hide="flip-right">
             {{ $t('layout.about_tooltip') }}
           </q-tooltip></q-route-tab>
-        <q-route-tab to="/blog" :label="$t('layout.blog')"><q-tooltip content-class="bg-accent text-black"
+        <q-route-tab to="/blog" :label="$t('layout.blog')"><q-tooltip class="bg-accent text-black"
             :offset="[10, 10]" :delay="1000" transition-show="flip-right" transition-hide="flip-right">
             {{ $t('layout.blog_tooltip') }}
           </q-tooltip></q-route-tab>
-        <q-route-tab to="/projects" :label="$t('layout.projects')"><q-tooltip content-class="bg-accent text-black"
+        <q-route-tab to="/projects" :label="$t('layout.projects')"><q-tooltip class="bg-accent text-black"
             :offset="[10, 10]" :delay="1000" transition-show="flip-right" transition-hide="flip-right">
             {{ $t('layout.projects_tooltip') }}
           </q-tooltip></q-route-tab>
-        <q-route-tab to="/contact" :label="$t('layout.contact')"><q-tooltip content-class="bg-accent text-black"
+        <q-route-tab to="/contact" :label="$t('layout.contact')"><q-tooltip class="bg-accent text-black"
             :offset="[10, 10]" :delay="1000" transition-show="flip-right" transition-hide="flip-right">
             {{ $t('layout.contact_tooltip') }}
           </q-tooltip></q-route-tab>
       </q-tabs>
       <div class="lower_header"></div>
     </q-header>
-    <q-drawer v-model="side" :side="side_choice" overlay bordered content-class="column" class="blurry slower">
+    <q-drawer v-model="side" :side="side_choice" overlay bordered class="column blurry slower">
       <!-- drawer content -->
       <div class="column justify_custom">
         <q-list bordered>
-          <!-- These q-items contain a click function because the dark mode is buggy with the to prop -->
-          <q-item clickable v-ripple @click="link('/')">
+          <q-item clickable v-ripple to="/" @click="side = false">
             <q-item-section avatar>
               <q-icon name="fas fa-home"></q-icon>
             </q-item-section>
             <q-item-section>{{ $t('layout.home') }}</q-item-section>
           </q-item>
           <q-separator />
-          <q-item clickable v-ripple @click="link('/about')">
+          <q-item clickable v-ripple to="/about" @click="side = false">
             <q-item-section avatar>
               <q-icon name="fas fa-user"></q-icon>
             </q-item-section>
             <q-item-section>{{ $t('layout.about') }}</q-item-section>
           </q-item>
           <q-separator />
-          <q-item clickable v-ripple @click="link('/blog')">
+          <q-item clickable v-ripple to="/blog" @click="side = false">
             <q-item-section avatar>
               <q-icon name="fas fa-book"></q-icon>
             </q-item-section>
             <q-item-section>{{ $t('layout.blog') }}</q-item-section>
           </q-item>
           <q-separator />
-          <q-item clickable v-ripple @click="link('/projects')">
+          <q-item clickable v-ripple to="/projects" @click="side = false">
             <q-item-section avatar>
               <q-icon name="fas fa-tasks"></q-icon>
             </q-item-section>
             <q-item-section>{{ $t('layout.projects') }}</q-item-section>
           </q-item>
           <q-separator />
-          <q-item clickable v-ripple @click="link('/contact')">
+          <q-item clickable v-ripple to="/contact" @click="side = false">
             <q-item-section avatar>
               <q-icon name="fas fa-paper-plane"></q-icon>
             </q-item-section>
@@ -324,7 +323,7 @@
             <!-- Language select -->
             <q-select v-model="lang" :options="langOptions" :label="$t('layout.language')" dense borderless emit-value
               map-options options-dense style="min-width: 150px">
-              <q-tooltip content-class="bg-accent text-black" anchor="center left" self="center right" :offset="[10, 10]"
+              <q-tooltip class="bg-accent text-black" anchor="center left" self="center right" :offset="[10, 10]"
                 :delay="1000" transition-show="flip-right" transition-hide="flip-right">
                 Change language
               </q-tooltip>
@@ -338,7 +337,7 @@
               <q-item-label>Dark Mode</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-toggle color="accent" v-model="darkMode" val="mode" @input="toggleDarkMode()"></q-toggle>
+              <q-toggle color="accent" v-model="darkMode" val="mode" @update:model-value="toggleDarkMode()"></q-toggle>
             </q-item-section>
           </q-item>
           <q-item tag="label" v-ripple>
@@ -346,41 +345,44 @@
               <q-item-label>Left Hand Mode</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-toggle color="accent" v-model="leftMode" val="mode" @input="toggleLeftMode()"></q-toggle>
+              <q-toggle color="accent" v-model="leftMode" val="mode" @update:model-value="toggleLeftMode()"></q-toggle>
             </q-item-section>
           </q-item>
         </q-list>
         <div class="text-caption">
-          © 2021-2023 - All Rights Reserved.
+          © 2021-{{ currentYear }} - All Rights Reserved.
         </div>
       </div>
     </q-drawer>
 
 
     <q-page-container class="slower noflow">
-      <transition enter-active-class="animated fadeInUpBig">
-        <!-- Wrapping only one DOM element, defined by QBtn -->
-        <router-view />
-      </transition>
+      <!-- vue-router 5 requires the slot form: <router-view> can no longer sit
+           inside <transition> directly. -->
+      <router-view v-slot="{ Component }">
+        <transition enter-active-class="animated fadeInUpBig">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </q-page-container>
 
     <q-footer class="bg-primary text-white">
       <div class="upper_footer"></div>
       <q-toolbar>
         <q-toolbar-title><q-btn flat @click="dialog = true" size="sm">Legal info & Settings<q-tooltip
-              content-class="bg-accent text-black" :delay="1000" transition-show="flip-right"
+              class="bg-accent text-black" :delay="1000" transition-show="flip-right"
               transition-hide="flip-right">Legal info & settings
             </q-tooltip></q-btn></q-toolbar-title>
         <div class="text-caption q-mr-xl gt-sm">
-          © 2021-2023 - Alex Baskewitsch - All Rights Reserved.
+          © 2021-{{ currentYear }} - Alex Baskewitsch - All Rights Reserved.
         </div>
         <q-btn flat round dense icon="fab fa-linkedin-in" type="a" href="https://www.linkedin.com/in/abask/"
-          target="_blank"><q-tooltip content-class="bg-accent text-black" :offset="[10, 10]" :delay="1000"
+          target="_blank"><q-tooltip class="bg-accent text-black" :offset="[10, 10]" :delay="1000"
             transition-show="flip-right" transition-hide="flip-right">
             Contact me on linkedIn
           </q-tooltip></q-btn>
         <q-btn flat round dense icon="fab fa-github" type="a" href="https://github.com/Sashimee"
-          target="_blank"><q-tooltip content-class="bg-accent text-black" :offset="[10, 10]" :delay="1000"
+          target="_blank"><q-tooltip class="bg-accent text-black" :offset="[10, 10]" :delay="1000"
             transition-show="flip-right" transition-hide="flip-right">
             Visit my github
           </q-tooltip></q-btn>
@@ -390,132 +392,107 @@
 </template>
 
 <script>
-import { bootstrap } from "vue-gtag";
+import { Dark } from "quasar";
+import { currentLocale, setLocale } from "@/boot/i18n";
+import { clearAnalytics, hasTrackingConsent, loadAnalytics, trackPageview } from "@/utils/analytics";
+import {
+  AVAILABLE_LOCALES,
+  getStoredLeftHand,
+  setStoredDark,
+  setStoredLeftHand
+} from "@/utils/preferences";
+
+const CONSENT_COOKIE = "accepted_tracking_cookies";
+const COOKIE_OPTIONS = { expires: 365, sameSite: "Strict", path: "/" };
 
 export default {
+  name: "MainLayout",
   data() {
     return {
       side: false,
       leftMode: false,
-      darkMode: false,
+      darkMode: Dark.isActive,
       side_choice: "right",
       persistent: false,
       dialog: false,
-      maximizedToggle: true,
       trackingCookies: false,
       functionalCookies: false,
-      lang: this.$i18n.locale,
-      langOptions: [
-        { value: "en", label: "English" },
-        { value: "fr", label: "Français" }
-      ]
+      lang: currentLocale(),
+      langOptions: AVAILABLE_LOCALES.map(value => ({
+        value,
+        label: value === "fr" ? "Français" : "English"
+      }))
     };
   },
+  computed: {
+    currentYear() {
+      return new Date().getFullYear();
+    }
+  },
   watch: {
-    lang(lang) {
-      this.$i18n.locale = this.lang;
+    lang(value) {
+      setLocale(value);
     }
   },
   methods: {
+    setConsent(accepted) {
+      this.$q.cookies.set(CONSENT_COOKIE, accepted, COOKIE_OPTIONS);
+    },
     toggleTracking() {
-      switch (this.trackingCookies) {
-        case true:
-          this.$q.cookies.set("accepted_tracking_cookies", true, {
-            expires: 365,
-            sameSite: "Strict"
-          });
-          bootstrap().then(gtag => {
-            this.$gtag.pageview({
-              page_path: this.$route.path // For the first tracking
-            });
-          });
-          break;
-        case false:
-          this.$q.cookies.set("accepted_tracking_cookies", false, {
-            expires: 365,
-            sameSite: "Strict"
-          });
-          this.$q.cookies.remove("_gat_gtag_UA_159981361_1", {
-            domain: ".baskewitsch.lu"
-          });
-          this.$q.cookies.remove("_ga", { domain: ".baskewitsch.lu" });
-          this.$q.cookies.remove("_gid", { domain: ".baskewitsch.lu" });
-          break;
+      this.setConsent(this.trackingCookies);
 
-        default:
-          break;
+      if (this.trackingCookies === true) {
+        loadAnalytics();
+        trackPageview(this.$route.fullPath);
+      } else {
+        clearAnalytics();
       }
     },
     toggleFunctional() {
-      this.$q.cookies.remove("accepted_tracking_cookies");
+      // Revoking functional cookies drops everything and asks again.
+      this.$q.cookies.remove(CONSENT_COOKIE, { path: "/" });
       this.trackingCookies = false;
-      this.$q.cookies.remove("_gat_gtag_UA_159981361_1", {
-        domain: ".baskewitsch.lu"
-      });
-      this.$q.cookies.remove("_ga", { domain: ".baskewitsch.lu" });
-      this.$q.cookies.remove("_gid", { domain: ".baskewitsch.lu" });
+      clearAnalytics();
       this.dialog = false;
       this.persistent = true;
     },
     acceptAll() {
-      bootstrap().then(gtag => {
-        this.trackingCookies = true;
-        this.functionalCookies = true;
-        this.$q.cookies.set("accepted_tracking_cookies", true, {
-          expires: 365,
-          sameSite: "Strict"
-        });
-        this.$gtag.pageview({
-          page_path: this.$route.path // For the first tracking
-        });
-      });
+      this.trackingCookies = true;
+      this.functionalCookies = true;
+      this.setConsent(true);
+      loadAnalytics();
+      trackPageview(this.$route.fullPath);
     },
     acceptFunctional() {
       this.functionalCookies = true;
-      this.$q.cookies.set("accepted_tracking_cookies", false, {
-        expires: 365,
-        sameSite: "Strict"
-      });
+      this.trackingCookies = false;
+      this.setConsent(false);
     },
     link(target) {
-      this.$router.push(target).catch(err => { });
+      this.$router.push(target).catch(error => {
+        // Clicking the current entry again is not an error worth reporting.
+        if (error?.name !== "NavigationDuplicated") throw error;
+      });
     },
     toggleLeftMode() {
-      // If it was enabled change the prop value
-      if (this.leftMode == true) {
-        this.side_choice = "left";
-        return;
-      }
-      // else just set it as it was
-      this.side_choice = "right";
+      this.side_choice = this.leftMode === true ? "left" : "right";
+      setStoredLeftHand(this.leftMode);
     },
     toggleDarkMode() {
-      this.$q.dark.toggle();
+      this.$q.dark.set(this.darkMode);
+      setStoredDark(this.darkMode);
     }
   },
   mounted() {
-    this.toggleDarkMode();
-    this.darkMode = true;
-    if (!this.$q.cookies.has("accepted_tracking_cookies")) {
+    this.leftMode = getStoredLeftHand();
+    this.toggleLeftMode();
+
+    if (this.$q.cookies.has(CONSENT_COOKIE)) {
+      this.functionalCookies = true;
+      this.trackingCookies = hasTrackingConsent();
+    } else {
       this.persistent = true;
     }
-    if (
-      this.$q.cookies.has("accepted_tracking_cookies") &&
-      this.$q.cookies.get("accepted_tracking_cookies") === true
-    ) {
-      this.trackingCookies = true;
-      this.functionalCookies = true;
-    }
-    if (
-      this.$q.cookies.has("accepted_tracking_cookies") &&
-      this.$q.cookies.get("accepted_tracking_cookies") === false
-    ) {
-      this.trackingCookies = false;
-      this.functionalCookies = true;
-    }
-  },
-  created() {
-    this.$q.addressbarColor.set("#264653");
   }
 };
 </script>

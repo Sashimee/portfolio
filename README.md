@@ -1,26 +1,41 @@
 # Alex Baskewitsch (portfolio)
 
-My personal portfolio
+Personal portfolio — [alex.baskewitsch.lu](https://alex.baskewitsch.lu).
+Quasar 2 (Vue 3 + Vite), bilingual EN/FR, deployed as a static SPA behind NGINX.
 
-## Install the dependencies
+## Requirements
+
+Node 22.12+ (24 recommended, see `.nvmrc`).
+
+## Development
+
 ```bash
-npm install
+npm install       # also runs `quasar prepare`
+npm run dev       # dev server on http://localhost:8080
+npm run lint      # ESLint (flat config)
+npm run test      # Vitest unit tests
+npm run build     # production build into dist/spa
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+## Docker
+
 ```bash
-quasar dev
+docker build -t portfolio .
+docker run --rm -p 8080:80 portfolio
 ```
 
-### Lint the files
-```bash
-npm run lint
-```
+## Layout
 
-### Build the app for production
-```bash
-quasar build
-```
+| Path | Contents |
+| --- | --- |
+| `src/boot/` | app bootstrap: i18n, preferences, axios, analytics, reCAPTCHA, addressbar colour |
+| `src/data/projects.js` | single source of truth for the projects grid |
+| `src/i18n/{en,fr}/` | translations; both bundles must expose the same keys (enforced by a test) |
+| `src/utils/` | analytics (GA4, consent-gated), meta (per-page SEO tags), preferences, validation |
+| `public/projects_folder/` | static demo projects embedded by `/projects/:shortcode` |
 
-### Customize the configuration
-See [Configuring quasar.conf.js](https://v1.quasar.dev/quasar-cli/quasar-conf-js).
+## Known issue
+
+The contact form and the newsletter field post to `https://api.bask.lu/api/mail`.
+That host no longer resolves, so submissions fail. The UI degrades gracefully
+(error notification), but the backend needs to be restored or replaced.

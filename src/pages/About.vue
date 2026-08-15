@@ -18,7 +18,7 @@
       >
         {{ tool.label
         }}<q-tooltip
-          content-class="bg-accent text-black"
+          class="bg-accent text-black"
           :offset="[10, 10]"
           :delay="1000"
           transition-show="flip-right"
@@ -35,7 +35,7 @@
       <div class="row flex-center">
         <q-btn push class="action_button" :label="$t('buttons.projects')" to="/projects"
           ><q-tooltip
-            content-class="bg-accent text-black"
+            class="bg-accent text-black"
             :offset="[10, 10]"
             :delay="1000"
             transition-show="flip-right"
@@ -46,7 +46,7 @@
         >
         <q-btn push class="action_button" :label="$t('buttons.blog')" to="/blog"
         ><q-tooltip
-          content-class="bg-accent text-black"
+          class="bg-accent text-black"
           :offset="[10, 10]"
           :delay="1000"
           transition-show="flip-right"
@@ -57,7 +57,7 @@
       >
         <q-btn push class="action_button" :label="$t('buttons.contact')" to="/contact"
           ><q-tooltip
-            content-class="bg-accent text-black"
+            class="bg-accent text-black"
             :offset="[10, 10]"
             :delay="1000"
             transition-show="flip-right"
@@ -72,9 +72,17 @@
 </template>
 
 <script>
-import { bootstrap } from "vue-gtag";
+import { usePageMeta } from "@/composables/use-page-meta";
+
 export default {
   name: "PageAbout",
+  setup() {
+    usePageMeta({
+      titleKey: "seo.about.title",
+      descriptionKey: "seo.about.description",
+      path: "/about"
+    });
+  },
   data() {
     return {
       tools_list: [
@@ -151,15 +159,6 @@ export default {
       ]
     };
   },
-  mounted() {
-    if (this.$q.cookies.get("accepted_tracking_cookies") === true) {
-      bootstrap().then(gtag => {
-        this.$gtag.pageview({
-          page_path: "/about"
-        });
-      });
-    }
-  },
   methods: {
     goto(link) {
       window.open(link);
@@ -174,7 +173,7 @@ export default {
 
 .action_button
   margin: 1rem
-  background: lighten($accent, 10)
+  background: color-mix(in srgb, $accent 82%, white)
   color: black
 
 .paragraphs
