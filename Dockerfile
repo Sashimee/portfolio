@@ -3,13 +3,19 @@ FROM node:24-alpine AS build-stage
 
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies.
+# --ignore-scripts because the "postinstall" hook runs `quasar prepare`, which
+# validates the whole project tree (index.html, src/, postcss.config.js…) and
+# fails if only the manifests have been copied. It is run below instead, once
+# the sources are in place, so this layer still caches on package*.json alone.
 COPY package*.json ./
-COPY quasar.config.js ./
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 # Copy source code
 COPY . .
+
+# What the skipped postinstall hook would have done
+RUN npx quasar prepare
 
 RUN npm run build
 
