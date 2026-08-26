@@ -70,6 +70,9 @@ export default {
     lead:
       "Des notes sur le green coding, l'informatique durable et le développement web.",
     read: "Lire l'article",
+    back: "Retour vers le blog",
+    incentive:
+      "Afin d'être tenu au courant de l'actualité de mon blog, veuillez entrer votre adresse email :",
     reading_time: "{minutes} min de lecture",
     zoom: "Agrandir l'image"
   },
@@ -87,6 +90,8 @@ export default {
       archive: "Archive"
     },
     texts: {
+      schoulbus:
+        "Personnalise le plan officiel du bus scolaire de Beckerich pour chaque enfant : l'arrêt utile — desservi dans la bonne direction vers son école — le temps de marche et les départs du jour. React 19, TypeScript et Vite en PWA hors-ligne, avec une API Hono + PostgreSQL conteneurisée sur VPS. Cinq langues, fiche imprimable, export vers l'agenda. Aucune donnée de famille ne quitte l'appareil : le partage voyage dans le fragment de l'URL, et la recherche d'adresse est entièrement locale.",
       baskewitsch:
         "Projet de portfolio. Réalisé avec Quasar.dev - Google Analytics - Laravel Backend - reCaptcha v3 - axios. Déployé dans différentes machines virtuelles sur mon propre server vmware.",
       dawa:
@@ -153,9 +158,85 @@ export default {
     cta: "Construisons quelque chose de plus léger",
     top: "Haut de page"
   },
+  blogPost2: {
+    title: "Dix-neuf jours pour un bus scolaire",
+    title2:
+      "Ce que <strong>Claude Code</strong> change quand on livre seul — et ce qu'il ne change pas.",
+    sections: [
+      {
+        title: "Le problème tenait dans un PDF",
+        paragraphs: [
+          "Le plan du bus scolaire de la commune de Beckerich est un document officiel de cinq pages : sept lignes, dix-sept arrêts, huit villages, cinq sites scolaires, et des règles qui changent selon le cycle de l'enfant et le jour de la semaine. Tout y est. Rien n'y répond à la seule question qu'un parent se pose vraiment le matin : à quelle heure faut-il sortir de chez soi ?",
+          "Le dépôt est vide le 7 août 2026. L'application répond sur <strong>app.schoulbus.lu</strong> le 24 août. Entre les deux, cent quarante-trois commits — et une manière de travailler que je n'aurais pas tenue seul."
+        ],
+        img: "aujourdhui"
+      },
+      {
+        title: "Ce que l'application calcule",
+        paragraphs: [
+          "L'arrêt affiché n'est pas le plus proche : c'est le plus proche <strong>desservi dans la bonne direction</strong>, vers l'école du cycle de cet enfant-là, ce jour-là. La nuance a l'air d'un détail jusqu'au matin où elle fait rater un bus.",
+          "La recherche d'adresse est entièrement hors-ligne. Les 1 162 adresses de la commune et leurs 59 rues tiennent dans 44 Ko embarqués, tolérants aux accents et à l'ordre des mots. Ce n'est pas une optimisation : c'est la garantie. Aucune frappe ne part sur un réseau, et la configuration d'un foyer se partage par le fragment de l'URL — la part que le serveur ne reçoit jamais.",
+          "Autour, ce qu'on attend d'un outil qu'on ouvre à 7 h : la semaine sur une fiche imprimable, l'export vers l'agenda, les perturbations relues à chaque ouverture, les rappels par notification. Et cinq langues — français, allemand, luxembourgeois, portugais, anglais — dont un test refuse qu'elles divergent d'une seule clé."
+        ],
+        img: "assistant"
+      },
+      {
+        title: "Sortir du palier gratuit",
+        paragraphs: [
+          "Le serveur a d'abord été un Worker Cloudflare adossé à un magasin clé-valeur. Gratuit, et commode — jusqu'à ce qu'on relise le code. Trois contraintes du palier gratuit y étaient écrites noir sur blanc : l'envoi des notifications découpé en lots de dix, une fenêtre d'exécution de quatre à quinze heures UTC pour cinq créneaux réellement utiles, et une cohérence différée qui rendait approximative la limitation à cinq tentatives.",
+          "Ces trois lignes ne décrivaient pas le problème du bus scolaire. Elles décrivaient un abonnement. Le serveur est devenu un service Node et <strong>Hono</strong> adossé à PostgreSQL, conteneurisé, sur une machine louée. Le commit qui l'acte annonce quatre-vingts cas de test devenus cent neuf.",
+          "Le même mouvement a rapatrié la mesure d'audience : un service tiers recevait la page consultée, et c'était le seul endroit où le projet dérogeait à son premier principe. Il compte désormais chez lui, sans adresse IP, sans cookie, sans horodatage plus fin que le jour."
+        ],
+        img: "plan"
+      },
+      {
+        title: "Le fichier qui tient les règles",
+        paragraphs: [
+          "Chacun de mes dépôts porte un <strong>CLAUDE.md</strong>. Ce n'est pas un README : c'est le contrat de travail. Il énonce ce qui ne se négocie pas — le code écrit en français, aucune chaîne visible en dur, aucune valeur brute hors des jetons de style, des cibles tactiles d'au moins 44 px, un contraste d'au moins 4,5:1.",
+          "Mais une règle seulement écrite s'use. Elle tient dix échanges, puis un raccourci passe, puis un autre, et trois jours plus tard la moitié du fichier la contredit. Ce qui la tient vraiment, ce sont les tests : l'un refuse une couleur écrite hors des jetons et un style en ligne dans un composant, un autre mesure chaque couple encre/fond des deux thèmes, un troisième refuse une clé manquante dans l'une des cinq langues.",
+          "C'est le véritable apport de la méthode, et il n'a rien de spectaculaire : ne pas demander à l'assistant de se souvenir, mais rendre l'oubli impossible."
+        ],
+        img: "semaine"
+      },
+      {
+        title: "Une branche par sujet, une seule porte",
+        paragraphs: [
+          "Une branche par sujet, partant de <em>dev</em> ; fusion dans <em>dev</em> quand tout passe ; fusion de <em>dev</em> dans <em>main</em> quand <em>dev</em> est sain — et <em>main</em>, c'est la mise en ligne. Un correctif d'une ligne suit le même chemin qu'un lot entier, parce que c'est précisément le correctif d'une ligne qui met un site en panne : personne ne l'a regardé.",
+          "Avant toute proposition, une seule commande — types, lint, tests, contrastes, dérive des jetons de style. Elle passe, ou rien ne sort. C'est aussi ce que rejoue l'intégration continue, et ce que lance le conteneur avant de se construire : une vérification qu'on peut contourner n'est pas une vérification.",
+          "Ce cadre coûte quelques minutes par sujet. Il rend surtout la vitesse supportable. Quand le code arrive plus vite qu'on ne le relit, le goulot d'étranglement change de place : il n'est plus dans l'écriture, il est dans la vérification."
+        ],
+        img: ""
+      },
+      {
+        title: "Écrire ce qu'on n'a pas vérifié",
+        paragraphs: [
+          "La feuille de route du projet fait 2 743 lignes, et sa partie la plus utile n'est pas la liste de ce qui est fait. C'est le registre des <strong>réserves ouvertes</strong>, R1 à R50 : chacune nomme ce qu'un lot n'a pas pu prouver, et le critère exact qui permettra de la rayer.",
+          "« Aucun rappel réel n'a été envoyé un vrai matin d'école. » Ce n'est pas un bug, et aucun test ne le trouvera : c'est une chose que le code ne peut pas démontrer tout seul. Les messages de commit disent de même ce qui a été vérifié <em>et</em> ce qui ne l'a pas été — le dernier en date raye une réserve, et n'en raye qu'une moitié d'une autre.",
+          "Une réserve dite de vive voix et non écrite est une réserve perdue : elle réapparaît en panne trois mois plus tard. C'est la contrepartie du travail assisté, et elle se paie en écriture."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce que dix semaines donnent",
+        paragraphs: [
+          "Sur les dix dernières semaines, dix-sept dépôts ont reçu près de cinq cents commits, dont environ deux cent quarante portent la co-signature de Claude. Schoulbus en compte cent quarante-trois, sa vitrine trente-cinq.",
+          "Ailleurs : un éditeur de collages dans le navigateur, deux cent trente-six commits — dont une phase entière consacrée à <strong>supprimer</strong>, un sous-système d'animation retiré et des milliers de lignes orphelines effacées. C'est peut-être le meilleur usage que j'en aie fait. Et ce portfolio même, passé de Vue 2 à Vue 3, redessiné deux fois, ses captures ramenées de 39 Mo à moins d'un mégaoctet.",
+          "Le chiffre est à ne pas lire de travers : ce n'est pas une mesure de productivité, c'est une mesure de volume. Ce qui a réellement changé, c'est le coût d'essayer — et donc le coût de jeter."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce que cela ne fait pas",
+        paragraphs: [
+          "La vitrine parle cinq langues. Le <strong>luxembourgeois n'a été relu par personne dont c'est la langue maternelle</strong>. C'est la langue du foyer dans une bonne part de la commune, le site est publié, et aucune commande ne referme cette réserve-là.",
+          "Une machine écrit vite, et elle écrit juste plus souvent qu'on ne le croit. Elle ne dira pas qu'un mot sonne faux à une oreille locale, qu'un parent s'est perdu dans l'assistant, qu'un écran est illisible au soleil, à bout de bras, un matin de septembre. Ces choses-là restent des réserves ouvertes jusqu'à ce qu'une personne les regarde.",
+          "La vitesse, la constance, la patience de reprendre un fichier une quinzième fois : c'est ce que j'ai délégué. Ce que j'ai gardé, c'est la liste de ce qui n'est pas prouvé."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost1: {
-    link: "/blog/article",
-    back: "Retour vers le blog",
     title: "L'avenir de la Fintech",
     title2:
       "De quelle manière le <strong>Green Coding</strong> peut révolutionner l’industrie.",
@@ -212,9 +293,7 @@ export default {
         ],
         img: ""
       }
-    ],
-    incentive:
-      "Afin d'être tenu au courant de l'actualité de mon blog, veuillez enter votre adresse email :"
+    ]
   },
   seo: {
     home: {

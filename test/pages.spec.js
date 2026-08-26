@@ -15,6 +15,7 @@ async function mountAt(path) {
 
   const wrapper = mount(MainLayout, { global: { plugins: [router] } })
   await flushPromises()
+  wrapper.router = router
   return wrapper
 }
 
@@ -37,6 +38,8 @@ describe('routes render', () => {
     '/contact',
     '/blog',
     '/blog/article',
+    '/blog/green-coding-fintech',
+    '/blog/schoulbus-claude-code',
     '/nope'
   ]
 
@@ -59,9 +62,35 @@ describe('page content', () => {
   // The sections used to be read with $t(), which returns a string: the whole
   // body rendered empty.
   it('renders the body of the blog article', async () => {
-    const wrapper = await mountAt('/blog/article')
+    const wrapper = await mountAt('/blog/green-coding-fintech')
     expect(wrapper.text()).toContain('Introduction')
     expect(wrapper.text()).toContain('min read')
+  })
+
+
+  // The two articles share one component: it must read the slug, not a constant.
+  it('renders the other article from the same component', async () => {
+    const wrapper = await mountAt('/blog/schoulbus-claude-code')
+    expect(wrapper.text()).toContain('Nineteen days for a school bus')
+    expect(wrapper.text()).not.toContain('The future of Fintech')
+  })
+
+  // `beforeEnter` does not replay on a param-only change, so the article page
+  // carries its own `beforeRouteUpdate`. That guard only runs on a mounted
+  // component, which is why it is checked here and not in routes.spec.js.
+  it('404s a bad slug reached from another article', async () => {
+    const wrapper = await mountAt('/blog/schoulbus-claude-code')
+
+    await wrapper.router.push('/blog/does-not-exist')
+    await flushPromises()
+
+    expect(wrapper.router.currentRoute.value.name).toBe('not-found')
+  })
+
+  it('lists every post on the blog index', async () => {
+    const wrapper = await mountAt('/blog')
+    expect(wrapper.text()).toContain('Nineteen days for a school bus')
+    expect(wrapper.text()).toContain('The future of Fintech')
   })
 
   it('shows the 404 page for an unknown path', async () => {
@@ -80,7 +109,7 @@ describe('projects page', () => {
     const wrapper = await mountAt('/projects')
     const page = wrapper.findComponent(ProjectsPage)
 
-    expect(page.vm.projectsList).toHaveLength(10)
+    expect(page.vm.projectsList).toHaveLength(11)
     expect(page.vm.categories.map(c => c.value)).toEqual(['all', 'live', 'template', 'archive'])
 
     await page.setData({ categorySelect: 'archive' })

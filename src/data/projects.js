@@ -13,6 +13,15 @@ export const PROJECT_CATEGORIES = ['live', 'template', 'archive']
 
 export default [
   {
+    name: 'Schoulbus',
+    category: 'live',
+    link: 'https://www.schoulbus.lu',
+    img: 'schoulbus',
+    tags: ['React', 'TypeScript', 'PostgreSQL'],
+    target: 'external',
+    infoKey: 'schoulbus'
+  },
+  {
     name: 'Baskewitsch.lu',
     category: 'live',
     link: 'https://github.com/Sashimee/portfolio',
