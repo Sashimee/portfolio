@@ -25,6 +25,10 @@ jobs:
 
       - run: npm run build
 
+      # L'hôte de l'API n'existe qu'après la construction, et son absence ne
+      # casse rien de visible : le formulaire posterait sur l'origine du site.
+      - run: npm run verify:api-url
+
       - uses: actions/upload-artifact@v4
         with:
           name: dist-spa

@@ -22,6 +22,18 @@ export default defineConfig(ctx => {
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
 
+      // Injecté dans le bundle à la construction, et lu par src/boot/axios.js
+      // sous `import.meta.env.API_BASE_URL`. Surchargeable au build
+      // (API_BASE_URL=… npm run build) pour viser une instance de recette.
+      //
+      // `defineEnv`, et non `env` : en @quasar/app-vite v3, `build.env` n'est
+      // plus une carte de variables mais la configuration des fichiers .env
+      // (folder, files, prefix, filter). Y poser une variable ne définit rien
+      // et ne lève rien — le bundle sort avec `import.meta.env.X` non résolu.
+      defineEnv: {
+        API_BASE_URL: process.env.API_BASE_URL || 'https://api.baskewitsch.lu/api'
+      },
+
       // The pages and the layout are written with the Options API; app-vite v3
       // tree-shakes it out by default, which silently disables data/computed/
       // mounted/meta at runtime.
