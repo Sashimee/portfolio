@@ -9,16 +9,16 @@
         flat
         icon="arrow_back"
         to="/blog"
-        :label="$t('blogPost1.back')"
+        :label="$t('blog.back')"
       />
 
       <p class="overline">{{ $t('blog.reading_time', { minutes }) }}</p>
-      <h1 class="title-xl article__title" v-html="$t('blogPost1.title')"></h1>
-      <p class="lead" data-reveal style="--d: 0.06s" v-html="$t('blogPost1.title2')"></p>
+      <h1 class="title-xl article__title" v-html="$t(`${post.key}.title`)"></h1>
+      <p class="lead" data-reveal style="--d: 0.06s" v-html="$t(`${post.key}.title2`)"></p>
 
       <figure class="article__cover" data-reveal style="--d: 0.1s">
         <button type="button" class="article__zoom" :aria-label="$t('blog.zoom')" @click="imageDialog = true">
-          <img :src="cover" :alt="$t('blogPost1.title')" loading="lazy" decoding="async" />
+          <img :src="post.cover" :alt="$t(`${post.key}.title`)" loading="lazy" decoding="async" />
           <q-icon name="fullscreen" size="24px" />
         </button>
       </figure>
@@ -30,7 +30,8 @@
           <img
             v-if="item.img"
             class="article__illustration"
-            :src="`/screenshots/article_one/${item.img}.webp`"
+            :class="{ 'article__illustration--portrait': post.portrait }"
+            :src="`/screenshots/${post.illustrations}/${item.img}.webp`"
             :alt="stripTags(item.title)"
             loading="lazy"
             decoding="async"
@@ -39,7 +40,7 @@
       </div>
 
       <aside class="article__newsletter">
-        <h2 class="title-md">{{ $t('blogPost1.incentive') }}</h2>
+        <h2 class="title-md">{{ $t('blog.incentive') }}</h2>
 
         <div v-if="loading" class="article__loading">
           <q-spinner-pie color="primary" size="2em" />
@@ -75,34 +76,48 @@
     </section>
 
     <q-dialog v-model="imageDialog">
-      <img class="article__lightbox" :src="cover" :alt="$t('blogPost1.title')" @click="imageDialog = false" />
+      <img class="article__lightbox" :src="post.cover" :alt="$t(`${post.key}.title`)" @click="imageDialog = false" />
     </q-dialog>
   </q-page>
 </template>
 
 <script>
+import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { api } from '@/boot/axios'
 import { usePageMeta } from '@/composables/use-page-meta'
 import { useReveal } from '@/composables/use-reveal'
 import { trackEvent } from '@/utils/analytics'
 import { isValidEmail } from '@/utils/validation'
-import cover from '@/assets/gc_info_fr.webp'
+import { readingTime } from '@/utils/reading-time'
+import posts from '@/data/posts'
 
-const WORDS_PER_MINUTE = 200
+const stripTags = value => String(value).replace(/<[^>]*>/g, '')
 
 export default {
   name: 'BlogArticle',
   setup() {
+    const route = useRoute()
+    const { t } = useI18n()
+
+    // Le garde `beforeEnter` de la route a déjà refusé un slug inconnu : ici,
+    // l'article existe forcément.
+    const post = posts.find(entry => entry.slug === route.params.slug)
+
     usePageMeta({
-      titleKey: 'blogPost1.title',
-      descriptionKey: 'seo.blog.description',
-      path: '/blog/article'
+      titleKey: `${post.key}.title`,
+      // Le sous-titre porte du balisage (`<strong>`), que la page affiche mais
+      // qu'une méta-description ne doit pas recopier telle quelle.
+      description: () => stripTags(t(`${post.key}.title2`)),
+      path: `/blog/${post.slug}`,
+      image: post.cover
     })
     useReveal()
+
+    return { post }
   },
   data() {
     return {
-      cover,
       imageDialog: false,
       email: null,
       loading: false,
@@ -115,23 +130,15 @@ export default {
      * $tm() est l'API prévue pour les messages structurés.
      */
     sections() {
-      const sections = this.$tm('blogPost1.sections')
+      const sections = this.$tm(`${this.post.key}.sections`)
       return Array.isArray(sections) ? sections : []
     },
     minutes() {
-      const words = this.sections
-        .flatMap(section => section.paragraphs || [])
-        .join(' ')
-        .split(/\s+/)
-        .filter(Boolean).length
-
-      return Math.max(1, Math.round(words / WORDS_PER_MINUTE))
+      return readingTime(this.sections)
     }
   },
   methods: {
-    stripTags(value) {
-      return String(value).replace(/<[^>]*>/g, '')
-    },
+    stripTags,
     isValidEmail() {
       return isValidEmail(this.email) || this.$t('contact.invalid_email')
     },
@@ -178,6 +185,15 @@ export default {
     onReset() {
       this.email = null
     }
+  },
+  /**
+   * `beforeEnter` ne rejoue pas quand seul le paramètre change : d'un article
+   * vers un slug inconnu, la route est la même et le garde ne voit rien. La
+   * page se remonte bien (`:key="route.path"` dans MainLayout), mais sur un
+   * article qui n'existe pas — d'où ce second garde, au niveau du composant.
+   */
+  beforeRouteUpdate(to) {
+    return posts.some(post => post.slug === to.params.slug) ? true : '/404'
   },
   mounted() {
     window.addEventListener('scroll', this.onScroll, { passive: true })
@@ -286,6 +302,14 @@ export default {
   object-fit: contain
   margin: 2.5rem 0
   opacity: 0.9
+
+// Les captures d'application sont verticales (740 × 1648) : au plafond commun,
+// elles tiendraient sur un timbre. On les laisse monter, sans dépasser la
+// hauteur d'un écran de portable tenu à côté du texte.
+.article__illustration--portrait
+  max-height: 30rem
+  width: auto
+  margin-inline: auto
 
 .article__newsletter
   margin-top: 4.5rem

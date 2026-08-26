@@ -9,16 +9,23 @@
         <p class="lead" data-reveal style="--d: 0.15s">{{ $t('blog.lead') }}</p>
       </header>
 
-      <article v-if="featured" class="post" data-reveal style="--d: 0.2s">
-        <router-link class="post__link" :to="featured.link">
+      <article
+        v-for="(post, index) in posts"
+        :key="post.slug"
+        class="post"
+        data-reveal
+        :style="`--d: ${0.2 + index * 0.06}s`"
+      >
+        <router-link class="post__link" :to="post.link">
           <div class="post__text">
             <p class="post__meta mono">
-              <span>01</span>
-              <span>{{ $t('blog.reading_time', { minutes: featured.minutes }) }}</span>
+              <span>{{ post.number }}</span>
+              <span>{{ post.date }}</span>
+              <span>{{ $t('blog.reading_time', { minutes: post.minutes }) }}</span>
             </p>
 
-            <h2 class="post__title">{{ featured.title }}</h2>
-            <p class="post__excerpt" v-html="featured.excerpt"></p>
+            <h2 class="post__title">{{ post.title }}</h2>
+            <p class="post__excerpt" v-html="post.excerpt"></p>
 
             <span class="post__cta">
               {{ $t('blog.read') }}
@@ -27,7 +34,7 @@
           </div>
 
           <div class="post__media">
-            <img :src="featured.cover" :alt="featured.title" loading="lazy" decoding="async" />
+            <img :src="post.cover" :alt="post.title" loading="lazy" decoding="async" />
           </div>
         </router-link>
       </article>
@@ -38,10 +45,8 @@
 <script>
 import { usePageMeta } from '@/composables/use-page-meta'
 import { useReveal } from '@/composables/use-reveal'
-import cover from '@/assets/gc_info_fr.webp'
-
-/** ~200 mots/minute, la moyenne retenue pour un texte de blog. */
-const WORDS_PER_MINUTE = 200
+import { readingTime } from '@/utils/reading-time'
+import registry from '@/data/posts'
 
 export default {
   name: 'PageBlog',
@@ -54,21 +59,30 @@ export default {
     useReveal()
   },
   computed: {
-    featured() {
-      const sections = this.$tm('blogPost1.sections')
-      const words = (Array.isArray(sections) ? sections : [])
-        .flatMap(section => section.paragraphs || [])
-        .join(' ')
-        .split(/\s+/)
-        .filter(Boolean).length
-
-      return {
-        cover,
-        title: this.$t('blogPost1.title'),
-        excerpt: this.$t('blogPost1.title2'),
-        link: this.$t('blogPost1.link'),
-        minutes: Math.max(1, Math.round(words / WORDS_PER_MINUTE))
-      }
+    /**
+     * Le registre, résolu dans la langue courante. `$tm()` et non `$t()` :
+     * `sections` est un message tableau, sur lequel `$t()` rend une chaîne vide.
+     */
+    posts() {
+      return registry.map((post, index) => ({
+        slug: post.slug,
+        cover: post.cover,
+        number: String(index + 1).padStart(2, '0'),
+        date: this.formatDate(post.date),
+        title: this.$t(`${post.key}.title`),
+        excerpt: this.$t(`${post.key}.title2`),
+        link: `/blog/${post.slug}`,
+        minutes: readingTime(this.$tm(`${post.key}.sections`))
+      }))
+    }
+  },
+  methods: {
+    /** Mois et année suffisent : un billet n'est pas une dépêche. */
+    formatDate(value) {
+      return new Date(value).toLocaleDateString(this.$i18n.locale, {
+        year: 'numeric',
+        month: 'long'
+      })
     }
   }
 }
@@ -79,11 +93,14 @@ export default {
   max-width: 40ch
   margin-bottom: clamp(2rem, 4vw, 3rem)
 
-// Un seul article : il occupe toute la largeur, en une une de journal plutôt
-// qu'en carte perdue dans une grille vide.
+// Les articles occupent toute la largeur, en une de journal plutôt qu'en cartes
+// perdues dans une grille à demi vide. Le filet fort n'ouvre que la liste : sur
+// deux articles empilés, un filet par bord en dessinerait deux au milieu.
 .post
-  border-top: var(--hairline) solid var(--border-strong)
   border-bottom: var(--hairline) solid var(--border)
+
+  &:first-of-type
+    border-top: var(--hairline) solid var(--border-strong)
 
 .post__link
   display: grid

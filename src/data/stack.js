@@ -15,15 +15,29 @@ export default [
   { label: 'CSS', icon: 'fab fa-css3', group: 'frontend', link: 'https://developer.mozilla.org/docs/Web/CSS' },
   { label: 'Sass', icon: 'fab fa-sass', group: 'frontend', link: 'https://sass-lang.com/' },
   { label: 'Angular', icon: 'fab fa-angular', group: 'frontend', link: 'https://angular.dev/' },
+  { label: 'React', icon: 'fab fa-react', group: 'frontend', link: 'https://react.dev/' },
+  { label: 'TypeScript', icon: 'fas fa-code', group: 'frontend', link: 'https://www.typescriptlang.org/' },
+  { label: 'Vite', icon: 'fas fa-bolt', group: 'frontend', link: 'https://vite.dev/' },
+  { label: 'Quasar', icon: 'fas fa-layer-group', group: 'frontend', link: 'https://quasar.dev/' },
 
   { label: 'Laravel', icon: 'fab fa-laravel', group: 'backend', link: 'https://laravel.com/' },
   { label: 'PHP', icon: 'fab fa-php', group: 'backend', link: 'https://www.php.net/' },
   { label: 'Wordpress', icon: 'fab fa-wordpress', group: 'backend', link: 'https://wordpress.org/' },
+  { label: 'Node.js', icon: 'fab fa-node-js', group: 'backend', link: 'https://nodejs.org/' },
+  { label: 'Hono', icon: 'fas fa-fire', group: 'backend', link: 'https://hono.dev/' },
+  { label: 'PostgreSQL', icon: 'fas fa-database', group: 'backend', link: 'https://www.postgresql.org/' },
 
   { label: 'Linux', icon: 'fab fa-linux', group: 'infra', link: 'https://www.linux.org/' },
   { label: 'VMware', icon: 'fas fa-server', group: 'infra', link: 'https://www.vmware.com/' },
   { label: 'Mikrotik', icon: 'fas fa-network-wired', group: 'infra', link: 'https://mikrotik.com/' },
+  { label: 'Docker', icon: 'fab fa-docker', group: 'infra', link: 'https://www.docker.com/' },
+  { label: 'Traefik', icon: 'fas fa-route', group: 'infra', link: 'https://traefik.io/traefik/' },
+  { label: 'Dokploy', icon: 'fas fa-rocket', group: 'infra', link: 'https://dokploy.com/' },
+  { label: 'GitHub Actions', icon: 'fas fa-arrows-rotate', group: 'infra', link: 'https://github.com/features/actions' },
 
   { label: 'GitHub', icon: 'fab fa-github', group: 'tools', link: 'https://github.com/Sashimee' },
-  { label: 'VSCode', icon: 'fab fa-microsoft', group: 'tools', link: 'https://code.visualstudio.com/' }
+  { label: 'VSCode', icon: 'fab fa-microsoft', group: 'tools', link: 'https://code.visualstudio.com/' },
+  { label: 'Claude Code', icon: 'fas fa-robot', group: 'tools', link: 'https://claude.com/claude-code' },
+  { label: 'Vitest', icon: 'fas fa-vial', group: 'tools', link: 'https://vitest.dev/' },
+  { label: 'Playwright', icon: 'fas fa-masks-theater', group: 'tools', link: 'https://playwright.dev/' }
 ]

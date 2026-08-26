@@ -69,6 +69,9 @@ export default {
     eyebrow: "Writing",
     lead: "Notes on green coding, sustainable IT and web development.",
     read: "Read the article",
+    back: "Back to Blog",
+    incentive:
+      "To be kept updated on the latest articles on my blog, please enter your email:",
     reading_time: "{minutes} min read",
     zoom: "Enlarge the image"
   },
@@ -86,6 +89,8 @@ export default {
       archive: "Archive"
     },
     texts: {
+      schoulbus:
+        "Personalises the official Beckerich school bus plan for each child: the useful stop — one served in the right direction towards their school — the walking time and the day's departures. React 19, TypeScript and Vite as an offline-first PWA, with a containerised Hono + PostgreSQL API on a self-hosted VPS. Five languages, printable sheet, calendar export. No family data ever leaves the device: sharing travels in the URL fragment, and the address search runs entirely offline.",
       baskewitsch:
         "Personal Portfolio Project. Made with Quasar.dev - Google Analytics - Laravel Backend - reCaptcha v3 - axios. Deployed in different virtual machines in my vmware node.",
       dawa:
@@ -150,9 +155,85 @@ export default {
     cta: "Let's build something lighter",
     top: "Back to top"
   },
+  blogPost2: {
+    title: "Nineteen days for a school bus",
+    title2:
+      "What <strong>Claude Code</strong> changes when you ship alone — and what it does not.",
+    sections: [
+      {
+        title: "The problem fitted in a PDF",
+        paragraphs: [
+          "The school bus plan for the commune of Beckerich is a five-page official document: seven lines, seventeen stops, eight villages, five school sites, and rules that shift with the child's cycle and the day of the week. Everything is in there. Nothing in it answers the only question a parent actually asks in the morning: what time do we need to leave the house?",
+          "The repository is empty on 7 August 2026. The application answers on <strong>app.schoulbus.lu</strong> on 24 August. Between the two, a hundred and forty-three commits — and a way of working I could not have sustained on my own."
+        ],
+        img: "aujourdhui"
+      },
+      {
+        title: "What the application computes",
+        paragraphs: [
+          "The stop it shows is not the nearest one. It is the nearest one <strong>served in the right direction</strong>, towards the school of that child's cycle, on that day. The distinction looks like a detail until the morning it makes someone miss a bus.",
+          "Address search is entirely offline. The commune's 1,162 addresses and their 59 streets fit into 44 KB shipped with the app, tolerant of accents and of word order. That is not an optimisation, it is the guarantee: no keystroke leaves the device, and a household's configuration is shared through the URL fragment — the part a server never receives.",
+          "Around that, what you expect from something you open at 7 a.m.: the week on a printable sheet, calendar export, disruptions re-read on every launch, reminders by notification. And five languages — French, German, Luxembourgish, Portuguese, English — which a test forbids from drifting apart by so much as one key."
+        ],
+        img: "assistant"
+      },
+      {
+        title: "Leaving the free tier",
+        paragraphs: [
+          "The server started life as a Cloudflare Worker backed by a key-value store. Free, and convenient — until you read the code again. Three constraints of the free tier were written into it in plain sight: notification sending cut into batches of ten, an execution window from four to fifteen hours UTC for five genuinely useful slots, and a deferred consistency that made the five-attempt rate limit approximate.",
+          "Those three lines did not describe the school bus problem. They described a subscription. The server became a Node and <strong>Hono</strong> service backed by PostgreSQL, containerised, on a rented machine. The commit that records it reports eighty test cases becoming a hundred and nine.",
+          "The same move brought analytics back in-house: a third party was receiving the page being viewed, and that was the single place where the project departed from its own first principle. It now counts at home — no IP address, no cookie, no timestamp finer than the day."
+        ],
+        img: "plan"
+      },
+      {
+        title: "The file that holds the rules",
+        paragraphs: [
+          "Every one of my repositories carries a <strong>CLAUDE.md</strong>. It is not a README; it is the terms of engagement. It states what is not negotiable — code written in French, no visible string hardcoded, no raw value outside the style tokens, touch targets of at least 44 px, contrast of at least 4.5:1.",
+          "But a rule that is only written down wears out. It holds for ten exchanges, then a shortcut slips through, then another, and three days later half the file contradicts it. What actually holds it is the tests: one refuses a colour written outside the tokens and an inline style in a component, another measures every ink/background pair in both themes, a third refuses a key missing from any of the five languages.",
+          "That is the real contribution of the method, and there is nothing spectacular about it: not asking the assistant to remember, but making forgetting impossible."
+        ],
+        img: "semaine"
+      },
+      {
+        title: "One branch per subject, one gate",
+        paragraphs: [
+          "One branch per subject, cut from <em>dev</em>; merged into <em>dev</em> when everything passes; <em>dev</em> merged into <em>main</em> when <em>dev</em> is healthy — and <em>main</em> is what goes live. A one-line fix takes the same road as a whole batch, because it is precisely the one-line fix that takes a site down: nobody looked at it.",
+          "Before anything is proposed, a single command — types, lint, tests, contrast, style-token drift. It passes, or nothing ships. It is also what continuous integration replays, and what the container runs before it will build: a check you can walk around is not a check.",
+          "This frame costs a few minutes per subject. Above all it makes the speed bearable. When code arrives faster than you can read it, the bottleneck moves: it is no longer in the writing, it is in the verification."
+        ],
+        img: ""
+      },
+      {
+        title: "Writing down what you did not verify",
+        paragraphs: [
+          "The project's roadmap runs to 2,743 lines, and its most useful part is not the list of what is done. It is the register of <strong>open reserves</strong>, R1 to R50: each one names what a batch could not prove, and the exact criterion that will allow it to be struck out.",
+          "\"No real reminder has been sent on an actual school morning.\" That is not a bug, and no test will find it: it is something the code cannot demonstrate by itself. Commit messages say the same thing — what was verified <em>and</em> what was not. The most recent one strikes out one reserve, and only half of another.",
+          "A reserve spoken aloud and never written is a reserve lost: it comes back as a breakage three months later. That is the price of assisted work, and it is paid in writing."
+        ],
+        img: ""
+      },
+      {
+        title: "What ten weeks add up to",
+        paragraphs: [
+          "Over the last ten weeks, seventeen repositories took close to five hundred commits, of which roughly two hundred and forty carry Claude's co-signature. Schoulbus accounts for a hundred and forty-three of them, its showcase site for thirty-five.",
+          "Elsewhere: a collage editor in the browser, two hundred and thirty-six commits — including an entire phase devoted to <strong>deleting</strong>, an animation subsystem pulled out and thousands of orphaned lines erased. That may be the best use I have put it to. And this very portfolio, moved from Vue 2 to Vue 3, redesigned twice, its screenshots brought down from 39 MB to under a megabyte.",
+          "The number should not be misread: it is not a measure of productivity, it is a measure of volume. What genuinely changed is the cost of trying — and therefore the cost of throwing away."
+        ],
+        img: ""
+      },
+      {
+        title: "What it does not do",
+        paragraphs: [
+          "The showcase site speaks five languages. The <strong>Luxembourgish has not been read by anyone who speaks it natively</strong>. It is the language of the home across a good part of the commune, the site is published, and no command closes that particular reserve.",
+          "A machine writes fast, and it writes correctly more often than people expect. It will not tell you that a word rings false to a local ear, that a parent got lost in the wizard, that a screen is unreadable in the sun, held at arm's length, on a September morning. Those stay open reserves until a person looks at them.",
+          "The speed, the consistency, the patience to pick a file up a fifteenth time: that is what I delegated. What I kept is the list of what is not proven."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost1: {
-    link: "/blog/article",
-    back: "Back to Blog",
     title: "The future of Fintech",
     title2: "How <strong>Green Coding</strong> can revolutionise the industry",
     sections: [
@@ -208,9 +289,7 @@ export default {
         ],
         img: ""
       }
-    ],
-    incentive:
-      "To be kept updated on the latest articles on my blog, please enter your email:"
+    ]
   },
   seo: {
     home: {
