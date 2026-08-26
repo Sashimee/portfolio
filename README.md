@@ -15,6 +15,7 @@ npm run dev       # dev server on http://localhost:8080
 npm run lint      # ESLint (flat config)
 npm run test      # Vitest unit tests
 npm run build     # production build into dist/spa
+npm run verify:api-url  # post-build: the API host was injected, and is not a dead one
 ```
 
 ## Docker
@@ -39,6 +40,8 @@ docker run --rm -p 8080:80 portfolio
 | `src/utils/` | analytics (GA4, consent-gated), meta (per-page SEO tags), preferences, validation, reading time |
 | `public/projects_folder/` | static demo projects embedded by `/projects/:shortcode` |
 | `public/screenshots/` | project thumbnails, plus one folder of illustrations per article |
+| `service/mail/` | the mail relay behind the contact form — its own package, image and tests |
+| `scripts/` | build-time checks, e.g. that the API host really landed in the bundle |
 
 ## Blog
 
@@ -81,11 +84,24 @@ rows that invert to the accent on hover, with a single screenshot preview
 tracking the cursor. Below 900px — or on any coarse pointer — that preview has
 no trigger, so the thumbnail moves back inline into each row instead.
 
-## Known issue
+## Mail service
 
-The contact form and the newsletter field post to `https://api.bask.lu/api/mail`.
-That host no longer resolves, so submissions fail. The UI degrades gracefully
-(error notification), but the backend needs to be restored or replaced.
+The contact form and the newsletter field post to `POST /api/mail` on the host injected at
+build time (`API_BASE_URL`, default `https://api.baskewitsch.lu/api`). The service that
+answers lives in [`service/mail/`](service/mail/README.md) — a small Hono app that verifies
+the reCAPTCHA token, rate-limits by IP and relays over SMTP.
+
+It replaces `api.bask.lu`, which stopped resolving when the whole `bask.lu` zone expired.
+The request contract is unchanged; only the host moved.
+
+```bash
+cd service/mail
+npm install && npm test
+cp .env.example .env      # six required secrets, checked at startup
+docker compose up -d --build
+```
+
+**Not yet verified from production** — see reserve R1 in `docs/plan.md`.
 
 ## Working on this repository
 

@@ -22,10 +22,18 @@ npm test        # Vitest, une seule passe
 npm run build   # dist/spa
 
 docker build -t portfolio . && docker run --rm -p 8080:80 portfolio
+
+npm run verify:api-url   # après un build : l'hôte de l'API a bien été injecté
+
+cd service/mail && npm install && npm test   # le relais de courriel, sa propre porte
 ```
 
 `npm test` est la porte : rien ne se propose avant qu'il passe. La CI (`.github/workflows`)
-rejoue `lint`, `test` et `build` sur `main` et sur chaque *pull request*.
+rejoue `lint`, `test`, `build` et `verify:api-url` sur `main` et sur chaque *pull request*,
+et fait tourner la suite du service de courriel dans un second travail.
+
+Le lint de la racine couvre **aussi** `service/` : son glob l'inclut, le service n'a pas de
+configuration ESLint à lui.
 
 ## Cinq principes non négociables
 
@@ -58,7 +66,7 @@ rejoue `lint`, `test` et `build` sur `main` et sur chaque *pull request*.
    captures de 39 Mo à moins d'un mégaoctet. Y déposer un PNG annule ce travail sans que
    rien ne le signale — le site continue de se construire, il devient seulement plus lourd.
 
-## Deux pièges de la pile, tous deux déjà payés
+## Trois pièges de la pile, tous déjà payés
 
 - **`$t()` sur un message tableau rend une chaîne vide.** Les sections d'un article
   (`blogPost1.sections`) sont un tableau d'objets : c'est `$tm()` qu'il faut. Avec `$t()`,
@@ -66,6 +74,13 @@ rejoue `lint`, `test` et `build` sur `main` et sur chaque *pull request*.
 - **`build.vueOptionsAPI: true` dans `quasar.config.js` n'est pas décoratif.**
   `@quasar/app-vite` v3 élague l'Options API par défaut ; sans ce drapeau, `data`,
   `computed` et `mounted` des pages sont désactivés **en silence**.
+- **`build.env` n'injecte plus de variables ; c'est `build.defineEnv`.** En
+  `@quasar/app-vite` v3, `build.env` est devenu la *configuration des fichiers `.env`*
+  (`folder`, `files`, `prefix`, `filter`). Y poser une variable ne définit rien, ne lève
+  rien, et le bundle sort avec `import.meta.env.X` non résolu — soit `undefined` à
+  l'exécution. Une variable de construction se déclare donc dans `defineEnv` et se lit en
+  `import.meta.env.X`, jamais `process.env.X`. `npm run verify:api-url` existe pour
+  attraper précisément cette rechute après un `build`.
 
 ## Carte du dépôt
 
@@ -81,6 +96,8 @@ rejoue `lint`, `test` et `build` sur `main` et sur chaque *pull request*.
 | `public/screenshots/` | Captures des projets, et illustrations d'articles dans un sous-dossier par article. |
 | `public/projects_folder/` | Démos statiques servies en iframe par `/projects/:shortcode`. |
 | `test/` | `i18n` (parité), `routes` (résolution, données), `pages` (montage réel), `meta`. |
+| `service/mail/` | Le relais de courriel derrière le formulaire : paquet, image et tests à lui. |
+| `scripts/` | Vérifications d'après-construction (`verifier-api-url.mjs`). |
 
 ## Ce que les tests tiennent
 
@@ -140,13 +157,30 @@ prennent une icône solide, et l'approximation est assumée.
 La route, la numérotation, le temps de lecture et les balises SEO en découlent : il n'y a
 rien à ajouter dans `routes.js` ni dans les pages.
 
-## Réserve connue
+## Le service de courriel
 
-**Le formulaire de contact et l'inscription à la newsletter postent vers
-`https://api.bask.lu/api/mail`, et cet hôte ne résout plus.** L'interface dégrade
-proprement — une notification d'erreur — mais aucun message n'arrive. Le défaut est dans
-le service, pas dans le front : ne pas « réparer » l'appel, il est correct. Restaurer ou
-remplacer le service est un sujet à part entière, suivi dans `docs/plan.md`.
+Le formulaire de contact et l'inscription à la newsletter postent tous deux
+`{ name, email, message, token }` sur `POST /api/mail`. Le service qui répond vit dans
+`service/mail/` — Hono, une image à part, ses propres tests.
+
+Il a remplacé `api.bask.lu`, **dont le domaine entier a expiré** (la zone répond NXDOMAIN,
+pas seulement le sous-domaine). Trois choses à en retenir avant d'y toucher :
+
+- **L'hôte n'est pas écrit dans le code.** `quasar.config.js` l'injecte
+  (`build.defineEnv.API_BASE_URL`), `src/boot/axios.js` le lit. C'est la leçon de la panne :
+  le précédent était en dur, et le jour où il est tombé, la seule correction possible était
+  de republier le front.
+- **Le contrat est repris à l'identique** — même chemin, même charge. Le front n'a pas eu
+  à changer d'appel, seulement d'hôte ; il n'y avait rien à lui reprocher.
+- **La clé secrète reCAPTCHA a disparu avec l'ancien service.** La clé publique, elle, est
+  toujours dans `src/boot/recap.js`. Si le secret est introuvable, régénérer la paire et
+  reporter la clé publique dans le boot — les deux vont ensemble.
+
+Le service ne persiste rien : un message qui échoue au SMTP est perdu, le visiteur voit
+l'erreur. C'est assumé pour le formulaire d'un portfolio, et écrit dans son `README.md`.
+
+**Aucun envoi n'a encore été reçu depuis la production** : c'est la réserve R1 de
+`docs/plan.md`, et elle ne se referme pas depuis ce dépôt.
 
 ## Documentation
 

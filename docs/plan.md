@@ -13,13 +13,16 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 
 | | Réserve | Ce qui la refermerait |
 | --- | --- | --- |
-| **R1** | `https://api.bask.lu/api/mail` ne résout plus. Le formulaire de contact et l'inscription à la newsletter échouent tous les deux ; l'interface le dit, mais aucun message n'arrive. | Un service qui répond, et un envoi réel reçu depuis la production. |
+| **R1** | Le service de remplacement existe (`service/mail/`) et répond, mais **aucun message n'a encore été reçu depuis la production**. Tant qu'il n'est pas déployé et que le front n'est pas republié, le formulaire échoue comme avant. | Un envoi réel, depuis alex.baskewitsch.lu, arrivé dans la boîte. |
 | **R2** | Les treize icônes ajoutées au lot 3 ont été vérifiées **par leur nom**, dans la feuille de style de Font Awesome 7. Aucune n'a été vue rendue dans un navigateur. | Ouvrir `/about` et l'accueil, thème clair et thème sombre, et constater qu'aucune n'est un carré vide. |
 | **R3** | La vignette `public/screenshots/schoulbus.webp` est une composition de trois captures de l'application, faite ici — ce n'est pas une photographie de `www.schoulbus.lu`. | Une capture de la vitrine elle-même, recadrée large. |
 | **R4** | Les captures reprises pour l'article portent la charte **précédente** de l'application (bleu, verre). La nouvelle charte — crème, sarcelle, corail — a été posée le 2026-08-25 et ne vivait alors que sur la branche `dev`. | Regénérer les captures depuis `schoulbus` une fois la charte en production, et les reprendre ici. |
 | **R5** | Les chiffres cités dans l'article (près de cinq cents commits, environ deux cent quarante co-signés, dix-sept dépôts) ont été relevés le **2026-08-26**. Ils ne se mettent pas à jour tout seuls. | Rien — mais le jour où l'article est mis en avant à nouveau, les relire. |
 | **R6** | Le nouveau blog n'a été éprouvé qu'en test et en construction. Personne n'a suivi un lien `/blog/article` partagé jadis, depuis un vrai navigateur, sur le site publié. | Une visite réelle sur la production, qui atterrit bien sur `/blog/green-coding-fintech`. |
 | **R7** | La page `/about` affiche désormais 28 technologies au lieu de 14, et l'accueil les fait toutes défiler. La densité n'a été jugée que sur un écran de bureau. | Un passage sur téléphone, en portrait. |
+| **R8** | **Le trajet SMTP n'a jamais été parcouru.** Les tests injectent l'expéditeur, et la vérification manuelle s'est arrêtée au refus du jeton par Google : `nodemailer` n'a jamais ouvert de connexion vers OVH. Le nom d'hôte, le port, le mode TLS et le refus d'un `From` non authentifié sont des hypothèses. | Un envoi qui aboutit contre le vrai serveur OVH. |
+| **R9** | **L'image du service n'a jamais été construite.** `docker` exige `sudo` sur la machine de travail. Le `Dockerfile`, sa sonde de santé et le `docker-compose.yml` (étiquettes Traefik comprises) n'ont été relus que des yeux. | `docker build` qui passe, puis un conteneur dont `/health` répond. |
+| **R10** | **La clé secrète reCAPTCHA est introuvable** — elle vivait dans le service disparu. La clé publique de `src/boot/recap.js` survit, mais rien ne dit que son enregistrement liste encore `alex.baskewitsch.lu` dans ses domaines. | Le secret retrouvé et le service qui accepte un vrai jeton — ou la paire régénérée, clé publique reportée dans le boot. |
 
 ---
 
@@ -127,12 +130,60 @@ de fabriquer des états intermédiaires de ces fichiers, c'est-à-dire d'invente
 qui n'a pas eu lieu, pour un gain de lisibilité nul. Les lots 1, 3 et 6 tombaient sur des
 frontières de fichiers et ont leur propre commit.
 
+### Lot 7 — Le courriel repart, sur un domaine vivant · fait le 2026-08-26
+
+R1 disait « le service ne répond plus ». Le diagnostic a déplacé le problème : ce n'est pas
+le sous-domaine qui est tombé, c'est **`bask.lu` en entier** — la zone répond NXDOMAIN à
+l'autorité, sans SOA ni NS. Il n'y avait donc rien à restaurer, et le code du service avait
+disparu avec le domaine.
+
+`service/mail/` le remplace : une application Hono qui vérifie le jeton reCAPTCHA auprès de
+Google, limite le débit par adresse, et relaie par SMTP. Elle vit dans **ce dépôt**, sous
+son propre paquet et sa propre image — le contrat de la requête n'a qu'un consommateur, il
+est ici, et un dépôt séparé pour deux cents lignes coûterait plus qu'il ne rend.
+
+**Le contrat n'a pas bougé** : `POST /api/mail`, charge `{ name, email, message, token }`.
+`CLAUDE.md` disait de ne pas « réparer » l'appel du front parce qu'il était correct ; il
+l'était. Une seule ligne a changé côté SPA, le `baseURL` de `src/boot/axios.js`.
+
+Ce que le service refuse, et pourquoi :
+
+- une origine tierce (403) — sinon le formulaire sert à n'importe quel site ;
+- plus de cinq demandes par quart d'heure et par adresse (429), comptées **avant** l'appel
+  à Google ;
+- un jeton dont l'action n'est pas `submit` — un jeton pris ailleurs sur le site
+  n'ouvrirait pas l'envoi ;
+- un `name` porteur de `\r\n`, qui injecterait un en-tête dans le message.
+
+Le client n'apprend jamais *pourquoi* un jeton est refusé : le score et les codes de Google
+restent au journal. Et l'adresse du visiteur part en `Reply-To`, jamais en `From` — OVH
+refuse un expéditeur qui n'est pas la boîte authentifiée.
+
+**Un défaut trouvé en vérifiant, et non en écrivant.** Le premier jet posait l'hôte dans
+`build.env` de `quasar.config.js`. Le bundle est sorti avec `baseURL:{}.API_BASE_URL`,
+c'est-à-dire `undefined` : en `@quasar/app-vite` v3, `build.env` n'est plus une carte de
+variables mais la configuration des fichiers `.env`. Rien n'avait levé, ni le lint, ni les
+43 tests, ni le build. C'est `build.defineEnv` qu'il fallait, lu en `import.meta.env`. Le
+piège rejoint les deux autres dans `CLAUDE.md`, et `npm run verify:api-url` le guette
+désormais après chaque construction — un garde éprouvé en défaut sur ses deux branches
+avant d'être gardé.
+
+Vérifié ici : les 40 tests du service ; le serveur réellement démarré, `/health`, le
+preflight accepté pour le site et refusé pour un tiers, une charge invalide arrêtée avant
+Google, et un vrai aller-retour vers `siteverify` (rendant `invalid-input-response`, ce qui
+prouve que l'appel part et que la réponse est lue). L'enregistrement `api.baskewitsch.lu`
+existe et rend `57.131.136.250`, le même hôte que le site.
+
+*Réserves ouvertes : R1 (reformulée), R8, R9, R10.*
+
 ---
 
 ## Ce qui n'est pas fait
 
-- **Restaurer l'envoi de courriel (R1).** C'est le seul défaut fonctionnel connu du site.
-  Il demande un service, pas une modification du front.
+- **Déployer le service de courriel, et republier le front.** Le code est écrit et testé ;
+  il lui manque six secrets (`service/mail/.env.example`), un `docker compose up`, et un
+  build du site avec le nouvel hôte. Tant que ce n'est pas fait, le formulaire échoue comme
+  avant — R1, R8, R9 et R10 ne se referment que là.
 - **Une page par article dans le plan du site.** Il n'y a pas de `sitemap.xml` ; les deux
   articles ne sont découvrables que par `/blog`.
 - **Le garde de `/projects/:shortcode`**, qui porte le même trou que celui du blog avant le
