@@ -1,0 +1,24 @@
+{
+  "name": "portfolio-mail",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Relais de courriel du portfolio : formulaire de contact et inscription à la newsletter.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "vitest run"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.1",
+    "hono": "^4.13.5",
+    "nodemailer": "^9.0.5"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.10"
+  }
+}

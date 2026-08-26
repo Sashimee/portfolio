@@ -30,3 +30,29 @@ jobs:
           name: dist-spa
           path: dist/spa
           retention-days: 7
+
+  # Le service de courriel est un second déployable, avec ses propres
+  # dépendances : il a sa propre porte. Le lint, lui, reste celui de la racine —
+  # son glob couvre ./service/**/*.js.
+  mail:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: service/mail
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: service/mail/package-lock.json
+
+      - run: npm ci
+
+      - run: npm test
+
+      - name: Construire l'image
+        run: docker build -t portfolio-mail .

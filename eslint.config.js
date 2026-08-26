@@ -29,6 +29,17 @@ export default [
     }
   },
 
+  // Le service de courriel tourne sous Node, pas dans un navigateur : il n'a
+  // ni `window` ni `document`, et il a bien `process`.
+  {
+    files: ['service/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node
+      }
+    }
+  },
+
   {
     files: ['test/**/*.js'],
     languageOptions: {

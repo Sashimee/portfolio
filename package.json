@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "quasar dev",
     "build": "quasar build",
-    "lint": "eslint -c ./eslint.config.js \"./src/**/*.{js,mjs,cjs,vue}\" \"./test/**/*.js\"",
+    "lint": "eslint -c ./eslint.config.js \"./src/**/*.{js,mjs,cjs,vue}\" \"./test/**/*.js\" \"./service/**/*.js\"",
     "test": "vitest run",
     "test:watch": "vitest",
     "postinstall": "quasar prepare --silent"

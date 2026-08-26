@@ -31,3 +31,9 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+# Secrets — le service de courriel (service/mail/.env) en porte six.
+# Seul l'exemple, vide, est suivi.
+.env
+.env.*
+!.env.example

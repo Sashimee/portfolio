@@ -1,0 +1,35 @@
+# Déploiement du service de courriel.
+#
+# Deux façons de s'en servir :
+#
+#  - Dans Dokploy, en général on ne garde que le `build` et les `environment` :
+#    Dokploy pose lui-même le domaine et les étiquettes Traefik depuis son
+#    interface. Les étiquettes ci-dessous sont alors à supprimer.
+#  - En Docker Compose nu, derrière un Traefik existant, elles suffisent telles
+#    quelles — le réseau `traefik` doit être celui du routeur.
+#
+# Dans les deux cas, `api.baskewitsch.lu` doit pointer sur l'hôte : c'est fait,
+# l'enregistrement A rend 57.131.136.250, comme alex.baskewitsch.lu.
+services:
+  mail:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Traefik est devant : l'adresse du client est dans X-Forwarded-For.
+      TRUST_PROXY: 'true'
+      ALLOWED_ORIGINS: 'https://alex.baskewitsch.lu'
+    expose:
+      - '3000'
+    networks:
+      - traefik
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.portfolio-mail.rule: 'Host(`api.baskewitsch.lu`)'
+      traefik.http.routers.portfolio-mail.entrypoints: 'websecure'
+      traefik.http.routers.portfolio-mail.tls.certresolver: 'letsencrypt'
+      traefik.http.services.portfolio-mail.loadbalancer.server.port: '3000'
+
+networks:
+  traefik:
+    external: true
