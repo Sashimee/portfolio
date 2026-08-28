@@ -7,7 +7,9 @@ import { creerVerificateur } from '../src/recaptcha.js'
 import { BORNES, validerDemande } from '../src/validation.js'
 
 const ENV_COMPLET = {
-  RECAPTCHA_SECRET: 'secret',
+  RECAPTCHA_PROJECT_ID: 'baskewitsch',
+  RECAPTCHA_API_KEY: 'cle-api',
+  RECAPTCHA_SITE_KEY: '6LdMd50tAAAAAI2C4RJMsBKEbHy-zjMG355X2Y-h',
   SMTP_HOST: 'ssl0.ovh.net',
   SMTP_USER: 'boite@baskewitsch.lu',
   SMTP_PASSWORD: 'motdepasse',
@@ -17,7 +19,7 @@ const ENV_COMPLET = {
 
 describe('configuration', () => {
   it('nomme les variables manquantes plutôt que de démarrer', () => {
-    expect(() => chargerConfig({})).toThrow(/RECAPTCHA_SECRET/)
+    expect(() => chargerConfig({})).toThrow(/RECAPTCHA_PROJECT_ID/)
     expect(() => chargerConfig({ ...ENV_COMPLET, MAIL_TO: '' })).toThrow(/MAIL_TO/)
   })
 
@@ -45,11 +47,13 @@ describe('configuration', () => {
     expect(config.origines).toEqual(['https://alex.baskewitsch.lu', 'http://localhost:8080'])
   })
 
-  it('exige quatre variables, ni plus ni moins', () => {
+  it('exige six variables, ni plus ni moins', () => {
     // SMTP_USER et SMTP_PASSWORD n'en sont pas : le relais local n'authentifie
     // personne. Le compte est ecrit en dur pour qu'un ajout se remarque.
-    expect(REQUISES).toHaveLength(4)
+    expect(REQUISES).toHaveLength(6)
     expect(REQUISES).not.toContain('SMTP_USER')
+    // L'ancien secret partage n'existe plus depuis la migration vers Enterprise.
+    expect(REQUISES).not.toContain('RECAPTCHA_SECRET')
   })
 
   it('accepte un environnement sans identifiants SMTP (relais local)', () => {
@@ -132,11 +136,15 @@ describe('limiteur', () => {
   })
 })
 
-describe('reCAPTCHA', () => {
+describe('reCAPTCHA Enterprise', () => {
+  // La forme des reponses est celle relevee sur l'API le 2026-08-28, contre le
+  // vrai projet : verdict dans `tokenProperties`, score dans `riskAnalysis`.
   function verificateurAvec(charge, ok = true) {
-    const fetchImpl = vi.fn(async () => ({ ok, json: async () => charge }))
+    const fetchImpl = vi.fn(async () => ({ ok, status: ok ? 200 : 503, json: async () => charge }))
     const verifier = creerVerificateur({
-      secret: 'secret',
+      projet: 'baskewitsch',
+      cleApi: 'cle-api',
+      cleSite: '6LdMd50tAAAAAI2C4RJMsBKEbHy-zjMG355X2Y-h',
       seuil: 0.5,
       action: 'submit',
       fetchImpl
@@ -144,47 +152,91 @@ describe('reCAPTCHA', () => {
     return { verifier, fetchImpl }
   }
 
+  const valide = (score, action = 'submit') => ({
+    tokenProperties: { valid: true, action },
+    riskAnalysis: { score }
+  })
+
   it('accepte un jeton au-dessus du seuil', async () => {
-    const { verifier } = verificateurAvec({ success: true, score: 0.8, action: 'submit' })
+    const { verifier } = verificateurAvec(valide(0.8))
 
     await expect(verifier('jeton')).resolves.toEqual({ accepte: true, score: 0.8 })
   })
 
   it('refuse un score sous le seuil', async () => {
-    const { verifier } = verificateurAvec({ success: true, score: 0.2, action: 'submit' })
+    const { verifier } = verificateurAvec(valide(0.2))
 
     const resultat = await verifier('jeton')
     expect(resultat.accepte).toBe(false)
     expect(resultat.motif).toBe('score_insuffisant')
   })
 
-  it("refuse un jeton pris pour une autre action", async () => {
-    const { verifier } = verificateurAvec({ success: true, score: 0.9, action: 'login' })
+  it('refuse un jeton pris pour une autre action', async () => {
+    // Google rapporte l'action mais ne refuse pas : la comparaison est a notre
+    // charge, sinon un jeton pris ailleurs sur le site ouvrirait l'envoi.
+    const { verifier } = verificateurAvec(valide(0.9, 'login'))
 
     expect((await verifier('jeton')).motif).toBe('action_inattendue:login')
   })
 
-  it('rapporte les codes d\'erreur de Google', async () => {
+  it('rapporte la raison du refus de Google', async () => {
     const { verifier } = verificateurAvec({
-      success: false,
-      'error-codes': ['timeout-or-duplicate']
+      tokenProperties: { valid: false, invalidReason: 'MALFORMED' },
+      riskAnalysis: { score: 0 }
     })
 
-    expect((await verifier('jeton')).motif).toBe('jeton_refuse:timeout-or-duplicate')
+    expect((await verifier('jeton')).motif).toBe('jeton_refuse:MALFORMED')
   })
 
-  it('ne joint pas l\'adresse quand elle n\'est pas fournie', async () => {
-    const { verifier, fetchImpl } = verificateurAvec({ success: true, score: 0.9 })
+  it('lit le verdict, pas le score, pour decider de la validite', async () => {
+    // Un jeton expire revient avec un score de 0 : sans lire `valid`, il
+    // tomberait en « score insuffisant », ce qui masquerait la vraie cause.
+    const { verifier } = verificateurAvec({
+      tokenProperties: { valid: false, invalidReason: 'EXPIRED' },
+      riskAnalysis: { score: 0 }
+    })
+
+    expect((await verifier('jeton')).motif).toBe('jeton_refuse:EXPIRED')
+  })
+
+  it("cible le bon projet et joint l'adresse seulement si elle est fournie", async () => {
+    const { verifier, fetchImpl } = verificateurAvec(valide(0.9))
 
     await verifier('jeton')
-    expect(fetchImpl.mock.calls[0][1].body.has('remoteip')).toBe(false)
+    const [url, options] = fetchImpl.mock.calls[0]
+    expect(url).toContain('/v1/projects/baskewitsch/assessments')
+    expect(url).toContain('key=cle-api')
+    const premier = JSON.parse(options.body)
+    expect(premier.event.siteKey).toBe('6LdMd50tAAAAAI2C4RJMsBKEbHy-zjMG355X2Y-h')
+    expect(premier.event.expectedAction).toBe('submit')
+    expect(premier.event).not.toHaveProperty('userIpAddress')
 
     await verifier('jeton', '203.0.113.7')
-    expect(fetchImpl.mock.calls[1][1].body.get('remoteip')).toBe('203.0.113.7')
+    expect(JSON.parse(fetchImpl.mock.calls[1][1].body).event.userIpAddress).toBe('203.0.113.7')
   })
 
   it('traite une réponse HTTP en échec comme une indisponibilité', async () => {
     const { verifier } = verificateurAvec({}, false)
+
+    // Le corps d'erreur de Google recopie l'URL demandee, cle d'API comprise :
+    // le motif ne garde que le code.
+    const motif = (await verifier('jeton')).motif
+    expect(motif).toBe('verification_indisponible:503')
+    expect(motif).not.toContain('cle-api')
+  })
+
+  it('traite une panne réseau comme une indisponibilité', async () => {
+    const fetchImpl = vi.fn(async () => {
+      throw new Error('ECONNREFUSED')
+    })
+    const verifier = creerVerificateur({
+      projet: 'baskewitsch',
+      cleApi: 'cle-api',
+      cleSite: 'cle-site',
+      seuil: 0.5,
+      action: 'submit',
+      fetchImpl
+    })
 
     expect((await verifier('jeton')).motif).toBe('verification_indisponible')
   })

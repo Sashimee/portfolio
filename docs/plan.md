@@ -22,7 +22,7 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R7** | La page `/about` affiche désormais 28 technologies au lieu de 14, et l'accueil les fait toutes défiler. La densité n'a été jugée que sur un écran de bureau. | Un passage sur téléphone, en portrait. |
 | **R8** | **Le trajet SMTP n'a toujours pas été parcouru**, et il vise désormais le relais partagé (`mailrelay:587`, sans authentification) et non OVH en direct. Aucune connexion n'a été ouverte : la sonde SMTP a été refusée par les permissions de la session. Que le relais accepte `portfolio@bas.lu` en expéditeur est rapporté (il sert Aura, `bas.lu` est dans ses domaines autorisés) mais **non vérifié pour ce service**. | Un envoi qui aboutit depuis le conteneur, reçu dans la boîte — et le repli `info@bas.lu` si OVH refuse l'enveloppe. |
 | **R9** | **L'image du service n'a jamais été construite.** `docker` exige `sudo` sur la machine de travail. Le `Dockerfile`, sa sonde de santé et le `docker-compose.yml` (étiquettes Traefik comprises) n'ont été relus que des yeux. | `docker build` qui passe, puis un conteneur dont `/health` répond. |
-| **R10** | **La clé secrète reCAPTCHA est introuvable** — elle vivait dans le service disparu. La clé publique de `src/boot/recap.js` survit, mais rien ne dit que son enregistrement liste encore `alex.baskewitsch.lu` dans ses domaines. | Le secret retrouvé et le service qui accepte un vrai jeton — ou la paire régénérée, clé publique reportée dans le boot. |
+| **R10** | La clé a **migré vers reCAPTCHA Enterprise** (projet GCP `baskewitsch`), et les trois identifiants ont été éprouvés contre la vraie API le 2026-08-28 : l'appel est accepté, le projet résout, la clé de site est reconnue. Mais **aucun jeton réel n'a été évalué** — la vérification s'est faite avec un jeton bidon, qui revient `MALFORMED`. Rien ne prouve encore qu'un jeton émis par le navigateur passe, ni que `alex.baskewitsch.lu` figure dans les domaines de l'enregistrement. | Un envoi depuis le formulaire publié qui obtient `valid: true` et un score au-dessus du seuil. |
 | **R11** | L'article Aura décrit le comportement des plateformes (WhatsApp trois à sept jours, X une semaine, Slack une demi-heure…) d'après la documentation du dépôt `aura`, elle-même tirée de la documentation des plateformes. **Aucun lien n'a été collé dans une vraie messagerie.** | Un lien collé dans WhatsApp, l'humeur changée, le lien frais recollé, et la seconde carte différente de la première. |
 | **R12** | Les illustrations de l'article sont des captures de `mood.bas.lu` prises le **2026-08-28**. L'humeur en ligne était alors une humeur de test (« D Test ») et la carte partagée la montre. | Une vraie humeur posée sur le compte, et les captures reprises. |
 | **R13** | Le dépôt `aura` annonce encore « *Nothing is deployed* » dans son `README.md` et son journal de réserves, alors que `mood.bas.lu` sert bien l'application. Le portfolio publie désormais le projet en `live` — les deux sources se contredisent. | Le `README.md` et le journal de réserves d'`aura` mis à jour après le déploiement du 2026-08-28. |
@@ -240,6 +240,39 @@ moitié configurée, et les deux formes des options de transport.
 
 **Rien n'a été envoyé.** La sonde SMTP a été refusée par les permissions de la session, et
 le service n'est pas déployé. R8 est reformulée plutôt que rayée.
+
+*Réserves ouvertes : R1, R8, R9, R10.*
+
+### Lot 10 — reCAPTCHA passe en Enterprise · fait le 2026-08-28
+
+La clé a été migrée vers GCP. Ce n'est pas un changement de valeur : c'est **une autre
+API**, et le code des deux côtés parlait encore l'ancienne.
+
+- Le front chargeait `recaptcha/api.js` et signait avec `6LfnC4ka…`, un enregistrement qui
+  n'a plus cours. Il charge désormais Enterprise (`loaderOptions.useEnterprise`) et la clé
+  de site `6LdMd50t…`. Sans le drapeau, le jeton vient du mauvais script et l'évaluation le
+  rejette en `MALFORMED` — testé, c'est bien la réponse que rend l'API.
+- Le service postait sur `siteverify` avec un secret partagé. Il POSTe maintenant une
+  *évaluation* JSON sur `recaptchaenterprise.googleapis.com`, avec un projet, une clé d'API
+  et la clé de site. `RECAPTCHA_SECRET` disparaît, remplacé par trois variables.
+
+Trois différences de lecture, toutes silencieuses si on les rate :
+
+1. le verdict est `tokenProperties.valid`, pas `success` ;
+2. le score est dans `riskAnalysis.score`, pas à la racine — et un jeton **expiré** revient
+   avec un score de 0, donc lire le score sans lire le verdict le ferait passer pour un
+   « score insuffisant », en cachant la vraie cause. Un test tient ce cas ;
+3. `expectedAction` est **rapporté** par Google, pas appliqué. La comparaison d'action reste
+   à notre charge, sinon un jeton pris ailleurs sur le site ouvrirait l'envoi.
+
+Le motif d'erreur ne garde que le code HTTP : le corps d'erreur de Google recopie l'URL
+demandée, clé d'API comprise. Un test vérifie que le motif ne contient pas la clé.
+
+**Éprouvé contre la vraie API**, pas seulement en test : l'appel d'évaluation est accepté,
+le projet `baskewitsch` résout (n° 512232515978), la clé de site est reconnue, et la forme
+de la réponse citée ici est celle qui est revenue. Les tests reprennent cette forme.
+
+48 tests (46 → 48). **Aucun jeton réel n'a été évalué** : R10 est reformulée, pas rayée.
 
 *Réserves ouvertes : R1, R8, R9, R10.*
 

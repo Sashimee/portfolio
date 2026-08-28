@@ -172,9 +172,20 @@ pas seulement le sous-domaine). Trois choses à en retenir avant d'y toucher :
   de republier le front.
 - **Le contrat est repris à l'identique** — même chemin, même charge. Le front n'a pas eu
   à changer d'appel, seulement d'hôte ; il n'y avait rien à lui reprocher.
-- **La clé secrète reCAPTCHA a disparu avec l'ancien service.** La clé publique, elle, est
-  toujours dans `src/boot/recap.js`. Si le secret est introuvable, régénérer la paire et
-  reporter la clé publique dans le boot — les deux vont ensemble.
+- **reCAPTCHA est en Enterprise, sur GCP — plus de secret partagé.** Le service ne poste
+  plus sur `siteverify` : il demande une *évaluation* à
+  `recaptchaenterprise.googleapis.com`, avec un projet (`baskewitsch`), une clé d'API et la
+  clé de site. Trois pièges, tous silencieux :
+  - la **clé de site du front** (`src/boot/recap.js`) et le `RECAPTCHA_SITE_KEY` du service
+    doivent être **identiques** : Google évalue le jeton pour cette clé-là, et un jeton
+    d'un autre enregistrement revient `valid: false` ;
+  - le boot doit charger Enterprise (`loaderOptions.useEnterprise`), sinon le jeton vient
+    de `recaptcha/api.js` et l'évaluation le rejette en `MALFORMED` ;
+  - le verdict est `tokenProperties.valid` et le score `riskAnalysis.score` — pas
+    `success` ni `score` à la racine. Lire le score sans lire le verdict fait passer un
+    jeton expiré pour un « score insuffisant ».
+  `expectedAction` est **rapporté** par Google, pas appliqué : la comparaison d'action
+  reste à la charge du service.
 - **Le courrier part par le relais partagé de la machine, pas par un compte SMTP à nous.**
   `mailrelay` (le postfix qui sert déjà Aura) est joignable depuis `dokploy-network` sur le
   port 587, **sans authentification** : l'overlay tombe dans son `mynetworks`, et c'est lui

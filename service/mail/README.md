@@ -2,7 +2,7 @@
 
 Relais entre le formulaire de contact (`src/pages/Contact.vue`), l'inscription à la
 newsletter (`src/pages/blog/article.vue`) et une boîte aux lettres. Il vérifie le jeton
-reCAPTCHA, limite le débit, puis relaie par SMTP.
+jeton reCAPTCHA Enterprise, limite le débit, puis relaie par SMTP.
 
 ## Pourquoi il existe
 
@@ -33,7 +33,7 @@ d'erreur de Google) reste au journal.
 ```bash
 npm install
 cp .env.example .env   # puis remplir
-npm test               # 46 tests, ni réseau ni SMTP
+npm test               # 48 tests, ni réseau ni SMTP
 npm run dev            # http://localhost:3000
 ```
 

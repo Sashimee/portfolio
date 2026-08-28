@@ -17,7 +17,14 @@
  * `mynetworks`. C'est lui qui s'authentifie auprès d'OVH, pas nous. Les deux
  * variables restent acceptées pour parler à un serveur SMTP classique.
  */
-const REQUISES = ['RECAPTCHA_SECRET', 'SMTP_HOST', 'MAIL_FROM', 'MAIL_TO']
+const REQUISES = [
+  'RECAPTCHA_PROJECT_ID',
+  'RECAPTCHA_API_KEY',
+  'RECAPTCHA_SITE_KEY',
+  'SMTP_HOST',
+  'MAIL_FROM',
+  'MAIL_TO'
+]
 
 function nombre(valeur, defaut) {
   const n = Number(valeur)
@@ -53,7 +60,13 @@ export function chargerConfig(env = process.env) {
     port: nombre(env.PORT, 3000),
 
     recaptcha: {
-      secret: env.RECAPTCHA_SECRET,
+      // reCAPTCHA Enterprise, depuis la migration de la clé vers GCP : plus de
+      // secret partagé, mais un projet, une clé d'API et la clé de site — qui
+      // doit être **la même** que celle de `src/boot/recap.js`, sinon Google
+      // évalue le jeton pour un autre enregistrement et le refuse.
+      projet: env.RECAPTCHA_PROJECT_ID,
+      cleApi: env.RECAPTCHA_API_KEY,
+      cleSite: env.RECAPTCHA_SITE_KEY,
       // reCAPTCHA v3 rend un score, pas un verdict. 0.5 est le seuil que Google
       // donne en exemple ; au-dessus, un formulaire de contact commence à
       // refuser des humains sur navigateur durci.
