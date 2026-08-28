@@ -13,20 +13,30 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 
 | | Réserve | Ce qui la refermerait |
 | --- | --- | --- |
-| **R1** | Le service de remplacement existe (`service/mail/`) et répond, mais **aucun message n'a encore été reçu depuis la production**. Tant qu'il n'est pas déployé et que le front n'est pas republié, le formulaire échoue comme avant. | Un envoi réel, depuis alex.baskewitsch.lu, arrivé dans la boîte. |
 | **R2** | Les treize icônes ajoutées au lot 3 ont été vérifiées **par leur nom**, dans la feuille de style de Font Awesome 7. Aucune n'a été vue rendue dans un navigateur. | Ouvrir `/about` et l'accueil, thème clair et thème sombre, et constater qu'aucune n'est un carré vide. |
 | **R3** | La vignette `public/screenshots/schoulbus.webp` est une composition de trois captures de l'application, faite ici — ce n'est pas une photographie de `www.schoulbus.lu`. | Une capture de la vitrine elle-même, recadrée large. |
 | **R4** | Les captures reprises pour l'article portent la charte **précédente** de l'application (bleu, verre). La nouvelle charte — crème, sarcelle, corail — a été posée le 2026-08-25 et ne vivait alors que sur la branche `dev`. | Regénérer les captures depuis `schoulbus` une fois la charte en production, et les reprendre ici. |
 | **R5** | Les chiffres cités dans l'article (près de cinq cents commits, environ deux cent quarante co-signés, dix-sept dépôts) ont été relevés le **2026-08-26**. Ils ne se mettent pas à jour tout seuls. | Rien — mais le jour où l'article est mis en avant à nouveau, les relire. |
 | **R6** | Le nouveau blog n'a été éprouvé qu'en test et en construction. Personne n'a suivi un lien `/blog/article` partagé jadis, depuis un vrai navigateur, sur le site publié. | Une visite réelle sur la production, qui atterrit bien sur `/blog/green-coding-fintech`. |
 | **R7** | La page `/about` affiche désormais 28 technologies au lieu de 14, et l'accueil les fait toutes défiler. La densité n'a été jugée que sur un écran de bureau. | Un passage sur téléphone, en portrait. |
-| **R8** | **Le trajet SMTP n'a toujours pas été parcouru**, et il vise désormais le relais partagé (`mailrelay:587`, sans authentification) et non OVH en direct. Aucune connexion n'a été ouverte : la sonde SMTP a été refusée par les permissions de la session. Que le relais accepte `portfolio@bas.lu` en expéditeur est rapporté (il sert Aura, `bas.lu` est dans ses domaines autorisés) mais **non vérifié pour ce service**. | Un envoi qui aboutit depuis le conteneur, reçu dans la boîte — et le repli `info@bas.lu` si OVH refuse l'enveloppe. |
-| **R9** | **L'image du service n'a jamais été construite.** `docker` exige `sudo` sur la machine de travail. Le `Dockerfile`, sa sonde de santé et le `docker-compose.yml` (étiquettes Traefik comprises) n'ont été relus que des yeux. | `docker build` qui passe, puis un conteneur dont `/health` répond. |
-| **R10** | La clé a **migré vers reCAPTCHA Enterprise** (projet GCP `baskewitsch`), et les trois identifiants ont été éprouvés contre la vraie API le 2026-08-28 : l'appel est accepté, le projet résout, la clé de site est reconnue. Mais **aucun jeton réel n'a été évalué** — la vérification s'est faite avec un jeton bidon, qui revient `MALFORMED`. Rien ne prouve encore qu'un jeton émis par le navigateur passe, ni que `alex.baskewitsch.lu` figure dans les domaines de l'enregistrement. | Un envoi depuis le formulaire publié qui obtient `valid: true` et un score au-dessus du seuil. |
 | **R11** | L'article Aura décrit le comportement des plateformes (WhatsApp trois à sept jours, X une semaine, Slack une demi-heure…) d'après la documentation du dépôt `aura`, elle-même tirée de la documentation des plateformes. **Aucun lien n'a été collé dans une vraie messagerie.** | Un lien collé dans WhatsApp, l'humeur changée, le lien frais recollé, et la seconde carte différente de la première. |
 | **R12** | Les illustrations de l'article sont des captures de `mood.bas.lu` prises le **2026-08-28**. L'humeur en ligne était alors une humeur de test (« D Test ») et la carte partagée la montre. | Une vraie humeur posée sur le compte, et les captures reprises. |
 | **R13** | Le dépôt `aura` annonce encore « *Nothing is deployed* » dans son `README.md` et son journal de réserves, alors que `mood.bas.lu` sert bien l'application. Le portfolio publie désormais le projet en `live` — les deux sources se contredisent. | Le `README.md` et le journal de réserves d'`aura` mis à jour après le déploiement du 2026-08-28. |
 | **R14** | La fiche Aura et l'article n'ont été regardés que sur un écran de bureau, en thème clair. Les illustrations sont des captures d'interface plafonnées à 180 px de haut. | Un passage sur téléphone, en portrait, et en thème sombre. |
+| **R15** | **reCAPTCHA v3 n'a pas arrêté un navigateur automatisé.** L'envoi de vérification du 2026-08-28 a été fait par Playwright — un Chromium piloté, sans interaction humaine — et a obtenu **0.9**, très au-dessus du seuil de 0.5. reCAPTCHA v3 ne bloque pas : il *note*, et la note s'est trompée. La protection réelle du formulaire repose donc sur le contrôle d'origine, le limiteur de débit et la vérification d'action, pas sur le score. | Rien ne « referme » ceci — c'est une propriété du produit. Mais : relever le seuil (0.7), et alimenter l'API d'annotations d'Enterprise pour que le modèle apprenne. À décider, pas à ignorer. |
+
+---
+
+## Réserves refermées
+
+Barrées avec une entrée datée et un élément de preuve, comme le veut la convention.
+
+| | Refermée le | Preuve |
+| --- | --- | --- |
+| ~~**R1**~~ | 2026-08-28 | **Le message est arrivé.** Alex confirme avoir reçu le courriel de test de bout en bout, envoyé depuis le formulaire publié. La réserve ouverte depuis le lot 1 — « aucun envoi n'a encore été reçu depuis la production » — est donc close, chaîne complète comprise : formulaire → `api.baskewitsch.lu` → reCAPTCHA Enterprise → `mailrelay` → OVH → boîte. À surveiller malgré tout : `bas.lu` n'a toujours ni DKIM ni DMARC, donc la délivrabilité peut se dégrader sans prévenir. |
+| ~~**R8**~~ | 2026-08-28 | **Le trajet SMTP a été parcouru.** Journal du relais : `from=<portfolio@bas.lu>`, `to=<alex.baskewitsch@gmail.com>`, `relay=ssl0.ovh.net[193.70.18.144]:587`, `status=sent (250 2.0.0 Ok: 1294 bytes queued as 8245FC1043)`. OVH accepte donc bien un expéditeur `@bas.lu` qui n'est pas la boîte authentifiée — l'hypothèse inverse, héritée de l'ancien service, était fausse. |
+| ~~**R9**~~ | 2026-08-28 | **L'image a été construite et tourne.** `docker compose up -d --build` passé, conteneur `mail-mail-1` *healthy* sur `dokploy-network`. `https://api.baskewitsch.lu/health` rend `{"ok":true}` en 200 avec un certificat valide, et `http://` redirige en 301 — les deux routeurs Traefik du lot 11 étaient nécessaires. Preflight accepté pour le site (204, `access-control-allow-origin` correct), refusé pour un tiers (403), et une charge sans jeton arrêtée en 400 avant l'appel à Google. |
+| ~~**R10**~~ | 2026-08-28 | **Un vrai jeton a été évalué.** Envoi depuis le formulaire publié, avec un navigateur réel : `mail: message relayé (score 0.9)`. La chaîne complète est donc éprouvée — `useEnterprise` côté front, clé de site identique des deux côtés, verdict lu dans `tokenProperties`, score dans `riskAnalysis`. |
 
 ---
 
@@ -301,6 +311,38 @@ référence qui tourne, ce qui vaut mieux qu'une relecture, mais moins qu'un con
 répond.
 
 *Réserves ouvertes : R1, R8, R9, R10.*
+
+### Lot 12 — Tout est en ligne, et le premier message est parti · fait le 2026-08-28
+
+Le portfolio sert Aura et son article ; le service de courriel répond sur
+`api.baskewitsch.lu` ; un message a traversé la chaîne entière.
+
+Ce qui a été vérifié **contre la production**, et non déduit :
+
+- le bundle en ligne porte la clé Enterprise `6LdMd50t…` et le mode `enterprise` — même
+  empreinte de chunk que le build local, donc c'est bien cette construction qui est servie,
+  et l'ancienne clé `6LfnC4ka…` n'y est plus ;
+- `/health` en 200 sous TLS valide, `http://` en 301, preflight 204 pour le site et 403
+  pour un tiers, charge sans jeton en 400 ;
+- un envoi réel depuis le formulaire publié : score reCAPTCHA **0.9**, puis
+  `status=sent (250 2.0.0 Ok)` d'OVH.
+
+Trois réserves refermées d'un coup — R8, R9, R10 — et R1 rétrécie à la seule question qui
+reste : la boîte de réception, ou les indésirables.
+
+**Ce qui a coûté le plus cher n'était pas technique.** Les commandes proposées portaient un
+préfixe `!`, syntaxe du prompt de Claude Code, collées dans un shell où `!` déclenche
+l'expansion d'historique. `!sudo …` s'est développé en `sudo reboot …` — l'unique commande
+`sudo` de l'historique de la machine. Seul l'ordre des arguments a évité le redémarrage
+d'un VPS de production : `reboot` a rejeté `--build`. Deux commandes muettes plus tôt
+(`!git …`, sans correspondance, donc rien exécuté) avaient déjà fait croire à un `main`
+non fusionné. À retenir : ne jamais proposer une commande préfixée `!` sans dire dans quel
+contexte elle se tape.
+
+Et R1 s'est refermée dans la foulée : Alex a reçu le message. La réserve la plus
+ancienne du registre, ouverte au lot 1, tombe avec les trois autres.
+
+*Aucune réserve ouverte par ce lot.*
 
 ---
 
