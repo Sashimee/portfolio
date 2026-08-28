@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import { chargerConfig, REQUISES } from '../src/config.js'
-import { assainirSujet, creerExpediteur } from '../src/mailer.js'
+import { assainirSujet, creerExpediteur, optionsTransport } from '../src/mailer.js'
 import { creerLimiteur } from '../src/rate-limit.js'
 import { creerVerificateur } from '../src/recaptcha.js'
 import { BORNES, validerDemande } from '../src/validation.js'
@@ -45,8 +45,31 @@ describe('configuration', () => {
     expect(config.origines).toEqual(['https://alex.baskewitsch.lu', 'http://localhost:8080'])
   })
 
-  it('exige les six secrets, ni plus ni moins', () => {
-    expect(REQUISES).toHaveLength(6)
+  it('exige quatre variables, ni plus ni moins', () => {
+    // SMTP_USER et SMTP_PASSWORD n'en sont pas : le relais local n'authentifie
+    // personne. Le compte est ecrit en dur pour qu'un ajout se remarque.
+    expect(REQUISES).toHaveLength(4)
+    expect(REQUISES).not.toContain('SMTP_USER')
+  })
+
+  it('accepte un environnement sans identifiants SMTP (relais local)', () => {
+    const config = chargerConfig({
+      ...ENV_COMPLET,
+      SMTP_HOST: 'mailrelay',
+      SMTP_PORT: '587',
+      SMTP_USER: undefined,
+      SMTP_PASSWORD: undefined
+    })
+
+    expect(config.smtp.user).toBe('')
+    expect(config.smtp.secure).toBe(false)
+  })
+
+  it('refuse une authentification a moitie configuree', () => {
+    // Le cas dangereux : nodemailer se rabattrait sur un envoi anonyme, et un
+    // identifiant oublie ressemblerait a un service qui marche.
+    expect(() => chargerConfig({ ...ENV_COMPLET, SMTP_PASSWORD: '' })).toThrow(/vont ensemble/)
+    expect(() => chargerConfig({ ...ENV_COMPLET, SMTP_USER: '' })).toThrow(/vont ensemble/)
   })
 })
 
@@ -164,6 +187,29 @@ describe('reCAPTCHA', () => {
     const { verifier } = verificateurAvec({}, false)
 
     expect((await verifier('jeton')).motif).toBe('verification_indisponible')
+  })
+})
+
+describe('options de transport', () => {
+  it('omet la cle auth quand il n\'y a pas d\'identifiants', () => {
+    // Vider `auth` ne suffit pas : nodemailer tenterait un AUTH que le relais
+    // refuse. La cle doit etre absente.
+    const options = optionsTransport({ host: 'mailrelay', port: 587, secure: false, user: '' })
+
+    expect(options).not.toHaveProperty('auth')
+    expect(options.host).toBe('mailrelay')
+  })
+
+  it('passe auth quand un serveur en demande une', () => {
+    const options = optionsTransport({
+      host: 'ssl0.ovh.net',
+      port: 465,
+      secure: true,
+      user: 'boite@baskewitsch.lu',
+      password: 'motdepasse'
+    })
+
+    expect(options.auth).toEqual({ user: 'boite@baskewitsch.lu', pass: 'motdepasse' })
   })
 })
 

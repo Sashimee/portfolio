@@ -8,15 +8,16 @@
  * laisser le service accepter des requêtes et échouer à la première.
  */
 
-/** Les variables sans lesquelles le service ne peut rien faire. */
-const REQUISES = [
-  'RECAPTCHA_SECRET',
-  'SMTP_HOST',
-  'SMTP_USER',
-  'SMTP_PASSWORD',
-  'MAIL_FROM',
-  'MAIL_TO'
-]
+/**
+ * Les variables sans lesquelles le service ne peut rien faire.
+ *
+ * `SMTP_USER` et `SMTP_PASSWORD` n'en sont **pas** : le relais postfix partagé
+ * de la machine (`mailrelay`) n'exige aucune authentification depuis
+ * `dokploy-network`, parce que le sous-réseau overlay tombe dans son
+ * `mynetworks`. C'est lui qui s'authentifie auprès d'OVH, pas nous. Les deux
+ * variables restent acceptées pour parler à un serveur SMTP classique.
+ */
+const REQUISES = ['RECAPTCHA_SECRET', 'SMTP_HOST', 'MAIL_FROM', 'MAIL_TO']
 
 function nombre(valeur, defaut) {
   const n = Number(valeur)
@@ -34,6 +35,17 @@ export function chargerConfig(env = process.env) {
     throw new Error(
       `Configuration incomplète, variables manquantes : ${manquantes.join(', ')}. ` +
         'Voir service/mail/.env.example.'
+    )
+  }
+
+  // Une authentification à moitié configurée est le cas dangereux : nodemailer
+  // se rabattrait sur un envoi anonyme, et un identifiant oublié ressemblerait
+  // à un service qui marche. Soit les deux, soit aucun.
+  if (Boolean(env.SMTP_USER) !== Boolean(env.SMTP_PASSWORD)) {
+    throw new Error(
+      'SMTP_USER et SMTP_PASSWORD vont ensemble : renseigner les deux pour un ' +
+        'serveur qui demande une authentification, ou aucun des deux pour le ' +
+        'relais local. Voir service/mail/.env.example.'
     )
   }
 
@@ -55,15 +67,18 @@ export function chargerConfig(env = process.env) {
     smtp: {
       host: env.SMTP_HOST,
       port: nombre(env.SMTP_PORT, 465),
-      // OVH écoute en SSL direct sur 465 ; 587 se négocie en STARTTLS.
+      // OVH écoute en SSL direct sur 465 ; 587 se négocie en STARTTLS, et
+      // c'est le port du relais local.
       secure: booleen(env.SMTP_SECURE, nombre(env.SMTP_PORT, 465) === 465),
-      user: env.SMTP_USER,
-      password: env.SMTP_PASSWORD
+      // Vides pour le relais local : `creerExpediteur` omet alors `auth`.
+      user: env.SMTP_USER || '',
+      password: env.SMTP_PASSWORD || ''
     },
 
     courriel: {
-      // OVH refuse un `From` qui n'est pas la boîte authentifiée : l'adresse du
-      // visiteur va en `Reply-To`, jamais en expéditeur.
+      // L'adresse du visiteur va en `Reply-To`, jamais en expéditeur : le
+      // message ne part pas en son nom, et le serveur ne le refuse pas pour un
+      // `From` qu'il n'a pas le droit d'émettre.
       from: env.MAIL_FROM,
       to: env.MAIL_TO,
       sujet: env.MAIL_SUBJECT_PREFIX || '[portfolio]'

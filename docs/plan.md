@@ -20,7 +20,7 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R5** | Les chiffres cités dans l'article (près de cinq cents commits, environ deux cent quarante co-signés, dix-sept dépôts) ont été relevés le **2026-08-26**. Ils ne se mettent pas à jour tout seuls. | Rien — mais le jour où l'article est mis en avant à nouveau, les relire. |
 | **R6** | Le nouveau blog n'a été éprouvé qu'en test et en construction. Personne n'a suivi un lien `/blog/article` partagé jadis, depuis un vrai navigateur, sur le site publié. | Une visite réelle sur la production, qui atterrit bien sur `/blog/green-coding-fintech`. |
 | **R7** | La page `/about` affiche désormais 28 technologies au lieu de 14, et l'accueil les fait toutes défiler. La densité n'a été jugée que sur un écran de bureau. | Un passage sur téléphone, en portrait. |
-| **R8** | **Le trajet SMTP n'a jamais été parcouru.** Les tests injectent l'expéditeur, et la vérification manuelle s'est arrêtée au refus du jeton par Google : `nodemailer` n'a jamais ouvert de connexion vers OVH. Le nom d'hôte, le port, le mode TLS et le refus d'un `From` non authentifié sont des hypothèses. | Un envoi qui aboutit contre le vrai serveur OVH. |
+| **R8** | **Le trajet SMTP n'a toujours pas été parcouru**, et il vise désormais le relais partagé (`mailrelay:587`, sans authentification) et non OVH en direct. Aucune connexion n'a été ouverte : la sonde SMTP a été refusée par les permissions de la session. Que le relais accepte `portfolio@bas.lu` en expéditeur est rapporté (il sert Aura, `bas.lu` est dans ses domaines autorisés) mais **non vérifié pour ce service**. | Un envoi qui aboutit depuis le conteneur, reçu dans la boîte — et le repli `info@bas.lu` si OVH refuse l'enveloppe. |
 | **R9** | **L'image du service n'a jamais été construite.** `docker` exige `sudo` sur la machine de travail. Le `Dockerfile`, sa sonde de santé et le `docker-compose.yml` (étiquettes Traefik comprises) n'ont été relus que des yeux. | `docker build` qui passe, puis un conteneur dont `/health` répond. |
 | **R10** | **La clé secrète reCAPTCHA est introuvable** — elle vivait dans le service disparu. La clé publique de `src/boot/recap.js` survit, mais rien ne dit que son enregistrement liste encore `alex.baskewitsch.lu` dans ses domaines. | Le secret retrouvé et le service qui accepte un vrai jeton — ou la paire régénérée, clé publique reportée dans le boot. |
 | **R11** | L'article Aura décrit le comportement des plateformes (WhatsApp trois à sept jours, X une semaine, Slack une demi-heure…) d'après la documentation du dépôt `aura`, elle-même tirée de la documentation des plateformes. **Aucun lien n'a été collé dans une vraie messagerie.** | Un lien collé dans WhatsApp, l'humeur changée, le lien frais recollé, et la seconde carte différente de la première. |
@@ -210,6 +210,38 @@ ligne, converties en WebP et **recadrées sur leur sujet** : au plafond commun
 capture d'interface aérée ne se lit pas.
 
 *Réserves ouvertes : R11, R12, R13, R14.*
+
+### Lot 9 — Le courrier passe par le relais de la machine · fait le 2026-08-28
+
+Le service visait OVH en direct, avec un compte SMTP qu'il n'a jamais eu : `SMTP_USER` et
+`SMTP_PASSWORD` étaient **requis** et vides, donc le conteneur refusait de démarrer. Il
+remet maintenant ses messages au relais postfix partagé de la machine — `mailrelay`, celui
+qui sert déjà Aura — joignable sur `dokploy-network` au port 587, **sans authentification**,
+son `mynetworks` couvrant le sous-réseau overlay. C'est le relais qui s'authentifie auprès
+d'OVH.
+
+Trois détails qui ont l'air arbitraires et ne le sont pas :
+
+- la clé `auth` est **omise**, pas vidée : avec `auth: { user: '', pass: '' }`, nodemailer
+  tente un AUTH que le relais refuse. `optionsTransport()` a été extrait pour que ce soit
+  vérifiable sans ouvrir de connexion — l'absence d'une clé ne se voit pas depuis un
+  message envoyé ;
+- une authentification **à moitié** configurée arrête le démarrage. C'est le cas dangereux :
+  nodemailer se rabattrait sur un envoi anonyme, et un identifiant oublié ressemblerait à un
+  service qui marche ;
+- `MAIL_FROM` devient une adresse `@bas.lu` — le domaine que le relais a le droit d'émettre —
+  et non `baskewitsch.lu`. L'adresse du visiteur reste en `Reply-To`.
+
+`docker-compose.yml` rejoint deux réseaux : `traefik` pour être joignable, `dokploy-network`
+pour que le nom `mailrelay` résolve.
+
+Quatre tests ajoutés (42 → 46) : l'environnement sans identifiants, l'authentification à
+moitié configurée, et les deux formes des options de transport.
+
+**Rien n'a été envoyé.** La sonde SMTP a été refusée par les permissions de la session, et
+le service n'est pas déployé. R8 est reformulée plutôt que rayée.
+
+*Réserves ouvertes : R1, R8, R9, R10.*
 
 ---
 

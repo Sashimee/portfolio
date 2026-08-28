@@ -21,8 +21,13 @@ services:
       ALLOWED_ORIGINS: 'https://alex.baskewitsch.lu'
     expose:
       - '3000'
+    # Deux réseaux, deux raisons : `traefik` pour être joignable de l'extérieur,
+    # `dokploy-network` pour atteindre `mailrelay` par son nom. C'est depuis
+    # l'overlay que le relais n'exige pas d'authentification — son `mynetworks`
+    # couvre le sous-réseau, pas le pont docker par défaut.
     networks:
       - traefik
+      - dokploy-network
     labels:
       traefik.enable: 'true'
       traefik.http.routers.portfolio-mail.rule: 'Host(`api.baskewitsch.lu`)'
@@ -32,4 +37,6 @@ services:
 
 networks:
   traefik:
+    external: true
+  dokploy-network:
     external: true

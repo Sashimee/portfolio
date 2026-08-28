@@ -33,12 +33,31 @@ d'erreur de Google) reste au journal.
 ```bash
 npm install
 cp .env.example .env   # puis remplir
-npm test               # 40 tests, ni réseau ni SMTP
+npm test               # 46 tests, ni réseau ni SMTP
 npm run dev            # http://localhost:3000
 ```
 
 Les tests injectent le vérificateur de jeton et l'expéditeur (`creerApp` les prend en
 paramètres) : la suite entière tourne sans appeler Google ni ouvrir de connexion SMTP.
+
+## Par où part le courrier
+
+Le service **n'a pas de compte SMTP à lui**. Il remet ses messages au relais postfix
+partagé de la machine — `mailrelay`, le même qui sert Aura — joignable par son nom depuis
+`dokploy-network`, sur le port 587, **sans authentification** : le sous-réseau overlay
+tombe dans le `mynetworks` du relais. C'est le relais qui s'authentifie auprès d'OVH.
+
+Deux conséquences, et elles expliquent la forme du code :
+
+- `SMTP_USER` et `SMTP_PASSWORD` ne sont **pas** des variables requises. Vides, la clé
+  `auth` est *omise* et non vidée — nodemailer tenterait sinon un AUTH que le relais
+  refuse. Renseigner **les deux** vise un SMTP classique ; n'en renseigner qu'une arrête le
+  démarrage, parce qu'un identifiant oublié ressemblerait sinon à un service qui marche.
+- `MAIL_FROM` est une adresse **@bas.lu**, le domaine que le relais a le droit d'émettre —
+  et non `baskewitsch.lu`. L'adresse du visiteur reste en `Reply-To`.
+
+`bas.lu` n'a ni DKIM ni DMARC : un message peut arriver en indésirable. C'est une propriété
+du domaine, pas du service, et elle ne se corrige pas d'ici.
 
 ## Déployer
 

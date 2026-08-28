@@ -175,6 +175,17 @@ pas seulement le sous-domaine). Trois choses à en retenir avant d'y toucher :
 - **La clé secrète reCAPTCHA a disparu avec l'ancien service.** La clé publique, elle, est
   toujours dans `src/boot/recap.js`. Si le secret est introuvable, régénérer la paire et
   reporter la clé publique dans le boot — les deux vont ensemble.
+- **Le courrier part par le relais partagé de la machine, pas par un compte SMTP à nous.**
+  `mailrelay` (le postfix qui sert déjà Aura) est joignable depuis `dokploy-network` sur le
+  port 587, **sans authentification** : l'overlay tombe dans son `mynetworks`, et c'est lui
+  qui s'authentifie auprès d'OVH. D'où deux règles qui ont l'air arbitraires et ne le sont
+  pas — `SMTP_USER`/`SMTP_PASSWORD` vides font *omettre* la clé `auth` (la vider ferait
+  tenter un AUTH que le relais refuse), et n'en renseigner qu'une **arrête le démarrage**,
+  parce qu'un identifiant oublié ressemblerait sinon à un service qui marche.
+- **`MAIL_FROM` est une adresse `@bas.lu`**, le domaine que le relais a le droit d'émettre —
+  pas `baskewitsch.lu`. L'adresse du visiteur reste en `Reply-To`. `bas.lu` n'ayant ni DKIM
+  ni DMARC, un message peut arriver en indésirable : c'est une propriété du domaine, pas du
+  service.
 
 Le service ne persiste rien : un message qui échoue au SMTP est perdu, le visiteur voit
 l'erreur. C'est assumé pour le formulaire d'un portfolio, et écrit dans son `README.md`.
