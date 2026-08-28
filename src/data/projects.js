@@ -13,6 +13,15 @@ export const PROJECT_CATEGORIES = ['live', 'template', 'archive']
 
 export default [
   {
+    name: 'Aura',
+    category: 'live',
+    link: 'https://mood.bas.lu',
+    img: 'aura',
+    tags: ['Next.js', 'TypeScript', 'PostgreSQL'],
+    target: 'external',
+    infoKey: 'aura'
+  },
+  {
     name: 'Schoulbus',
     category: 'live',
     link: 'https://www.schoulbus.lu',

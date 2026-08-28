@@ -90,6 +90,8 @@ export default {
       archive: "Archive"
     },
     texts: {
+      aura:
+        "Un lien permanent qui dit comment vous allez\u202f: on envoie mood.bas.lu/<vous> une fois, on change ce qu'il raconte quand on veut. Toute la difficult\u00e9 est l'aper\u00e7u \u2014 une messagerie affiche une carte moissonn\u00e9e des jours plus t\u00f4t. La page n'est jamais mise en cache, et l'adresse de la carte est une empreinte de ce qu'elle dessine\u202f: changer d'humeur produit une URL qu'aucune plateforme n'a jamais demand\u00e9e, donc aucune copie p\u00e9rim\u00e9e \u00e0 servir. Next.js, TypeScript et PostgreSQL, conteneuris\u00e9s sur un VPS auto-h\u00e9berg\u00e9. Une visite se compte sans cookie et sans conserver d'adresse\u202f: une empreinte sur une cl\u00e9 al\u00e9atoire du jour, d\u00e9truite au bout de trois jours.",
       schoulbus:
         "Personnalise le plan officiel du bus scolaire de Beckerich pour chaque enfant : l'arrêt utile — desservi dans la bonne direction vers son école — le temps de marche et les départs du jour. React 19, TypeScript et Vite en PWA hors-ligne, avec une API Hono + PostgreSQL conteneurisée sur VPS. Cinq langues, fiche imprimable, export vers l'agenda. Aucune donnée de famille ne quitte l'appareil : le partage voyage dans le fragment de l'URL, et la recherche d'adresse est entièrement locale.",
       baskewitsch:
@@ -157,6 +159,86 @@ export default {
     cta_eyebrow: "La suite",
     cta: "Construisons quelque chose de plus léger",
     top: "Haut de page"
+  },
+  blogPost3: {
+    title: "Un lien qui continue de dire vrai",
+    title2:
+      "\u00c9crire <strong>Aura</strong>, et la seule partie d'un aper\u00e7u que personne ne peut r\u00e9parer.",
+    sections: [
+      {
+        title: "Le lien est permanent. Ce qu'il dit ne l'est pas.",
+        paragraphs: [
+          "<strong>Aura</strong>, c'est une adresse \u2014 <em>mood.bas.lu/vous</em> \u2014 qu'on envoie une fois, dans une conversation WhatsApp, une bio Signal, un statut Slack. Elle ne change jamais. Ce qu'elle <em>raconte</em>, en revanche, vous le changez quand vous voulez\u202f: dispo pour parler, la t\u00eate dans le guidon jusqu'\u00e0 dix-huit heures, endormi, chaotique mauvais aujourd'hui, avec un GIF si l'envie vous prend.",
+          "Dit comme \u00e7a, on croit \u00e0 un apr\u00e8s-midi de travail\u202f: une ligne dans une table, une page qui la lit. Ce n'est pas le cas, et la raison n'a rien \u00e0 voir avec la page. Quand quelqu'un d\u00e9pose ce lien dans une conversation, la messagerie ne lui montre pas votre page. Elle lui montre une <strong>carte d'aper\u00e7u moissonn\u00e9e plus t\u00f4t, puis gard\u00e9e en cache</strong>.",
+          "Si cette carte annonce encore <em>endormi</em> trois heures apr\u00e8s votre r\u00e9veil, le produit a \u00e9chou\u00e9 sur la seule chose qu'il fait. Tout ce que ce projet a d'int\u00e9ressant tient dans la lutte contre cette phrase-l\u00e0."
+        ],
+        img: "lien"
+      },
+      {
+        title: "La page n'est jamais mise en cache",
+        paragraphs: [
+          "La page d'humeur est en <em>force-dynamic</em> et r\u00e9pond <em>Cache-Control: no-store, max-age=0, must-revalidate</em>. La fonction qui fabrique ses balises lit l'humeur courante directement dans PostgreSQL \u00e0 <em>chaque</em> requ\u00eate \u2014 aucune \u00e9tape de construction, aucune r\u00e9g\u00e9n\u00e9ration incr\u00e9mentale, aucune fen\u00eatre de revalidation.",
+          "N'importe quel moissonneur qui demande la page, \u00e0 n'importe quel instant, depuis n'importe o\u00f9, re\u00e7oit l'humeur telle qu'elle est maintenant. C'est inscrit dans le <strong>CLAUDE.md</strong> du projet comme la premi\u00e8re de deux r\u00e8gles qui priment sur le confort, et sous la forme qui compte\u202f: une modification future qui introduirait du cache ici n'est pas une optimisation, <em>c'est le bogue</em>.",
+          "Ce genre de r\u00e8gle s'\u00e9crit facilement et s'\u00e9rode tout aussi facilement. Six semaines plus tard, quelqu'un voit une route sans cache, la prend pour un oubli, et la \u00ab\u202fcorrige\u202f\u00bb. \u00c9crire <em>pourquoi</em> la version lente est la version juste est la seule d\u00e9fense, et cela vit dans le d\u00e9p\u00f4t, pas dans la m\u00e9moire de quelqu'un."
+        ],
+        img: "page"
+      },
+      {
+        title: "L'adresse de la carte est une empreinte de la carte",
+        paragraphs: [
+          "L'image d'aper\u00e7u ne pointe jamais vers un chemin stable du genre <em>/og/alex.png</em>. Elle pointe vers <em>/api/og/&lt;pseudo&gt;/&lt;empreinte&gt;.png</em>, o\u00f9 l'empreinte est un condens\u00e9 court de tout ce que la carte dessine\u202f: l'\u00e9moji, le texte, la couleur d'accent, l'image fixe du GIF, la version de l'humeur.",
+          "Les deux effets tirent volontairement en sens inverse. L'image est <strong>immuable</strong>, donc elle part avec un cache d'un an et tous les CDN et mandataires de la cha\u00eene peuvent la garder \u00e0 jamais \u2014 c'est un rendu de 1200×630, le refaire deux fois est du gaspillage. Et changer d'humeur produit <strong>une adresse qu'aucune plateforme n'a jamais demand\u00e9e</strong>. Il n'y a pas d'entr\u00e9e de cache \u00e0 p\u00e9rimer, puisque l'ancienne carte vit toujours \u00e0 l'ancienne URL et que plus rien n'y renvoie.",
+          "La carte est dessin\u00e9e sans navigateur sans t\u00eate dans le conteneur \u2014 satori pour la mise en page, resvg pour la rast\u00e9risation. Sur le site en ligne aujourd'hui, la page de <em>alex</em> annonce <em>/api/og/alex/ec85c5dd7795cabd.png</em>, et ce fichier fait bien 1200 sur 630. Changez l'humeur, et les seize caract\u00e8res du milieu changent avec elle."
+        ],
+        img: "carte"
+      },
+      {
+        title: "L'\u00e9moji qui pouvait retenir un moissonneur",
+        paragraphs: [
+          "On ne peut pas embarquer les \u00e9mojis dans ce moteur de rendu, et la raison est une petite pile d'impasses\u202f: satori dessine \u00e0 partir de contours de fonte, la fonte d'\u00e9mojis en couleur est un format bitmap qu'il refuse net, et la version monochrome rendrait toutes les cartes grises.",
+          "Le comportement par d\u00e9faut est donc d'aller chercher le glyphe <em>pendant</em> le rendu \u2014 sans d\u00e9lai d'expiration, sans m\u00e9morisation des \u00e9checs, sans repli. Relisez-le depuis l'autre bout du fil\u202f: un CDN injoignable devient un moissonneur qui garde une connexion ouverte jusqu'\u00e0 ce que son propre d\u00e9lai, court, se d\u00e9clenche \u2014 et la personne qui a partag\u00e9 le lien ne voit <strong>aucun aper\u00e7u du tout</strong>. Un \u00e9moji manquant avait \u00e9t\u00e9 silencieusement promu en carte manquante.",
+          "La r\u00e9cup\u00e9ration a donc lieu avant le rendu, avec une \u00e9ch\u00e9ance d'une seconde et demie et un cache de processus, et le dessin est pass\u00e9 au moteur de mise en page en ligne, si bien qu'il ne demande plus rien lui-m\u00eame. Un glyphe qu'on n'arrive pas \u00e0 chercher co\u00fbte son \u00e9moji \u00e0 la carte, au lieu de co\u00fbter son d\u00e9lai au moissonneur \u2014 et cette carte-l\u00e0 est servie en <em>no-store</em> plut\u00f4t qu'en immuable, pour qu'une mauvaise minute de m\u00e9t\u00e9o r\u00e9seau ne soit pas gel\u00e9e \u00e0 jamais dans le cache de toutes les plateformes."
+        ],
+        img: ""
+      },
+      {
+        title: "Les moissonneurs ont leur propre porte",
+        paragraphs: [
+          "Les robots d'aper\u00e7u sont reconnus \u00e0 leur vraie cha\u00eene d'agent \u2014 <em>facebookexternalhit</em>, <em>WhatsApp</em>, <em>Twitterbot</em>, <em>Discordbot</em>, <em>TelegramBot</em>, <em>Slackbot</em>, <em>LinkedInBot</em>, <em>Applebot</em> et une douzaine d'autres \u2014 sous test, avec les cha\u00eenes r\u00e9elles en \u00e9chantillons, y compris celles qui y ressemblent et ne doivent <strong>pas</strong> correspondre.",
+          "Ils re\u00e7oivent un document r\u00e9duit aux balises\u202f: les m\u00e9tadonn\u00e9es, aucun JavaScript client, quelques kilo-octets. Ce n'est pas de l'optimisation pr\u00e9matur\u00e9e. Plusieurs moissonneurs imposent des plafonds d'octets et des d\u00e9lais courts, et une carte qui \u00e9choue \u00e0 se dessiner parce que la page \u00e9tait trop lourde ne se distingue pas d'une carte fausse. Poser deux fois la m\u00eame question au site en ligne rend l'\u00e9cart concret\u202f: l'adresse <em>mood.bas.lu/alex</em> rend environ <strong>17 kilo-octets</strong> \u00e0 un navigateur, et environ <strong>un</strong> \u00e0 un agent WhatsApp.",
+          "Ces visites sont aussi exclues du comptage \u2014 une r\u00e9cup\u00e9ration d'aper\u00e7u n'est pas quelqu'un qui vous regarde \u2014 et journalis\u00e9es \u00e0 part, pour que le tableau de bord puisse dire\u202f: <em>WhatsApp a r\u00e9cup\u00e9r\u00e9 votre carte il y a quatre minutes</em>. Cette ligne vaut plus qu'elle n'en a l'air\u202f: elle transforme un m\u00e9canisme invisible en quelque chose que le propri\u00e9taire voit fonctionner, au lieu de quelque chose qu'il doit croire."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce qu'aucun serveur ne peut r\u00e9parer",
+        paragraphs: [
+          "Voici la partie que la plupart des articles sauteraient. Les plateformes gardent en cache le <strong>r\u00e9sultat de l'aper\u00e7u, index\u00e9 sur l'URL de la page</strong>, pas sur celle de l'image. L'astuce de l'adresse-empreinte bat compl\u00e8tement le cache d'images et ne fait <em>strictement rien</em> \u00e0 celui-l\u00e0. WhatsApp retient un aper\u00e7u trois \u00e0 sept jours environ, X une semaine, Discord de quelques heures \u00e0 quelques jours, LinkedIn longtemps, iMessage par appareil.",
+          "Un lien d\u00e9j\u00e0 pos\u00e9 dans un vieux message peut donc montrer une carte ancienne pendant quelques jours, et aucune technique c\u00f4t\u00e9 serveur n'atteint un message d\u00e9j\u00e0 envoy\u00e9. Quiconque pr\u00e9tend le contraire a quelque chose \u00e0 vendre.",
+          "Ce qui peut \u00eatre fait l'est. Facebook et Instagram se rafra\u00eechissent par l'API Graph de Meta, et comme WhatsApp partage cette infrastructure de moissonnage, le m\u00eame appel l'atteint souvent \u2014 souvent, pas s\u00fbrement, donc la file enregistre le r\u00e9sultat au lieu de le supposer. Le jeton est facultatif\u202f: absent, la fonction n'\u00e9choue pas, <em>elle n'existe pas</em>, et rien d'autre ne change. Et le bouton principal du tableau de bord est <strong>Copier un lien frais</strong>, qui ajoute la version de l'humeur \u00e0 l'adresse. L'application l'ignore et la canonicalise, mais pour une plateforme c'est une URL jamais d\u00e9pli\u00e9e \u2014 donc sans entr\u00e9e de cache, donc \u00e0 moissonner, et l'aper\u00e7u est \u00e0 jour par construction.",
+          "\u00c0 c\u00f4t\u00e9 de ces commandes, en langue claire\u202f: les messageries gardent une copie de l'aper\u00e7u quelques jours\u202f; un lien frais montre toujours votre humeur actuelle, un ancien message rattrapera peut-\u00eatre plus tard. G\u00e9rer cette attente fait partie de la fonction. Un produit qui promet trop ici perd la confiance la premi\u00e8re fois qu'un ami voit la mauvaise humeur \u2014 et l'ami ne le signale jamais."
+        ],
+        img: ""
+      },
+      {
+        title: "Compter les visites sans reconna\u00eetre personne",
+        paragraphs: [
+          "La seconde r\u00e8gle qui prime sur le confort\u202f: <strong>un visiteur n'est jamais identifi\u00e9</strong>. Une vue est stock\u00e9e comme un condens\u00e9 tronqu\u00e9 de l'adresse, de l'agent, du profil consult\u00e9, et d'une cl\u00e9 de 32 octets <em>al\u00e9atoires</em> tir\u00e9e \u00e0 neuf chaque jour \u2014 al\u00e9atoires, pas d\u00e9riv\u00e9s d'un secret, et c'est tout l'enjeu.",
+          "Cette cl\u00e9 est <strong>d\u00e9truite au bout de trois jours</strong>. Une fois partie, personne \u2014 moi compris \u2014 ne peut recalculer les condens\u00e9s d'un jour pass\u00e9\u202f: il devient impossible de dire que le visiteur d'hier est celui d'aujourd'hui. Aucune adresse IP, aucun cookie, aucun identifiant qui traverse les jours n'est \u00e9crit. Les enregistrements bruts tombent au bout de trente jours, seuls les totaux quotidiens survivent.",
+          "C'est ce qui tient tout l'ensemble hors du territoire des banni\u00e8res de consentement, et c'est un vrai renoncement\u202f: de meilleures statistiques sont \u00e0 une migration de sch\u00e9ma, \u00e0 tout instant. \u00c9crire le raisonnement \u00e0 c\u00f4t\u00e9 du code, et pas seulement la conclusion, est ce qui le fait survivre au jour o\u00f9 le plus joli tableau de bord devient tentant."
+        ],
+        img: "vie-privee"
+      },
+      {
+        title: "Ce qui n'est pas prouv\u00e9",
+        paragraphs: [
+          "Aura r\u00e9pond sur <strong>mood.bas.lu</strong>, en vingt-deux langues n\u00e9goci\u00e9es depuis le navigateur. Le conteneur se construit, migre et sert\u202f; la page r\u00e9pond bien <em>no-store</em>, et l'adresse de la carte est bien une empreinte. Cela, je l'ai v\u00e9rifi\u00e9 depuis l'ext\u00e9rieur de la machine qui l'a fabriqu\u00e9 \u2014 la seule v\u00e9rification qui compte.",
+          "Le reste est une liste de ce que je n'ai <em>pas</em> v\u00e9rifi\u00e9, tenue dans le d\u00e9p\u00f4t plut\u00f4t que dans ma t\u00eate. <strong>Aucun lien n'a \u00e9t\u00e9 coll\u00e9 dans une vraie messagerie puis regard\u00e9 se mettre \u00e0 jour.</strong> Tout ce que dit la section pr\u00e9c\u00e9dente sur le comportement des plateformes est de la documentation et du raisonnement, pas de l'observation \u2014 et c'est le plus grand trou du produit. La suite de bout en bout n'a rencontr\u00e9 qu'un seul moteur de navigateur. Aucune technologie d'assistance n'a servi\u202f: le lien d'\u00e9vitement, l'attribut de langue et les r\u00e9gions vivantes sont v\u00e9rifi\u00e9s pr\u00e9sents et bien form\u00e9s, et personne ne les a jamais entendus. Les pages l\u00e9gales n'ont re\u00e7u aucune relecture juridique, et les vingt-deux langues ont \u00e9t\u00e9 traduites ici, pas par des traducteurs.",
+          "Une machine \u00e9crit vite, et plus juste qu'on ne le croit. Elle ne vous dira pas qu'un aper\u00e7u avait l'air faux dans la fen\u00eatre de conversation d'un ami, parce que l'ami n'en parle jamais. C'est toute la diff\u00e9rence entre ce qui est construit et ce qui est prouv\u00e9, et seule la seconde m\u00e9rite d'\u00eatre \u00e9crite."
+        ],
+        img: ""
+      }
+    ]
   },
   blogPost2: {
     title: "Dix-neuf jours pour un bus scolaire",

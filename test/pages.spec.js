@@ -109,7 +109,7 @@ describe('projects page', () => {
     const wrapper = await mountAt('/projects')
     const page = wrapper.findComponent(ProjectsPage)
 
-    expect(page.vm.projectsList).toHaveLength(11)
+    expect(page.vm.projectsList).toHaveLength(12)
     expect(page.vm.categories.map(c => c.value)).toEqual(['all', 'live', 'template', 'archive'])
 
     await page.setData({ categorySelect: 'archive' })

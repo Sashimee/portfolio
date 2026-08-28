@@ -16,9 +16,17 @@
  */
 import couvertureSchoulbus from '@/assets/schoulbus-cover.webp'
 import couvertureGreenCoding from '@/assets/gc_info_fr.webp'
+import couvertureAura from '@/assets/aura-cover.webp'
 
 /** Du plus récent au plus ancien : `Blog.vue` numérote dans cet ordre. */
 export default [
+  {
+    slug: 'aura-share-cards',
+    key: 'blogPost3',
+    date: '2026-08-28',
+    cover: couvertureAura,
+    illustrations: 'article_three'
+  },
   {
     slug: 'schoulbus-claude-code',
     key: 'blogPost2',

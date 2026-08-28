@@ -23,6 +23,10 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R8** | **Le trajet SMTP n'a jamais été parcouru.** Les tests injectent l'expéditeur, et la vérification manuelle s'est arrêtée au refus du jeton par Google : `nodemailer` n'a jamais ouvert de connexion vers OVH. Le nom d'hôte, le port, le mode TLS et le refus d'un `From` non authentifié sont des hypothèses. | Un envoi qui aboutit contre le vrai serveur OVH. |
 | **R9** | **L'image du service n'a jamais été construite.** `docker` exige `sudo` sur la machine de travail. Le `Dockerfile`, sa sonde de santé et le `docker-compose.yml` (étiquettes Traefik comprises) n'ont été relus que des yeux. | `docker build` qui passe, puis un conteneur dont `/health` répond. |
 | **R10** | **La clé secrète reCAPTCHA est introuvable** — elle vivait dans le service disparu. La clé publique de `src/boot/recap.js` survit, mais rien ne dit que son enregistrement liste encore `alex.baskewitsch.lu` dans ses domaines. | Le secret retrouvé et le service qui accepte un vrai jeton — ou la paire régénérée, clé publique reportée dans le boot. |
+| **R11** | L'article Aura décrit le comportement des plateformes (WhatsApp trois à sept jours, X une semaine, Slack une demi-heure…) d'après la documentation du dépôt `aura`, elle-même tirée de la documentation des plateformes. **Aucun lien n'a été collé dans une vraie messagerie.** | Un lien collé dans WhatsApp, l'humeur changée, le lien frais recollé, et la seconde carte différente de la première. |
+| **R12** | Les illustrations de l'article sont des captures de `mood.bas.lu` prises le **2026-08-28**. L'humeur en ligne était alors une humeur de test (« D Test ») et la carte partagée la montre. | Une vraie humeur posée sur le compte, et les captures reprises. |
+| **R13** | Le dépôt `aura` annonce encore « *Nothing is deployed* » dans son `README.md` et son journal de réserves, alors que `mood.bas.lu` sert bien l'application. Le portfolio publie désormais le projet en `live` — les deux sources se contredisent. | Le `README.md` et le journal de réserves d'`aura` mis à jour après le déploiement du 2026-08-28. |
+| **R14** | La fiche Aura et l'article n'ont été regardés que sur un écran de bureau, en thème clair. Les illustrations sont des captures d'interface plafonnées à 180 px de haut. | Un passage sur téléphone, en portrait, et en thème sombre. |
 
 ---
 
@@ -175,6 +179,37 @@ prouve que l'appel part et que la réponse est lue). L'enregistrement `api.baske
 existe et rend `57.131.136.250`, le même hôte que le site.
 
 *Réserves ouvertes : R1 (reformulée), R8, R9, R10.*
+
+### Lot 8 — Aura dans les projets, et l'article qui va avec · fait le 2026-08-28
+
+`mood.bas.lu` — un lien permanent qui dit comment on va. Entrée **en tête** de
+`src/data/projects.js`, donc la une de l'accueil s'ouvre désormais sur Aura, et Dawa quitte
+les trois projets mis en avant. Douze projets au lieu de onze ; `test/pages.spec.js` remonté
+en conséquence.
+
+L'article `aura-share-cards` prend le sujet par où il est difficile, et non par où il se
+raconte bien : **une messagerie n'affiche pas la page, elle affiche une carte moissonnée
+plus tôt.** Huit sections — la page jamais mise en cache, l'adresse de la carte comme
+empreinte de son contenu, l'émoji qui pouvait retenir un moissonneur, la porte séparée des
+robots, ce qu'aucun serveur ne répare, le comptage sans identification, et ce qui n'est pas
+prouvé.
+
+**Ce qui a été vérifié contre le site en ligne**, pas repris de la documentation d'`aura` :
+`mood.bas.lu` répond 200 et sert bien l'application ; `/alex` rend
+`cache-control: no-store, max-age=0, must-revalidate` ; son `og:image` pointe sur
+`/api/og/alex/ec85c5dd7795cabd.png`, qui existe et fait 1200×630 ; et la même adresse rend
+**17 281 octets** à un navigateur contre **1 011** à un agent WhatsApp — le chiffre cité dans
+l'article. Les vingt-deux langues ont été comptées dans `lib/i18n/locales.ts`.
+
+Trouvé en capturant les illustrations, et sans conséquence ici : `HeadlessChrome` est
+classé comme moissonneur par `lib/crawlers.ts`. Playwright recevait donc le document réduit
+aux balises, et les captures sont prises avec un agent de navigateur réel.
+
+Les cinq images (vignette, couverture, trois illustrations) sont des captures du site en
+ligne, converties en WebP et **recadrées sur leur sujet** : au plafond commun de 180 px, une
+capture d'interface aérée ne se lit pas.
+
+*Réserves ouvertes : R11, R12, R13, R14.*
 
 ---
 
