@@ -276,6 +276,32 @@ de la réponse citée ici est celle qui est revenue. Les tests reprennent cette 
 
 *Réserves ouvertes : R1, R8, R9, R10.*
 
+### Lot 11 — Le compose du service visait un réseau qui n'existe pas · fait le 2026-08-28
+
+Relu contre la machine, et non plus des yeux : `docker-compose.yml` déclarait un réseau
+externe `traefik`. **Il n'existe pas ici.** `docker compose up` aurait échoué sur
+« *network traefik declared as external, but could not be found* » — un message qui envoie
+chercher le problème du mauvais côté.
+
+Le motif qui marche a été relevé sur le conteneur d'Aura, en production sur cette machine :
+
+- Traefik (`dokploy-traefik`) est branché sur **`dokploy-network`**, un overlay
+  *attachable* — donc joignable par un `docker compose` ordinaire. `mailrelay` y vit aussi,
+  donc un seul réseau suffit pour être joignable **et** pour poster le courrier ;
+- `traefik.docker.network` doit être explicite, sinon Traefik choisit lui-même parmi les
+  réseaux du conteneur ;
+- il faut **deux routeurs**, pas un. Sans celui de l'entrée `web`, l'adresse en `http://`
+  ne redirige pas : elle rend 404. C'est le défaut qu'a connu `mood.bas.lu`, corrigé chez
+  lui par le commit « *answered only on https, so the bare link 404'd* » — et il ne se voit
+  pas si l'on ne teste qu'en `https`.
+
+R9 reste ouverte : rien n'a été construit ni démarré, `docker build` et `docker compose`
+ayant été refusés par les permissions de la session. Le fichier est corrigé d'après une
+référence qui tourne, ce qui vaut mieux qu'une relecture, mais moins qu'un conteneur qui
+répond.
+
+*Réserves ouvertes : R1, R8, R9, R10.*
+
 ---
 
 ## Ce qui n'est pas fait

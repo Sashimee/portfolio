@@ -1,15 +1,23 @@
 # Déploiement du service de courriel.
 #
-# Deux façons de s'en servir :
+# Les étiquettes ci-dessous reprennent **à l'identique** le motif d'Aura
+# (`mood.bas.lu`), qui tourne sur cette machine avec un certificat valide.
+# Trois points ont été relevés en le comparant, et chacun aurait fait échouer
+# le déploiement sans rien dire d'utile :
 #
-#  - Dans Dokploy, en général on ne garde que le `build` et les `environment` :
-#    Dokploy pose lui-même le domaine et les étiquettes Traefik depuis son
-#    interface. Les étiquettes ci-dessous sont alors à supprimer.
-#  - En Docker Compose nu, derrière un Traefik existant, elles suffisent telles
-#    quelles — le réseau `traefik` doit être celui du routeur.
+#  - il n'existe pas de réseau `traefik` sur l'hôte. Traefik (`dokploy-traefik`)
+#    est branché sur `dokploy-network`, qui est un overlay **attachable** — donc
+#    joignable par un `docker compose` ordinaire. C'est aussi là que vit
+#    `mailrelay`, donc un seul réseau suffit pour être joignable *et* pour
+#    poster le courrier ;
+#  - `traefik.docker.network` doit être explicite : un conteneur sur plusieurs
+#    réseaux laisse Traefik choisir, et il choisit mal ;
+#  - il faut **deux** routeurs. Sans celui de l'entrée `web`, l'adresse en
+#    `http://` ne redirige pas, elle rend 404 — c'est exactement le défaut qu'a
+#    connu `mood.bas.lu`, et il ne se voit pas si l'on ne teste qu'en `https`.
 #
-# Dans les deux cas, `api.baskewitsch.lu` doit pointer sur l'hôte : c'est fait,
-# l'enregistrement A rend 57.131.136.250, comme alex.baskewitsch.lu.
+# `api.baskewitsch.lu` doit pointer sur l'hôte : c'est fait, l'enregistrement A
+# rend 57.131.136.250, comme alex.baskewitsch.lu.
 services:
   mail:
     build: .
@@ -21,22 +29,22 @@ services:
       ALLOWED_ORIGINS: 'https://alex.baskewitsch.lu'
     expose:
       - '3000'
-    # Deux réseaux, deux raisons : `traefik` pour être joignable de l'extérieur,
-    # `dokploy-network` pour atteindre `mailrelay` par son nom. C'est depuis
-    # l'overlay que le relais n'exige pas d'authentification — son `mynetworks`
-    # couvre le sous-réseau, pas le pont docker par défaut.
     networks:
-      - traefik
       - dokploy-network
     labels:
       traefik.enable: 'true'
+      traefik.docker.network: 'dokploy-network'
+      # HTTP : redirige vers HTTPS plutôt que de rendre 404.
+      traefik.http.routers.portfolio-mail-web.rule: 'Host(`api.baskewitsch.lu`)'
+      traefik.http.routers.portfolio-mail-web.entrypoints: 'web'
+      traefik.http.routers.portfolio-mail-web.middlewares: 'redirect-to-https@file'
+      traefik.http.routers.portfolio-mail-web.service: 'portfolio-mail'
+      # HTTPS : le certificat est délivré par le même résolveur que les autres.
       traefik.http.routers.portfolio-mail.rule: 'Host(`api.baskewitsch.lu`)'
       traefik.http.routers.portfolio-mail.entrypoints: 'websecure'
       traefik.http.routers.portfolio-mail.tls.certresolver: 'letsencrypt'
       traefik.http.services.portfolio-mail.loadbalancer.server.port: '3000'
 
 networks:
-  traefik:
-    external: true
   dokploy-network:
     external: true
