@@ -42,7 +42,7 @@ export default [
   {
     name: 'Dawa',
     category: 'live',
-    link: 'http://www.dawa.lu',
+    link: 'https://dawa.bas.lu',
     img: 'dawa',
     tags: ['laravel', 'responsive', 'secure'],
     target: 'external',
