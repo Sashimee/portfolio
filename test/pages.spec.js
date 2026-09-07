@@ -38,6 +38,7 @@ describe('routes render', () => {
     '/contact',
     '/blog',
     '/blog/article',
+    '/blog/green-coding-own-site',
     '/blog/green-coding-fintech',
     '/blog/schoulbus-claude-code',
     '/nope'
@@ -91,6 +92,7 @@ describe('page content', () => {
     const wrapper = await mountAt('/blog')
     expect(wrapper.text()).toContain('Nineteen days for a school bus')
     expect(wrapper.text()).toContain('The future of Fintech')
+    expect(wrapper.text()).toContain('Twenty-seven megabytes of my own argument')
   })
 
   it('shows the 404 page for an unknown path', async () => {

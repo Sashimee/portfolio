@@ -23,6 +23,9 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R12** | Les illustrations de l'article sont des captures de `mood.bas.lu` prises le **2026-08-28**. L'humeur en ligne était alors une humeur de test (« D Test ») et la carte partagée la montre. | Une vraie humeur posée sur le compte, et les captures reprises. |
 | **R13** | Le dépôt `aura` annonce encore « *Nothing is deployed* » dans son `README.md` et son journal de réserves, alors que `mood.bas.lu` sert bien l'application. Le portfolio publie désormais le projet en `live` — les deux sources se contredisent. | Le `README.md` et le journal de réserves d'`aura` mis à jour après le déploiement du 2026-08-28. |
 | **R15** | **reCAPTCHA v3 n'a pas arrêté un navigateur automatisé.** L'envoi de vérification du 2026-08-28 a été fait par Playwright — un Chromium piloté, sans interaction humaine — et a obtenu **0.9**, très au-dessus du seuil de 0.5. reCAPTCHA v3 ne bloque pas : il *note*, et la note s'est trompée. La protection réelle du formulaire repose donc sur le contrôle d'origine, le limiteur de débit et la vérification d'action, pas sur le score. | Rien ne « referme » ceci — c'est une propriété du produit. Mais : relever le seuil (0.7), et alimenter l'API d'annotations d'Enterprise pour que le modèle apprenne. À décider, pas à ignorer. |
+| **R16** | Les chiffres de l'article (27,4 Mo → 905 Ko, 42,6 Mo, 696 052 octets de polices) sont reconstitués depuis les **objets git**, pas depuis ce qu'un navigateur télécharge réellement : ni compression de transport, ni surcoût HTTP, ni cache. Ils décrivent le dépôt, pas la page. | Une mesure du poids transféré sur la production — un chargement à froid de l'accueil et d'un article, en octets reçus. |
+| **R17** | Premier article **sans aucune illustration de section** : les huit portent `img: ""`. Les trois articles précédents en ont tous au moins une, donc le rythme d'`article.vue` sans images n'a jamais été vu. Le dossier `article_four` est déclaré dans le registre mais n'existe pas sur le disque — inoffensif tant qu'aucune section ne le désigne. | L'article publié, lu sur téléphone en portrait, dans les deux thèmes — la vérification qui a refermé R14. |
+| **R18** | L'article nomme `public/projects_folder/` (15 Mo, dont 12 pour `x1`) comme travail non fait. Il le reste. Le site plaide donc pour une sobriété que son propre domaine contredit d'un ordre de grandeur, et c'est maintenant écrit publiquement. | Les images des démos `x1` et `liberty` converties, ou une décision écrite de ne pas toucher au HTML de gabarits archivés. |
 
 ---
 
@@ -343,6 +346,53 @@ Et R1 s'est refermée dans la foulée : Alex a reçu le message. La réserve la 
 ancienne du registre, ouverte au lot 1, tombe avec les trois autres.
 
 *Aucune réserve ouverte par ce lot.*
+
+---
+
+### Lot 13 — L'article « Vingt-sept mégaoctets de mon propre argument » · fait le 2026-09-07
+
+Quatrième article, et le premier qui parle du site lui-même : `green-coding-own-site`,
+clé `blogPost4`, huit sections dans les deux langues. C'est la suite de `blogPost1` — le
+plus ancien article du blog plaidait pour le green coding auprès des fintechs, et le site
+qui le servait pesait vingt-sept mégaoctets de captures. L'article fait l'audit.
+
+Rien à ajouter au routeur ni aux composantes : le registre `src/data/posts.js` suffit,
+comme prévu au lot 4. La couverture réutilise `public/screenshots/baskewitsch.lu.webp`,
+recopiée en `src/assets/portfolio-cover.webp` — aucune image nouvelle n'a été produite
+pour un article qui reproche au site son poids.
+
+**Un chiffre est tombé en le vérifiant.** Le commit de refonte `f292f9d`, le `README.md`
+et ce document annoncent tous « 39 Mo → 872 Ko ». Aucun des deux nombres ne se reproduit :
+
+```bash
+git ls-tree -r -l 69027ff | grep -iE '\.(png|jpg|jpeg|gif)
+
+- **Déployer le service de courriel, et republier le front.** Le code est écrit et testé ;
+  il lui manque six secrets (`service/mail/.env.example`), un `docker compose up`, et un
+  build du site avec le nouvel hôte. Tant que ce n'est pas fait, le formulaire échoue comme
+  avant — R1, R8, R9 et R10 ne se referment que là.
+- **Une page par article dans le plan du site.** Il n'y a pas de `sitemap.xml` ; les deux
+  articles ne sont découvrables que par `/blog`.
+- **Le garde de `/projects/:shortcode`**, qui porte le même trou que celui du blog avant le
+  lot 4 — sans conséquence tant qu'aucun lien ne mène d'une démo à une autre.
+ | grep -v projects_folder \
+  | awk '{s+=$4} END {print NR, s}'      # 23 fichiers, 27 430 278 octets
+git show --stat f292f9d                   # sortie WebP : 905 298 octets
+```
+
+27,4 Mo est ce qui a été converti ; 905 Ko ce qui en est sorti ; et 42,6 Mo existe aussi,
+mais c'est la totalité des images du dépôt à ce commit, **dossier de démos compris — celui
+auquel personne n'a touché**. Trente-neuf n'est ni l'un ni l'autre. Le rapport de trente à
+un tient, l'histoire qu'on en racontait était fausse d'un tiers, et elle avait traversé une
+relecture, un commit et une publication sans que personne ne lance les deux commandes
+ci-dessus. C'est devenu une section de l'article plutôt qu'une note.
+
+`README.md` et le principe 5 de `CLAUDE.md` portent **encore** le chiffre de 39 Mo. Ils
+contredisent donc un article publié sur le site qu'ils décrivent — la même forme que R13,
+et volontairement laissée en l'état : la correction touche deux documents hors du périmètre
+de ce lot, elle est à décider, pas à glisser.
+
+Réserves ouvertes par ce lot : **R16**, **R17**, **R18**.
 
 ---
 

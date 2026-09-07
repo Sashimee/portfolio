@@ -157,6 +157,86 @@ export default {
     cta: "Let's build something lighter",
     top: "Back to top"
   },
+  blogPost4: {
+    title: "Twenty-seven megabytes of my own argument",
+    title2:
+      "I spent 2023 telling an industry to write lighter code. Then I weighed <strong>my own site</strong>.",
+    sections: [
+      {
+        title: "The article that came back to collect",
+        paragraphs: [
+          "The oldest thing on this blog is dated <em>22 July 2023</em>. It is called <strong>The future of Fintech</strong>, and it argues that a large share of an industry's emissions comes out of its own source code — that the fix is structural, unglamorous, and entirely available today. I still agree with all of it.",
+          "The site that served that article was running Quasar's default Material theme, <em>animate.css</em>, Roboto, five self-hosted font weights, and twenty-seven megabytes of screenshots. To read eleven hundred words about writing lighter code, you first downloaded several megabytes of PNG.",
+          "Nobody pointed this out. Nobody had to — the page loaded, the argument read fine, and page weight is the one defect a browser never reports. The rebuild happened in August 2026. This is the audit, with the numbers taken out of the repository rather than out of memory."
+        ],
+        img: ""
+      },
+      {
+        title: "Twenty-three files, twenty-seven megabytes",
+        paragraphs: [
+          "The measurement is reproducible: every raster image the site itself served, at the last commit before the redesign, outside the folder of archived demos. <strong>Twenty-three files, 27,430,278 bytes.</strong> Converted to WebP at the same dimensions and the same crops, the identical set weighs <strong>905,298 bytes</strong> — thirty times less, for pictures nobody could tell apart on the page.",
+          "The distribution is worse than the total. A single project thumbnail, <em>x1.png</em>, was 4.26 MB: a decorative screenshot in a grid, heavier than most of the pages it linked to. <em>liberty.png</em> was 3.48 MB and became 27 KB, a factor of a hundred and twenty-eight. An illustration inside the 2023 article itself, <em>future.jpg</em>, went from 2,794,288 bytes to 17,888 — <strong>a hundred and fifty-six times smaller</strong>.",
+          "None of this required judgement. No image was recomposed, recropped or dropped, and nothing was redesigned to make the number look better. It is the same site, encoded competently. That is the uncomfortable part: the entire saving had been available at any point in the preceding three years, to anyone who thought to look."
+        ],
+        img: ""
+      },
+      {
+        title: "The fonts I was proud of self-hosting",
+        paragraphs: [
+          "Self-hosting your fonts is good practice, and I had done it: five weights of Lexend plus Ubuntu, as TrueType, <strong>696,052 bytes</strong> shipped to every first-time visitor. Good practice applied without measurement is just a different way of being heavy.",
+          "Four of those five Lexend weights were not referenced by a single rule in the stylesheet. They went, along with Ubuntu, and along with Roboto — which Quasar loads by default and which nothing in the design ever asked for. What remains is three weights, Medium, SemiBold and Bold, used <em>for display text only</em>.",
+          "Body copy now falls back to the system stack, and metadata to the system monospace. A visitor arriving on this page downloads <strong>no webfont at all for the text they came to read</strong>. That is not a compromise I had to argue myself into: system text renders instantly and looks like the operating system it is running on, which is usually what you wanted from a paragraph."
+        ],
+        img: ""
+      },
+      {
+        title: "animate.css, for four transitions",
+        paragraphs: [
+          "The old build imported <em>animate.css</em> in full in order to produce roughly four entrance effects. <em>quasar.config.js</em> now reads <em>animations: []</em>, and those effects are a handful of hand-written keyframes plus one <em>IntersectionObserver</em> in fifty-four lines.",
+          "One detail in there is worth more than the bytes it saved. The reveal's starting state — <em>opacity: 0</em> — is not written onto the elements. It is scoped to <em>html.has-reveal</em>, a class the observer adds to the document <strong>itself</strong>, as it starts. If JavaScript does not run, or <em>IntersectionObserver</em> does not exist, that class is never added and every element simply stays visible.",
+          "The naive version of this component hides your content and waits for a script to reveal it. When the script fails, the page is blank and has thrown nothing at all. Under <em>prefers-reduced-motion</em> the whole mechanism is neutralised a second way: elements are marked as arrived and no animation is ever scheduled."
+        ],
+        img: ""
+      },
+      {
+        title: "Design as a budget, not a mood",
+        paragraphs: [
+          "The redesign has a name in the repository — <strong>low-carbon editorial</strong> — and it is a constraint before it is a taste. The site makes an argument about weight, so it has to look like the thing it argues for: ink on warm paper, one-pixel rules, oversized display type against monospace metadata, and a single acid accent.",
+          "What that rules out is the expensive half of contemporary web design. No hero photography, no gradients, no decorative imagery, no illustration set, no motion library. Every visual effect on this site is a border, a colour, or a typographic size — the three things that cost nothing to send.",
+          "Underneath, the entire interface is custom properties declared once in <em>src/css/app.sass</em>: colours, radii, shadows, and a fluid type scale from <em>--step--1</em> to <em>--step-6</em>. Dark mode redefines those variables and nothing else, and a component is not allowed to hardcode a colour. That started as a maintainability rule and turned out to be a weight rule as well, because a design with one source of truth stops accumulating the one-off assets that a design without one accumulates."
+        ],
+        img: ""
+      },
+      {
+        title: "The rules that outlive the commit",
+        paragraphs: [
+          "Deleting twenty-six megabytes is a morning's work. Keeping them deleted is the real problem, and it is not a technical one. The build does not care: drop a three-megabyte PNG into <em>public/screenshots/</em> tomorrow and everything passes. The site still builds. It is merely heavier, and <strong>nothing anywhere says so</strong>.",
+          "So it is written down instead, as the fifth of five non-negotiable principles in the repository's <em>CLAUDE.md</em>, in the form that matters: not <em>use WebP</em>, but <em>putting a PNG here undoes this work without anything signalling it</em>. A rule that states its own consequence survives contact with the person in a hurry — including when that person is me, a year from now.",
+          "It is worth being precise about the gap. The test suite is real and it is strict: it refuses a translation key present in one language and missing in the other, an empty string, a route that fails to resolve, a page that mounts with a console error, an illustration referenced but absent from disk. <strong>None of it measures a single byte.</strong> Correctness is held by the gate. Weight is held by a sentence in a document."
+        ],
+        img: ""
+      },
+      {
+        title: "The number I had been repeating",
+        paragraphs: [
+          "Writing this article meant checking a figure I had been quoting for weeks. The redesign commit says <em>39 Mo → 872 Ko</em>. The README repeats it. It appears in the project's own working notes. I went to reproduce it, and I could not.",
+          "Reconstructed from the git objects, the images actually converted came to <strong>27.4 MB</strong>, and came out at <strong>905 KB</strong>. There is a 42.6 MB in the history — that is every raster in the repository at that commit, <em>including the folder of archived demos nobody touched</em>. Thirty-nine is neither: a remembered number, close enough to the shape of the truth to go unchallenged, repeated until it had become documentation.",
+          "The conversion was real, and the ratio is still thirty to one. But the story I was telling about it was a third wrong, and it had been written, committed and published without anyone — me first — running the two commands that would have checked it. Round numbers travel further than true ones. It is an odd thing to find in an article about measuring instead of assuming, which is why it is a section here and not a footnote."
+        ],
+        img: ""
+      },
+      {
+        title: "What is not done",
+        paragraphs: [
+          "The site's own pages are as light as I know how to make them. The domain is not. <em>public/projects_folder/</em> — the archived student templates served in an iframe from the projects page — is <strong>fifteen megabytes</strong>, and one of them, <em>x1</em>, is twelve on its own: four stock photographs of between 2.1 and 3.7 MB each, precisely the thing this article is about. They are untouched, and by an order of magnitude they are the heaviest thing on the domain.",
+          "The honest reason is that converting them means editing HTML I did not write, inside archived work whose only purpose is to show what I was building in 2019. That is a defensible trade, and it is still a trade — so it goes in the reserve register rather than staying an impression, where the next person to read it is free to disagree.",
+          "Three smaller ones. Lexend still ships as TrueType, three files, 302 KB; WOFF2 would roughly halve that, and has not been done. There is no <em>sitemap.xml</em>, so articles are discoverable only through the blog index. And there is no page-weight budget in the pipeline: continuous integration lints, runs every test, builds, and checks that the API host really landed in the bundle — it does not weigh the output. A rule kept only in memory has a half-life, and I have just spent a section demonstrating mine.",
+          "Which is the summary, more or less. In 2023 I told an industry to do this. In 2026 the audit found the author of that article shipping twenty-seven megabytes of screenshots underneath it. Both of those are true, and only the second one taught me anything."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost3: {
     title: "A link that keeps telling the truth",
     title2:

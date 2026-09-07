@@ -17,9 +17,19 @@
 import couvertureSchoulbus from '@/assets/schoulbus-cover.webp'
 import couvertureGreenCoding from '@/assets/gc_info_fr.webp'
 import couvertureAura from '@/assets/aura-cover.webp'
+import couverturePortfolio from '@/assets/portfolio-cover.webp'
 
 /** Du plus récent au plus ancien : `Blog.vue` numérote dans cet ordre. */
 export default [
+  {
+    slug: 'green-coding-own-site',
+    key: 'blogPost4',
+    date: '2026-09-07',
+    cover: couverturePortfolio,
+    // Aucune section n'est illustrée : le dossier n'existe donc pas encore.
+    // Le champ reste renseigné, routes.spec.js le voulant non vide.
+    illustrations: 'article_four'
+  },
   {
     slug: 'aura-share-cards',
     key: 'blogPost3',

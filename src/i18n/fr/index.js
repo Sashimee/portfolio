@@ -160,6 +160,86 @@ export default {
     cta: "Construisons quelque chose de plus léger",
     top: "Haut de page"
   },
+  blogPost4: {
+    title: "Vingt-sept m\u00e9gaoctets de mon propre argument",
+    title2:
+      "J'ai pass\u00e9 2023 \u00e0 expliquer \u00e0 une industrie qu'il fallait all\u00e9ger son code. Puis j'ai pes\u00e9 <strong>mon propre site</strong>.",
+    sections: [
+      {
+        title: "L'article revenu r\u00e9clamer son d\u00fb",
+        paragraphs: [
+          "La chose la plus ancienne de ce blog est dat\u00e9e du <em>22 juillet 2023</em>. Elle s'appelle <strong>L'avenir de la Fintech</strong>, et elle soutient qu'une part importante des \u00e9missions d'une industrie sort de son propre code source \u2014 que le rem\u00e8de est structurel, sans \u00e9clat, et enti\u00e8rement disponible aujourd'hui. J'en pense toujours exactement la m\u00eame chose.",
+          "Le site qui servait cet article tournait sous l'habillage Material par d\u00e9faut de Quasar, avec <em>animate.css</em>, Roboto, cinq graisses de police auto-h\u00e9berg\u00e9es et vingt-sept m\u00e9gaoctets de captures d'\u00e9cran. Pour lire onze cents mots sur l'art d'all\u00e9ger son code, il fallait d'abord t\u00e9l\u00e9charger plusieurs m\u00e9gaoctets de PNG.",
+          "Personne ne me l'a fait remarquer. Personne n'avait de raison de le faire\u202f: la page s'affichait, l'argument se lisait tr\u00e8s bien, et le poids d'une page est le seul d\u00e9faut qu'un navigateur ne signale jamais. La refonte a eu lieu en ao\u00fbt 2026. Voici l'audit, avec des chiffres tir\u00e9s du d\u00e9p\u00f4t et non de ma m\u00e9moire."
+        ],
+        img: ""
+      },
+      {
+        title: "Vingt-trois fichiers, vingt-sept m\u00e9gaoctets",
+        paragraphs: [
+          "La mesure est reproductible\u202f: toutes les images matricielles que le site servait lui-m\u00eame, au dernier commit avant la refonte, hors du dossier de d\u00e9mos archiv\u00e9es. <strong>Vingt-trois fichiers, 27 430 278 octets.</strong> Converti en WebP aux m\u00eames dimensions et aux m\u00eames cadrages, le m\u00eame ensemble p\u00e8se <strong>905 298 octets</strong> \u2014 trente fois moins, pour des images que personne ne saurait distinguer \u00e0 l'\u00e9cran.",
+          "La r\u00e9partition est pire que le total. Une seule vignette de projet, <em>x1.png</em>, faisait 4,26 Mo\u202f: une capture d\u00e9corative dans une grille, plus lourde que la plupart des pages vers lesquelles elle pointait. <em>liberty.png</em> pesait 3,48 Mo et est devenu 27 Ko, un facteur cent vingt-huit. Une illustration de l'article de 2023 lui-m\u00eame, <em>future.jpg</em>, est pass\u00e9e de 2 794 288 octets \u00e0 17 888 \u2014 <strong>cent cinquante-six fois moins</strong>.",
+          "Rien de tout cela ne demandait de jugement. Aucune image n'a \u00e9t\u00e9 recompos\u00e9e, recadr\u00e9e ni retir\u00e9e, et rien n'a \u00e9t\u00e9 redessin\u00e9 pour embellir le chiffre. C'est le m\u00eame site, encod\u00e9 correctement. C'est la partie inconfortable\u202f: l'\u00e9conomie enti\u00e8re \u00e9tait disponible \u00e0 n'importe quel moment des trois ann\u00e9es pr\u00e9c\u00e9dentes, pour qui aurait pens\u00e9 \u00e0 regarder."
+        ],
+        img: ""
+      },
+      {
+        title: "Les polices que j'\u00e9tais fier d'auto-h\u00e9berger",
+        paragraphs: [
+          "Auto-h\u00e9berger ses polices est une bonne pratique, et je l'avais appliqu\u00e9e\u202f: cinq graisses de Lexend plus Ubuntu, en TrueType, <strong>696 052 octets</strong> envoy\u00e9s \u00e0 chaque premier visiteur. Une bonne pratique appliqu\u00e9e sans mesure n'est qu'une autre mani\u00e8re d'\u00eatre lourd.",
+          "Quatre de ces cinq graisses de Lexend n'\u00e9taient appel\u00e9es par aucune r\u00e8gle de la feuille de style. Elles sont parties, avec Ubuntu, et avec Roboto \u2014 que Quasar charge par d\u00e9faut et que rien dans la maquette n'avait jamais demand\u00e9. Il reste trois graisses, Medium, SemiBold et Bold, r\u00e9serv\u00e9es <em>au texte d'affichage</em>.",
+          "Le texte courant tombe d\u00e9sormais sur la pile syst\u00e8me, et les m\u00e9tadonn\u00e9es sur la monospace du syst\u00e8me. Un visiteur qui arrive sur cette page ne t\u00e9l\u00e9charge <strong>aucune police pour le texte qu'il est venu lire</strong>. Ce n'est pas un compromis qu'il a fallu me vendre\u202f: le texte syst\u00e8me s'affiche imm\u00e9diatement et ressemble au syst\u00e8me d'exploitation sur lequel il tourne, ce qu'on attend g\u00e9n\u00e9ralement d'un paragraphe."
+        ],
+        img: ""
+      },
+      {
+        title: "animate.css, pour quatre transitions",
+        paragraphs: [
+          "L'ancienne construction importait <em>animate.css</em> en entier pour obtenir quatre effets d'entr\u00e9e, \u00e0 peu pr\u00e8s. <em>quasar.config.js</em> porte maintenant <em>animations: []</em>, et ces effets tiennent en quelques <em>keyframes</em> \u00e9crites \u00e0 la main plus un <em>IntersectionObserver</em> de cinquante-quatre lignes.",
+          "Un d\u00e9tail l\u00e0-dedans vaut mieux que les octets qu'il a fait gagner. L'\u00e9tat initial de la r\u00e9v\u00e9lation \u2014 <em>opacity: 0</em> \u2014 n'est pas pos\u00e9 sur les \u00e9l\u00e9ments. Il est port\u00e9 par <em>html.has-reveal</em>, une classe que l'observateur ajoute au document <strong>lui-m\u00eame</strong>, au d\u00e9marrage. Si le JavaScript ne s'ex\u00e9cute pas, ou si <em>IntersectionObserver</em> n'existe pas, cette classe n'arrive jamais et chaque \u00e9l\u00e9ment reste simplement visible.",
+          "La version na\u00efve de ce composant cache votre contenu et attend qu'un script le r\u00e9v\u00e8le. Le jour o\u00f9 le script \u00e9choue, la page est blanche et n'a rien lev\u00e9 du tout. Sous <em>prefers-reduced-motion</em>, le m\u00e9canisme est neutralis\u00e9 une seconde fois\u202f: les \u00e9l\u00e9ments sont marqu\u00e9s comme arriv\u00e9s et aucune animation n'est programm\u00e9e."
+        ],
+        img: ""
+      },
+      {
+        title: "Le design comme budget, pas comme humeur",
+        paragraphs: [
+          "La refonte porte un nom dans le d\u00e9p\u00f4t \u2014 <strong>low-carbon editorial</strong> \u2014 et c'est une contrainte avant d'\u00eatre un go\u00fbt. Le site tient un discours sur le poids\u202f: il doit donc ressembler \u00e0 ce qu'il d\u00e9fend. De l'encre sur papier chaud, des filets d'un pixel, des titres d\u00e9mesur\u00e9s contre des m\u00e9tadonn\u00e9es en monospace, et un unique accent acide.",
+          "Ce que cela exclut, c'est la moiti\u00e9 co\u00fbteuse du design web contemporain. Pas de photographie d'en-t\u00eate, pas de d\u00e9grad\u00e9s, pas d'imagerie d\u00e9corative, pas de jeu d'illustrations, pas de biblioth\u00e8que d'animation. Chaque effet visuel du site est une bordure, une couleur ou une taille typographique \u2014 les trois seules choses dont l'envoi ne co\u00fbte rien.",
+          "Dessous, toute l'interface tient dans des propri\u00e9t\u00e9s personnalis\u00e9es d\u00e9clar\u00e9es une seule fois dans <em>src/css/app.sass</em>\u202f: couleurs, rayons, ombres, et une \u00e9chelle typographique fluide de <em>--step--1</em> \u00e0 <em>--step-6</em>. Le th\u00e8me sombre se contente de red\u00e9finir ces variables, et aucune composante n'a le droit d'\u00e9crire une couleur en dur. C'\u00e9tait une r\u00e8gle de maintenabilit\u00e9\u202f; elle s'est av\u00e9r\u00e9e \u00eatre aussi une r\u00e8gle de poids, parce qu'un design qui a une source unique cesse d'accumuler les images ponctuelles qu'un design sans source unique accumule."
+        ],
+        img: ""
+      },
+      {
+        title: "Les r\u00e8gles qui survivent au commit",
+        paragraphs: [
+          "Supprimer vingt-six m\u00e9gaoctets est le travail d'une matin\u00e9e. Les maintenir supprim\u00e9s est le vrai probl\u00e8me, et il n'est pas technique. La construction s'en moque\u202f: d\u00e9posez demain un PNG de trois m\u00e9gaoctets dans <em>public/screenshots/</em> et tout passe. Le site se construit toujours. Il est seulement plus lourd, et <strong>rien nulle part ne le dit</strong>.",
+          "Alors c'est \u00e9crit, en cinqui\u00e8me des cinq principes non n\u00e9gociables du <em>CLAUDE.md</em> du d\u00e9p\u00f4t, dans la forme qui compte\u202f: non pas <em>utiliser du WebP</em>, mais <em>y d\u00e9poser un PNG annule ce travail sans que rien ne le signale</em>. Une r\u00e8gle qui \u00e9nonce sa cons\u00e9quence survit au contact de la personne press\u00e9e \u2014 y compris quand cette personne est moi, dans un an.",
+          "Il faut \u00eatre pr\u00e9cis sur l'\u00e9cart. La suite de tests est r\u00e9elle et elle est stricte\u202f: elle refuse une cl\u00e9 de traduction pr\u00e9sente dans une langue et absente de l'autre, une cha\u00eene vide, une route qui ne r\u00e9sout pas, une page qui se monte avec une erreur de console, une illustration r\u00e9f\u00e9renc\u00e9e mais absente du disque. <strong>Rien l\u00e0-dedans ne mesure un seul octet.</strong> La justesse est tenue par la porte. Le poids est tenu par une phrase dans un document."
+        ],
+        img: ""
+      },
+      {
+        title: "Le chiffre que je r\u00e9p\u00e9tais",
+        paragraphs: [
+          "\u00c9crire cet article a demand\u00e9 de v\u00e9rifier un chiffre que je citais depuis des semaines. Le commit de la refonte annonce <em>39 Mo \u2192 872 Ko</em>. Le README le reprend. Il figure dans les notes de travail du projet. J'ai voulu le reproduire, et je n'y suis pas arriv\u00e9.",
+          "Reconstitu\u00e9 depuis les objets git, l'ensemble r\u00e9ellement converti pesait <strong>27,4 Mo</strong>, et en est ressorti \u00e0 <strong>905 Ko</strong>. Il existe bien un 42,6 Mo dans cette histoire \u2014 c'est la totalit\u00e9 des images matricielles du d\u00e9p\u00f4t \u00e0 ce commit, <em>dossier de d\u00e9mos archiv\u00e9es compris, celui auquel personne n'a touch\u00e9</em>. Trente-neuf n'est ni l'un ni l'autre\u202f: un chiffre de m\u00e9moire, assez proche de la forme de la v\u00e9rit\u00e9 pour n'\u00eatre jamais contest\u00e9, r\u00e9p\u00e9t\u00e9 jusqu'\u00e0 devenir de la documentation.",
+          "La conversion a bien eu lieu, et le rapport reste de trente \u00e0 un. Mais l'histoire que j'en racontais \u00e9tait fausse d'un tiers, et elle avait \u00e9t\u00e9 \u00e9crite, commit\u00e9e et publi\u00e9e sans que personne \u2014 moi le premier \u2014 ne lance les deux commandes qui l'auraient v\u00e9rifi\u00e9e. Les chiffres ronds voyagent plus loin que les vrais. C'est une chose singuli\u00e8re \u00e0 d\u00e9couvrir dans un article qui plaide pour mesurer plut\u00f4t que supposer, et c'est pour cela qu'elle est une section ici, et non une note de bas de page."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce qui n'est pas fait",
+        paragraphs: [
+          "Les pages du site sont aussi l\u00e9g\u00e8res que je sais les faire. Le domaine, lui, ne l'est pas. <em>public/projects_folder/</em> \u2014 les gabarits d'\u00e9cole archiv\u00e9s, servis en iframe depuis la page des projets \u2014 p\u00e8se <strong>quinze m\u00e9gaoctets</strong>, dont douze pour le seul <em>x1</em>\u202f: quatre photographies de banque d'images entre 2,1 et 3,7 Mo chacune, exactement ce dont parle cet article. Ils sont intacts, et ils sont d'un ordre de grandeur la chose la plus lourde du domaine.",
+          "La raison honn\u00eate est que les convertir demande de modifier du HTML que je n'ai pas \u00e9crit, dans un travail archiv\u00e9 dont le seul objet est de montrer ce que je faisais en 2019. C'est un arbitrage d\u00e9fendable, et cela reste un arbitrage \u2014 il part donc au registre des r\u00e9serves plut\u00f4t que de rester une impression, l\u00e0 o\u00f9 la prochaine personne \u00e0 le lire aura tout loisir de ne pas \u00eatre d'accord.",
+          "Trois plus petites. Lexend est toujours livr\u00e9 en TrueType, trois fichiers, 302 Ko\u202f; le WOFF2 r\u00e9duirait cela de moiti\u00e9 environ, et n'a pas \u00e9t\u00e9 fait. Il n'y a pas de <em>sitemap.xml</em>\u202f: les articles ne se d\u00e9couvrent que par l'index du blog. Et il n'y a pas de budget de poids dans la cha\u00eene\u202f: l'int\u00e9gration continue passe le lint, joue tous les tests, construit, et v\u00e9rifie que l'h\u00f4te de l'API a bien atterri dans le bundle \u2014 elle ne p\u00e8se pas le r\u00e9sultat. Une r\u00e8gle tenue par la seule m\u00e9moire a une demi-vie, et je viens de consacrer une section \u00e0 d\u00e9montrer la mienne.",
+          "Ce qui fait le r\u00e9sum\u00e9, \u00e0 peu de chose pr\u00e8s. En 2023, j'expliquais \u00e0 une industrie qu'il fallait faire cela. En 2026, l'audit a trouv\u00e9 l'auteur de cet article en train de servir vingt-sept m\u00e9gaoctets de captures d'\u00e9cran en dessous. Les deux sont vrais, et seul le second m'a appris quelque chose."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost3: {
     title: "Un lien qui continue de dire vrai",
     title2:
