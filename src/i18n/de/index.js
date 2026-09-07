@@ -89,6 +89,8 @@ export default {
       archive: "Archiv"
     },
     texts: {
+      royaumeFoot:
+        "Ein 3D-Fu\u00dfballspiel f\u00fcr Sechsj\u00e4hrige, gespielt von Prinzessinnen und Rittern: Man wischt Richtung Tor, und wonach man wirklich spielt, ist die Garderobe, nicht der Punktestand. React 19, TypeScript und three.js \u00fcber react-three-fiber, als PWA installierbar und vollst\u00e4ndig offline spielbar. Kein Konto, nichts wird hochgeladen \u2014 der Fortschritt liegt im localStorage, die sechs Sprachen sind mit eingepackt, und das Ganze sind statische Dateien hinter nginx. Fast nichts ist eine Datei: Figuren, Burg und Torh\u00fcter bestehen aus Primitiven, die Texturen werden beim Start auf ein 2D-Canvas gemalt, die Kl\u00e4nge sind mit Web Audio synthetisiert, und s\u00e4mtliche Bilder des Repositorys zusammen ergeben neun Kilobyte. Ein Schwierigkeits-Pr\u00fcfstand in der CI durchl\u00e4uft jede Wischbewegung, die ein Kind hinbekommt, und l\u00e4sst den Build scheitern, sobald das Spiel aufh\u00f6rt, freundlich zu sein.",
       aura:
         "Ein dauerhafter Link, der sagt, wie es Ihnen geht: mood.bas.lu/<sie> einmal verschicken, den Inhalt ändern, wann immer Sie wollen. Die ganze Schwierigkeit liegt in der Vorschau — ein Messenger zeigt eine Karte, die er vor Tagen abgeholt hat. Die Seite wird nie zwischengespeichert, und die Adresse der Karte ist ein Hash dessen, was sie zeichnet: Eine neue Stimmung erzeugt eine URL, die noch keine Plattform je abgerufen hat, es gibt also keine veraltete Kopie auszuliefern. Next.js, TypeScript und PostgreSQL, containerisiert auf einem selbst gehosteten VPS. Ein Besuch wird ohne Cookie und ohne gespeicherte Adresse gezählt: ein Hash über einen zufälligen Tagesschlüssel, der nach drei Tagen vernichtet wird.",
       schoulbus:
@@ -157,6 +159,97 @@ export default {
     cta_eyebrow: "Nächster Schritt",
     cta: "Bauen wir etwas Leichteres",
     top: "Nach oben"
+  },
+  blogPost5: {
+    title: "Der Test, der fehlschl\u00e4gt, wenn das Spiel gemein wird",
+    title2:
+      "Ein 3D-Fu\u00dfballspiel f\u00fcr Sechsj\u00e4hrige \u2014 und die Continuous Integration, die den <strong>Spa\u00df</strong> verteidigt.",
+    sections: [
+      {
+        title: "Ein Spiel f\u00fcr genau ein Kind, sechs Jahre alt",
+        paragraphs: [
+          "<strong>Royaume Foot</strong> ist ein 3D-Fu\u00dfballspiel, das vollst\u00e4ndig im Browser l\u00e4uft. Kein Konto, kein Backend, nichts wird hochgeladen \u2014 statische Dateien hinter einem Webserver, unter <em>foot.bas.lu</em>. Es l\u00e4sst sich auf den Startbildschirm legen und spielt sich im Flugzeug. Sechs Prinzessinnen, vier Ritter, ein freundlicher Drache im Tor und dahinter eine Burg.",
+          "Gebaut wurde es f\u00fcr ein sechsj\u00e4hriges Kind, und das ist keine Fu\u00dfnote, sondern die Architektur. Jede Einschr\u00e4nkung im Repository folgt aus einer einzigen Tatsache: Wer das Tablet h\u00e4lt, liest noch nicht verl\u00e4sslich, kann nicht zwei Steuerungen gleichzeitig bedienen und legt das Ger\u00e4t endg\u00fcltig weg, wenn das Spiel ihm ein schlechtes Gef\u00fchl macht.",
+          "Was folgt, ist der Preis daf\u00fcr im Code. Manches davon l\u00e4sst sich erraten. Womit ich nicht gerechnet hatte: <em>freundlich zu einem Sechsj\u00e4hrigen</em> erwies sich als eine Eigenschaft, die ich in der Continuous Integration behaupten kann \u2014 und die Behauptung fing einen echten Fehler, den ich bereits ausgeliefert hatte."
+        ],
+        img: ""
+      },
+      {
+        title: "Eine Geste \u2014 und die zwei Achsen darunter",
+        paragraphs: [
+          "Das ganze Spiel ist eine Geste. Irgendwo dr\u00fccken, Richtung Tor ziehen, loslassen. Kein Knopf zum Halten, kein Zeitfenster, nichts, was in einem anderen Minispiel noch einmal gelernt werden m\u00fcsste.",
+          "Nicht offensichtlich ist, was das Ziehen <em>bedeutet</em>. Die naheliegende Umsetzung liest den Winkel der Wischbewegung: Richtung und Kraft kommen aus einem einzigen Vektor, wie bei einer Steinschleuder. Mit sechs spielt sich das schlecht, denn dann ist ein harter Schuss automatisch ein ungenauer: Man wischt voller Begeisterung, und der Ball geht zur Seite. F\u00fcr dieses Kind ist das genau verkehrt herum. Also sind die Achsen entkoppelt \u2014 <strong>waagerecht wird gezielt, senkrecht wird dosiert</strong> \u2014 und ein Kind, das mit aller Kraft wischt, bekommt einen schnellen Schuss, der trotzdem dorthin geht, wohin es gezeigt hat.",
+          "Die andere H\u00e4lfte ist ein Schubs, den niemand sieht. Ein Schuss, f\u00fcr den vorhergesagt wird, dass er die Torlinie weniger als <strong>1,6 Einheiten au\u00dferhalb eines Pfostens</strong> \u00fcberquert, wird nach innen gebogen. Der Kommentar in <em>constants.ts</em> nennt das die wichtigste Freundlichkeit des ganzen Spiels: Sie macht aus \u201eso knapp!\u201c ein \u201eTOR!\u201c, ohne dass das Kind je einen Schubs bemerkt. Und der weiteste Winkel, den eine Wischbewegung erzeugen kann, ist absichtlich schmaler als das Tor breit ist, sodass selbst ein voll seitliches Wischen in diesem Rettungsband landet. Der Ball geht nie seitlich verloren. Zwischen dem Kind und dem Tor steht nur noch der Torh\u00fcter."
+        ],
+        img: "geste"
+      },
+      {
+        title: "Der Test, der fehlschl\u00e4gt, wenn das Spiel gemein wird",
+        paragraphs: [
+          "Die Regeln liegen in <em>src/game/</em>, und dieser Ordner importiert niemals three.js. Das begann als Ordnungsliebe und wurde zur n\u00fctzlichsten Entscheidung des Projekts, denn dadurch l\u00e4uft die gesamte Simulation \u2014 Physik, Zielen, Torh\u00fcter, Wertung \u2014 in einem Test ohne Canvas, ohne Grafikkarte und ohne Browser.",
+          "Darauf sitzt <em>balance.test.ts</em>, und das ist kein Unit-Test. Er durchl\u00e4uft den gesamten Raum der Wischbewegungen, die ein Kind plausibel hinbekommt \u2014 neunundzwanzig waagerechte mal dreiundzwanzig senkrechte, <strong>667 Sch\u00fcsse</strong> \u2014, spielt jeden einzelnen mit der echten Physik und dem echten Torh\u00fcter bis zur Torlinie durch und behauptet dann etwas \u00fcber die Verteilung. Kein Schuss geht je daneben oder \u00fcber die Latte. Jede Bewegung erreicht die Torlinie, so kraftlos sie auch war. Zwischen <strong>60 % und 95 %</strong> gehen hinein. Der Torh\u00fcter h\u00e4lt immer noch mindestens einen von zwanzig, bleibt also der M\u00fche wert, ihn zu umspielen. Und eine perfekte Runde aus f\u00fcnf Sch\u00fcssen bleibt irgendwo zwischen einer Chance von eins zu zehn und drei zu f\u00fcnf \u2014 ein Fest, keine Formsache.",
+          "Nichts davon ist eine Aussage \u00fcber Korrektheit. Da steckt kein Fehler im gew\u00f6hnlichen Sinn. Es sind Aussagen dar\u00fcber, wie sich das Spiel <em>anf\u00fchlen</em> soll, als Zahlen geschrieben, damit ein Build-Server mich daran festhalten kann. Wer eine Konstante so verstellt, dass das Spiel strafend wird, bekommt eine rote CI; zu reparieren ist dann die Abstimmung, nicht der Test.",
+          "Er hat seinen Platz bereits verdient. Der gr\u00f6\u00dfte Schusswinkel lag fr\u00fcher bei 0,55 Radiant. Bei diesem Wert flogen <strong>zwei von drei Sch\u00fcssen am Tor vorbei</strong> \u2014 ein Spiel also, das ein sechsj\u00e4hriges Kind aufgibt, ohne je zu sagen, warum. Heute sind es 0,30. Selbst zu spielen hatte das nicht gefunden; ein Durchlauf \u00fcber 667 Sch\u00fcsse fand es in unter einer Sekunde."
+        ],
+        img: ""
+      },
+      {
+        title: "Nichts, was nach Strafe aussieht",
+        paragraphs: [
+          "<em>starsFor()</em> kann keine Null zur\u00fcckgeben. F\u00fcnf Sch\u00fcsse, kein einziges Tor \u2014 und die Runde endet trotzdem mit Konfetti, einem winkenden Torh\u00fcter und einem Stern.",
+          "Die Regel reicht tiefer als die Anzeigetafel. Ein verschossener Ball springt zur\u00fcck ins Spiel, statt zu verschwinden. Der Klang einer Parade sind zwei weiche Sinust\u00f6ne, die am Ende <em>hinaufgehen</em>, nicht das absteigende Brummen, nach dem jeder Instinkt greift. Das Gesicht des Torh\u00fcters ist geteilter Code \u00fcber alle vier Arten hinweg, genau damit niemand sp\u00e4ter still und leise ein gemeineres zeichnet \u2014 diese Augen sind es, die ihn als Freund und nicht als Hindernis lesbar machen, und die ganze Regel vom Nicht-Scheitern st\u00fctzt sich darauf.",
+          "Der naheliegende Einwand lautet: Ein Spiel, das man nicht verlieren kann, ist kein Spiel. Der Einwand ist berechtigt, und die Antwort ist, dass die Spannung woandershin muss. Dieses Woanders ist der n\u00e4chste Abschnitt."
+        ],
+        img: "encore"
+      },
+      {
+        title: "Die Belohnung ist die Garderobe, nicht der Punktestand",
+        paragraphs: [
+          "Es gibt zweiunddrei\u00dfig Dinge freizuschalten: sechs Prinzessinnen, vier Ritter, zehn B\u00e4lle, vier Pl\u00e4tze, vier Maskottchen und vier Torh\u00fcter. Sterne sind <em>Schwellen</em> und niemals eine W\u00e4hrung \u2014 es wird nichts ausgegeben. \u201eSparen oder jetzt kaufen?\u201c ist mit elf eine wirklich interessante Entscheidung und mit sechs eine l\u00e4stige Pflicht.",
+          "Zwei Regeln darin werden von Tests gehalten und nicht von guten Vors\u00e4tzen. Mindestens eine Figur <em>jeder Art</em> ist vom allerersten Start an frei, denn jeden Ritter hinter Sternen zu verschlie\u00dfen sagt einem Kind, das einen Ritter will, dass das Spiel noch nicht f\u00fcr es gemacht ist. Und die Besetzung ist eine unterscheidende Union statt eines Sacks optionaler Felder: Eine Prinzessin hat Haare und ein Kleid, ein Ritter hat eine R\u00fcstung und einen Helmbusch, und es ist das Typsystem, das verhindert, dass eine Prinzessin je einen Helmbusch bekommt.",
+          "Der Helm des Ritters ist eine offene Haube, kein geschlossenes Visier. Das Visier w\u00e4re genauer und hier vollkommen falsch \u2014 ein leerer Schlitz hat keinen Ausdruck, und dieser ganze Entwurf lebt von Gesichtern."
+        ],
+        img: "garde-robe"
+      },
+      {
+        title: "Angek\u00fcndigt, weil Reagieren kein Reflex ist",
+        paragraphs: [
+          "Im zweiten Minispiel steht das Kind im Tor und der Drache schie\u00dft. Fair ist dieser Modus in diesem Alter nur deshalb, weil er die Wahrheit im Voraus sagt: Ein Zielring erscheint auf der Torlinie <strong>eine volle Sekunde vor dem Schuss</strong>, und der Ball braucht danach 0,85 Sekunden bis zur Ankunft.",
+          "Damit dieses Versprechen h\u00e4lt, ist der Flug analytisch statt simuliert. <em>ballPosAt()</em> l\u00f6st nach jener Abschussgeschwindigkeit auf, die den Ball genau an den angek\u00fcndigten Punkt zum genau angek\u00fcndigten Zeitpunkt bringt, und interpoliert. Der Schussmodus integriert einen echten Ball mit Luftwiderstand und Aufspr\u00fcngen; dieser darf das bewusst nicht, denn ein paar Zentimeter Abweichung hie\u00dfen, dass der Ring gelogen hat \u2014 und ein Spiel, das einem Sechsj\u00e4hrigen \u00fcber den Weg des Balls die Unwahrheit sagt, ist keine Schwierigkeitseinstellung, sondern ein Vertrauensbruch.",
+          "Auf einen bereits fliegenden Ball zu reagieren, ist ein Reflextest. Darum geht es hier nicht."
+        ],
+        img: "gardienne"
+      },
+      {
+        title: "Neun Kilobyte Bilder",
+        paragraphs: [
+          "Der vorige Artikel in diesem Blog war ein Audit, das siebenundzwanzig Megabyte Bildschirmfotos unter einem Pl\u00e4doyer f\u00fcr leichteren Code fand. Es scheint also nur fair, zu sagen, was ein 3D-Spiel kostet.",
+          "S\u00e4mtliche Bilder des Repositorys: <strong>f\u00fcnf Dateien, 9 388 Byte.</strong> Ein Favicon und vier PWA-Symbole \u2014 und diese Symbole zeichnet ein Skript ohne jede Abh\u00e4ngigkeit, das die PNGs von Hand aus <em>node:zlib</em> kodiert, weil das Zeichen aus f\u00fcnf flachen Formen besteht und ein Rasterer daf\u00fcr k\u00fcrzer ist als die Begr\u00fcndung, eine Bibliothek aufzunehmen. Modelldateien gibt es \u00fcberhaupt keine. Prinzessinnen, Ritter, Torh\u00fcter und Burg sind aus Kegeln, Kugeln und Kapseln zusammengesetzt; Gras, Netz und Ballmuster werden beim Start auf ein 2D-Canvas gemalt; jeder Klang ist mit Web Audio synthetisiert.",
+          "Ehrlicherweise macht nichts davon daraus eine leichte Seite. Der Build wiegt <strong>333 KB gzip-komprimiert</strong>, und 185 KB davon \u2014 <strong>f\u00fcnfundf\u00fcnfzig Prozent</strong> \u2014 sind three.js. Das ist schlicht der Handel: Eine 3D-Engine <em>ist</em> das Gewicht, alles andere ist Rundungsfehler. Was man daf\u00fcr bekommt, ist, dass dieses Gewicht ein einmaliger Festbetrag ist, vom Service Worker vorgehalten, einmal bezahlt und nie wieder \u2014 statt einer Asset-Pipeline, die mit jeder neuen Figur w\u00e4chst.",
+          "Eine Abh\u00e4ngigkeit wurde aus demselben Grund abgelehnt. Eine echte Physik-Engine w\u00e4ren rund ein Megabyte WebAssembly gewesen, um Kugel gegen Ebene zu rechnen, und ein Arcade-Ball, der verzeiht, ist f\u00fcr ein sechsj\u00e4hriges Kind ohnehin besser als ein genauer. Das zu Projektbeginn aufgeschriebene Budget lag bei 700 KB komprimiert. Herausgekommen ist weniger als die H\u00e4lfte."
+        ],
+        img: "tours"
+      },
+      {
+        title: "Was ein Praxistest ver\u00e4ndert hat",
+        paragraphs: [
+          "Ein Kind hat das ausgiebig gespielt und liebt es. Das Spiel selbst hielt stand: Die Abstimmung stimmte, die eine Geste war in etwa vier Sekunden begriffen, und niemand brauchte die W\u00f6rter.",
+          "Was zerbrach, war die Garderobe. Eine lange scrollende Spalte gab keinerlei Hinweis darauf, dass unterhalb des sichtbaren Rands \u00fcberhaupt noch etwas kam \u2014 die Sachen dort unten h\u00e4tten also genauso gut nie gebaut werden k\u00f6nnen. Prinzessinnen und Ritter in einem Raster lasen sich als ein einziger undifferenzierter Haufen. Beides ist repariert: ein Scroll-Container, der seinen unteren Rand ausblendet und einen Hinweispfeil einblendet, solange es noch mehr zu sehen gibt, und Reiter mit je einem Abschnitt.",
+          "Darin steckt ein Muster, das man behalten sollte. Der Teil, den ich in der CI verteidigt hatte, war der Teil, der ohnehin stimmte. Gescheitert ist der Teil, den zu testen mir nie eingefallen war, und er scheiterte aus einem Grund, den kein Test, den ich mir vorstellen kann, gefunden h\u00e4tte: <em>Ein sechsj\u00e4hriges Kind wei\u00df nicht, dass eine Liste weitergeht.</em>"
+        ],
+        img: ""
+      },
+      {
+        title: "Was nicht getestet ist",
+        paragraphs: [
+          "Der Schwierigkeits-Pr\u00fcfstand deckt den Schussmodus ab. Die anderen drei \u2014 Torfrau, Lauf, T\u00fcrme \u2014 haben Unit-Tests f\u00fcr ihre Regeln und \u00fcberhaupt keinen Durchlauf \u00fcber ihre Schwierigkeit. Wenn einer davon still und leise gemein ist, sagt mir das niemand.",
+          "Der Praxistest, das sind ein Kind, ein Tablet, eine Sprache. Das Spiel spricht sechs. F\u00fcr Englisch und Franz\u00f6sisch stehe ich gerade; das Deutsche, Spanische, Italienische und Portugiesische hat niemand gelesen, der die Sprache spricht. Genau diesen Vorbehalt tr\u00e4gt diese Website bereits \u00fcber ihr eigenes Deutsch, und ihn aufzuschreiben hei\u00dft nicht, ihn zu schlie\u00dfen.",
+          "144 Tests laufen durch, und kein einziger wiegt ein Byte \u2014 dieselbe L\u00fccke, die ich vor einer Woche \u00fcber ein anderes Repository beschrieben habe. Eine Regel, die nur in einem Dokument steht, hat eine Halbwertszeit. Die Fassung davon, die in eine Pipeline passt, habe ich noch nicht gefunden.",
+          "Das Spiel liegt auf <em>foot.bas.lu</em>. Es ist kostenlos, es gibt nichts zu installieren, au\u00dfer man will es, und es wei\u00df nicht, wer Sie sind."
+        ],
+        img: ""
+      }
+    ]
   },
   blogPost4: {
     title: "Siebenundzwanzig Megabyte meines eigenen Arguments",

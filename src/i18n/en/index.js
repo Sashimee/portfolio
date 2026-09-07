@@ -89,6 +89,8 @@ export default {
       archive: "Archive"
     },
     texts: {
+      royaumeFoot:
+        "A 3D football game for six-year-olds, played by princesses and knights: flick towards the goal, and it is the wardrobe rather than the score that you play for. React 19, TypeScript and three.js through react-three-fiber, installable as a PWA and fully playable offline. No account and nothing uploaded \u2014 progress lives in localStorage, six languages are bundled, and the whole thing is static files behind nginx. Almost nothing is a file: characters, castle and keepers are built from primitives, textures are painted on a 2D canvas at startup, sounds are synthesised with Web Audio, and every image in the repository comes to nine kilobytes. A difficulty harness in CI sweeps every plausible flick and fails the build if the game stops being kind.",
       aura:
         "One permanent link that says how you are: send mood.bas.lu/<you> once, change what it says whenever you like. The whole difficulty is the preview \u2014 a chat app shows a card it scraped days ago. The page is never cached, and the card's address is a hash of what it renders, so changing your mood produces a URL no platform has ever fetched and there is no stale copy to serve. Next.js, TypeScript and PostgreSQL, containerised on a self-hosted VPS. A visit is counted without a cookie and without storing an address: a hash over a random daily key that is destroyed after three days.",
       schoulbus:
@@ -156,6 +158,97 @@ export default {
     cta_eyebrow: "Next step",
     cta: "Let's build something lighter",
     top: "Back to top"
+  },
+  blogPost5: {
+    title: "The test that fails when the game gets mean",
+    title2:
+      "A 3D football game for six-year-olds, and the continuous integration that defends <strong>fun</strong>.",
+    sections: [
+      {
+        title: "A game with one player, aged six",
+        paragraphs: [
+          "<strong>Royaume Foot</strong> is a 3D football game that runs entirely in the browser. No account, no backend, nothing uploaded \u2014 static files behind a web server, at <em>foot.bas.lu</em>. It installs to a home screen and plays on a plane. Six princesses, four knights, a friendly dragon in goal, and a castle behind him.",
+          "It was built for a six-year-old, and that is not a footnote \u2014 it is the architecture. Every constraint in the repository comes out of one fact: the person holding the tablet cannot reliably read, cannot hold two controls at once, and will put the thing down for good if it ever makes them feel bad.",
+          "What follows is what that costs in code. Some of it is what you would guess. The part I did not expect is that <em>kind to a six-year-old</em> turned out to be a property I could assert in continuous integration \u2014 and that asserting it caught a real defect I had already shipped."
+        ],
+        img: ""
+      },
+      {
+        title: "One gesture, and the two axes underneath it",
+        paragraphs: [
+          "The whole game is one gesture. Press anywhere, drag towards the goal, let go. No button to hold, no timing window, nothing that has to be learned a second time in a different mini-game.",
+          "The non-obvious part is what the drag <em>means</em>. The obvious implementation reads the angle of the swipe, so direction and power come out of a single vector, the way a slingshot works. It plays badly at six, because it makes a hard shot an inaccurate shot: swipe with enthusiasm and the ball leaves sideways. That is exactly backwards for this player. So the axes are decoupled \u2014 <strong>horizontal drag steers, vertical drag powers</strong> \u2014 and a child who swipes as hard as they possibly can gets a fast shot that still goes where they pointed.",
+          "The other half is a nudge they never see. A shot predicted to cross the goal line within <strong>1.6 units outside a post</strong> is bent back inside. The comment in <em>constants.ts</em> calls it the single most important kindness in the game: it turns \u201cso close!\u201d into \u201cGOAL!\u201d without the child ever noticing a nudge. And the widest angle a flick can produce is deliberately narrower than the goal mouth, so even a full sideways swipe lands inside that rescue band. The ball is never lost sideways. The only thing standing between the child and a goal is the keeper."
+        ],
+        img: "geste"
+      },
+      {
+        title: "The test that fails when the game gets mean",
+        paragraphs: [
+          "The rules live in <em>src/game/</em>, and that folder never imports three.js. It started as tidiness and became the most useful decision in the project, because it means the entire simulation \u2014 physics, aim, keeper, scoring \u2014 runs in a test with no canvas, no GPU and no browser.",
+          "What sits on top of it is <em>balance.test.ts</em>, and it is not a unit test. It sweeps the whole space of flicks a child could plausibly produce \u2014 twenty-nine horizontal drags by twenty-three vertical ones, <strong>667 shots</strong> \u2014 plays every one of them to the goal line through the real physics and the real keeper, and then asserts things about the distribution. No shot is ever lost wide or over the bar. Every flick reaches the goal line, however feebly it was thrown. Between <strong>60 % and 95 %</strong> go in. The keeper still saves at least one in twenty, so he is worth aiming around. And a perfect five-shot round stays somewhere between a one-in-ten and a three-in-five event \u2014 a treat, not a formality.",
+          "None of those are correctness assertions. Nothing there is a bug in any ordinary sense. They are a statement about how the game should <em>feel</em>, written as numbers so that a build server can hold me to it. Retune a constant into a punishing game and CI goes red, and the thing to fix is the tuning rather than the test.",
+          "It has already earned the space. The widest flick angle used to be 0.55 radians. At that value <strong>two thirds of every shot flew outside the posts</strong> \u2014 which is a game a six-year-old abandons without ever explaining why. It is 0.30 now. No amount of playing it myself had found that; a sweep across 667 shots found it in under a second."
+        ],
+        img: ""
+      },
+      {
+        title: "Nothing that looks like a punishment",
+        paragraphs: [
+          "<em>starsFor()</em> cannot return zero. Five shots, no goals at all, and the round still ends on confetti, a keeper waving, and a star.",
+          "The rule reaches further down than the scoreboard. A missed shot bounces back into play instead of vanishing. The sound for a save is two soft sine tones that <em>rise</em> at the end, not the descending buzz that every instinct reaches for. The keeper's face is shared code across all four species precisely so that nobody can quietly draw a meaner one later \u2014 those eyes are what make him read as a friend rather than an obstacle, and the whole no-failure rule leans on them.",
+          "The obvious objection is that a game you cannot lose is not a game. It is a fair objection, and the answer is that the tension has to move somewhere else. That somewhere is the next section."
+        ],
+        img: "encore"
+      },
+      {
+        title: "The wardrobe is the reward, not the score",
+        paragraphs: [
+          "There are thirty-two things to unlock: six princesses, four knights, ten balls, four pitches, four mascots and four keepers. Stars are <em>thresholds</em> and never a currency \u2014 nothing is ever spent. \u201cSave up or buy now?\u201d is a genuinely interesting decision at eleven and a chore at six.",
+          "Two rules in there are held by tests rather than by good intentions. At least one character of <em>each kind</em> is free from the very first launch, because locking every knight behind stars tells a child who wants a knight that the game is not for them yet. And the roster is a discriminated union rather than one bag of optional fields: a princess has hair and a dress, a knight has armour and a plume, and the type system is what stops a princess ever being handed a plume.",
+          "The knight's helmet is an open cap rather than a closed visor. The visor is more accurate and completely wrong here \u2014 a blank slit has no expression, and this entire design runs on faces."
+        ],
+        img: "garde-robe"
+      },
+      {
+        title: "Telegraphed, because reacting is not reflex",
+        paragraphs: [
+          "In the second mini-game the child stands in goal and the dragon shoots. That mode is only fair at this age because it tells the truth in advance: a target ring appears on the goal line <strong>a full second before the kick</strong>, and the ball then takes 0.85 seconds to arrive.",
+          "For that promise to hold, the flight is analytic rather than simulated. <em>ballPosAt()</em> solves for the launch velocity that puts the ball exactly on the advertised spot at exactly the advertised moment, and interpolates. The shooting mode integrates a real ball with drag and bounce; this one deliberately cannot, because a few centimetres of drift would mean the ring had lied \u2014 and a game that lies to a six-year-old about where the ball is going is not a difficulty setting, it is a betrayal.",
+          "Reacting to a ball already in flight is a reflex test. This is not that."
+        ],
+        img: "gardienne"
+      },
+      {
+        title: "Nine kilobytes of images",
+        paragraphs: [
+          "The previous article on this blog was an audit that found twenty-seven megabytes of screenshots sitting underneath an argument for lighter code. So it seems fair to state what a 3D game costs.",
+          "Every image in the repository: <strong>five files, 9,388 bytes.</strong> A favicon and four PWA icons \u2014 and those icons are drawn by a script with no dependencies whatsoever, which encodes the PNGs by hand out of <em>node:zlib</em>, because the mark is five flat shapes and a rasteriser for that is shorter than the argument for adding a library. There are no model files at all. Princesses, knights, keepers and the castle are assembled from cones, spheres and capsules; grass, netting and ball skins are painted onto a 2D canvas at startup; every sound is synthesised with Web Audio.",
+          "The honest part is that none of this makes it a light page. The build is <strong>333 KB gzipped</strong>, and 185 KB of that \u2014 <strong>fifty-five per cent</strong> \u2014 is three.js. That is simply the deal: a 3D engine is the weight and everything else is rounding error. What it does buy is that the weight is a single fixed cost, precached by the service worker, paid once and never again \u2014 rather than a content pipeline that grows every time somebody adds a character.",
+          "One dependency was refused on the same grounds. A real physics engine would have been roughly a megabyte of WebAssembly to do sphere-against-plane, and an arcade ball that forgives is better for a six-year-old than an accurate one anyway. The budget written down at the start of the project was 700 KB gzipped. It came in at under half."
+        ],
+        img: "tours"
+      },
+      {
+        title: "What a playtest changed",
+        paragraphs: [
+          "A child has played this at length and loves it. The game itself held: the tuning was right, the single gesture was learned in about four seconds, and nobody needed the words.",
+          "What broke was the wardrobe. A long scrolling column gave no sign at all that anything existed below the fold, so the items down there may as well not have been built. Princesses and knights in one grid read as a single undifferentiated pile. Both are fixed now \u2014 a scroll container that fades its bottom edge and floats a nudge arrow while there is more to see, and tabs with a section each.",
+          "There is a pattern in that worth keeping. The part I had defended in CI was the part that was already right. The part that failed was the part I had never thought to test, and it failed for a reason no test I can imagine writing would have caught: <em>a six-year-old does not know that a list continues.</em>"
+        ],
+        img: ""
+      },
+      {
+        title: "What is not tested",
+        paragraphs: [
+          "The difficulty harness covers the shooting mode. The other three \u2014 keeper, runner, towers \u2014 have unit tests for their rules and no sweep over their difficulty at all. If one of them is quietly mean, nothing will tell me.",
+          "The playtest is one child, one tablet, one language. The game ships in six. English and French I can vouch for; the German, Spanish, Italian and Portuguese have not been read by anyone who speaks them. That is precisely the reserve this site already carries about its own German, and writing it down is not the same as closing it.",
+          "144 tests pass, and not one of them weighs a byte \u2014 the same gap I described a week ago about a different repository. A rule kept in a document has a half-life. I have not yet found the version of it that goes in a pipeline.",
+          "The game is at <em>foot.bas.lu</em>. It is free, there is nothing to install unless you want to, and it does not know who you are."
+        ],
+        img: ""
+      }
+    ]
   },
   blogPost4: {
     title: "Twenty-seven megabytes of my own argument",

@@ -90,6 +90,8 @@ export default {
       archive: "Archive"
     },
     texts: {
+      royaumeFoot:
+        "Un jeu de foot en 3D pour des enfants de six ans, jou\u00e9 par des princesses et des chevaliers\u202f: on glisse vers le but, et ce qu'on vient chercher est la garde-robe, pas le score. React 19, TypeScript et three.js via react-three-fiber, installable en PWA et enti\u00e8rement jouable hors ligne. Aucun compte, rien qui remonte\u202f: la progression tient dans localStorage, les six langues sont embarqu\u00e9es, et l'ensemble n'est que des fichiers statiques derri\u00e8re nginx. Presque rien n'est un fichier\u202f: personnages, ch\u00e2teau et gardiens sont b\u00e2tis en primitives, les textures sont peintes sur un canevas 2D au d\u00e9marrage, les sons sont synth\u00e9tis\u00e9s en Web Audio, et toutes les images du d\u00e9p\u00f4t r\u00e9unies font neuf kilo-octets. Un harnais de difficult\u00e9, en int\u00e9gration continue, balaie tous les gestes qu'un enfant peut produire et fait \u00e9chouer la construction si le jeu cesse d'\u00eatre gentil.",
       aura:
         "Un lien permanent qui dit comment vous allez\u202f: on envoie mood.bas.lu/<vous> une fois, on change ce qu'il raconte quand on veut. Toute la difficult\u00e9 est l'aper\u00e7u \u2014 une messagerie affiche une carte moissonn\u00e9e des jours plus t\u00f4t. La page n'est jamais mise en cache, et l'adresse de la carte est une empreinte de ce qu'elle dessine\u202f: changer d'humeur produit une URL qu'aucune plateforme n'a jamais demand\u00e9e, donc aucune copie p\u00e9rim\u00e9e \u00e0 servir. Next.js, TypeScript et PostgreSQL, conteneuris\u00e9s sur un VPS auto-h\u00e9berg\u00e9. Une visite se compte sans cookie et sans conserver d'adresse\u202f: une empreinte sur une cl\u00e9 al\u00e9atoire du jour, d\u00e9truite au bout de trois jours.",
       schoulbus:
@@ -159,6 +161,97 @@ export default {
     cta_eyebrow: "La suite",
     cta: "Construisons quelque chose de plus léger",
     top: "Haut de page"
+  },
+  blogPost5: {
+    title: "Le test qui \u00e9choue quand le jeu devient m\u00e9chant",
+    title2:
+      "Un jeu de foot en 3D pour des enfants de six ans, et l'int\u00e9gration continue qui d\u00e9fend le <strong>plaisir</strong>.",
+    sections: [
+      {
+        title: "Un jeu \u00e0 un seul joueur, six ans",
+        paragraphs: [
+          "<strong>Royaume Foot</strong> est un jeu de football en 3D qui tourne enti\u00e8rement dans le navigateur. Aucun compte, aucun serveur, rien qui remonte \u2014 des fichiers statiques derri\u00e8re un serveur web, sur <em>foot.bas.lu</em>. Il s'installe sur un \u00e9cran d'accueil et se joue en avion. Six princesses, quatre chevaliers, un gentil dragon dans les cages, et un ch\u00e2teau derri\u00e8re lui.",
+          "Il a \u00e9t\u00e9 fait pour un enfant de six ans, et ce n'est pas une note de bas de page\u202f: c'est l'architecture. Chaque contrainte du d\u00e9p\u00f4t d\u00e9coule d'un seul fait \u2014 la personne qui tient la tablette ne lit pas encore de fa\u00e7on fiable, ne peut pas tenir deux commandes \u00e0 la fois, et repose l'appareil pour de bon si le jeu lui fait de la peine.",
+          "Ce qui suit est ce que cela co\u00fbte en code. Une partie se devine. Ce que je n'avais pas pr\u00e9vu, c'est que <em>gentil avec un enfant de six ans</em> se soit r\u00e9v\u00e9l\u00e9 \u00eatre une propri\u00e9t\u00e9 que je pouvais affirmer en int\u00e9gration continue \u2014 et que l'affirmer ait attrap\u00e9 un vrai d\u00e9faut d\u00e9j\u00e0 publi\u00e9."
+        ],
+        img: ""
+      },
+      {
+        title: "Un seul geste, et les deux axes qui le portent",
+        paragraphs: [
+          "Tout le jeu tient dans un geste. On appuie n'importe o\u00f9, on glisse vers le but, on rel\u00e2che. Aucun bouton \u00e0 maintenir, aucune fen\u00eatre de synchronisation, rien \u00e0 r\u00e9apprendre dans un autre mini-jeu.",
+          "Ce qui n'est pas \u00e9vident, c'est ce que le glissement <em>veut dire</em>. L'impl\u00e9mentation \u00e9vidente lit l'angle du swipe\u202f: direction et puissance sortent d'un seul vecteur, comme un lance-pierre. Elle se joue tr\u00e8s mal \u00e0 six ans, parce qu'elle rend un tir puissant automatiquement impr\u00e9cis\u202f: on glisse avec enthousiasme, et le ballon part de c\u00f4t\u00e9. C'est exactement l'inverse de ce qu'il faut \u00e0 ce joueur-l\u00e0. Les axes sont donc d\u00e9coupl\u00e9s \u2014 <strong>l'horizontale vise, la verticale dose</strong> \u2014 et un enfant qui tire de toutes ses forces obtient un tir rapide qui va quand m\u00eame o\u00f9 il visait.",
+          "L'autre moiti\u00e9 est un coup de pouce qu'il ne voit jamais. Un tir dont on pr\u00e9voit qu'il franchira la ligne \u00e0 moins de <strong>1,6 unit\u00e9 au-del\u00e0 d'un poteau</strong> est ramen\u00e9 \u00e0 l'int\u00e9rieur. Le commentaire de <em>constants.ts</em> appelle cela la gentillesse la plus importante du jeu\u202f: elle transforme \u00ab\u202fsi pr\u00e8s\u202f!\u202f\u00bb en \u00ab\u202fBUT\u202f!\u202f\u00bb sans que l'enfant sente quoi que ce soit. Et l'angle le plus large qu'un geste puisse produire est d\u00e9lib\u00e9r\u00e9ment plus \u00e9troit que la largeur du but\u202f: m\u00eame un glissement franchement lat\u00e9ral atterrit dans cette bande de rattrapage. Le ballon n'est jamais perdu sur les c\u00f4t\u00e9s. Entre l'enfant et le but, il n'y a plus que le gardien."
+        ],
+        img: "geste"
+      },
+      {
+        title: "Le test qui \u00e9choue quand le jeu devient m\u00e9chant",
+        paragraphs: [
+          "Les r\u00e8gles vivent dans <em>src/game/</em>, et ce dossier n'importe jamais three.js. Cela a commenc\u00e9 comme un souci de rangement et c'est devenu la d\u00e9cision la plus utile du projet, parce qu'elle permet \u00e0 toute la simulation \u2014 physique, vis\u00e9e, gardien, comptage \u2014 de tourner dans un test sans canevas, sans carte graphique et sans navigateur.",
+          "Ce qui se pose dessus s'appelle <em>balance.test.ts</em>, et ce n'est pas un test unitaire. Il balaie tout l'espace des gestes qu'un enfant peut plausiblement produire \u2014 vingt-neuf glissements horizontaux par vingt-trois verticaux, <strong>667 tirs</strong> \u2014 joue chacun jusqu'\u00e0 la ligne de but avec la vraie physique et le vrai gardien, puis affirme des choses sur la distribution. Aucun tir n'est jamais perdu \u00e0 c\u00f4t\u00e9 ni au-dessus. Tous atteignent la ligne, aussi mollement qu'on les ait lanc\u00e9s. Entre <strong>60\u202f% et 95\u202f%</strong> rentrent. Le gardien en arr\u00eate tout de m\u00eame au moins un sur vingt, donc il reste digne d'\u00eatre contourn\u00e9. Et une manche parfaite de cinq tirs reste entre une chance sur dix et trois sur cinq \u2014 une friandise, pas une formalit\u00e9.",
+          "Rien de tout cela n'est une affirmation de correction. Il n'y a l\u00e0 aucun bogue au sens ordinaire. Ce sont des \u00e9nonc\u00e9s sur ce que le jeu doit <em>faire ressentir</em>, \u00e9crits en chiffres pour qu'un serveur d'int\u00e9gration puisse m'y tenir. Retouchez une constante de fa\u00e7on \u00e0 rendre le jeu punitif et la construction passe au rouge\u202f; ce qu'il faut corriger, c'est le r\u00e9glage, pas le test.",
+          "Il a d\u00e9j\u00e0 pay\u00e9 sa place. L'angle maximal du geste valait 0,55 radian. \u00c0 cette valeur, <strong>deux tirs sur trois partaient hors du cadre</strong> \u2014 c'est-\u00e0-dire un jeu qu'un enfant de six ans abandonne sans jamais expliquer pourquoi. Il vaut 0,30 aujourd'hui. Y jouer moi-m\u00eame n'avait rien trouv\u00e9\u202f; un balayage de 667 tirs l'a trouv\u00e9 en moins d'une seconde."
+        ],
+        img: ""
+      },
+      {
+        title: "Rien qui ressemble \u00e0 une punition",
+        paragraphs: [
+          "<em>starsFor()</em> ne peut pas rendre z\u00e9ro. Cinq tirs, aucun but, et la manche se termine quand m\u00eame sur des confettis, un gardien qui fait coucou, et une \u00e9toile.",
+          "La r\u00e8gle descend plus bas que le tableau d'affichage. Un tir manqu\u00e9 revient en jeu au lieu de dispara\u00eetre. Le son d'un arr\u00eat, ce sont deux sinuso\u00efdes douces qui <em>remontent</em> \u00e0 la fin, pas le bourdonnement descendant vers lequel tous les r\u00e9flexes vous portent. Le visage du gardien est du code partag\u00e9 entre les quatre esp\u00e8ces pr\u00e9cis\u00e9ment pour que personne n'aille en dessiner un plus dur plus tard \u2014 ce sont ces yeux-l\u00e0 qui le font lire comme un ami plut\u00f4t que comme un obstacle, et toute la r\u00e8gle du non-\u00e9chec s'appuie dessus.",
+          "L'objection \u00e9vidente, c'est qu'un jeu qu'on ne peut pas perdre n'est pas un jeu. Elle est juste, et la r\u00e9ponse est que la tension doit se d\u00e9placer ailleurs. Cet ailleurs est la section suivante."
+        ],
+        img: "encore"
+      },
+      {
+        title: "La r\u00e9compense est la garde-robe, pas le score",
+        paragraphs: [
+          "Il y a trente-deux choses \u00e0 d\u00e9bloquer\u202f: six princesses, quatre chevaliers, dix ballons, quatre terrains, quatre mascottes et quatre gardiens. Les \u00e9toiles sont des <em>paliers</em>, jamais une monnaie \u2014 rien ne se d\u00e9pense. \u00ab\u202fJ'\u00e9conomise ou j'ach\u00e8te maintenant\u202f?\u202f\u00bb est une vraie d\u00e9cision \u00e0 onze ans et une corv\u00e9e \u00e0 six.",
+          "Deux r\u00e8gles l\u00e0-dedans tiennent par des tests plut\u00f4t que par de bonnes intentions. Au moins un personnage de <em>chaque type</em> est libre d\u00e8s le premier lancement, parce que verrouiller tous les chevaliers derri\u00e8re des \u00e9toiles dit \u00e0 un enfant qui veut un chevalier que le jeu n'est pas encore pour lui. Et le casting est une union discrimin\u00e9e plut\u00f4t qu'un sac de champs facultatifs\u202f: une princesse a des cheveux et une robe, un chevalier une armure et un plumet, et c'est le syst\u00e8me de types qui emp\u00eache \u00e0 jamais qu'on donne un plumet \u00e0 une princesse.",
+          "Le heaume du chevalier est une coiffe ouverte, pas une visi\u00e8re ferm\u00e9e. La visi\u00e8re est plus juste et totalement fausse ici \u2014 une fente vide n'a aucune expression, et toute cette conception fonctionne aux visages."
+        ],
+        img: "garde-robe"
+      },
+      {
+        title: "Annonc\u00e9 d'avance, parce que r\u00e9agir n'est pas un r\u00e9flexe",
+        paragraphs: [
+          "Dans le deuxi\u00e8me mini-jeu, l'enfant est dans les cages et c'est le dragon qui tire. Ce mode n'est \u00e9quitable \u00e0 cet \u00e2ge que parce qu'il dit la v\u00e9rit\u00e9 \u00e0 l'avance\u202f: un anneau de vis\u00e9e appara\u00eet sur la ligne de but <strong>une seconde pleine avant la frappe</strong>, et le ballon met ensuite 0,85 seconde \u00e0 arriver.",
+          "Pour que cette promesse tienne, le vol est analytique et non simul\u00e9. <em>ballPosAt()</em> r\u00e9sout la vitesse initiale qui pose le ballon exactement \u00e0 l'endroit annonc\u00e9, exactement \u00e0 l'instant annonc\u00e9, et interpole. Le mode tir int\u00e8gre un vrai ballon avec tra\u00een\u00e9e et rebonds\u202f; celui-ci ne le peut d\u00e9lib\u00e9r\u00e9ment pas, parce que quelques centim\u00e8tres de d\u00e9rive voudraient dire que l'anneau a menti \u2014 et un jeu qui ment \u00e0 un enfant de six ans sur l'endroit o\u00f9 va le ballon n'est pas un r\u00e9glage de difficult\u00e9, c'est une trahison.",
+          "R\u00e9agir \u00e0 un ballon d\u00e9j\u00e0 en vol est un test de r\u00e9flexes. Ce n'est pas cela qu'on fait ici."
+        ],
+        img: "gardienne"
+      },
+      {
+        title: "Neuf kilo-octets d'images",
+        paragraphs: [
+          "L'article pr\u00e9c\u00e9dent de ce blog \u00e9tait un audit qui a trouv\u00e9 vingt-sept m\u00e9gaoctets de captures d'\u00e9cran pos\u00e9es sous un plaidoyer pour un code plus l\u00e9ger. Il para\u00eet donc honn\u00eate de dire ce que co\u00fbte un jeu 3D.",
+          "Toutes les images du d\u00e9p\u00f4t\u202f: <strong>cinq fichiers, 9 388 octets.</strong> Un favicon et quatre ic\u00f4nes de PWA \u2014 et ces ic\u00f4nes sont dessin\u00e9es par un script sans la moindre d\u00e9pendance, qui encode les PNG \u00e0 la main avec <em>node:zlib</em>, parce que la marque est cinq formes plates et qu'un rast\u00e9riseur pour cela est plus court que l'argument pour ajouter une biblioth\u00e8que. Il n'y a aucun fichier de mod\u00e8le. Princesses, chevaliers, gardiens et ch\u00e2teau sont assembl\u00e9s en c\u00f4nes, sph\u00e8res et capsules\u202f; l'herbe, le filet et les habillages de ballon sont peints sur un canevas 2D au d\u00e9marrage\u202f; chaque son est synth\u00e9tis\u00e9 en Web Audio.",
+          "La partie honn\u00eate, c'est que rien de tout cela n'en fait une page l\u00e9g\u00e8re. La construction p\u00e8se <strong>333 Ko compress\u00e9s</strong>, dont 185 Ko \u2014 <strong>cinquante-cinq pour cent</strong> \u2014 sont three.js. C'est le march\u00e9\u202f: un moteur 3D <em>est</em> le poids, tout le reste est une erreur d'arrondi. Ce que l'on gagne, c'est que ce poids est un co\u00fbt fixe unique, mis en cache par le service worker, pay\u00e9 une fois et jamais plus \u2014 au lieu d'une cha\u00eene d'assets qui grossit \u00e0 chaque personnage ajout\u00e9.",
+          "Une d\u00e9pendance a \u00e9t\u00e9 refus\u00e9e sur le m\u00eame terrain. Un vrai moteur physique, c'\u00e9tait environ un m\u00e9gaoctet de WebAssembly pour faire de la sph\u00e8re contre plan, et un ballon d'arcade qui pardonne vaut de toute fa\u00e7on mieux, \u00e0 six ans, qu'un ballon exact. Le budget \u00e9crit au d\u00e9but du projet \u00e9tait de 700 Ko compress\u00e9s. On est arriv\u00e9 sous la moiti\u00e9."
+        ],
+        img: "tours"
+      },
+      {
+        title: "Ce qu'un essai sur le terrain a chang\u00e9",
+        paragraphs: [
+          "Un enfant y a jou\u00e9 longuement et l'adore. Le jeu lui-m\u00eame a tenu\u202f: le r\u00e9glage \u00e9tait bon, le geste unique a \u00e9t\u00e9 compris en quatre secondes environ, et personne n'a eu besoin des mots.",
+          "Ce qui a cass\u00e9, c'est la garde-robe. Une longue colonne d\u00e9filante ne donnait aucun signe que quoi que ce soit existait sous la ligne de flottaison\u202f: autant dire que les objets du bas n'avaient pas \u00e9t\u00e9 faits. Princesses et chevaliers dans une m\u00eame grille se lisaient comme un seul tas indistinct. Les deux sont r\u00e9par\u00e9s \u2014 un conteneur de d\u00e9filement qui estompe son bord bas et fait flotter une fl\u00e8che tant qu'il reste \u00e0 voir, et des onglets avec une section chacun.",
+          "Il y a l\u00e0 un motif \u00e0 garder. La partie que j'avais d\u00e9fendue en int\u00e9gration continue \u00e9tait celle qui \u00e9tait d\u00e9j\u00e0 juste. Celle qui a \u00e9chou\u00e9 \u00e9tait celle que je n'avais jamais pens\u00e9 \u00e0 tester, et elle a \u00e9chou\u00e9 pour une raison qu'aucun test imaginable n'aurait attrap\u00e9e\u202f: <em>un enfant de six ans ne sait pas qu'une liste continue.</em>"
+        ],
+        img: ""
+      },
+      {
+        title: "Ce qui n'est pas test\u00e9",
+        paragraphs: [
+          "Le harnais de difficult\u00e9 couvre le mode tir. Les trois autres \u2014 gardienne, course, tours \u2014 ont des tests unitaires pour leurs r\u00e8gles et aucun balayage de leur difficult\u00e9. Si l'un d'eux est discr\u00e8tement m\u00e9chant, rien ne me le dira.",
+          "L'essai sur le terrain, c'est un enfant, une tablette, une langue. Le jeu en parle six. De l'anglais et du fran\u00e7ais je r\u00e9ponds\u202f; l'allemand, l'espagnol, l'italien et le portugais n'ont \u00e9t\u00e9 relus par personne dont c'est la langue. C'est exactement la r\u00e9serve que ce site porte d\u00e9j\u00e0 sur son propre allemand, et l'\u00e9crire ne revient pas \u00e0 la refermer.",
+          "144 tests passent, et pas un ne p\u00e8se un octet \u2014 le m\u00eame manque que celui d\u00e9crit il y a une semaine \u00e0 propos d'un autre d\u00e9p\u00f4t. Une r\u00e8gle gard\u00e9e dans un document a une demi-vie. Je n'ai pas encore trouv\u00e9 la version qui tient dans une cha\u00eene d'int\u00e9gration.",
+          "Le jeu est sur <em>foot.bas.lu</em>. Il est gratuit, il n'y a rien \u00e0 installer sauf si l'on en a envie, et il ne sait pas qui vous \u00eates."
+        ],
+        img: ""
+      }
+    ]
   },
   blogPost4: {
     title: "Vingt-sept m\u00e9gaoctets de mon propre argument",
