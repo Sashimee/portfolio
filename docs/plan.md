@@ -26,6 +26,8 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R16** | Les chiffres de l'article (27,4 Mo → 905 Ko, 42,6 Mo, 696 052 octets de polices) sont reconstitués depuis les **objets git**, pas depuis ce qu'un navigateur télécharge réellement : ni compression de transport, ni surcoût HTTP, ni cache. Ils décrivent le dépôt, pas la page. | Une mesure du poids transféré sur la production — un chargement à froid de l'accueil et d'un article, en octets reçus. |
 | **R17** | Premier article **sans aucune illustration de section** : les huit portent `img: ""`. Les trois articles précédents en ont tous au moins une, donc le rythme d'`article.vue` sans images n'a jamais été vu. Le dossier `article_four` est déclaré dans le registre mais n'existe pas sur le disque — inoffensif tant qu'aucune section ne le désigne. | L'article publié, lu sur téléphone en portrait, dans les deux thèmes — la vérification qui a refermé R14. |
 | **R18** | L'article nomme `public/projects_folder/` (15 Mo, dont 12 pour `x1`) comme travail non fait. Il le reste. Le site plaide donc pour une sobriété que son propre domaine contredit d'un ordre de grandeur, et c'est maintenant écrit publiquement. | Les images des démos `x1` et `liberty` converties, ou une décision écrite de ne pas toucher au HTML de gabarits archivés. |
+| **R19** | **L'allemand n'a été relu par personne dont c'est la langue.** Les 133 clés — dont quatre articles longs, à la syntaxe travaillée — ont été traduites ici. C'est exactement la réserve que l'article `blogPost2` pose lui-même à propos du luxembourgeois de Schoulbus, et elle vaut maintenant pour ce site. | Une relecture par un locuteur natif, au moins sur le chrome (`layout`, `home`, `contact`, `consent`, `footer`) et les titres d'articles. |
+| **R20** | La liste de langues n'a été vue que **montée dans jsdom**. Le rendu réel n'a pas été regardé : dépassement du panneau ouvert vers le haut dans le menu plein écran, contraste des états `:hover` et `.is-active` en thème sombre, et navigation au clavier seule (la liste ne piège pas le focus et ne le déplace pas sur la première option). | Ouvrir l'en-tête sur la production, bureau et téléphone, dans les deux thèmes, et parcourir la liste à la tabulation. |
 
 ---
 
@@ -393,6 +395,41 @@ et volontairement laissée en l'état : la correction touche deux documents hors
 de ce lot, elle est à décider, pas à glisser.
 
 Réserves ouvertes par ce lot : **R16**, **R17**, **R18**.
+
+---
+
+### Lot 14 — L'allemand, et le sélecteur de langue devenu liste · fait le 2026-09-08
+
+Troisième langue : `src/i18n/de/index.js`, 133 clés, la totalité du bundle anglais —
+chrome, projets, SEO, et les **quatre articles** dans leur intégralité. `de` est ajouté à
+`AVAILABLE_LOCALES` et à `src/i18n/index.js` ; rien d'autre n'a eu à bouger, parce que la
+parité était déjà tenue par un test qui itère sur cette liste plutôt que sur `['en', 'fr']`
+écrit en dur. Le test de parité est ainsi passé de deux à trois langues **sans être
+modifié** — c'est le principe 1 qui paie.
+
+Une seule ligne de `test/i18n.spec.js` a dû changer, et elle est instructive : « de-DE »
+y servait d'exemple de langue **non prise en charge**, rabattue sur l'anglais. L'assertion
+disait donc désormais le contraire de la vérité. Elle est passée du côté des sous-étiquettes
+reconnues (« de-DE », « de-AT », « de_LU »), et « es-ES » / « lb » prennent sa place comme
+exemples non pris en charge.
+
+**Le sélecteur segmenté est devenu une liste déroulante.** Avec deux langues, trois
+boutons côte à côte se lisaient d'un coup d'œil ; à trois, la barre déborde sur les petits
+écrans de bureau, et le code à deux lettres ne dit pas « Deutsch ». Le déclencheur porte la
+langue courante (`DE`), la liste porte les endonymes. Elle se ferme sur choix, sur `Échap`
+et sur un clic au dehors ; `aria-haspopup`, `role="menuitemradio"` et `aria-checked`
+portent l'état, et chaque option porte son propre `lang`. Les deux exemplaires — barre
+`gt-sm`, panneau `lt-md` — partagent un seul drapeau d'ouverture : ils ne coexistent
+jamais.
+
+Quatre tests neufs dans `test/pages.spec.js` couvrent l'ouverture, l'ordre et les libellés,
+le marquage de la langue courante, `Échap`, et le clic au dehors. Porte complète au vert :
+`lint`, `test` (48), `build`, `verify:api-url`.
+
+`CLAUDE.md` et `README.md` disaient « bilingue EN/FR » ; ils disent maintenant EN/FR/DE, et
+le principe 2 réclame trois traductions au lieu de deux.
+
+Réserves ouvertes par ce lot : **R19**, **R20**.
 
 ---
 
