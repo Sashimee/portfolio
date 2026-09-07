@@ -13,6 +13,15 @@ export const PROJECT_CATEGORIES = ['live', 'template', 'archive']
 
 export default [
   {
+    name: 'Royaume Foot',
+    category: 'live',
+    link: 'https://foot.bas.lu',
+    img: 'royaume-foot',
+    tags: ['React', 'three.js', 'PWA'],
+    target: 'external',
+    infoKey: 'royaumeFoot'
+  },
+  {
     name: 'Aura',
     category: 'live',
     link: 'https://mood.bas.lu',

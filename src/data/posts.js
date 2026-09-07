@@ -18,9 +18,20 @@ import couvertureSchoulbus from '@/assets/schoulbus-cover.webp'
 import couvertureGreenCoding from '@/assets/gc_info_fr.webp'
 import couvertureAura from '@/assets/aura-cover.webp'
 import couverturePortfolio from '@/assets/portfolio-cover.webp'
+import couvertureRoyaumeFoot from '@/assets/royaume-foot-cover.webp'
 
 /** Du plus récent au plus ancien : `Blog.vue` numérote dans cet ordre. */
 export default [
+  {
+    slug: 'royaume-foot-3d-for-children',
+    key: 'blogPost5',
+    date: '2026-09-08',
+    cover: couvertureRoyaumeFoot,
+    illustrations: 'article_five',
+    // Les captures du jeu sont prises sur un téléphone tenu à la verticale,
+    // la forme pour laquelle il est dessiné — même cas que blogPost2.
+    portrait: true
+  },
   {
     slug: 'green-coding-own-site',
     key: 'blogPost4',

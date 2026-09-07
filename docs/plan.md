@@ -26,8 +26,10 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R16** | Les chiffres de l'article (27,4 Mo → 905 Ko, 42,6 Mo, 696 052 octets de polices) sont reconstitués depuis les **objets git**, pas depuis ce qu'un navigateur télécharge réellement : ni compression de transport, ni surcoût HTTP, ni cache. Ils décrivent le dépôt, pas la page. | Une mesure du poids transféré sur la production — un chargement à froid de l'accueil et d'un article, en octets reçus. |
 | **R17** | Premier article **sans aucune illustration de section** : les huit portent `img: ""`. Les trois articles précédents en ont tous au moins une, donc le rythme d'`article.vue` sans images n'a jamais été vu. Le dossier `article_four` est déclaré dans le registre mais n'existe pas sur le disque — inoffensif tant qu'aucune section ne le désigne. | L'article publié, lu sur téléphone en portrait, dans les deux thèmes — la vérification qui a refermé R14. |
 | **R18** | L'article nomme `public/projects_folder/` (15 Mo, dont 12 pour `x1`) comme travail non fait. Il le reste. Le site plaide donc pour une sobriété que son propre domaine contredit d'un ordre de grandeur, et c'est maintenant écrit publiquement. | Les images des démos `x1` et `liberty` converties, ou une décision écrite de ne pas toucher au HTML de gabarits archivés. |
-| **R19** | **L'allemand n'a été relu par personne dont c'est la langue.** Les 133 clés — dont quatre articles longs, à la syntaxe travaillée — ont été traduites ici. C'est exactement la réserve que l'article `blogPost2` pose lui-même à propos du luxembourgeois de Schoulbus, et elle vaut maintenant pour ce site. | Une relecture par un locuteur natif, au moins sur le chrome (`layout`, `home`, `contact`, `consent`, `footer`) et les titres d'articles. |
+| **R19** | **L'allemand n'a été relu par personne dont c'est la langue.** Les 133 clés — dont quatre articles longs, à la syntaxe travaillée — ont été traduites ici. C'est exactement la réserve que l'article `blogPost2` pose lui-même à propos du luxembourgeois de Schoulbus, et elle vaut maintenant pour ce site. | Une relecture par un locuteur natif, au moins sur le chrome (`layout`, `home`, `contact`, `consent`, `footer`) et les titres d'articles. **Le lot 15 y a ajouté un cinquième article complet**, neuf sections de plus, écrites ici comme les autres. |
 | **R20** | La liste de langues n'a été vue que **montée dans jsdom**. Le rendu réel n'a pas été regardé : dépassement du panneau ouvert vers le haut dans le menu plein écran, contraste des états `:hover` et `.is-active` en thème sombre, et navigation au clavier seule (la liste ne piège pas le focus et ne le déplace pas sur la première option). | Ouvrir l'en-tête sur la production, bureau et téléphone, dans les deux thèmes, et parcourir la liste à la tabulation. |
+| **R21** | Les six captures de **Royaume Foot** (vignette du projet, couverture et cinq illustrations) ont été prises ici, sur un serveur de développement local, dans un Chromium **sans GPU** (`--use-gl=swiftshader`) et **sans les polices du système** — c'est DejaVu Sans et Noto Color Emoji qui rendent le texte et les émojis, pas la pile que le jeu obtient sur un vrai appareil. Le rendu 3D est le vrai ; la typographie du HUD ne l'est pas forcément. | Une capture de `foot.bas.lu` prise dans un navigateur ordinaire, sur un téléphone, et les images reprises depuis celle-là. |
+| **R22** | Les chiffres de l'article Royaume Foot — 333 Ko compressés dont 185 pour three.js, 9 388 octets d'images en cinq fichiers, 667 tirs balayés, 144 tests — ont été mesurés le **2026-09-08** sur le dépôt `royaume-foot`, en local, et **revérifiés au commit `694ca42`** après qu'une autre session y a livré sa phase 5 pendant la rédaction — inchangés. Ils décrivent ce dépôt-là ce jour-là, pas ce qu'un navigateur télécharge depuis `foot.bas.lu`. | Rien — mais le jour où l'article est remis en avant, les relire, comme R5. |
 
 ---
 
@@ -430,6 +432,44 @@ le marquage de la langue courante, `Échap`, et le clic au dehors. Porte complè
 le principe 2 réclame trois traductions au lieu de deux.
 
 Réserves ouvertes par ce lot : **R19**, **R20**.
+
+---
+
+### Lot 15 — Royaume Foot, la fiche et l'article · fait le 2026-09-08
+
+**Le projet.** Une entrée en tête de `src/data/projects.js` (`live`, `foot.bas.lu`,
+`React` / `three.js` / `PWA`), sa clé `projects.texts.royaumeFoot` dans les trois langues, et
+`public/screenshots/royaume-foot.webp` (1600 × 1000, 40 Ko). Insérer en tête déplace la une :
+l'accueil met désormais en avant **Royaume Foot, Aura, Schoulbus**, et `Baskewitsch.lu` sort
+des trois premiers. C'était l'intention. `test/pages.spec.js` passe de 12 à 13 projets attendus,
+comme le veut la recette.
+
+**L'article.** `blogPost5`, « Le test qui échoue quand le jeu devient méchant », neuf sections
+dans les trois langues, en tête de `src/data/posts.js` — donc `/blog/royaume-foot-3d-for-children`,
+la numérotation, le temps de lecture (9 min) et les balises SEO en découlent sans qu'on touche à
+`routes.js`. Cinq sections sont illustrées ; le registre porte `portrait: true`, les captures du
+jeu étant verticales, comme celles de `blogPost2`.
+
+Le fil de l'article est le **harnais de difficulté** du jeu : un test qui ne vérifie aucune
+correction, mais affirme que le jeu reste *gentil* — 667 tirs balayés, entre 60 % et 95 % de
+buts, aucun ballon perdu sur les côtés — et qui a attrapé un angle de tir maximal envoyant
+deux tirs sur trois hors du cadre. Il se referme sur ce que le jeu ne teste pas, dans la même
+convention de réserves que ce fichier.
+
+**Contrepoint assumé au lot 13.** L'article précédent auditait vingt-sept mégaoctets de captures ;
+celui-ci publie un jeu 3D qui pèse 333 Ko compressés, dont 185 de three.js. Les deux chiffres sont
+dans le texte, y compris la part gênante : un moteur 3D *est* le poids, et neuf kilo-octets
+d'images ne rachètent pas ça. C'est écrit comme un marché, pas comme une victoire.
+
+**Vérifié au navigateur, pas seulement en test.** Le SPA construit a été servi et parcouru dans
+un Chromium piloté : `/projects` et l'accueil en bureau, l'article en 390 × 844 **thème clair et
+thème sombre**, aucune erreur de console sur aucune des sept pages, et les cinq illustrations
+chargées avec leurs vrais pixels (740 × 1601, plafonnées à 480 px de haut). C'est la vérification
+que R17 réclamait pour le rythme d'`article.vue`, faite ici avec images plutôt que sans.
+
+Porte complète au vert : `lint`, `test` (48), `build`, `verify:api-url`.
+
+Réserves ouvertes par ce lot : **R21**, **R22**. **R19** s'alourdit d'un article.
 
 ---
 
