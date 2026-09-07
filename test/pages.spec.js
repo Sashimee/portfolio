@@ -5,6 +5,9 @@ import routes from '@/router/routes'
 
 import MainLayout from '@/layouts/MainLayout.vue'
 import ProjectsPage from '@/pages/Projects.vue'
+import TheHeader from '@/components/TheHeader.vue'
+import { setLocale } from '@/boot/i18n'
+import { AVAILABLE_LOCALES } from '@/utils/preferences'
 
 // Pages are QPages: they only render inside the layout, which is also what the
 // router does in the real app.
@@ -116,5 +119,69 @@ describe('projects page', () => {
 
     await page.setData({ categorySelect: 'archive' })
     expect(page.vm.projectsList.map(p => p.name)).toEqual(['Old Portfolio'])
+  })
+})
+
+describe('language selector', () => {
+  it('opens a list of every available locale and closes on choice', async () => {
+    const wrapper = await mountAt('/')
+    const header = wrapper.findComponent(TheHeader)
+
+    expect(header.find('.lang__list').exists()).toBe(false)
+
+    await header.find('.lang__trigger').trigger('click')
+    const items = header.findAll('.lang__item')
+    expect(items.map(item => item.attributes('lang'))).toEqual([...AVAILABLE_LOCALES])
+    expect(items.map(item => item.text())).toEqual(['EN English', 'FR Français', 'DE Deutsch'])
+
+    const german = items.find(item => item.attributes('lang') === 'de')
+    await german.trigger('click')
+
+    expect(header.vm.locale).toBe('de')
+    expect(header.find('.lang__list').exists()).toBe(false)
+    expect(header.find('.lang__trigger').text()).toContain('DE')
+    expect(document.documentElement.getAttribute('lang')).toBe('de')
+
+    setLocale('en')
+  })
+
+  it('marks the current locale and only that one', async () => {
+    const wrapper = await mountAt('/')
+    const header = wrapper.findComponent(TheHeader)
+
+    await header.find('.lang__trigger').trigger('click')
+    const checked = header
+      .findAll('.lang__item')
+      .filter(item => item.attributes('aria-checked') === 'true')
+
+    expect(checked).toHaveLength(1)
+    expect(checked[0].attributes('lang')).toBe('en')
+  })
+
+  it('closes on Escape without closing anything else', async () => {
+    const wrapper = await mountAt('/')
+    const header = wrapper.findComponent(TheHeader)
+
+    await header.find('.lang__trigger').trigger('click')
+    expect(header.find('.lang__list').exists()).toBe(true)
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await flushPromises()
+
+    expect(header.find('.lang__list').exists()).toBe(false)
+    expect(header.vm.menu).toBe(false)
+  })
+
+  it('closes when the click lands outside it', async () => {
+    const wrapper = await mountAt('/')
+    const header = wrapper.findComponent(TheHeader)
+
+    await header.find('.lang__trigger').trigger('click')
+    expect(header.find('.lang__list').exists()).toBe(true)
+
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await flushPromises()
+
+    expect(header.find('.lang__list').exists()).toBe(false)
   })
 })

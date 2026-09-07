@@ -20,21 +20,35 @@
       </nav>
 
       <div class="site-header__actions">
-        <!-- Deux langues seulement : un sélecteur segmenté est plus direct
-             qu'un menu déroulant, et se lit d'un coup d'œil. -->
-        <div class="segmented gt-sm" role="group" :aria-label="$t('layout.language')">
+        <div class="lang gt-sm">
           <button
-            v-for="option in localeOptions"
-            :key="option.value"
             type="button"
-            class="segmented__item"
-            :class="{ 'is-active': option.value === locale }"
-            :aria-pressed="option.value === locale"
-            :title="option.label"
-            @click="pickLocale(option.value)"
+            class="lang__trigger"
+            aria-haspopup="true"
+            :aria-expanded="localeMenu"
+            :aria-label="$t('layout.language')"
+            @click="localeMenu = !localeMenu"
           >
-            {{ option.value.toUpperCase() }}
+            {{ locale.toUpperCase() }}
+            <span class="lang__caret" aria-hidden="true"></span>
           </button>
+
+          <ul v-if="localeMenu" class="lang__list" role="menu">
+            <li v-for="option in localeOptions" :key="option.value" role="none">
+              <button
+                type="button"
+                class="lang__item"
+                role="menuitemradio"
+                :aria-checked="option.value === locale"
+                :class="{ 'is-active': option.value === locale }"
+                :lang="option.value"
+                @click="pickLocale(option.value)"
+              >
+                <span class="lang__code">{{ option.value.toUpperCase() }}</span>
+                {{ option.label }}
+              </button>
+            </li>
+          </ul>
         </div>
 
         <button
@@ -90,18 +104,35 @@
       </nav>
 
       <div class="container menu-overlay__foot">
-        <div class="segmented" role="group" :aria-label="$t('layout.language')">
+        <div class="lang">
           <button
-            v-for="option in localeOptions"
-            :key="option.value"
             type="button"
-            class="segmented__item"
-            :class="{ 'is-active': option.value === locale }"
-            :aria-pressed="option.value === locale"
-            @click="pickLocale(option.value)"
+            class="lang__trigger"
+            aria-haspopup="true"
+            :aria-expanded="localeMenu"
+            :aria-label="$t('layout.language')"
+            @click="localeMenu = !localeMenu"
           >
-            {{ option.value.toUpperCase() }}
+            {{ locale.toUpperCase() }}
+            <span class="lang__caret" aria-hidden="true"></span>
           </button>
+
+          <ul v-if="localeMenu" class="lang__list lang__list--up" role="menu">
+            <li v-for="option in localeOptions" :key="option.value" role="none">
+              <button
+                type="button"
+                class="lang__item"
+                role="menuitemradio"
+                :aria-checked="option.value === locale"
+                :class="{ 'is-active': option.value === locale }"
+                :lang="option.value"
+                @click="pickLocale(option.value)"
+              >
+                <span class="lang__code">{{ option.value.toUpperCase() }}</span>
+                {{ option.label }}
+              </button>
+            </li>
+          </ul>
         </div>
 
         <div class="cluster">
@@ -129,13 +160,14 @@ import { currentLocale, setLocale } from '@/boot/i18n'
 import { AVAILABLE_LOCALES, setStoredDark } from '@/utils/preferences'
 import socialLinks from '@/data/links'
 
-const LOCALE_LABELS = { en: 'English', fr: 'Français' }
+const LOCALE_LABELS = { en: 'English', fr: 'Français', de: 'Deutsch' }
 
 export default {
   name: 'TheHeader',
   data() {
     return {
       menu: false,
+      localeMenu: false,
       scrolled: false,
       darkMode: Dark.isActive,
       locale: currentLocale(),
@@ -154,6 +186,7 @@ export default {
     // Le panneau couvre l'écran : la page ne doit pas défiler derrière lui.
     menu(open) {
       document.body.classList.toggle('is-locked', open)
+      this.localeMenu = false
     }
   },
   methods: {
@@ -163,6 +196,7 @@ export default {
     },
     pickLocale(value) {
       this.locale = setLocale(value)
+      this.localeMenu = false
       this.menu = false
     },
     toggleDark() {
@@ -175,17 +209,26 @@ export default {
       this.scrolled = window.scrollY > 8
     },
     onKeydown(event) {
-      if (event.key === 'Escape') this.menu = false
+      if (event.key !== 'Escape') return
+      if (this.localeMenu) this.localeMenu = false
+      else this.menu = false
+    },
+    onDocumentClick(event) {
+      if (this.localeMenu && event.target.closest('.lang') === null) {
+        this.localeMenu = false
+      }
     }
   },
   mounted() {
     window.addEventListener('scroll', this.onScroll, { passive: true })
     window.addEventListener('keydown', this.onKeydown)
+    document.addEventListener('click', this.onDocumentClick)
     this.onScroll()
   },
   beforeUnmount() {
     window.removeEventListener('scroll', this.onScroll)
     window.removeEventListener('keydown', this.onKeydown)
+    document.removeEventListener('click', this.onDocumentClick)
     document.body.classList.remove('is-locked')
   }
 }
@@ -301,28 +344,90 @@ body.is-locked
     background: var(--acc)
     border-color: transparent
 
-.segmented
+.lang
+  position: relative
+
+.lang__trigger
   display: inline-flex
-  padding: 2px
+  align-items: center
+  gap: 0.4rem
+  padding: 0.4rem 0.7rem
   border: var(--hairline) solid var(--border)
   border-radius: var(--radius-pill)
-
-.segmented__item
-  padding: 0.3rem 0.7rem
-  border: 0
-  border-radius: var(--radius-pill)
   background: transparent
-  color: var(--ink-3)
+  color: var(--ink-2)
   font-family: var(--font-mono)
   font-size: 0.7rem
   font-weight: 500
   letter-spacing: 0.08em
   cursor: pointer
+  transition: color 0.3s, border-color 0.3s
+
+  &:hover,
+  &[aria-expanded='true']
+    color: var(--ink)
+    border-color: var(--border-strong)
+
+.lang__caret
+  width: 0
+  height: 0
+  border-left: 3.5px solid transparent
+  border-right: 3.5px solid transparent
+  border-top: 4px solid currentColor
+
+.lang__list
+  position: absolute
+  right: 0
+  top: calc(100% + 0.4rem)
+  z-index: 10
+  min-width: 10rem
+  margin: 0
+  padding: 0.25rem
+  list-style: none
+  border: var(--hairline) solid var(--border)
+  border-radius: var(--radius)
+  background: var(--surface)
+  box-shadow: var(--shadow-md)
+
+  &--up
+    top: auto
+    bottom: calc(100% + 0.4rem)
+
+.lang__item
+  display: flex
+  align-items: baseline
+  gap: 0.6rem
+  width: 100%
+  padding: 0.45rem 0.6rem
+  border: 0
+  border-radius: var(--radius-xs)
+  background: transparent
+  color: var(--ink-2)
+  font-family: var(--font-body)
+  font-size: 0.85rem
+  text-align: left
+  cursor: pointer
   transition: color 0.3s, background 0.3s
 
+  &:hover
+    color: var(--ink)
+    background: var(--surface-2)
+
   &.is-active
-    color: var(--acc-ink)
-    background: var(--acc)
+    color: var(--ink)
+
+    .lang__code
+      color: var(--acc-ink)
+      background: var(--acc)
+
+.lang__code
+  padding: 0.1rem 0.3rem
+  border-radius: var(--radius-xs)
+  font-family: var(--font-mono)
+  font-size: 0.62rem
+  font-weight: 500
+  letter-spacing: 0.08em
+  color: var(--ink-3)
 
 .menu-toggle
   display: inline-flex

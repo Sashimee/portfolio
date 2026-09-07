@@ -1,7 +1,7 @@
 # Alex Baskewitsch (portfolio)
 
 Personal portfolio — [alex.baskewitsch.lu](https://alex.baskewitsch.lu).
-Quasar 2 (Vue 3 + Vite), bilingual EN/FR, deployed as a static SPA behind NGINX.
+Quasar 2 (Vue 3 + Vite), trilingual EN/FR/DE, deployed as a static SPA behind NGINX.
 
 ## Requirements
 
@@ -36,7 +36,7 @@ docker run --rm -p 8080:80 portfolio
 | `src/data/stack.js` | tech stack shown on the home marquee and the about page |
 | `src/data/posts.js` | blog index: one entry per article, newest first |
 | `src/data/links.js` | external profiles used by the header, footer and contact page |
-| `src/i18n/{en,fr}/` | translations; both bundles must expose the same keys (enforced by a test) |
+| `src/i18n/{en,fr,de}/` | translations; every bundle must expose the same keys (enforced by a test) |
 | `src/utils/` | analytics (GA4, consent-gated), meta (per-page SEO tags), preferences, validation, reading time |
 | `public/projects_folder/` | static demo projects embedded by `/projects/:shortcode` |
 | `public/screenshots/` | project thumbnails, plus one folder of illustrations per article |

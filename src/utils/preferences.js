@@ -3,7 +3,7 @@ import { LocalStorage } from 'quasar'
 export const DARK_KEY = 'pref_dark'
 export const LOCALE_KEY = 'pref_locale'
 
-export const AVAILABLE_LOCALES = ['en', 'fr']
+export const AVAILABLE_LOCALES = ['en', 'fr', 'de']
 export const DEFAULT_LOCALE = 'en'
 
 /**

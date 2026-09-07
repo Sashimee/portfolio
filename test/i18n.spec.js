@@ -47,10 +47,14 @@ describe('resolveLocale', () => {
     expect(resolveLocale('fr-FR')).toBe('fr')
     expect(resolveLocale('en-US')).toBe('en')
     expect(resolveLocale('fr_BE')).toBe('fr')
+    expect(resolveLocale('de-DE')).toBe('de')
+    expect(resolveLocale('de-AT')).toBe('de')
+    expect(resolveLocale('de_LU')).toBe('de')
   })
 
   it('falls back to English for anything unsupported', () => {
-    expect(resolveLocale('de-DE')).toBe('en')
+    expect(resolveLocale('es-ES')).toBe('en')
+    expect(resolveLocale('lb')).toBe('en')
     expect(resolveLocale('')).toBe('en')
     expect(resolveLocale(undefined)).toBe('en')
     expect(resolveLocale(null)).toBe('en')
