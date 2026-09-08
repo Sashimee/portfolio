@@ -124,6 +124,39 @@ describe('POST /api/mail', () => {
     expect((await poster(app, CHARGE)).status).toBe(502)
   })
 
+  it('rend 502 quand le vérificateur signale une panne, sans la prendre pour un mauvais jeton', async () => {
+    // Le vérificateur ne lève pas sur une panne réseau : il rend
+    // `verification_indisponible`. Sans tri, une panne de Google se lisait comme
+    // une vague de visiteurs refusés, en 403.
+    const { app } = monter({
+      verifierJeton: vi.fn(async () => ({ accepte: false, motif: 'verification_indisponible' }))
+    })
+
+    const reponse = await poster(app, CHARGE)
+
+    expect(reponse.status).toBe(502)
+    await expect(reponse.json()).resolves.toEqual({ error: 'verification_indisponible' })
+  })
+
+  it('arrête un corps démesuré avant de le tamponner', async () => {
+    const { app, verifierJeton } = monter()
+
+    const reponse = await poster(app, { ...CHARGE, message: 'a'.repeat(200_000) })
+
+    expect(reponse.status).toBe(413)
+    expect(verifierJeton).not.toHaveBeenCalled()
+  })
+
+  it('refuse un jeton démesuré avant de le porter chez Google', async () => {
+    const { app, verifierJeton } = monter()
+
+    const reponse = await poster(app, { ...CHARGE, token: 'a'.repeat(5000) })
+
+    expect(reponse.status).toBe(400)
+    await expect(reponse.json()).resolves.toEqual({ error: 'jeton_trop_long' })
+    expect(verifierJeton).not.toHaveBeenCalled()
+  })
+
   it("rend 502 quand SMTP refuse, sans masquer l'échec", async () => {
     const { app } = monter({
       envoyerCourriel: vi.fn(async () => {

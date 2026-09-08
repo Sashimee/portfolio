@@ -40,7 +40,11 @@ export function creerExpediteur({ smtp, courriel, transport }) {
     await transporteur.sendMail({
       from: courriel.from,
       to: courriel.to,
-      replyTo: `${assainirSujet(name)} <${email}>`,
+      // Adresse structurée, jamais concaténée : `assainirSujet` n'ôte que les
+      // fins de ligne, donc un nom contenant `<`, `>` ou une virgule glissait
+      // une seconde adresse dans la liste `Reply-To` — et se plaçait devant la
+      // vraie. Nodemailer cite le nom lui-même.
+      replyTo: { name: assainirSujet(name), address: email },
       subject: `${courriel.sujet} ${assainirSujet(name)}`,
       text: [`Nom : ${name}`, `Courriel : ${email}`, '', message].join('\n')
     })

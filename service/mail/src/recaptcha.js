@@ -70,12 +70,22 @@ export function creerVerificateur({
       return { accepte: false, motif: `jeton_refuse:${proprietes.invalidReason || 'sans_detail'}` }
     }
 
-    if (proprietes.action && proprietes.action !== action) {
-      return { accepte: false, motif: `action_inattendue:${proprietes.action}` }
+    // Refus par défaut : une action absente ou vide n'est pas une action qui
+    // correspond. La laisser passer rouvrait exactement la porte que cette
+    // comparaison existe pour fermer.
+    if (proprietes.action !== action) {
+      return { accepte: false, motif: `action_inattendue:${proprietes.action || 'absente'}` }
     }
 
+    // Même refus par défaut sur le score : un `riskAnalysis` vide ou un score
+    // qui n'est pas un nombre laissait passer, et le journal affichait « n/c »
+    // sans que rien ne signale que la seule vraie barrière n'avait pas servi.
     const score = resultat.riskAnalysis?.score
-    if (typeof score === 'number' && score < seuil) {
+    if (typeof score !== 'number' || Number.isNaN(score)) {
+      return { accepte: false, motif: 'score_absent' }
+    }
+
+    if (score < seuil) {
       return { accepte: false, motif: 'score_insuffisant', score }
     }
 

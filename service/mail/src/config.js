@@ -26,7 +26,15 @@ const REQUISES = [
   'MAIL_TO'
 ]
 
+/**
+ * `Number('')` vaut 0, et 0 est fini : une variable présente mais vide gagnait
+ * donc contre son défaut. Un seuil de score à 0 accepte tout, une fenêtre de
+ * débit à 0 purge le compteur à chaque appel, un port à 0 tire au sort. Le
+ * `.env.example` livre ces clés en commentaire — les décommenter sans valeur
+ * suffisait à désarmer le service en silence.
+ */
 function nombre(valeur, defaut) {
+  if (valeur === undefined || String(valeur).trim() === '') return defaut
   const n = Number(valeur)
   return Number.isFinite(n) ? n : defaut
 }
