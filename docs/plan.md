@@ -34,9 +34,14 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R26** | **Les images des démos ont été ré-encodées sans être regardées.** 39 fichiers passés en WebP à qualité 80, largeur plafonnée à 1920 px, 6,49 Mo → 1,32 Mo. Ce sont des gabarits archivés ; personne n'a rouvert `/projects/x1` ni `/projects/liberty` pour juger du résultat. | Les cinq démos ouvertes dans l'iframe, et les images comparées à ce que montrent les captures de `public/screenshots/`. |
 | **R27** | **Le formulaire n'a pas été renvoyé depuis le changement de reCAPTCHA.** Le greffon `vue-recaptcha-v3` a été remplacé par un appel direct à `recaptcha-v3`, chargé au montage des deux pages qui postent. La clé, le mode Enterprise et l'action `submit` sont inchangés, et les 65 tests passent — mais aucun jeton réel n'a été évalué depuis. | Un envoi depuis le formulaire publié, et `score` dans le journal du service, comme au lot 12. |
 | **R28** | **Rien de l'audit d'accessibilité n'a été vu à l'écran.** Les ratios de contraste sont calculés sur les jetons, les trous clavier sont lus dans la source. `--ink-3`, `--border-strong`, la bascule de consentement et le retour du focus ont changé sans qu'un navigateur ni un lecteur d'écran ne le confirme. | Ouvrir `/about`, `/projects`, `/contact` et le dialogue légal dans les deux thèmes, parcourir l'en-tête à la tabulation seule, et écouter la liste des langues sous NVDA ou VoiceOver. Referme aussi R20. |
-| **R29** | **Les six illustrations de `article_one` restent servies en 1200 px pour un cadre de 180 px**, `challenges.webp` en tête avec 255 442 octets — 0,237 octet par pixel contre 0,075 de médiane dans le dépôt. Ce n'est pas un oubli : aucun encodeur (`cwebp`, ImageMagick, PIL) n'était disponible dans la session qui l'a constaté. | Ré-encoder les six à 480 px de large, qualité 80, et reprendre la mesure. La visionneuse n'ouvre que `post.cover`, jamais ces images : rien n'a besoin de leur pleine résolution. |
-| **R30** | **Les démos tirent encore 328 714 octets de Font Awesome pour sept glyphes** (`x1` : cinq ; `pet4u` et `cupcake` : un chacun), plus Bootstrap et jQuery. C'est mot pour mot ce que le principe 4 interdit, sur un domaine que le site sert lui-même. Le traceur mort de `liberty` est parti au lot 17, la police reste. | Les sept tracés dans `src/data/icons.js` puis en SVG en ligne dans les trois gabarits — ou l'aveu écrit que les démos sont des archives figées, et qu'on n'y touche plus. À décider, pas à ignorer. |
-| **R31** | **L'i18n reste chargé en entier dans l'entrée du bundle** : 166 006 octets bruts, 63 642 compressés, les trois langues sur toutes les pages. `src/i18n/index.js` les importe statiquement. | Un `import()` par langue déclenché par `setLocale()`, et la mesure refaite. Écarté au lot 17 : le premier rendu a besoin du paquet, et le rendre asynchrone touche l'amorçage — un sujet à part, pas une retouche. |
+| **R29** | **Les six illustrations de `article_one` restent servies en 1200 px pour un cadre de 180 px**, `challenges.webp` en tête avec 255 442 octets — 0,237 octet par pixel contre 0,075 de médiane dans le dépôt. Ce n'est pas un oubli : aucun encodeur (`cwebp`, ImageMagick, PIL) n'était disponible dans la session qui l'a constaté. | Ré-encoder les six à 480 px de large, qualité 80, et reprendre la mesure. La visionneuse n'ouvre que `post.cover`, jamais ces images : rien n'a besoin de leur pleine résolution. **Corrigé au lot 18 : `article_one` en porte cinq, pas six, et `article_three` a le même défaut — neuf fichiers, 595 934 octets.** |
+| **R30** | **Les démos tirent encore 328 714 octets de Font Awesome pour sept glyphes** (`x1` : cinq ; `pet4u` et `cupcake` : un chacun), plus Bootstrap et jQuery. C'est mot pour mot ce que le principe 4 interdit, sur un domaine que le site sert lui-même. Le traceur mort de `liberty` est parti au lot 17, la police reste. **Corrigé au lot 18 : ces octets viennent de six CDN tiers, pas de notre domaine — c'est donc autant un problème de consentement que de poids. `popper.js`, chargé par deux démos et utilisé par aucune, est parti.** | Les sept tracés dans `src/data/icons.js` puis en SVG en ligne dans les trois gabarits — ou l'aveu écrit que les démos sont des archives figées, et qu'on n'y touche plus. À décider, pas à ignorer. |
+| **R31** | **L'i18n reste chargé en entier dans l'entrée du bundle** : 166 006 octets bruts, 63 642 compressés, les trois langues sur toutes les pages. `src/i18n/index.js` les importe statiquement. | Un `import()` par langue déclenché par `setLocale()`, et la mesure refaite. Écarté au lot 17 : le premier rendu a besoin du paquet, et le rendre asynchrone touche l'amorçage — un sujet à part, pas une retouche. **Corrigé au lot 18 : le paquet n'est pas dans le fragment d'entrée mais importé statiquement par `MainLayout` — même effet, autre point de correction.** |
+| **R32** | **Rien de ce lot n'a été vu dans un navigateur.** La mesure d'audience réparée, les données structurées, les nouvelles descriptions de fiches et le pied de page rendu visible sur deux pages sont tenus par 86 tests et par un `build` — pas par un affichage. En particulier, personne n'a constaté qu'un `page_view` arrive enfin dans GA4. | Accepter les cookies sur la production et voir une page vue dans GA4 en temps réel. Puis `curl -A "facebookexternalhit/1.1"` sur un article et le JSON-LD passé au *Rich Results Test* de Google. Recoupe R24. |
+| **R33** | **Les trois couvertures dupliquées n'ont pas été fusionnées.** `aura-cover.webp`, `schoulbus-cover.webp` et `portfolio-cover.webp` sont **identiques au md5** à trois vignettes de `public/screenshots/`, et `dist/spa` livre les deux copies : 130 738 octets, dans deux seaux de cache différents. La fusion n'est pas qu'une édition de `posts.js` : les couvertures sont des imports ESM (donc hachées et `immutable`), les vignettes des chemins publics (`max-age=86400`). Les unifier fait perdre le cache perpétuel à l'une ou complique le pipeline de pré-rendu pour porter les deux formes. | Un arbitrage : ou bien tout passe en `/screenshots/` (le pipeline se simplifie, `coverBaseName` et le chargeur d'images du script disparaissent, les couvertures perdent `immutable`), ou bien on assume les deux copies et on l'écrit. **À décider, pas à ignorer.** |
+| **R34** | **Le multilinguisme reste invisible pour un moissonneur.** La langue est choisie côté client et n'entre jamais dans l'adresse : les trois langues partagent une URL, aucun `hreflang`, et les quinze instantanés portent `<html lang=en>` avec du texte anglais. Les paquets FR et DE — 335 clés chacun, quatre articles longs, ce que `test/i18n.spec.js` protège — ne rapportent aucune visite de recherche. | Des adresses localisées (`/fr/…`, `/de/…`) ou un paramètre, plus `hreflang` réciproque et un instantané par langue. C'est un chantier de routage, pas une retouche : écarté de ce lot pour cette raison. |
+| **R35** | **Toute adresse inconnue répond 200 avec le titre et la canonique de l'accueil.** `try_files … /index.html` retombe sur l'instantané de l'accueil ; la 404 n'existe que côté client, après hydratation, quand le moissonneur a déjà son 200. Chaque faute de frappe devient donc un duplicata de l'accueil, canonique vers `/`. | Un instantané `404.html` avec `noindex`, servi en **statut 404** pour ce qui ne correspond à aucune route pré-rendue. À vérifier avec soin : les quinze routes sont pré-rendues, mais une route future qui ne le serait pas tomberait alors en 404 dure. |
+| **R36** | **Purge du CSS Quasar, brotli, ré-encodage des images et sous-ensemble de Lexend : mesurés, non faits.** 82 109 octets de règles `.q-*` pour des composants que le site ne rend jamais (10 787 octets compressés sur **chaque** page, en tête de rendu) ; 32 017 octets (13 %) que brotli prendrait ; ~490 Ko sur neuf illustrations d'articles et ~288 Ko sur treize vignettes ; ~80 Ko sur trois fontes portant 845 glyphes pour 121 points de code utilisés. | Les deux derniers attendent un encodeur : `cwebp`, ImageMagick, PIL et fontTools sont tous absents de l'environnement — c'est le blocage que R29 nomme déjà. La purge CSS et brotli attendent autre chose : un **regard**. Purger sans qu'aucun navigateur ne relise le site rouvrirait R28 en plus grand, et une directive brotli qu'un module absent refuse **empêche NGINX de démarrer**. |
 
 ---
 
@@ -666,5 +671,91 @@ les rend relatives. Les deux sont tenus par `test/pre-rendu.spec.js`.
 
 *Réserves ouvertes par ce lot : R28, R29, R30, R31. **Refermée : R23** — la configuration a
 tourné, et c'est en tournant qu'elle a montré ces deux-là.*
+
+---
+
+### Lot 18 — Quatre audits, et les quatre pannes silencieuses qu'ils ont trouvées · fait le 2026-09-08
+
+Quatre relectures en parallèle : qualité du front, poids réel, i18n/SEO/pré-rendu, et
+sécurité du service de courriel. Elles ont surtout trouvé des choses qui **ne signalaient
+rien** — le fil commun du lot.
+
+**La mesure d'audience n'a jamais démarré.** `hasTrackingConsent()` comparait le cookie à
+`true`, alors que Quasar ne déballe le JSON d'un cookie que pour un objet ou un tableau :
+un booléen revient en **chaîne**. Chaque visiteur ayant cliqué « Tout accepter » était donc
+silencieusement désinscrit — aucune page vue, aucun `contact_message_sent`, aucun
+`newsletter_signup` depuis la mise en place. Le dialogue légal affichait en prime la
+bascule à *off* après rechargement, en contradiction avec le cookie qu'il venait d'écrire.
+Second défaut sur le même chemin : `clearAnalytics()` posait `ga-disable-…` et **rien ne le
+levait**, si bien que se réinscrire après s'être désinscrit laissait la mesure morte pour
+la session. `test/analytics.spec.js` couvre les deux — retirer l'un ou l'autre correctif
+fait tomber quatre cas sur six.
+
+**Le service de courriel s'ouvrait par défaut, trois fois.** `typeof score === 'number' &&
+score < seuil` laissait passer un `riskAnalysis` vide ou un score en chaîne : la seule vraie
+barrière du formulaire devenait un `no-op`, et le journal écrivait « score n/c » sans que
+rien ne le distingue d'un envoi normal. `proprietes.action && …` sautait la comparaison
+d'action — celle que `CLAUDE.md` désigne comme étant à notre charge — dès que Google ne
+rapportait pas d'action. Et `Number('')` valant `0`, une variable **présente mais vide**
+gagnait contre son défaut : `RECAPTCHA_SCORE_MIN=` mettait le seuil à zéro,
+`RATE_LIMIT_WINDOW_MS=` faisait purger le compteur à chaque appel (cinquante requêtes de
+suite autorisées, mesuré). Le `.env.example` livre ces clés en commentaire : les
+décommenter sans valeur suffisait. Les trois refusent maintenant par défaut.
+
+**Un nom pouvait glisser une seconde adresse dans `Reply-To`.** `assainirSujet` n'ôte que
+les fins de ligne ; `<`, `>` et la virgule passaient dans une adresse **concaténée**. Un nom
+comme `Bob <attaquant@evil.example>, Autre` plaçait l'adresse de l'attaquant **en tête** de
+la liste : répondre au message répondait à lui. Vérifié en compilant un message avec le
+nodemailer installé. L'adresse est désormais structurée (`{ name, address }`), et
+nodemailer cite le nom. Ajouté au passage : un plafond de corps (64 Ko) et une borne sur le
+jeton — `c.req.json()` tamponnait sans limite avant toute validation.
+
+**Une panne de Google se lisait comme une vague de visiteurs suspects.** Le vérificateur ne
+lève pas sur une erreur réseau, donc la branche 502 de `app.js` était hors d'atteinte et
+chaque visiteur recevait un 403 `jeton_refuse`. Le motif est trié maintenant.
+
+**Le pied de page était invisible et cliquable sur deux pages.** `use-reveal` pose
+`html.has-reveal` et ne la retire jamais ; `projects/Show.vue` et `Error404.vue` n'ouvraient
+aucun observer. Le pied de page vit hors du `router-view` : il restait donc à opacité nulle,
+tout en gardant sa place dans l'ordre de tabulation — un arrêt de focus invisible.
+
+**SEO.** Les cinq articles se déclaraient `og:type: website`, sans date, alors que
+`posts.js` porte le jour de parution : ils sont des `article`, avec
+`article:published_time`. Les cinq fiches de projet partageaient une description
+**identique au caractère près** — Google écarte un doublon et fabrique son propre extrait :
+chacune porte maintenant un résumé tiré de `projects.texts.*`, donc traduit et distinct.
+Le plan du site datait cinq URL sur quinze ; l'accueil et l'index du blog, qui changent
+avec le dernier article, portent une date **réelle** (les autres n'en ont aucune, et une
+date inventée vaut moins qu'un silence). Et le site ne portait **aucune** donnée
+structurée : `WebSite` sur l'accueil, `BlogPosting` sur les articles, avec les profils de
+`links.js` en `sameAs`. Le bloc JSON-LD est écrit dans les instantanés, échappé contre une
+sortie de balise, retiré au montage comme les autres `data-prerendered`, et le script de
+pré-rendu reste idempotent — vérifié en le rejouant trois fois.
+
+**Poids, ce qui ne demandait pas d'outil.** `popper.js` était chargé par `x1` et `pet4u` et
+utilisé par **aucun** des deux (seuls `collapse` et `carousel` servent, qui ne s'en servent
+pas) : 15 368 octets. `favicon.ico`, 27 652 octets, ne tombait sous aucun `location` et
+héritait du `no-cache` par défaut — revalidé à chaque navigation. `text/javascript` ajouté
+à `gzip_types` : NGINX migre `.js` vers ce type, et le jour où l'image de base franchit le
+pas, tout le JavaScript cesserait d'être compressé sans erreur. `fetchpriority="high"` sur
+la couverture d'article et la première carte de l'accueil, qui portaient `loading="lazy"`
+alors qu'elles sont l'élément LCP. Et `src/boot/gtag.js` — API Vue 2, dépendance absente du
+`package.json`, jamais dans la liste d'amorçage — supprimé.
+
+Porte complète au vert : `lint`, `test` (86, contre 76), `build`, `verify:api-url`, et la
+suite du service (58, contre 48).
+
+**Trois corrections aux réserves existantes.** R29 sous-comptait : `article_one` porte
+**cinq** illustrations et non six (`conclusion.webp` est parti au lot 17), et
+`article_three` a le même défaut sans être cité — neuf fichiers en tout, 595 934 octets
+pour un cadre de 180 px. R30 comptait juste (sept glyphes) mais **attribuait à tort** :
+ces octets viennent de six CDN tiers, pas de notre domaine — ce qui en fait un problème de
+consentement (l'IP et l'agent du visiteur partent chez six tiers depuis une iframe que nous
+servons, avant toute réponse au bandeau) autant que de poids. R31 se reproduit à l'octet
+près, mais le paquet i18n n'est **pas** dans le fragment d'entrée : il est importé
+statiquement par `MainLayout`, ce qui revient au même à l'usage mais déplace la correction.
+
+*Réserves ouvertes par ce lot : R32, R33, R34, R35, R36. Aucune refermée : tout ce que ce
+lot a corrigé se vérifie par des tests, rien par un navigateur.*
 
 ---
