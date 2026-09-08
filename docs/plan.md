@@ -29,7 +29,6 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R20** | La liste de langues n'a été vue que **montée dans jsdom**. Le rendu réel n'a pas été regardé : dépassement du panneau ouvert vers le haut dans le menu plein écran, contraste des états `:hover` et `.is-active` en thème sombre, et navigation au clavier seule (la liste ne piège pas le focus et ne le déplace pas sur la première option). | Ouvrir l'en-tête sur la production, bureau et téléphone, dans les deux thèmes, et parcourir la liste à la tabulation. |
 | **R21** | Les six captures de **Royaume Foot** (vignette du projet, couverture et cinq illustrations) ont été prises ici, sur un serveur de développement local, dans un Chromium **sans GPU** (`--use-gl=swiftshader`) et **sans les polices du système** — c'est DejaVu Sans et Noto Color Emoji qui rendent le texte et les émojis, pas la pile que le jeu obtient sur un vrai appareil. Le rendu 3D est le vrai ; la typographie du HUD ne l'est pas forcément. | Une capture de `foot.bas.lu` prise dans un navigateur ordinaire, sur un téléphone, et les images reprises depuis celle-là. |
 | **R22** | Les chiffres de l'article Royaume Foot — 333 Ko compressés dont 185 pour three.js, 9 388 octets d'images en cinq fichiers, 667 tirs balayés, 144 tests — ont été mesurés le **2026-09-08** sur le dépôt `royaume-foot`, en local, et **revérifiés au commit `694ca42`** après qu'une autre session y a livré sa phase 5 pendant la rédaction — inchangés. Ils décrivent ce dépôt-là ce jour-là, pas ce qu'un navigateur télécharge depuis `foot.bas.lu`. | Rien — mais le jour où l'article est remis en avant, les relire, comme R5. |
-| **R23** | **La configuration NGINX n'a jamais été exécutée.** `nginx/default.conf` remplace l'`echo` du Dockerfile ; ni `docker` ni `nginx` n'étaient disponibles dans la session, donc pas même un `nginx -t`. Une directive fautive empêcherait le conteneur de démarrer — panne franche, mais panne. | `docker build` puis `docker run`, et trois `curl` : `content-encoding: gzip` sur le CSS, `cache-control: public, max-age=31536000, immutable` sur `/assets/`, `no-cache` sur `/`. |
 | **R24** | **Aucun moissonneur n'a lu un instantané.** Les quinze fichiers sont écrits et vérifiés sur le disque, et un test refuse qu'une balise `data-prerendered` survive au montage. Mais personne n'a collé un lien de la production dans une messagerie depuis le déploiement — c'est-à-dire la seule chose que ce lot cherchait à réparer. | Un `curl -A "facebookexternalhit/1.1"` sur un article de la production qui rend son propre `og:title`, puis le lien collé dans WhatsApp et la carte regardée. C'est la vérification que R11 demande déjà pour Aura. |
 | **R25** | **Les trente-huit icônes n'ont été vues rendues par personne.** Elles sont passées d'une police à des tracés SVG ; `test/icons.spec.js` vérifie la forme du tracé et la présence d'un `viewBox`, pas le dessin. Un tracé pris dans la mauvaise bibliothèque rendrait une icône *fausse* — ce qu'aucun test ne distingue d'une icône juste. C'est R2 sous une autre forme, et R2 n'avait jamais été refermée. | Ouvrir `/about` et l'accueil, thème clair et thème sombre, et regarder les vingt-huit icônes de la pile plus celles du pied de page. Referme R2 du même coup. |
 | **R26** | **Les images des démos ont été ré-encodées sans être regardées.** 39 fichiers passés en WebP à qualité 80, largeur plafonnée à 1920 px, 6,49 Mo → 1,32 Mo. Ce sont des gabarits archivés ; personne n'a rouvert `/projects/x1` ni `/projects/liberty` pour juger du résultat. | Les cinq démos ouvertes dans l'iframe, et les images comparées à ce que montrent les captures de `public/screenshots/`. |
@@ -47,6 +46,7 @@ Barrées avec une entrée datée et un élément de preuve, comme le veut la con
 
 | | Refermée le | Preuve |
 | --- | --- | --- |
+| ~~**R23**~~ | 2026-09-08 | **La configuration a tourné.** Déployée sur la production et vérifiée au `curl` : `content-encoding: gzip` sur la feuille de style, `cache-control: public, max-age=31536000, immutable` sur `/assets/`, `no-cache` sur le document, `301` sur `/blog/article` vers `/blog/green-coding-fintech`, et `x-robots-tag: noindex` sur une démo. `server: nginx/1.31.5` — le conteneur démarre, ce qui était l'inquiétude. **Et c'est en tournant qu'elle a montré deux défauts qu'aucune lecture n'aurait donnés** : `try_files $uri $uri/` faisait répondre 301 aux quatorze routes pré-rendues sur l'adresse même que leur canonique publie, et `$scheme` valant `http` derrière le proxy TLS, toute redirection partait en clair. Corrigés dans la foulée, et tenus par `test/pre-rendu.spec.js`. |
 | ~~**R18**~~ | 2026-09-08 | **Les démos sont converties.** `public/projects_folder/` passe de 15,1 Mo à 1,6 Mo. Deux mesures, pas une : 39 images référencées converties en WebP (6 494 200 → 1 323 438 octets), et **quatre images que rien ne référençait** — dont trois JPEG de 2 à 3,8 Mo dans `x1` — supprimées (8 642 574 octets). L'audit a été fait en cherchant chaque nom de fichier dans les sources HTML/CSS/JS ; aucune adresse n'est construite dynamiquement, ce qui a été vérifié avant de supprimer quoi que ce soit. Les 26 références d'image des démos résolvent toutes après coup. Le site ne plaide donc plus pour une sobriété que son propre domaine contredisait. |
 | ~~**R14**~~ | 2026-08-28 | **Vu sur téléphone.** Alex confirme que la fiche Aura et l'article tiennent en portrait et en thème sombre. Les illustrations plafonnées à 180 px — des captures d'interface, plus denses que les images des articles précédents — passent donc à cette taille. |
 | ~~**R1**~~ | 2026-08-28 | **Le message est arrivé.** Alex confirme avoir reçu le courriel de test de bout en bout, envoyé depuis le formulaire publié. La réserve ouverte depuis le lot 1 — « aucun envoi n'a encore été reçu depuis la production » — est donc close, chaîne complète comprise : formulaire → `api.baskewitsch.lu` → reCAPTCHA Enterprise → `mailrelay` → OVH → boîte. À surveiller malgré tout : `bas.lu` n'a toujours ni DKIM ni DMARC, donc la délivrabilité peut se dégrader sans prévenir. |
@@ -648,6 +648,23 @@ octets ne mesuraient rien. Retiré.
 
 Porte complète au vert : `lint`, `test` (74), `build`, `verify:api-url`.
 
-*Réserves ouvertes par ce lot : R28, R29, R30, R31.*
+**Ce que le déploiement a montré, et qu'aucune session n'avait pu voir.** R23 disait que
+`nginx/default.conf` n'avait jamais été exécuté. Il l'est : compression, `immutable` sur
+`/assets/`, `no-cache` sur le document, le 301 de `/blog/article` et le `X-Robots-Tag` des
+démos sont vérifiés sur la production. Mais deux défauts ne pouvaient apparaître que là.
+
+`try_files $uri $uri/` faisait répondre **301** à chacune des quatorze routes pré-rendues,
+vers l'adresse à barre finale — alors que le plan du site et la balise canonique publient
+l'adresse **sans** barre. Un moissonneur suivant le plan du site recevait donc une
+redirection sur l'adresse même que la page déclare canonique, vers une page qui en désigne
+une autre. C'est-à-dire que le travail du lot 16 ne parvenait pas à sa cible. `$uri/index.html`
+passe avant `$uri/` : l'instantané est servi en 200, à l'adresse annoncée.
+
+Et derrière un proxy qui termine TLS, `$scheme` vaut `http` : toutes les redirections
+générées par NGINX partaient en clair avant de revenir en HTTPS. `absolute_redirect off`
+les rend relatives. Les deux sont tenus par `test/pre-rendu.spec.js`.
+
+*Réserves ouvertes par ce lot : R28, R29, R30, R31. **Refermée : R23** — la configuration a
+tourné, et c'est en tournant qu'elle a montré ces deux-là.*
 
 ---

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
@@ -179,5 +180,34 @@ describe("le démarrage retire les balises de l'instantané", () => {
     await flushPromises()
 
     expect(document.querySelectorAll('[data-prerendered]')).toHaveLength(0)
+  })
+})
+
+// Les instantanés ne valent que s'ils sont servis à l'adresse qu'ils déclarent.
+// Sur `try_files $uri $uri/`, NGINX répondait 301 vers l'adresse à barre finale
+// — alors que le plan du site et la balise canonique publient l'adresse sans
+// barre. Les quatorze routes pré-rendues redirigeaient donc sur leur propre
+// adresse canonique, vers une page qui en désignait une autre.
+describe('la configuration NGINX sert les instantanés', () => {
+  const conf = readFileSync(`${process.cwd()}/nginx/default.conf`, 'utf8')
+
+  it('essaie $uri/index.html avant $uri/', () => {
+    // La location fourre-tout, pas celle de /assets/ qui a son propre try_files.
+    const fourreTout = conf.match(/location\s+\/\s*\{([^}]*)\}/)
+    expect(fourreTout, 'no catch-all `location /` block').not.toBeNull()
+
+    const tryFiles = fourreTout[1].match(/try_files\s+\$uri\s+([^;]+);/)
+    expect(tryFiles, 'no `try_files $uri ...` in the catch-all location').not.toBeNull()
+    const ordre = tryFiles[1].trim().split(/\s+/)
+    expect(ordre).toContain('$uri/index.html')
+    if (ordre.includes('$uri/')) {
+      expect(ordre.indexOf('$uri/index.html')).toBeLessThan(ordre.indexOf('$uri/'))
+    }
+  })
+
+  // $scheme vaut `http` derrière un proxy qui termine TLS : une redirection
+  // absolue renvoie sur un saut en clair avant de revenir en HTTPS.
+  it('émet des redirections relatives', () => {
+    expect(conf).toMatch(/absolute_redirect\s+off\s*;/)
   })
 })
