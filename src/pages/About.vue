@@ -29,7 +29,7 @@
               <strong>{{ link.label }}</strong>
               <span class="muted">{{ link.handle }}</span>
             </span>
-            <q-icon class="about__link-arrow" name="north_east" size="14px" />
+            <q-icon class="about__link-arrow" :name="icons.northEast" size="14px" />
           </a>
 
           <q-btn
@@ -37,7 +37,7 @@
             no-caps
             unelevated
             to="/contact"
-            icon-right="arrow_forward"
+            :icon-right="icons.arrowForward"
             :label="$t('buttons.contact')"
           />
         </aside>
@@ -95,7 +95,7 @@
             no-caps
             unelevated
             to="/projects"
-            icon-right="arrow_forward"
+            :icon-right="icons.arrowForward"
             :label="$t('buttons.projects')"
           />
           <q-btn class="app-btn app-btn--quiet" no-caps flat to="/blog" :label="$t('buttons.blog')" />
@@ -110,6 +110,7 @@ import { usePageMeta } from '@/composables/use-page-meta'
 import { useReveal } from '@/composables/use-reveal'
 import socialLinks from '@/data/links'
 import stack, { STACK_GROUPS } from '@/data/stack'
+import icons from '@/data/icons'
 
 export default {
   name: 'PageAbout',
@@ -122,7 +123,7 @@ export default {
     useReveal()
   },
   data() {
-    return { socialLinks }
+    return { icons, socialLinks }
   },
   computed: {
     groups() {
@@ -194,7 +195,7 @@ export default {
 
   .muted
     font-family: var(--font-mono)
-    font-size: 0.72rem
+    font-size: var(--step--2)
 
   .about__link-arrow
     margin-left: auto

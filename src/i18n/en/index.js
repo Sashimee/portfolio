@@ -131,6 +131,7 @@ export default {
     please_type: "Please type something",
     missing_email: "Email is missing",
     name_long: "Name too long",
+    message_long: "Message too long",
     invalid_email: "Invalid email",
     sent: "Message sent",
     not_sent: "The message could not be sent, please try again later"

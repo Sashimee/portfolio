@@ -17,7 +17,7 @@
 
           <span class="idx__name">
             {{ project.name }}
-            <q-icon v-if="!isInternal(project)" name="north_east" size="0.5em" />
+            <q-icon v-if="!isInternal(project)" :name="icons.northEast" size="0.5em" />
           </span>
 
           <span class="idx__meta">
@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import icons from '@/data/icons'
+
 export default {
   name: 'ProjectIndex',
   props: {
@@ -53,6 +55,7 @@ export default {
   },
   data() {
     return {
+      icons,
       active: null,
       // Position visée par l'aperçu, puis position réellement rendue : l'écart
       // entre les deux donne le retard élastique du suivi.
@@ -115,9 +118,12 @@ export default {
   },
   mounted() {
     // L'aperçu est masqué en CSS au pointeur grossier : inutile d'y consacrer
-    // une boucle d'animation et un écouteur de mouvement.
+    // une boucle d'animation et un écouteur de mouvement. Le suivi du curseur
+    // est posé en `style.transform`, donc hors d'atteinte de la règle globale
+    // `prefers-reduced-motion` : il faut lire la préférence ici aussi.
     this.coarse = window.matchMedia?.('(pointer: coarse), (max-width: 900px)').matches === true
-    if (this.coarse || typeof window.requestAnimationFrame !== 'function') return
+    const sobre = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true
+    if (this.coarse || sobre || typeof window.requestAnimationFrame !== 'function') return
 
     window.addEventListener('pointermove', this.onPointerMove, { passive: true })
     window.addEventListener('scroll', this.onScroll, { passive: true })
@@ -139,7 +145,6 @@ export default {
   padding: 0.15rem 0.55rem
   border: var(--hairline) solid currentColor
   border-radius: var(--radius-pill)
-  opacity: 0.75
 
 .idx__name .q-icon
   margin-left: 0.35em

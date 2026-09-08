@@ -27,7 +27,7 @@
               no-caps
               unelevated
               to="/projects"
-              icon-right="arrow_forward"
+              :icon-right="icons.arrowForward"
               :label="$t('buttons.projects')"
             />
             <q-btn class="app-btn app-btn--ghost" no-caps unelevated to="/contact" :label="$t('buttons.contact')" />
@@ -57,7 +57,7 @@
           no-caps
           unelevated
           to="/projects"
-          icon-right="arrow_forward"
+          :icon-right="icons.arrowForward"
           :label="$t('home.featured_all')"
         />
       </header>
@@ -107,6 +107,7 @@ import { usePageMeta } from '@/composables/use-page-meta'
 import { useReveal } from '@/composables/use-reveal'
 import projectsData from '@/data/projects'
 import stack from '@/data/stack'
+import icons from '@/data/icons'
 
 export default {
   name: 'PageIndex',
@@ -120,7 +121,7 @@ export default {
     useReveal()
   },
   data() {
-    return { stack }
+    return { icons, stack }
   },
   computed: {
     /** Les trois sites en ligne : la vitrine la plus parlante en un écran. */
@@ -226,7 +227,7 @@ export default {
     align-items: center
     gap: 0.5rem
     font-family: var(--font-mono)
-    font-size: 0.72rem
+    font-size: var(--step--2)
     font-weight: 500
     letter-spacing: 0.14em
     text-transform: uppercase

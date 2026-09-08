@@ -51,7 +51,7 @@ export default {
     paragraph_1:
       "Ich bin überzeugt, dass Technologie eine wesentliche Rolle im Kampf gegen den Klimawandel spielen kann. Deshalb habe ich mich auf '<strong>Green Coding</strong>' spezialisiert, einen Ansatz, der den CO2-Fußabdruck der IT-Branche verringern soll.",
     paragraph_2:
-      "Jahrgang '86, hat mich die Informatik immer fasziniert. Als Autodidakt habe ich einen großen Teil meines Wissens in eigenen Projekten erworben und dabei ganz verschiedene Bereiche der IT erkundet.",
+      "Jahrgang '86, war ich schon immer von der Informatik fasziniert. Als Autodidakt habe ich einen großen Teil meines Wissens in eigenen Projekten erworben und dabei ganz verschiedene Bereiche der IT erkundet.",
     stack_eyebrow: "Stack",
     list_label: "Die Werkzeuge, mit denen ich arbeite",
     groups: {
@@ -77,7 +77,7 @@ export default {
   },
   projects: {
     eyebrow: "Arbeiten",
-    lead: "Laufende Seiten, Vorlagen und archivierte Experimente.",
+    lead: "Live-Seiten, Vorlagen und archivierte Experimente.",
     back: "Zurück zu den Projekten",
     preview: "Demo",
     open: "In neuem Tab öffnen",
@@ -131,6 +131,7 @@ export default {
     please_type: "Bitte schreiben Sie etwas",
     missing_email: "Die E-Mail-Adresse fehlt",
     name_long: "Der Name ist zu lang",
+    message_long: "Die Nachricht ist zu lang",
     invalid_email: "Ungültige E-Mail-Adresse",
     sent: "Nachricht gesendet",
     not_sent:
@@ -561,7 +562,7 @@ export default {
     projects: {
       title: "Projekte",
       description:
-        "Laufende Seiten, Vorlagen und archivierte Experimente: eine Auswahl der Webprojekte, die ich gebaut habe."
+        "Live-Seiten, Vorlagen und archivierte Experimente: eine Auswahl der Webprojekte, die ich gebaut habe."
     },
     project: {
       description:

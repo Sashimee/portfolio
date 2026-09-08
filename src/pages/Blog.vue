@@ -29,7 +29,7 @@
 
             <span class="post__cta">
               {{ $t('blog.read') }}
-              <q-icon name="arrow_forward" size="16px" />
+              <q-icon :name="icons.arrowForward" size="16px" />
             </span>
           </div>
 
@@ -47,6 +47,7 @@ import { usePageMeta } from '@/composables/use-page-meta'
 import { useReveal } from '@/composables/use-reveal'
 import { readingTime } from '@/utils/reading-time'
 import registry from '@/data/posts'
+import icons from '@/data/icons'
 
 export default {
   name: 'PageBlog',
@@ -57,6 +58,9 @@ export default {
       path: '/blog'
     })
     useReveal()
+  },
+  data() {
+    return { icons }
   },
   computed: {
     /**
@@ -143,7 +147,7 @@ export default {
   gap: 0.6rem
   margin-top: 2rem
   font-family: var(--font-mono)
-  font-size: 0.75rem
+  font-size: var(--step--1)
   letter-spacing: 0.12em
   text-transform: uppercase
   color: var(--ink)

@@ -4,6 +4,7 @@ import routes from '@/router/routes'
 import projects from '@/data/projects'
 import posts from '@/data/posts'
 import messages from '@/i18n'
+import { readFileSync } from 'node:fs'
 
 function router() {
   return createRouter({ history: createMemoryHistory(), routes })
@@ -68,6 +69,17 @@ describe('blog routing', () => {
     const r = router()
     await r.push('/blog/article')
     expect(r.currentRoute.value.path).toBe(`/blog/${posts[posts.length - 1].slug}`)
+  })
+
+  // Le routeur ne redirige que le navigateur : un moissonneur reçoit ce que
+  // NGINX répond. Les deux nomment donc la même cible, à deux endroits — et
+  // c'est ce qui se désaccorde en silence.
+  it('agrees with the redirect NGINX serves for the same URL', () => {
+    const conf = readFileSync(`${process.cwd()}/nginx/default.conf`, 'utf8')
+    const redirect = conf.match(/location = \/blog\/article \{\s*return 301 (\S+);/)
+
+    expect(redirect, 'no `location = /blog/article` block in nginx/default.conf').not.toBeNull()
+    expect(redirect[1]).toBe(`/blog/${posts[posts.length - 1].slug}`)
   })
 
   it('lets a known slug through', async () => {

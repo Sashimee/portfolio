@@ -17,7 +17,7 @@
             no-caps
             unelevated
             to="/"
-            icon="arrow_back"
+            :icon="icons.arrowBack"
             :label="$t('notFound.home')"
           />
           <q-btn class="app-btn app-btn--ghost" no-caps unelevated to="/projects" :label="$t('buttons.projects')" />
@@ -30,6 +30,7 @@
 <script>
 import { useRoute } from 'vue-router'
 import { usePageMeta } from '@/composables/use-page-meta'
+import icons from '@/data/icons'
 
 export default {
   name: 'ErrorNotFound',
@@ -41,6 +42,9 @@ export default {
       path: () => route.path,
       noindex: true
     })
+  },
+  data() {
+    return { icons }
   }
 }
 </script>

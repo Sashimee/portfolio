@@ -1,7 +1,7 @@
 <template>
   <q-header class="site-header" :class="{ 'is-scrolled': scrolled }">
     <div class="container site-header__bar">
-      <router-link to="/" class="brand" :aria-label="$t('layout.home')">
+      <router-link to="/" class="brand">
         <span class="brand__mark" aria-hidden="true">AB</span>
         <span class="brand__name">Alex Baskewitsch</span>
       </router-link>
@@ -13,6 +13,7 @@
           :to="item.to"
           class="nav__link"
           :class="{ 'is-active': isActive(item) }"
+          :aria-current="isActive(item) ? 'page' : undefined"
         >
           <span class="nav__num">{{ String(position + 1).padStart(2, '0') }}</span>
           {{ $t(item.labelKey) }}
@@ -58,7 +59,7 @@
           :aria-pressed="darkMode"
           @click="toggleDark"
         >
-          <q-icon :name="darkMode ? 'light_mode' : 'dark_mode'" size="16px" />
+          <q-icon :name="darkMode ? icons.lightMode : icons.darkMode" size="16px" />
         </button>
 
         <button type="button" class="menu-toggle lt-md" :aria-expanded="menu" @click="menu = true">
@@ -95,6 +96,7 @@
           :to="item.to"
           class="menu-overlay__link"
           :class="{ 'is-active': isActive(item) }"
+          :aria-current="isActive(item) ? 'page' : undefined"
           :style="`--d: ${0.05 + position * 0.05}s`"
           @click="menu = false"
         >
@@ -159,6 +161,7 @@ import { syncAddressbarColor } from '@/boot/addressbar-color'
 import { currentLocale, setLocale } from '@/boot/i18n'
 import { AVAILABLE_LOCALES, setStoredDark } from '@/utils/preferences'
 import socialLinks from '@/data/links'
+import icons from '@/data/icons'
 
 const LOCALE_LABELS = { en: 'English', fr: 'Français', de: 'Deutsch' }
 
@@ -166,6 +169,7 @@ export default {
   name: 'TheHeader',
   data() {
     return {
+      icons,
       menu: false,
       localeMenu: false,
       scrolled: false,
@@ -196,8 +200,20 @@ export default {
     },
     pickLocale(value) {
       this.locale = setLocale(value)
-      this.localeMenu = false
+      this.closeLocaleMenu()
       this.menu = false
+    },
+    /**
+     * La liste disparaît du DOM en se fermant, et avec elle le bouton focalisé :
+     * sans ce retour, le focus tombe sur <body> après chaque choix de langue.
+     * Le déclencheur est cherché dans le même bloc `.lang` que l'élément actif,
+     * la barre et le panneau plein écran en portant chacun un.
+     */
+    closeLocaleMenu() {
+      if (!this.localeMenu) return
+      const bloc = document.activeElement?.closest('.lang')
+      this.localeMenu = false
+      this.$nextTick(() => bloc?.querySelector('.lang__trigger')?.focus())
     },
     toggleDark() {
       this.darkMode = !this.darkMode
@@ -210,12 +226,12 @@ export default {
     },
     onKeydown(event) {
       if (event.key !== 'Escape') return
-      if (this.localeMenu) this.localeMenu = false
+      if (this.localeMenu) this.closeLocaleMenu()
       else this.menu = false
     },
     onDocumentClick(event) {
       if (this.localeMenu && event.target.closest('.lang') === null) {
-        this.localeMenu = false
+        this.closeLocaleMenu()
       }
     }
   },
@@ -275,7 +291,13 @@ body.is-locked
   font-size: 1rem
 
   @media (max-width: 420px)
-    display: none
+    position: absolute
+    width: 1px
+    height: 1px
+    padding: 0
+    overflow: hidden
+    clip-path: inset(50%)
+    white-space: nowrap
 
 // Navigation : pas de pilule, des libellés en monospace numérotés, soulignés
 // à l'accent quand ils sont actifs.
@@ -292,7 +314,7 @@ body.is-locked
   gap: 0.45rem
   padding: 0.5rem 0.8rem
   font-family: var(--font-mono)
-  font-size: 0.75rem
+  font-size: var(--step--1)
   font-weight: 500
   letter-spacing: 0.1em
   text-transform: uppercase
@@ -323,7 +345,7 @@ body.is-locked
     color: var(--ink)
 
 .nav__num
-  font-size: 0.62rem
+  font-size: var(--step--2)
   color: var(--ink-3)
 
 .theme-toggle
@@ -357,7 +379,7 @@ body.is-locked
   background: transparent
   color: var(--ink-2)
   font-family: var(--font-mono)
-  font-size: 0.7rem
+  font-size: var(--step--2)
   font-weight: 500
   letter-spacing: 0.08em
   cursor: pointer
@@ -404,7 +426,7 @@ body.is-locked
   background: transparent
   color: var(--ink-2)
   font-family: var(--font-body)
-  font-size: 0.85rem
+  font-size: var(--step--1)
   text-align: left
   cursor: pointer
   transition: color 0.3s, background 0.3s
@@ -424,7 +446,7 @@ body.is-locked
   padding: 0.1rem 0.3rem
   border-radius: var(--radius-xs)
   font-family: var(--font-mono)
-  font-size: 0.62rem
+  font-size: var(--step--2)
   font-weight: 500
   letter-spacing: 0.08em
   color: var(--ink-3)
@@ -438,7 +460,7 @@ body.is-locked
   background: transparent
   color: var(--ink)
   font-family: var(--font-mono)
-  font-size: 0.72rem
+  font-size: var(--step--2)
   font-weight: 500
   letter-spacing: 0.12em
   text-transform: uppercase
@@ -513,7 +535,7 @@ body.is-locked
 
 .menu-overlay__num
   font-family: var(--font-mono)
-  font-size: 0.75rem
+  font-size: var(--step--1)
   letter-spacing: 0.1em
   color: var(--ink-3)
 

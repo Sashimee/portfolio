@@ -8,7 +8,7 @@
            déclenchée au scroll, pas au montage. -->
       <router-link to="/contact" class="site-footer__shout" data-reveal>
         <span>{{ $t('footer.cta') }}</span>
-        <q-icon name="arrow_forward" />
+        <q-icon :name="icons.arrowForward" />
       </router-link>
     </section>
 
@@ -66,12 +66,13 @@
 
 <script>
 import socialLinks from '@/data/links'
+import icons from '@/data/icons'
 
 export default {
   name: 'TheFooter',
   emits: ['open-legal'],
   data() {
-    return { socialLinks }
+    return { icons, socialLinks }
   },
   computed: {
     currentYear() {
@@ -176,7 +177,7 @@ export default {
   padding-block: 1.1rem
   border-top: var(--hairline) solid var(--border)
   font-family: var(--font-mono)
-  font-size: 0.72rem
+  font-size: var(--step--2)
   letter-spacing: 0.06em
 
   p

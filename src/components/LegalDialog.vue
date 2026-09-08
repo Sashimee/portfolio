@@ -9,7 +9,7 @@
     <q-card class="legal-dialog">
       <header class="legal-dialog__bar">
         <h2 class="title-md">{{ $t('consent.legal_title') }}</h2>
-        <q-btn v-close-popup flat round dense icon="close" :aria-label="$t('layout.close')" />
+        <q-btn v-close-popup flat round dense :icon="icons.close" :aria-label="$t('layout.close')" />
       </header>
 
       <div class="legal-dialog__body">
@@ -17,7 +17,7 @@
           <h3 class="overline">{{ $t('consent.settings') }}</h3>
           <q-toggle
             :model-value="tracking"
-            color="accent"
+            color="primary"
             :label="$t('consent.tracking_label')"
             @update:model-value="$emit('update:tracking', $event)"
           />
@@ -33,7 +33,7 @@
 
         <!-- Texte juridique conservé tel quel, en anglais : le traduire
              engagerait une version non relue par son auteur. -->
-        <div class="prose legal-dialog__prose">
+        <div lang="en" class="prose legal-dialog__prose">
           <h3>Privacy Policy</h3>
           <p>
             At this internet site, accessible from
@@ -162,6 +162,8 @@
 </template>
 
 <script>
+import icons from '@/data/icons'
+
 export default {
   name: 'LegalDialog',
   props: {
@@ -169,7 +171,10 @@ export default {
     functional: { type: Boolean, default: false },
     tracking: { type: Boolean, default: false }
   },
-  emits: ['update:modelValue', 'update:tracking', 'revoke']
+  emits: ['update:modelValue', 'update:tracking', 'revoke'],
+  data() {
+    return { icons }
+  }
 }
 </script>
 
@@ -214,7 +219,7 @@ export default {
 
 .legal-dialog__hint
   margin: 0
-  font-size: 0.85rem
+  font-size: var(--step--1)
 
 .legal-dialog__prose
   max-width: 68ch

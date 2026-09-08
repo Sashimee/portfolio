@@ -8,6 +8,8 @@ import ProjectsPage from '@/pages/Projects.vue'
 import TheHeader from '@/components/TheHeader.vue'
 import { setLocale } from '@/boot/i18n'
 import { AVAILABLE_LOCALES } from '@/utils/preferences'
+import posts from '@/data/posts'
+import projects from '@/data/projects'
 
 // Pages are QPages: they only render inside the layout, which is also what the
 // router does in the real app.
@@ -33,17 +35,18 @@ afterEach(() => {
 })
 
 describe('routes render', () => {
+  // Dérivé des registres plutôt qu'énuméré : la liste écrite à la main avait
+  // pris deux articles de retard, et un article ajouté n'était donc plus monté
+  // — alors que c'est exactement ce que ce fichier promet de vérifier.
   const paths = [
     '/',
     '/about',
     '/projects',
-    '/projects/pet4u',
+    ...projects.filter(p => p.target === 'internal').map(p => `/projects/${p.link}`),
     '/contact',
     '/blog',
     '/blog/article',
-    '/blog/green-coding-own-site',
-    '/blog/green-coding-fintech',
-    '/blog/schoulbus-claude-code',
+    ...posts.map(post => `/blog/${post.slug}`),
     '/nope'
   ]
 
@@ -133,6 +136,10 @@ describe('language selector', () => {
     const items = header.findAll('.lang__item')
     expect(items.map(item => item.attributes('lang'))).toEqual([...AVAILABLE_LOCALES])
     expect(items.map(item => item.text())).toEqual(['EN English', 'FR Français', 'DE Deutsch'])
+    for (const item of items) {
+      const [code, ...reste] = item.text().split(' ')
+      expect(reste.join(' '), `libellé de "${code}"`).not.toBe(code)
+    }
 
     const german = items.find(item => item.attributes('lang') === 'de')
     await german.trigger('click')

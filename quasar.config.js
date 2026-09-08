@@ -8,7 +8,7 @@ export default defineConfig(ctx => {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['i18n', 'preferences', 'axios', 'analytics', 'recap', 'addressbar-color'],
+    boot: ['i18n', 'preferences', 'analytics', 'addressbar-color'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
     css: ['app.sass'],
@@ -16,13 +16,19 @@ export default defineConfig(ctx => {
     // https://github.com/quasarframework/quasar/tree/dev/extras
     // Roboto n'est plus chargé : la typographie courante utilise la pile
     // système et Lexend (auto-hébergé) pour les titres.
-    extras: ['material-icons', 'fontawesome-v7'],
+    //
+    // Plus aucune police d'icônes non plus. Font Awesome (solid 119 Ko, brands
+    // 115 Ko) et Material Icons (128 Ko) étaient chargées en entier pour les
+    // trente-huit glyphes de `src/data/icons.js`, qui sont désormais des tracés
+    // SVG en ligne. Aucune des composantes Quasar utilisées ici ne lit
+    // `$q.iconSet` : celles qui affichent une icône la reçoivent en propriété.
+    extras: [],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
 
-      // Injecté dans le bundle à la construction, et lu par src/boot/axios.js
+      // Injecté dans le bundle à la construction, et lu par src/utils/api.js
       // sous `import.meta.env.API_BASE_URL`. Surchargeable au build
       // (API_BASE_URL=… npm run build) pour viser une instance de recette.
       //
