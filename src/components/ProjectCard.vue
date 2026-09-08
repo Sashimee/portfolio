@@ -4,7 +4,8 @@
       <img
         :src="`/screenshots/${project.img}.webp`"
         :alt="project.name"
-        loading="lazy"
+        :loading="priority ? 'eager' : 'lazy'"
+        :fetchpriority="priority ? 'high' : 'auto'"
         decoding="async"
       />
       <span class="project__type">{{ project.type }}</span>
@@ -37,7 +38,13 @@ export default {
   name: 'ProjectCard',
   props: {
     /** Projet issu de src/data/projects.js, déjà enrichi de `type` et `info`. */
-    project: { type: Object, required: true }
+    project: { type: Object, required: true },
+    /**
+     * La première carte de l'accueil est l'élément le plus grand au-dessus de
+     * la ligne de flottaison : la différer d'un `loading="lazy"` repoussait le
+     * LCP d'un aller-retour, le temps que la mise en page se pose.
+     */
+    priority: { type: Boolean, default: false }
   },
   data() {
     return { icons }
