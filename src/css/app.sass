@@ -19,27 +19,31 @@
 // Lexend n'habille que le display : seules les graisses réellement utilisées
 // (500 / 600 / 700) sont embarquées. Le texte courant et les méta n'ajoutent
 // aucune requête réseau (piles système).
+//
+// En WOFF2, et non en TrueType : les trois graisses pesaient 302 Ko servies
+// telles quelles, elles en pèsent 116. Un .ttf est un format de système de
+// fichiers — le navigateur n'en a jamais eu besoin.
 
 @font-face
   font-family: 'Lexend'
   font-style: normal
   font-weight: 500
   font-display: swap
-  src: url(./fonts/lexend/Lexend-Medium.ttf) format('truetype')
+  src: url(./fonts/lexend/Lexend-Medium.woff2) format('woff2')
 
 @font-face
   font-family: 'Lexend'
   font-style: normal
   font-weight: 600
   font-display: swap
-  src: url(./fonts/lexend/Lexend-SemiBold.ttf) format('truetype')
+  src: url(./fonts/lexend/Lexend-SemiBold.woff2) format('woff2')
 
 @font-face
   font-family: 'Lexend'
   font-style: normal
   font-weight: 700
   font-display: swap
-  src: url(./fonts/lexend/Lexend-Bold.ttf) format('truetype')
+  src: url(./fonts/lexend/Lexend-Bold.woff2) format('woff2')
 
 // 2. Tokens -------------------------------------------------------------------
 
@@ -52,6 +56,10 @@ html
 
   // Échelle fluide : aucune media query pour la taille du texte.
   // --step-6 n'existe que pour les titres pleine page (accueil, 404).
+  // --step--2 est le registre des micro-libellés : numéros de nav, codes de
+  // langue, compteurs, pastilles. Il existe parce que huit valeurs en dur
+  // entre 0.62rem et 0.72rem faisaient ce travail sans suivre l'échelle.
+  --step--2: clamp(0.66rem, 0.63rem + 0.12vw, 0.72rem)
   --step--1: clamp(0.78rem, 0.75rem + 0.12vw, 0.85rem)
   --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem)
   --step-1: clamp(1.125rem, 1.05rem + 0.36vw, 1.35rem)
@@ -82,10 +90,13 @@ html
   --surface: #fbfaf7
   --surface-2: #e6e3da
   --border: rgba(18, 19, 15, 0.16)
-  --border-strong: rgba(18, 19, 15, 0.38)
+  --border-strong: rgba(18, 19, 15, 0.46)
   --ink: #12130f
   --ink-2: #4b4e45
-  --ink-3: #7c8074
+  // #7c8074 tombait à 3,51:1 sur --bg et 3,15:1 sur --surface-2, sous les
+  // 4,5:1 de WCAG AA. Il porte les eyebrows, .muted, les étiquettes de champ
+  // et le paragraphe des cartes projet — donc du texte courant, pas un ornement.
+  --ink-3: #63665d
 
   // L'accent est un vert acide : il ne sert JAMAIS de couleur de texte sur le
   // fond de page (contraste insuffisant), uniquement en aplat avec --acc-ink
@@ -117,7 +128,7 @@ body.body--dark
   --border-strong: rgba(237, 235, 226, 0.42)
   --ink: #edebe2
   --ink-2: #b0b2a6
-  --ink-3: #7f8378
+  --ink-3: #82867a
 
   --acc: #cbf54f
   --acc-ink: #0b0c0a
@@ -301,7 +312,7 @@ img
   gap: 0.35rem
   padding: 0.25rem 0.6rem
   font-family: var(--font-mono)
-  font-size: 0.7rem
+  font-size: var(--step--2)
   font-weight: 500
   letter-spacing: 0.06em
   text-transform: uppercase
@@ -319,7 +330,7 @@ img
   border-radius: var(--radius-sm)
   font-family: var(--font-mono)
   font-weight: 700
-  font-size: 0.72rem
+  font-size: var(--step--2)
   letter-spacing: 0.04em
   color: var(--acc-ink)
   background: var(--acc)
@@ -365,7 +376,7 @@ img
   gap: 0.5rem
   padding: 0.4rem 0.85rem
   font-family: var(--font-mono)
-  font-size: 0.75rem
+  font-size: var(--step--1)
   letter-spacing: 0.04em
   color: var(--ink-2)
   background: transparent
@@ -420,7 +431,7 @@ img
 .app-btn.q-btn
   font-family: var(--font-mono)
   font-weight: 500
-  font-size: 0.78rem
+  font-size: var(--step--1)
   letter-spacing: 0.12em
   text-transform: uppercase
   border-radius: var(--radius-pill)
@@ -685,7 +696,7 @@ img
   background: var(--acc)
   color: var(--acc-ink)
   font-family: var(--font-mono)
-  font-size: 0.75rem
+  font-size: var(--step--1)
   text-transform: uppercase
   letter-spacing: 0.1em
   text-decoration: none
@@ -724,13 +735,13 @@ img
 
 .q-field__label
   font-family: var(--font-mono)
-  font-size: 0.8rem
+  font-size: var(--step--1)
   letter-spacing: 0.06em
   color: var(--ink-3)
 
 .q-tooltip
   font-family: var(--font-mono)
-  font-size: 0.72rem
+  font-size: var(--step--2)
   letter-spacing: 0.04em
   border-radius: var(--radius-xs)
   background: var(--ink)
@@ -739,7 +750,7 @@ img
 .q-notification
   border-radius: var(--radius-sm)
   font-family: var(--font-mono)
-  font-size: 0.8rem
+  font-size: var(--step--1)
 
 .grecaptcha-badge
   visibility: hidden

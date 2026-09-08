@@ -7,7 +7,7 @@
         loading="lazy"
         decoding="async"
       />
-      <span class="project__type mono">{{ project.type }}</span>
+      <span class="project__type">{{ project.type }}</span>
     </div>
 
     <div class="project__body">
@@ -18,7 +18,7 @@
         <a v-else class="stretched-link" :href="project.link" target="_blank" rel="noopener">
           {{ project.name }}
         </a>
-        <q-icon :name="isInternal ? 'arrow_forward' : 'north_east'" size="16px" />
+        <q-icon :name="isInternal ? icons.arrowForward : icons.northEast" size="16px" />
       </h3>
 
       <p v-if="project.info" class="project__info">{{ project.info }}</p>
@@ -31,11 +31,16 @@
 </template>
 
 <script>
+import icons from '@/data/icons'
+
 export default {
   name: 'ProjectCard',
   props: {
     /** Projet issu de src/data/projects.js, déjà enrichi de `type` et `info`. */
     project: { type: Object, required: true }
+  },
+  data() {
+    return { icons }
   },
   computed: {
     isInternal() {
@@ -95,7 +100,10 @@ export default {
   border-radius: var(--radius-pill)
   color: var(--acc-ink)
   background: var(--acc)
-  font-size: 0.65rem
+  font-family: var(--font-mono)
+  font-weight: 500
+  text-transform: uppercase
+  font-size: var(--step--2)
   letter-spacing: 0.08em
 
 .project__body

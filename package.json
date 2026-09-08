@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "quasar dev",
     "build": "quasar build",
+    "postbuild": "node scripts/pre-rendu.mjs",
     "lint": "eslint -c ./eslint.config.js \"./src/**/*.{js,mjs,cjs,vue}\" \"./test/**/*.js\" \"./service/**/*.js\"",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -19,9 +20,9 @@
     "@quasar/extras": "^2.0.3",
     "axios": "^1.13.1",
     "quasar": "^2.24.0",
+    "recaptcha-v3": "^1.11.3",
     "vue": "^3.5.22",
     "vue-i18n": "^11.3.0",
-    "vue-recaptcha-v3": "^2.0.1",
     "vue-router": "^5.0.6"
   },
   "devDependencies": {

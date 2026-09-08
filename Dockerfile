@@ -24,14 +24,8 @@ FROM nginx:alpine AS production-stage
 
 COPY --from=build-stage /app/dist/spa /usr/share/nginx/html
 
-RUN echo 'server { \
-    listen 80; \
-    location / { \
-        root /usr/share/nginx/html; \
-        index index.html index.htm; \
-        try_files $uri $uri/ /index.html; \
-    } \
-}' > /etc/nginx/conf.d/default.conf
+# Compression, en-têtes de cache et service des instantanés de route.
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 

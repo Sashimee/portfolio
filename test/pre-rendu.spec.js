@@ -1,0 +1,183 @@
+import { describe, expect, it } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
+import { createMemoryHistory, createRouter } from 'vue-router'
+import MainLayout from '@/layouts/MainLayout.vue'
+import appRoutes from '@/router/routes'
+import posts from '@/data/posts'
+import projects from '@/data/projects'
+import {
+  coverBaseName,
+  prerenderedRoutes,
+  renderFontPreload,
+  renderHeadTags,
+  renderRobots,
+  renderSitemap,
+  stripPrerenderedTags
+} from '@/utils/pre-rendu'
+
+const routes = prerenderedRoutes()
+const chemins = routes.map(route => route.path)
+
+describe('les routes pré-rendues', () => {
+  it('couvre les cinq pages fixes, les démos et tous les articles', () => {
+    for (const chemin of ['/', '/about', '/projects', '/blog', '/contact']) {
+      expect(chemins).toContain(chemin)
+    }
+    for (const post of posts) expect(chemins).toContain(`/blog/${post.slug}`)
+    for (const project of projects.filter(p => p.target === 'internal')) {
+      expect(chemins).toContain(`/projects/${project.link}`)
+    }
+  })
+
+  it('donne à chaque route un titre et une description non vides', () => {
+    for (const route of routes) {
+      expect(route.title, route.path).toBeTruthy()
+      expect(route.description, route.path).toBeTruthy()
+    }
+  })
+
+  // Le sous-titre d'un article porte du balisage, que la page affiche mais
+  // qu'une méta-description ne doit pas recopier telle quelle.
+  it("ne laisse pas de balisage dans la description d'un article", () => {
+    for (const route of routes.filter(r => r.path.startsWith('/blog/'))) {
+      expect(route.description, route.path).not.toMatch(/[<>]/)
+    }
+  })
+
+  it('date les articles et eux seuls', () => {
+    for (const route of routes) {
+      if (route.path.startsWith('/blog/')) expect(route.lastmod).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+      else expect(route.lastmod).toBeUndefined()
+    }
+  })
+})
+
+describe('coverBaseName', () => {
+  // La valeur d'un import d'image diffère selon qui exécute le module ; seule
+  // la racine du nom est commune, et c'est elle qui retrouve le fichier haché.
+  it("retire le dossier, l'empreinte de requête et l'extension", () => {
+    expect(coverBaseName('/src/assets/aura-cover.webp')).toBe('aura-cover')
+    expect(coverBaseName('/assets/aura-cover.webp?used')).toBe('aura-cover')
+    expect(coverBaseName('aura-cover.webp')).toBe('aura-cover')
+  })
+})
+
+describe('les balises écrites dans un instantané', () => {
+  const balises = renderHeadTags({
+    path: '/blog/exemple',
+    title: 'Un titre',
+    description: 'Une description',
+    image: '/assets/couverture.webp'
+  })
+
+  it('porte titre, description, og:*, twitter:* et canonique', () => {
+    expect(balises).toContain('<title data-prerendered>Un titre | Alex Baskewitsch</title>')
+    expect(balises).toContain('property="og:title"')
+    expect(balises).toContain('property="og:description"')
+    expect(balises).toContain('name="twitter:card"')
+    expect(balises).toContain('rel="canonical"')
+  })
+
+  it('absolutise les adresses', () => {
+    expect(balises).toContain('content="https://alex.baskewitsch.lu/blog/exemple"')
+    expect(balises).toContain('content="https://alex.baskewitsch.lu/assets/couverture.webp"')
+  })
+
+  it('marque tout ce qu\'il pose, pour que le démarrage puisse le retirer', () => {
+    const posees = balises.match(/<(?:title|meta|link)\b/g).length
+    const marquees = balises.match(/data-prerendered/g).length
+    expect(marquees).toBe(posees)
+  })
+
+  // Un titre d'article contient des apostrophes et des guillemets ; non échappé,
+  // il fermerait l'attribut et le reste de la balise deviendrait du balisage.
+  it('échappe les guillemets et les chevrons', () => {
+    const sortie = renderHeadTags({ path: '/x', title: 'a "b" & <c>', description: 'd' })
+    expect(sortie).toContain('&quot;b&quot; &amp; &lt;c&gt;')
+    expect(sortie).not.toMatch(/content="[^"]*"[a-z]/)
+  })
+})
+
+describe('stripPrerenderedTags', () => {
+  const gabarit =
+    '<!doctype html><html><head><meta charset="utf-8"><title>Alex Baskewitsch</title></head><body></body></html>'
+  const augmente = gabarit.replace(
+    '</head>',
+    `${renderFontPreload('/assets/Lexend-SemiBold-abc.woff2')}${renderHeadTags({ path: '/', title: 'T', description: 'D' })}</head>`
+  )
+
+  // Le script lit `dist/spa/index.html` comme gabarit et y écrit aussi
+  // l'instantané de l'accueil : sans ce nettoyage, une seconde exécution
+  // empilerait les balises de l'accueil sur toutes les autres routes.
+  // Le nettoyage retire aussi le titre du gabarit, donc il ne rend plus le
+  // document à l'octet près : la propriété qui compte est l'idempotence —
+  // augmenter puis nettoyer ramène à ce que nettoyer seul donne.
+  it('ramène un document augmenté à son gabarit nettoyé', () => {
+    expect(stripPrerenderedTags(augmente)).toBe(stripPrerenderedTags(gabarit))
+    expect(stripPrerenderedTags(augmente)).not.toContain('data-prerendered')
+  })
+
+  // Le gabarit porte le titre générique de `index.html`. Laissé en place, il
+  // précède celui du pré-rendu dans l'arbre : c'est donc lui que retiennent
+  // `document.title` et l'extraction de titre des moteurs, et les quinze
+  // instantanés annonçaient le même.
+  it('retire aussi le titre générique du gabarit', () => {
+    expect(stripPrerenderedTags(gabarit)).not.toContain('<title>')
+  })
+
+  it('ne laisse qu\'un seul titre dans un instantané', () => {
+    const instantane = stripPrerenderedTags(gabarit).replace(
+      '</head>',
+      `${renderHeadTags({ path: '/x', title: 'X', description: 'D' })}</head>`
+    )
+    expect(instantane.match(/<title\b/g)).toHaveLength(1)
+    expect(instantane).toContain('<title data-prerendered>X | Alex Baskewitsch</title>')
+  })
+
+  it('retire aussi le préchargement de police', () => {
+    expect(stripPrerenderedTags(augmente)).not.toContain('data-font-preload')
+  })
+})
+
+describe('le plan du site et robots.txt', () => {
+  const sitemap = renderSitemap(routes)
+
+  it('liste chaque route une fois, en adresse absolue', () => {
+    const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1])
+    expect(locs).toHaveLength(routes.length)
+    expect(new Set(locs).size).toBe(routes.length)
+    for (const loc of locs) expect(loc).toMatch(/^https:\/\/alex\.baskewitsch\.lu\//)
+  })
+
+  it('date les articles', () => {
+    for (const post of posts) {
+      expect(sitemap).toContain(`<loc>https://alex.baskewitsch.lu/blog/${post.slug}</loc>`)
+    }
+    expect([...sitemap.matchAll(/<lastmod>/g)]).toHaveLength(posts.length)
+  })
+
+  it('renvoie robots.txt vers le plan du site', () => {
+    expect(renderRobots()).toContain('Sitemap: https://alex.baskewitsch.lu/sitemap.xml')
+  })
+})
+
+// Le greffon Meta de Quasar pose ses propres balises au montage. Si celles de
+// l'instantané restaient, le document en porterait deux de chaque — la raison
+// pour laquelle `index.html` n'en déclare aucune.
+describe("le démarrage retire les balises de l'instantané", () => {
+  it('ne laisse aucun [data-prerendered] après le montage', async () => {
+    document.head.insertAdjacentHTML(
+      'beforeend',
+      renderHeadTags({ path: '/blog/exemple', title: 'T', description: 'D' })
+    )
+    expect(document.querySelectorAll('[data-prerendered]').length).toBeGreaterThan(0)
+
+    const router = createRouter({ history: createMemoryHistory(), routes: appRoutes })
+    router.push(`/blog/${posts[0].slug}`)
+    await router.isReady()
+    mount(MainLayout, { global: { plugins: [router] } })
+    await flushPromises()
+
+    expect(document.querySelectorAll('[data-prerendered]')).toHaveLength(0)
+  })
+})

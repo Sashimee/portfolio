@@ -5,7 +5,7 @@
         class="app-btn app-btn--quiet preview__back"
         no-caps
         flat
-        icon="arrow_back"
+        :icon="icons.arrowBack"
         to="/projects"
         :label="$t('projects.back')"
       />
@@ -23,7 +23,7 @@
           :href="source"
           target="_blank"
           rel="noopener"
-          icon-right="north_east"
+          :icon-right="icons.northEast"
           :label="$t('projects.open')"
         />
       </div>
@@ -46,6 +46,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePageMeta } from '@/composables/use-page-meta'
 import projectsData from '@/data/projects'
+import icons from '@/data/icons'
 
 export default {
   name: 'PageShowProject',
@@ -68,6 +69,9 @@ export default {
       project,
       source: computed(() => `/projects_folder/${project.value.link}/index.html`)
     }
+  },
+  data() {
+    return { icons }
   }
 }
 </script>
@@ -126,7 +130,7 @@ export default {
 
 .preview__url
   font-family: var(--font-mono)
-  font-size: 0.72rem
+  font-size: var(--step--2)
   letter-spacing: 0.02em
   color: var(--ink-3)
   overflow: hidden

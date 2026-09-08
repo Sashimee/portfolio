@@ -34,7 +34,6 @@
             <q-input
               v-model="name"
               outlined
-              autofocus
               lazy-rules
               :label="$t('contact.name')"
               :rules="[
@@ -62,7 +61,7 @@
               :input-style="{ minHeight: '120px' }"
               :rules="[
                 val => (val && val.length > 0) || $t('contact.please_type'),
-                val => val.length < 5120 || val.length + '/5120'
+                val => val.length < 5120 || $t('contact.message_long')
               ]"
             />
 
@@ -72,7 +71,7 @@
                 no-caps
                 unelevated
                 type="submit"
-                icon-right="arrow_forward"
+                :icon-right="icons.arrowForward"
                 :label="$t('contact.submit')"
               />
               <q-btn class="app-btn app-btn--quiet" no-caps flat type="reset" :label="$t('contact.reset')" />
@@ -97,12 +96,14 @@
 </template>
 
 <script>
-import { api } from '@/boot/axios'
+import { api } from '@/utils/api'
 import { usePageMeta } from '@/composables/use-page-meta'
 import { useReveal } from '@/composables/use-reveal'
 import socialLinks from '@/data/links'
 import { trackEvent } from '@/utils/analytics'
 import { isValidEmail } from '@/utils/validation'
+import { executeRecaptcha, preloadRecaptcha } from '@/utils/recaptcha'
+import icons from '@/data/icons'
 
 export default {
   name: 'PageContact',
@@ -116,12 +117,18 @@ export default {
   },
   data() {
     return {
+      icons,
       name: null,
       message: null,
       email: null,
       loading: false,
       socialLinks
     }
+  },
+  mounted() {
+    // Le script de Google n'est plus dans l'entrée du bundle : il se charge
+    // ici, pendant que le visiteur remplit le formulaire.
+    preloadRecaptcha()
   },
   methods: {
     isValidEmail() {
@@ -131,8 +138,7 @@ export default {
       this.loading = true
 
       try {
-        await this.$recaptchaLoaded()
-        const token = await this.$recaptcha('submit')
+        const token = await executeRecaptcha('submit')
 
         await api.post('/mail', {
           name: this.name,
@@ -146,7 +152,7 @@ export default {
         this.$q.notify({
           color: 'positive',
           textColor: 'white',
-          icon: 'cloud_done',
+          icon: icons.cloudDone,
           message: this.$t('contact.sent')
         })
       } catch (error) {
@@ -154,7 +160,7 @@ export default {
         this.$q.notify({
           color: 'negative',
           textColor: 'white',
-          icon: 'cloud_off',
+          icon: icons.cloudOff,
           message: this.$t('contact.not_sent')
         })
         console.error(error)
@@ -203,7 +209,7 @@ export default {
   list-style: none
 
   .muted
-    font-size: 0.7rem
+    font-size: var(--step--2)
 
 // Le formulaire est posé sur un filet, pas dans une boîte : moins d'encre,
 // et il se fond dans la colonne éditoriale.
@@ -228,6 +234,6 @@ export default {
 
 .contact__disclaimer
   margin: 1.5rem 0 0
-  font-size: 0.78rem
+  font-size: var(--step--1)
   line-height: 1.5
 </style>

@@ -32,7 +32,7 @@ const eveningHours = currentHour >= 19 && currentHour < 23;
 
 if (middayHours || eveningHours) {
   document.body.innerHTML +=
-    '<img class="opening" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);" src="images/open.jpg">';
+    '<img class="opening" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);" src="images/open.webp">';
 
   if (soonClose(currentHour) == true && currentMinute >= 30) {
     document.body.innerHTML +=
@@ -42,7 +42,7 @@ if (middayHours || eveningHours) {
   }
 } else {
   document.body.innerHTML +=
-    '<img class="opening" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);" src="images/closed.jpg">';
+    '<img class="opening" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);" src="images/closed.webp">';
   if (soonOpen(currentHour) == true && currentMinute >= 30) {
     document.body.innerHTML +=
       '<h1 class="opening" style="position:fixed;top:50%;left:50%;transform:translate(-50%,10rem);">It will open in ' +

@@ -19,7 +19,8 @@ npm install     # le hook postinstall lance `quasar prepare`
 npm run dev     # http://localhost:8080
 npm run lint    # ESLint, configuration à plat
 npm test        # Vitest, une seule passe
-npm run build   # dist/spa
+npm run build   # dist/spa — le hook postbuild écrit les instantanés de route,
+                # sitemap.xml et robots.txt (scripts/pre-rendu.mjs)
 
 docker build -t portfolio . && docker run --rm -p 8080:80 portfolio
 
@@ -53,19 +54,25 @@ configuration ESLint à lui.
    aplat (avec `--acc-ink` par-dessus), en filet ou en surlignage ; le vert de texte,
    contrasté, est `--brand`. Plus généralement : **aucune valeur brute dans une
    composante.** Couleurs, rayons, ombres, pas de la grille typographique
-   (`--step--1` … `--step-6`) sont déclarés une seule fois dans `src/css/app.sass`, et le
+   (`--step--2` … `--step-6`) sont déclarés une seule fois dans `src/css/app.sass`, et le
    thème sombre ne fait que les redéfinir sous `body.body--dark`.
 
-4. **Pas de nouvelle fonte de labeur, pas de bibliothèque d'animation.** Lexend est
-   auto-hébergé pour l'affichage, tout le reste tombe sur la pile système — aucun
-   aller-retour réseau. Les entrées passent par `src/composables/use-reveal.js`
+4. **Pas de nouvelle fonte de labeur, pas de bibliothèque d'animation, et plus
+   aucune police d'icônes.** Lexend est auto-hébergé pour l'affichage — en **WOFF2**,
+   jamais en `.ttf` — tout le reste tombe sur la pile système. Les icônes sont des
+   tracés SVG dans `src/data/icons.js` : Font Awesome et Material Icons étaient
+   chargées en entier (≈ 470 Ko) pour trente-huit glyphes, `extras` est désormais
+   vide et doit le rester. Les entrées passent par `src/composables/use-reveal.js`
    (un `IntersectionObserver` et quelques `@keyframes`), neutralisées sous
    `prefers-reduced-motion`. Le site plaide pour le green coding : il doit ressembler à ce
    qu'il défend, et une dépendance décorative se voit dans le poids de la page.
 
-5. **Les images sont en WebP, dans `public/screenshots/`.** La refonte a fait passer les
-   captures de 39 Mo à moins d'un mégaoctet. Y déposer un PNG annule ce travail sans que
-   rien ne le signale — le site continue de se construire, il devient seulement plus lourd.
+5. **Les images sont en WebP** — dans `public/screenshots/` comme dans
+   `public/projects_folder/`. La refonte a fait passer les captures de **27,4 Mo à
+   905 Ko** (et non « 39 Mo à 872 Ko » : le chiffre a été refait au lot 13, c'est le
+   sujet d'une section de `blogPost4`) ; le lot 16 a fait passer les démos de 15,1 Mo
+   à 1,3 Mo. Y déposer un PNG annule ce travail sans que rien ne le signale — le site
+   continue de se construire, il devient seulement plus lourd.
 
 ## Trois pièges de la pile, tous déjà payés
 
@@ -83,22 +90,32 @@ configuration ESLint à lui.
   `import.meta.env.X`, jamais `process.env.X`. `npm run verify:api-url` existe pour
   attraper précisément cette rechute après un `build`.
 
+- **Une SPA ne sert aucune balise à un moissonneur.** `src/utils/meta.js` compose un
+  descripteur soigné par page, et le greffon Meta de Quasar le pose *depuis le
+  navigateur* : WhatsApp, LinkedIn, Slack et Discord n'en voyaient rien. D'où
+  `scripts/pre-rendu.mjs`, qui écrit après construction un `index.html` par route,
+  augmenté de ses balises. Deux conséquences à ne pas défaire : les balises portent
+  `data-prerendered` et `use-page-meta` les **retire au démarrage** (sans quoi le
+  document en porte deux de chaque), et le script est **idempotent** — il nettoie son
+  gabarit avant de l'augmenter, parce qu'il lit le fichier qu'il écrit aussi.
+
 ## Carte du dépôt
 
 | Chemin | Rôle |
 | --- | --- |
 | `src/css/app.sass` | Le système : jetons clair/sombre, échelle typographique fluide, primitives partagées (`.container`, `.section`, `.prose`, `.app-btn`, `.chip-link`…). |
-| `src/boot/` | Amorçage : i18n, préférences, axios, mesure d'audience, reCAPTCHA, couleur de la barre d'adresse. |
+| `src/boot/` | Amorçage : i18n, préférences, mesure d'audience, couleur de la barre d'adresse. |
 | `src/components/` | En-tête, pied de page, bandeau cookies, dialogue légal, carte et index des projets. |
 | `src/composables/` | `use-page-meta` (SEO par page), `use-reveal` (entrées au défilement). |
-| `src/data/` | `projects.js`, `stack.js`, `posts.js`, `links.js` — les quatre sources uniques. |
+| `src/data/` | `projects.js`, `stack.js`, `posts.js`, `links.js` — les quatre sources uniques — et `icons.js`, les trente-huit tracés SVG. |
 | `src/i18n/{en,fr,de}/` | Les traductions. Mêmes clés dans les trois, un test l'exige. |
-| `src/utils/` | `analytics` (GA4, sous consentement), `meta`, `preferences`, `validation`, `reading-time`. |
+| `src/utils/` | `analytics` (GA4, sous consentement), `api` (l'instance axios, hors de l'entrée du bundle), `meta`, `pre-rendu` (routes et balises des instantanés), `preferences`, `recaptcha` (chargé à la demande), `validation`, `reading-time`. |
 | `public/screenshots/` | Captures des projets, et illustrations d'articles dans un sous-dossier par article. |
 | `public/projects_folder/` | Démos statiques servies en iframe par `/projects/:shortcode`. |
 | `test/` | `i18n` (parité), `routes` (résolution, données), `pages` (montage réel), `meta`. |
 | `service/mail/` | Le relais de courriel derrière le formulaire : paquet, image et tests à lui. |
-| `scripts/` | Vérifications d'après-construction (`verifier-api-url.mjs`). |
+| `scripts/` | Après-construction : `verifier-api-url.mjs`, et `pre-rendu.mjs` (instantanés de route, `sitemap.xml`, `robots.txt`). |
+| `nginx/` | `default.conf` — compression et durées de cache. Servait à l'`echo` du Dockerfile, qui n'en posait aucune. |
 
 ## Ce que les tests tiennent
 
@@ -110,6 +127,13 @@ configuration ESLint à lui.
 - `test/pages.spec.js` — **chaque route se monte sans erreur console**, et le nombre de
   projets y est écrit en dur : ajouter un projet fait échouer ce test, exprès.
 - `test/meta.spec.js` — titre, canonique et image sociale.
+- `test/icons.spec.js` — chaque icône est un tracé SVG avec un `viewBox`, et chaque
+  icône citée par `stack.js` / `links.js` se résout (une clef absente vaut `undefined`,
+  et ne rend rien sans rien dire).
+- `test/pre-rendu.spec.js` — les routes pré-rendues, leurs balises, l'échappement,
+  l'idempotence du nettoyage, le plan du site — et **qu'aucune balise
+  `data-prerendered` ne survit au montage**, sans quoi le document en porterait deux
+  de chaque.
 
 ## Les trois choses qu'on vient faire ici
 
@@ -134,14 +158,12 @@ une, ce qui est en général l'intention.
 Une ligne dans `src/data/stack.js`, dans l'un des quatre groupes existants. Un groupe neuf
 demande en plus une clé `about.groups.*` dans les trois langues.
 
-**Vérifier le nom de l'icône avant de commiter.** Font Awesome 7 free est chargé par
-`quasar.config.js` ; un nom absent rend un carré vide, sans avertissement, et le préfixe
-compte (`fab` pour une marque, `fas` pour une icône solide) :
-
-```bash
-grep -oE "\.fa-[a-z0-9-]+" node_modules/@quasar/extras/exports/fontawesome-v7/fontawesome-v7.css \
-  | sed 's/^\.//' | sort -u | grep -i <nom>
-```
+**L'icône est un tracé, plus un nom de police.** `icon: icons.<clef>` renvoie à
+`src/data/icons.js` ; si la clef n'y est pas encore, y ajouter une entrée
+`'<tracé d>|<viewBox>'` prise dans le SVG d'origine (Font Awesome 7 free, ou Material
+Icons *filled*). `test/icons.spec.js` refuse une icône absente ou mal formée — c'est ce
+qui remplace l'ancien `grep` dans la feuille de style de Font Awesome, et c'est un
+meilleur garde : `icons.vuejs2` valait `undefined`, et QIcon ne rendait rien, en silence.
 
 Beaucoup d'outils n'ont pas de marque (TypeScript, Vite, PostgreSQL, Vitest…) : ils
 prennent une icône solide, et l'approximation est assumée.
@@ -169,7 +191,7 @@ Il a remplacé `api.bask.lu`, **dont le domaine entier a expiré** (la zone rép
 pas seulement le sous-domaine). Trois choses à en retenir avant d'y toucher :
 
 - **L'hôte n'est pas écrit dans le code.** `quasar.config.js` l'injecte
-  (`build.defineEnv.API_BASE_URL`), `src/boot/axios.js` le lit. C'est la leçon de la panne :
+  (`build.defineEnv.API_BASE_URL`), `src/utils/api.js` le lit. C'est la leçon de la panne :
   le précédent était en dur, et le jour où il est tombé, la seule correction possible était
   de republier le front.
 - **Le contrat est repris à l'identique** — même chemin, même charge. Le front n'a pas eu
@@ -178,11 +200,15 @@ pas seulement le sous-domaine). Trois choses à en retenir avant d'y toucher :
   plus sur `siteverify` : il demande une *évaluation* à
   `recaptchaenterprise.googleapis.com`, avec un projet (`baskewitsch`), une clé d'API et la
   clé de site. Trois pièges, tous silencieux :
-  - la **clé de site du front** (`src/boot/recap.js`) et le `RECAPTCHA_SITE_KEY` du service
+  - la **clé de site du front** (`src/utils/recaptcha.js`) et le `RECAPTCHA_SITE_KEY` du service
     doivent être **identiques** : Google évalue le jeton pour cette clé-là, et un jeton
     d'un autre enregistrement revient `valid: false` ;
-  - le boot doit charger Enterprise (`loaderOptions.useEnterprise`), sinon le jeton vient
-    de `recaptcha/api.js` et l'évaluation le rejette en `MALFORMED` ;
+  - `src/utils/recaptcha.js` doit charger Enterprise (`useEnterprise`), sinon le jeton
+    vient de `recaptcha/api.js` et l'évaluation le rejette en `MALFORMED`. Ce n'est
+    **plus un fichier d'amorçage** : `src/boot/recap.js` mettait le greffon dans
+    l'entrée du bundle et son `install()` appelait Google sur *toute* page, avant même
+    la réponse au bandeau de consentement. Seules `/contact` et un article postent ;
+    elles appellent `preloadRecaptcha()` au montage ;
   - le verdict est `tokenProperties.valid` et le score `riskAnalysis.score` — pas
     `success` ni `score` à la racine. Lire le score sans lire le verdict fait passer un
     jeton expiré pour un « score insuffisant ».

@@ -7,7 +7,7 @@
         class="app-btn app-btn--quiet article__back"
         no-caps
         flat
-        icon="arrow_back"
+        :icon="icons.arrowBack"
         to="/blog"
         :label="$t('blog.back')"
       />
@@ -19,7 +19,7 @@
       <figure class="article__cover" data-reveal style="--d: 0.1s">
         <button type="button" class="article__zoom" :aria-label="$t('blog.zoom')" @click="imageDialog = true">
           <img :src="post.cover" :alt="$t(`${post.key}.title`)" loading="lazy" decoding="async" />
-          <q-icon name="fullscreen" size="24px" />
+          <q-icon :name="icons.fullscreen" size="24px" />
         </button>
       </figure>
 
@@ -84,13 +84,15 @@
 <script>
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { api } from '@/boot/axios'
+import { api } from '@/utils/api'
 import { usePageMeta } from '@/composables/use-page-meta'
 import { useReveal } from '@/composables/use-reveal'
 import { trackEvent } from '@/utils/analytics'
 import { isValidEmail } from '@/utils/validation'
+import { executeRecaptcha, preloadRecaptcha } from '@/utils/recaptcha'
 import { readingTime } from '@/utils/reading-time'
 import posts from '@/data/posts'
+import icons from '@/data/icons'
 
 const stripTags = value => String(value).replace(/<[^>]*>/g, '')
 
@@ -118,6 +120,7 @@ export default {
   },
   data() {
     return {
+      icons,
       imageDialog: false,
       email: null,
       loading: false,
@@ -150,12 +153,16 @@ export default {
       this.loading = true
 
       try {
-        await this.$recaptchaLoaded()
-        const token = await this.$recaptcha('submit')
+        const token = await executeRecaptcha('submit')
 
+        // Ces deux chaînes ne sont pas de l'interface : elles composent le
+        // courriel reçu, toujours lu en français. La langue de lecture et
+        // l'article, eux, disent d'où vient l'inscription.
         await api.post('/mail', {
           name: "Une personne souhaite s'inscrire à la newsletter",
-          message: "Elle est d'accord pour que tu conserves les données jusqu'à demande contraire",
+          message:
+            "Elle est d'accord pour que tu conserves les données jusqu'à demande contraire.\n" +
+            `Langue de lecture : ${this.$i18n.locale}. Article : ${this.post.slug}.`,
           email: this.email,
           token
         })
@@ -165,7 +172,7 @@ export default {
         this.$q.notify({
           color: 'green-4',
           textColor: 'white',
-          icon: 'cloud_done',
+          icon: icons.cloudDone,
           message: this.$t('contact.sent')
         })
       } catch (error) {
@@ -173,7 +180,7 @@ export default {
         this.$q.notify({
           color: 'red-4',
           textColor: 'black',
-          icon: 'cloud_off',
+          icon: icons.cloudOff,
           message: this.$t('contact.not_sent')
         })
         console.error(error)
@@ -198,6 +205,9 @@ export default {
   mounted() {
     window.addEventListener('scroll', this.onScroll, { passive: true })
     this.onScroll()
+    // L'invitation à la lettre d'information ferme l'article : le script de
+    // Google se charge pendant la lecture, plus depuis l'entrée du bundle.
+    preloadRecaptcha()
   },
   beforeUnmount() {
     window.removeEventListener('scroll', this.onScroll)
@@ -331,7 +341,7 @@ export default {
 
 .article__disclaimer
   margin: 1.25rem 0 0
-  font-size: 0.8rem
+  font-size: var(--step--1)
 
 .article__lightbox
   max-width: 92vw

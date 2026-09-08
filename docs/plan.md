@@ -23,13 +23,21 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R12** | Les illustrations de l'article sont des captures de `mood.bas.lu` prises le **2026-08-28**. L'humeur en ligne était alors une humeur de test (« D Test ») et la carte partagée la montre. | Une vraie humeur posée sur le compte, et les captures reprises. |
 | **R13** | Le dépôt `aura` annonce encore « *Nothing is deployed* » dans son `README.md` et son journal de réserves, alors que `mood.bas.lu` sert bien l'application. Le portfolio publie désormais le projet en `live` — les deux sources se contredisent. | Le `README.md` et le journal de réserves d'`aura` mis à jour après le déploiement du 2026-08-28. |
 | **R15** | **reCAPTCHA v3 n'a pas arrêté un navigateur automatisé.** L'envoi de vérification du 2026-08-28 a été fait par Playwright — un Chromium piloté, sans interaction humaine — et a obtenu **0.9**, très au-dessus du seuil de 0.5. reCAPTCHA v3 ne bloque pas : il *note*, et la note s'est trompée. La protection réelle du formulaire repose donc sur le contrôle d'origine, le limiteur de débit et la vérification d'action, pas sur le score. | Rien ne « referme » ceci — c'est une propriété du produit. Mais : relever le seuil (0.7), et alimenter l'API d'annotations d'Enterprise pour que le modèle apprenne. À décider, pas à ignorer. |
-| **R16** | Les chiffres de l'article (27,4 Mo → 905 Ko, 42,6 Mo, 696 052 octets de polices) sont reconstitués depuis les **objets git**, pas depuis ce qu'un navigateur télécharge réellement : ni compression de transport, ni surcoût HTTP, ni cache. Ils décrivent le dépôt, pas la page. | Une mesure du poids transféré sur la production — un chargement à froid de l'accueil et d'un article, en octets reçus. |
+| **R16** | Les chiffres de l'article (27,4 Mo → 905 Ko, 42,6 Mo, 696 052 octets de polices) sont reconstitués depuis les **objets git**, pas depuis ce qu'un navigateur télécharge. Le lot 16 a mesuré la production, mais **par fichier** (`curl` sur neuf ressources : 1 128 514 octets, aucune compressée), pas en chargement de page complet. | Un chargement à froid de l'accueil et d'un article mesuré dans un navigateur — octets reçus, images et document compris — **après** le déploiement du lot 16. |
 | **R17** | Premier article **sans aucune illustration de section** : les huit portent `img: ""`. Les trois articles précédents en ont tous au moins une, donc le rythme d'`article.vue` sans images n'a jamais été vu. Le dossier `article_four` est déclaré dans le registre mais n'existe pas sur le disque — inoffensif tant qu'aucune section ne le désigne. | L'article publié, lu sur téléphone en portrait, dans les deux thèmes — la vérification qui a refermé R14. |
-| **R18** | L'article nomme `public/projects_folder/` (15 Mo, dont 12 pour `x1`) comme travail non fait. Il le reste. Le site plaide donc pour une sobriété que son propre domaine contredit d'un ordre de grandeur, et c'est maintenant écrit publiquement. | Les images des démos `x1` et `liberty` converties, ou une décision écrite de ne pas toucher au HTML de gabarits archivés. |
 | **R19** | **L'allemand n'a été relu par personne dont c'est la langue.** Les 133 clés — dont quatre articles longs, à la syntaxe travaillée — ont été traduites ici. C'est exactement la réserve que l'article `blogPost2` pose lui-même à propos du luxembourgeois de Schoulbus, et elle vaut maintenant pour ce site. | Une relecture par un locuteur natif, au moins sur le chrome (`layout`, `home`, `contact`, `consent`, `footer`) et les titres d'articles. **Le lot 15 y a ajouté un cinquième article complet**, neuf sections de plus, écrites ici comme les autres. |
 | **R20** | La liste de langues n'a été vue que **montée dans jsdom**. Le rendu réel n'a pas été regardé : dépassement du panneau ouvert vers le haut dans le menu plein écran, contraste des états `:hover` et `.is-active` en thème sombre, et navigation au clavier seule (la liste ne piège pas le focus et ne le déplace pas sur la première option). | Ouvrir l'en-tête sur la production, bureau et téléphone, dans les deux thèmes, et parcourir la liste à la tabulation. |
 | **R21** | Les six captures de **Royaume Foot** (vignette du projet, couverture et cinq illustrations) ont été prises ici, sur un serveur de développement local, dans un Chromium **sans GPU** (`--use-gl=swiftshader`) et **sans les polices du système** — c'est DejaVu Sans et Noto Color Emoji qui rendent le texte et les émojis, pas la pile que le jeu obtient sur un vrai appareil. Le rendu 3D est le vrai ; la typographie du HUD ne l'est pas forcément. | Une capture de `foot.bas.lu` prise dans un navigateur ordinaire, sur un téléphone, et les images reprises depuis celle-là. |
 | **R22** | Les chiffres de l'article Royaume Foot — 333 Ko compressés dont 185 pour three.js, 9 388 octets d'images en cinq fichiers, 667 tirs balayés, 144 tests — ont été mesurés le **2026-09-08** sur le dépôt `royaume-foot`, en local, et **revérifiés au commit `694ca42`** après qu'une autre session y a livré sa phase 5 pendant la rédaction — inchangés. Ils décrivent ce dépôt-là ce jour-là, pas ce qu'un navigateur télécharge depuis `foot.bas.lu`. | Rien — mais le jour où l'article est remis en avant, les relire, comme R5. |
+| **R23** | **La configuration NGINX n'a jamais été exécutée.** `nginx/default.conf` remplace l'`echo` du Dockerfile ; ni `docker` ni `nginx` n'étaient disponibles dans la session, donc pas même un `nginx -t`. Une directive fautive empêcherait le conteneur de démarrer — panne franche, mais panne. | `docker build` puis `docker run`, et trois `curl` : `content-encoding: gzip` sur le CSS, `cache-control: public, max-age=31536000, immutable` sur `/assets/`, `no-cache` sur `/`. |
+| **R24** | **Aucun moissonneur n'a lu un instantané.** Les quinze fichiers sont écrits et vérifiés sur le disque, et un test refuse qu'une balise `data-prerendered` survive au montage. Mais personne n'a collé un lien de la production dans une messagerie depuis le déploiement — c'est-à-dire la seule chose que ce lot cherchait à réparer. | Un `curl -A "facebookexternalhit/1.1"` sur un article de la production qui rend son propre `og:title`, puis le lien collé dans WhatsApp et la carte regardée. C'est la vérification que R11 demande déjà pour Aura. |
+| **R25** | **Les trente-huit icônes n'ont été vues rendues par personne.** Elles sont passées d'une police à des tracés SVG ; `test/icons.spec.js` vérifie la forme du tracé et la présence d'un `viewBox`, pas le dessin. Un tracé pris dans la mauvaise bibliothèque rendrait une icône *fausse* — ce qu'aucun test ne distingue d'une icône juste. C'est R2 sous une autre forme, et R2 n'avait jamais été refermée. | Ouvrir `/about` et l'accueil, thème clair et thème sombre, et regarder les vingt-huit icônes de la pile plus celles du pied de page. Referme R2 du même coup. |
+| **R26** | **Les images des démos ont été ré-encodées sans être regardées.** 39 fichiers passés en WebP à qualité 80, largeur plafonnée à 1920 px, 6,49 Mo → 1,32 Mo. Ce sont des gabarits archivés ; personne n'a rouvert `/projects/x1` ni `/projects/liberty` pour juger du résultat. | Les cinq démos ouvertes dans l'iframe, et les images comparées à ce que montrent les captures de `public/screenshots/`. |
+| **R27** | **Le formulaire n'a pas été renvoyé depuis le changement de reCAPTCHA.** Le greffon `vue-recaptcha-v3` a été remplacé par un appel direct à `recaptcha-v3`, chargé au montage des deux pages qui postent. La clé, le mode Enterprise et l'action `submit` sont inchangés, et les 65 tests passent — mais aucun jeton réel n'a été évalué depuis. | Un envoi depuis le formulaire publié, et `score` dans le journal du service, comme au lot 12. |
+| **R28** | **Rien de l'audit d'accessibilité n'a été vu à l'écran.** Les ratios de contraste sont calculés sur les jetons, les trous clavier sont lus dans la source. `--ink-3`, `--border-strong`, la bascule de consentement et le retour du focus ont changé sans qu'un navigateur ni un lecteur d'écran ne le confirme. | Ouvrir `/about`, `/projects`, `/contact` et le dialogue légal dans les deux thèmes, parcourir l'en-tête à la tabulation seule, et écouter la liste des langues sous NVDA ou VoiceOver. Referme aussi R20. |
+| **R29** | **Les six illustrations de `article_one` restent servies en 1200 px pour un cadre de 180 px**, `challenges.webp` en tête avec 255 442 octets — 0,237 octet par pixel contre 0,075 de médiane dans le dépôt. Ce n'est pas un oubli : aucun encodeur (`cwebp`, ImageMagick, PIL) n'était disponible dans la session qui l'a constaté. | Ré-encoder les six à 480 px de large, qualité 80, et reprendre la mesure. La visionneuse n'ouvre que `post.cover`, jamais ces images : rien n'a besoin de leur pleine résolution. |
+| **R30** | **Les démos tirent encore 328 714 octets de Font Awesome pour sept glyphes** (`x1` : cinq ; `pet4u` et `cupcake` : un chacun), plus Bootstrap et jQuery. C'est mot pour mot ce que le principe 4 interdit, sur un domaine que le site sert lui-même. Le traceur mort de `liberty` est parti au lot 17, la police reste. | Les sept tracés dans `src/data/icons.js` puis en SVG en ligne dans les trois gabarits — ou l'aveu écrit que les démos sont des archives figées, et qu'on n'y touche plus. À décider, pas à ignorer. |
+| **R31** | **L'i18n reste chargé en entier dans l'entrée du bundle** : 166 006 octets bruts, 63 642 compressés, les trois langues sur toutes les pages. `src/i18n/index.js` les importe statiquement. | Un `import()` par langue déclenché par `setLocale()`, et la mesure refaite. Écarté au lot 17 : le premier rendu a besoin du paquet, et le rendre asynchrone touche l'amorçage — un sujet à part, pas une retouche. |
 
 ---
 
@@ -39,6 +47,7 @@ Barrées avec une entrée datée et un élément de preuve, comme le veut la con
 
 | | Refermée le | Preuve |
 | --- | --- | --- |
+| ~~**R18**~~ | 2026-09-08 | **Les démos sont converties.** `public/projects_folder/` passe de 15,1 Mo à 1,6 Mo. Deux mesures, pas une : 39 images référencées converties en WebP (6 494 200 → 1 323 438 octets), et **quatre images que rien ne référençait** — dont trois JPEG de 2 à 3,8 Mo dans `x1` — supprimées (8 642 574 octets). L'audit a été fait en cherchant chaque nom de fichier dans les sources HTML/CSS/JS ; aucune adresse n'est construite dynamiquement, ce qui a été vérifié avant de supprimer quoi que ce soit. Les 26 références d'image des démos résolvent toutes après coup. Le site ne plaide donc plus pour une sobriété que son propre domaine contredisait. |
 | ~~**R14**~~ | 2026-08-28 | **Vu sur téléphone.** Alex confirme que la fiche Aura et l'article tiennent en portrait et en thème sombre. Les illustrations plafonnées à 180 px — des captures d'interface, plus denses que les images des articles précédents — passent donc à cette taille. |
 | ~~**R1**~~ | 2026-08-28 | **Le message est arrivé.** Alex confirme avoir reçu le courriel de test de bout en bout, envoyé depuis le formulaire publié. La réserve ouverte depuis le lot 1 — « aucun envoi n'a encore été reçu depuis la production » — est donc close, chaîne complète comprise : formulaire → `api.baskewitsch.lu` → reCAPTCHA Enterprise → `mailrelay` → OVH → boîte. À surveiller malgré tout : `bas.lu` n'a toujours ni DKIM ni DMARC, donc la délivrabilité peut se dégrader sans prévenir. |
 | ~~**R8**~~ | 2026-08-28 | **Le trajet SMTP a été parcouru.** Journal du relais : `from=<portfolio@bas.lu>`, `to=<alex.baskewitsch@gmail.com>`, `relay=ssl0.ovh.net[193.70.18.144]:587`, `status=sent (250 2.0.0 Ok: 1294 bytes queued as 8245FC1043)`. OVH accepte donc bien un expéditeur `@bas.lu` qui n'est pas la boîte authentifiée — l'hypothèse inverse, héritée de l'ancien service, était fausse. |
@@ -483,3 +492,162 @@ Réserves ouvertes par ce lot : **R21**, **R22**. **R19** s'alourdit d'un articl
   articles ne sont découvrables que par `/blog`.
 - **Le garde de `/projects/:shortcode`**, qui porte le même trou que celui du blog avant le
   lot 4 — sans conséquence tant qu'aucun lien ne mène d'une démo à une autre.
+
+### Lot 16 — Le poids réel, et les cartes que personne ne voyait · fait le 2026-09-08
+
+Un audit du site publié, puis sept corrections. Rien de nouveau côté contenu : ce lot ne
+touche qu'à ce qui part sur le réseau et à ce qu'un moissonneur reçoit.
+
+**Ce qui a été mesuré avant de toucher à quoi que ce soit**, sur la production et non
+sur le dépôt :
+
+```bash
+curl -sSI https://alex.baskewitsch.lu/assets/index-*.css
+# 299 564 octets, ni content-encoding, ni cache-control
+curl -A "facebookexternalhit/1.1" .../blog/royaume-foot-3d-for-children
+# <title>Alex Baskewitsch</title> — ni og:*, ni description, ni canonique
+```
+
+Neuf ressources d'entrée, 1 128 514 octets, **aucune compressée**, **aucune avec une
+durée de cache**. C'est le chiffre que R16 réclamait, en partie.
+
+Les sept correctifs, du plus rentable au plus discret :
+
+1. **NGINX comprime et date.** Le `default.conf` vivait dans un `echo` du Dockerfile et
+   ne posait que `try_files`. Il est maintenant un fichier : `gzip on` (la feuille de
+   style tombe de 299 564 à 60 900 octets), `immutable` sur `/assets/` — que Vite hache,
+   donc l'adresse ne périme jamais — et `no-cache` sur le document, pour qu'un
+   déploiement correct cesse d'avoir l'air sans effet.
+2. **Un instantané HTML par route.** `scripts/pre-rendu.mjs`, branché en `postbuild`,
+   écrit quinze `index.html` augmentés des balises de leur route, plus `sitemap.xml` et
+   `robots.txt` — qui n'existaient ni l'un ni l'autre et rendaient la coquille de la SPA
+   en 200. Le script réutilise `pageMeta()` et les registres : aucune liste n'est
+   recopiée. `try_files $uri $uri/ /index.html` les sert sans règle de plus.
+   C'est le sujet de `blogPost3` appliqué au site qui le publie.
+3. **Lexend en WOFF2.** Les trois graisses étaient servies en `.ttf` : 302 216 octets,
+   non compressés. Elles en font 116 240. La graisse 600, celle des titres, est
+   préchargée depuis l'instantané.
+4. **Plus aucune police d'icônes.** Font Awesome solid, Font Awesome brands et Material
+   Icons étaient chargées en entier — environ 470 Ko — pour trente-huit glyphes. Ils
+   sont devenus des tracés SVG dans `src/data/icons.js` (28 Ko de source, rendus en
+   ligne par QIcon). `extras` est vide ; vérifié au préalable qu'aucune composante
+   Quasar utilisée ici ne lit `$q.iconSet`.
+5. **reCAPTCHA quitte l'entrée du bundle.** `src/boot/recap.js` installait
+   `vue-recaptcha-v3`, dont l'`install()` injecte aussitôt le script de Google : 90 695
+   octets et un appel à google.com sur l'accueil, `/about`, `/projects` et l'index du
+   blog, **avant toute réponse au bandeau de consentement**, dont le texte ne parle que
+   de Google Analytics. Seules deux pages postent ; elles chargent maintenant
+   `recaptcha-v3` à la demande. Le greffon Vue, devenu inutile, sort des dépendances.
+6. **Les démos converties** — voir R18, refermée.
+7. **L'inscription à la lettre d'information** dit désormais la langue de lecture et
+   l'article d'où elle vient. Les deux chaînes restent en français : ce n'est pas de
+   l'interface, c'est le corps d'un courriel qu'une seule personne lit.
+
+Résultat sur l'entrée : **1 128 514 → 519 095 octets bruts, et 227 162 une fois
+comprimés** — les trois WOFF2 comptés tels quels, puisqu'ils ne se comprimment plus.
+
+**Ce qui a été trouvé en vérifiant, et non en écrivant.** Trois choses.
+
+D'abord, le script de pré-rendu **n'était pas idempotent** : il lit `dist/spa/index.html`
+comme gabarit et y écrit aussi l'instantané de l'accueil, si bien qu'une seconde
+exécution posait les balises de l'accueil sur tous les articles. Le nettoyage du gabarit
+est devenu une fonction testée, et le test compare le document rendu à son état d'origine.
+
+Ensuite, sur les quatre JPEG de deux à quatre mégaoctets de `x1`, **un seul est
+référencé**. Les trois autres — 8,6 Mo — n'étaient cités par aucun HTML, CSS ni JS. La
+part la plus lourde du dossier de démos n'était pas mal encodée : elle ne servait à rien.
+
+Enfin, `liberty/style.css` est une copie **identique** de `liberty/css/style.css`, que la
+page ne charge pas, et dont le chemin vers `hero` était déjà cassé avant ce lot. Laissée
+en l'état : la corriger ne change rien à ce qui est servi.
+
+*Réserves ouvertes : R23, R24, R25, R26, R27. Refermée : R18. R16 rétrécie.*
+
+---
+
+### Lot 17 — Ce que cinq auditeurs ont trouvé, et ce qu'on en a corrigé · fait le 2026-09-08
+
+Cinq agents d'audit écrits dans `.claude/agents/`, un par règle que `CLAUDE.md` énonce et
+qu'aucun test ne tenait : parité i18n, poids des actifs, charte visuelle, pré-rendu et SEO,
+accessibilité. Ils sont en lecture seule, et chacun connaît les réserves déjà ouvertes —
+c'est ce qui les empêche de re-rapporter R16, R18, R20, R24 ou R26 comme des trouvailles.
+
+**Le défaut le plus coûteux tenait dans une balise.** Les quinze instantanés portaient
+**deux `<title>`**, et le générique venait en premier : `index.html:4` survivait au
+nettoyage, qui ne retirait que les titres marqués `data-prerendered`. Tout ce qui lit le
+titre dans l'ordre de l'arbre — `document.title`, l'extraction de titre de Google — voyait
+« Alex Baskewitsch » sur les quinze adresses. `og:title` était juste, donc les cartes
+sociales ne montraient rien. Le trou de test était net : `test/pre-rendu.spec.js` construisait
+un gabarit **sans titre**, donc le nettoyage n'avait jamais rencontré le cas réel. Vérifié
+après construction : un titre par instantané, quinze sur quinze.
+
+**Le contraste, calculé plutôt que jugé à l'œil.** `--ink-3` valait 3,51:1 sur `--bg` et
+3,15:1 sur `--surface-2`, sous les 4,5:1 de WCAG AA — et il porte les *eyebrows*, `.muted`,
+les étiquettes flottantes des champs et le paragraphe des cartes projet, donc du texte
+courant. Il passe à `#63665d` en clair et `#82867a` en sombre : 4,56:1 au pire des quatre
+fonds, dans les deux thèmes. `--border-strong` passe de 0,38 à 0,46 d'alpha, ce qui amène le
+filet des champs à 3,02:1 — le minimum d'une limite de contrôle. Deux `opacity` locales qui
+ramenaient la même encre à 2,43:1 et 2,86:1 sont remplacées par un jeton.
+
+**La bascule de consentement au suivi était en `accent`**, soit 1,24:1 sur `--surface` : en
+thème clair, l'état d'un contrôle RGPD n'était pas perceptible. `quasar.variables.sass`
+écrivait pourtant déjà, trois lignes plus haut, que `$primary` est la déclinaison lisible du
+vert. Elle y passe : 6,15:1.
+
+**L'échelle typographique gagne `--step--2`.** Vingt-six tailles littérales entre 0,62rem et
+0,85rem la contournaient, dont huit dans `app.sass` lui-même. La cause n'était pas la
+négligence : l'échelle s'arrêtait à `--step--1` (0,78rem) et tout le registre des
+micro-libellés — numéros de nav, codes de langue, compteurs, pastilles — avait besoin de
+plus petit. Les vingt-six sont passées sur les deux crans du bas. Au passage,
+`.project__type` et `.mono` se disputaient `font-size` à spécificité égale dans un style non
+`scoped` : le vainqueur dépendait de l'ordre d'injection des feuilles.
+
+**Le garde de parité i18n ne regardait pas dans les tableaux** — sa propre docstring le
+disait. Chaque `blogPostN.sections` comptait pour une feuille, c'est-à-dire que 90 % du texte
+du site échappait aux trois tests. Il y descend désormais ; `img: ""` reste exempté, c'est la
+convention du dépôt. Rien n'était cassé, et c'est le point : rien ne l'aurait dit.
+
+Deux fautes de langue, trouvées par lecture et non par test. Le français recomposait « Ce
+site est protégé par la **Politique de confidentialité** […] » — le verbe s'était perdu au
+découpage en cinq fragments ; l'anglais et l'allemand sont intacts. Et l'allemand faisait
+naître l'informatique en 86 (`Jahrgang '86, hat mich die Informatik…` : l'apposition n'avait
+pas de sujet). « Laufende Seiten » devient « Live-Seiten », qui est ce que la pastille de
+catégorie affiche à trois centimètres de là.
+
+**`contact.message_long` n'existait pas** : au-delà de 5 120 caractères, le champ message
+affichait `5121/5120`, un ratio nu, identique dans les trois langues. La règle du champ
+« nom », juste au-dessus, faisait déjà ce qu'il fallait.
+
+**Deux articles n'étaient jamais montés.** `test/pages.spec.js` énumérait ses routes à la
+main et avait pris deux articles de retard, alors que ce fichier promet que *chaque* route se
+monte sans erreur console. Les routes sont maintenant dérivées de `posts` et `projects` :
+74 tests au lieu de 66, et les six routes nouvellement couvertes passent sans rien lever.
+
+**Ce qu'un moissonneur reçoit, corrigé côté serveur.** `/blog/article` — que `routes.js`
+décrit lui-même comme indexée et partagée — n'était redirigée que par le navigateur : un
+moissonneur y recevait l'instantané de l'accueil, en 200, canonique vers `/`. NGINX la
+redirige en 301, et un test refuse que la cible s'écarte du plus ancien article, puisque le
+routeur la dérive et que la configuration l'écrit en dur. Les cinq démos, servies avec les
+titres de leur gabarit d'origine (« Document », « Liberty - Responsive One Page Template »),
+sortent de l'index par `robots.txt` et par un `X-Robots-Tag`.
+
+**Le poids, mesuré.** 83 624 octets de fichiers que personne ne demandait :
+`article_one/conclusion.webp` (49 132, citée par aucune section dans aucune langue),
+`src/assets/logo.png` (échafaudage Quasar), deux `style.css` racine doublons de
+`css/style.css`, et quatre fichiers Sass et *source maps* copiés dans `dist/spa`. Axios quitte
+l'entrée du bundle : il était en amorçage, donc sur toutes les pages, pour deux `api.post` —
+et le fichier n'enregistrait que `$api` et `$axios`, que personne ne lisait. Il devient
+`src/utils/api.js` et tombe dans les fragments des deux pages qui postent ; vérifié absent de
+l'entrée après construction. C'est le même piège que `boot/recap.js`, corrigé au lot 16.
+
+**Et un traceur qu'on ne cherchait pas.** `liberty/index.html` chargeait `gtag.js` sans
+condition, dans une iframe servie par un site dont le suivi propre est conditionné à une
+bannière de consentement : 123 709 octets partaient vers Google avant toute réponse du
+visiteur. La propriété visée est une propriété Universal Analytics, arrêtée en 2023 — ces
+octets ne mesuraient rien. Retiré.
+
+Porte complète au vert : `lint`, `test` (74), `build`, `verify:api-url`.
+
+*Réserves ouvertes par ce lot : R28, R29, R30, R31.*
+
+---

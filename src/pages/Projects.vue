@@ -97,7 +97,7 @@ export default {
   gap: 0.45rem
   padding: 0.45rem 0.9rem
   font-family: var(--font-mono)
-  font-size: 0.72rem
+  font-size: var(--step--2)
   font-weight: 500
   letter-spacing: 0.1em
   text-transform: uppercase
@@ -118,9 +118,9 @@ export default {
     border-color: transparent
 
 .filters__count
-  font-size: 0.62rem
+  font-size: var(--step--2)
   font-variant-numeric: tabular-nums
-  opacity: 0.6
+  color: var(--ink-3)
 
 .swap-enter-active
   transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)
