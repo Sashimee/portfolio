@@ -38,9 +38,14 @@ import CookieBanner from '@/components/CookieBanner.vue'
 import LegalDialog from '@/components/LegalDialog.vue'
 import TheFooter from '@/components/TheFooter.vue'
 import TheHeader from '@/components/TheHeader.vue'
-import { clearAnalytics, hasTrackingConsent, loadAnalytics, trackPageview } from '@/utils/analytics'
+import {
+  CONSENT_COOKIE,
+  clearAnalytics,
+  hasTrackingConsent,
+  loadAnalytics,
+  trackPageview
+} from '@/utils/analytics'
 
-const CONSENT_COOKIE = 'accepted_tracking_cookies'
 const COOKIE_OPTIONS = { expires: 365, sameSite: 'Strict', path: '/' }
 
 export default {
