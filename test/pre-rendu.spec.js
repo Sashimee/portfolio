@@ -45,11 +45,85 @@ describe('les routes pré-rendues', () => {
     }
   })
 
-  it('date les articles et eux seuls', () => {
+  // L'accueil et l'index du blog changent avec le dernier article : ils portent
+  // une date réelle. Les autres n'en ont aucune à annoncer, et une date inventée
+  // vaudrait moins qu'un silence.
+  it('date les articles, plus les deux pages que le dernier article change', () => {
+    const datees = new Set(['/', '/blog'])
+
     for (const route of routes) {
-      if (route.path.startsWith('/blog/')) expect(route.lastmod).toMatch(/^\d{4}-\d{2}-\d{2}$/)
-      else expect(route.lastmod).toBeUndefined()
+      if (route.path.startsWith('/blog/') || datees.has(route.path)) {
+        expect(route.lastmod, route.path).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+      } else {
+        expect(route.lastmod, route.path).toBeUndefined()
+      }
     }
+
+    const plusRecente = posts.map(post => post.date).sort().at(-1)
+    for (const chemin of datees) {
+      expect(routes.find(route => route.path === chemin).lastmod).toBe(plusRecente)
+    }
+  })
+
+  it('pose des données structurées sur l\'accueil et sur les articles', () => {
+    const ld = balises => {
+      const trouve = balises.match(
+        /<script type="application\/ld\+json" data-prerendered>([\s\S]*?)<\/script>/
+      )
+      return trouve ? JSON.parse(trouve[1].replaceAll('\\u003c', '<')) : null
+    }
+
+    const accueil = ld(renderHeadTags(routes.find(r => r.path === '/')))
+    expect(accueil['@type']).toBe('WebSite')
+    expect(accueil.author.sameAs).toContain('https://github.com/Sashimee')
+
+    const article = ld(renderHeadTags(routes.find(r => r.path.startsWith('/blog/'))))
+    expect(article['@type']).toBe('BlogPosting')
+    expect(article.datePublished).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    expect(article.image).toMatch(/^https:\/\//)
+
+    // Une fiche de projet n'a pas de type schema.org qui lui aille : aucune
+    // balise plutôt qu'une balise creuse.
+    expect(ld(renderHeadTags(routes.find(r => r.path.startsWith('/projects/'))))).toBeNull()
+  })
+
+  it('n\'ouvre jamais la balise qui porte le JSON-LD', () => {
+    // `</script>` dans un titre refermerait le bloc et déverserait le reste
+    // dans le document.
+    const balises = renderHeadTags({
+      path: '/blog/x',
+      title: 'Fin</script><script>alert(1)</script>',
+      description: 'x',
+      article: { published: '2026-09-08' }
+    })
+
+    expect(balises).not.toContain('</script><script>alert(1)')
+    expect(balises).toContain('\\u003c/script')
+  })
+
+  it('donne à chaque fiche de projet sa propre description', () => {
+    const fiches = routes.filter(route => route.path.startsWith('/projects/'))
+
+    expect(fiches.length).toBeGreaterThan(1)
+    expect(new Set(fiches.map(route => route.description)).size).toBe(fiches.length)
+    for (const route of fiches) {
+      expect(route.description.length, route.path).toBeLessThanOrEqual(161)
+      expect(route.description, route.path).not.toMatch(/[<>]/)
+    }
+  })
+
+  it("déclare un article comme un article, avec sa date", () => {
+    for (const route of routes.filter(r => r.path.startsWith('/blog/'))) {
+      expect(route.article).toEqual({ published: route.lastmod })
+    }
+
+    const balises = renderHeadTags(routes.find(r => r.path.startsWith('/blog/')))
+    expect(balises).toContain('property="og:type" content="article"')
+    expect(balises).toContain('property="article:published_time"')
+
+    expect(renderHeadTags(routes.find(r => r.path === '/about'))).toContain(
+      'property="og:type" content="website"'
+    )
   })
 })
 
@@ -154,7 +228,7 @@ describe('le plan du site et robots.txt', () => {
     for (const post of posts) {
       expect(sitemap).toContain(`<loc>https://alex.baskewitsch.lu/blog/${post.slug}</loc>`)
     }
-    expect([...sitemap.matchAll(/<lastmod>/g)]).toHaveLength(posts.length)
+    expect([...sitemap.matchAll(/<lastmod>/g)]).toHaveLength(posts.length + 2)
   })
 
   it('renvoie robots.txt vers le plan du site', () => {
@@ -169,9 +243,17 @@ describe("le démarrage retire les balises de l'instantané", () => {
   it('ne laisse aucun [data-prerendered] après le montage', async () => {
     document.head.insertAdjacentHTML(
       'beforeend',
-      renderHeadTags({ path: '/blog/exemple', title: 'T', description: 'D' })
+      // Avec `article`, l'instantané porte aussi son bloc JSON-LD : le
+      // nettoyage doit emporter le script comme les balises.
+      renderHeadTags({
+        path: '/blog/exemple',
+        title: 'T',
+        description: 'D',
+        article: { published: '2026-01-01' }
+      })
     )
     expect(document.querySelectorAll('[data-prerendered]').length).toBeGreaterThan(0)
+    expect(document.querySelectorAll('script[data-prerendered]').length).toBe(1)
 
     const router = createRouter({ history: createMemoryHistory(), routes: appRoutes })
     router.push(`/blog/${posts[0].slug}`)

@@ -38,7 +38,8 @@ export function usePageMeta({
   descriptionKey,
   path,
   image,
-  noindex = false
+  noindex = false,
+  article = null
 }) {
   const { t, locale } = useI18n()
 
@@ -51,7 +52,8 @@ export function usePageMeta({
       path: resolve(path),
       image: resolve(image),
       locale: locale.value,
-      noindex
+      noindex,
+      article: resolve(article)
     })
   )
 }

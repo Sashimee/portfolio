@@ -18,7 +18,12 @@
 
       <figure class="article__cover" data-reveal style="--d: 0.1s">
         <button type="button" class="article__zoom" :aria-label="$t('blog.zoom')" @click="imageDialog = true">
-          <img :src="post.cover" :alt="$t(`${post.key}.title`)" loading="lazy" decoding="async" />
+          <img
+            :src="post.cover"
+            :alt="$t(`${post.key}.title`)"
+            fetchpriority="high"
+            decoding="async"
+          />
           <q-icon :name="icons.fullscreen" size="24px" />
         </button>
       </figure>
@@ -112,7 +117,8 @@ export default {
       // qu'une méta-description ne doit pas recopier telle quelle.
       description: () => stripTags(t(`${post.key}.title2`)),
       path: `/blog/${post.slug}`,
-      image: post.cover
+      image: post.cover,
+      article: { published: post.date }
     })
     useReveal()
 

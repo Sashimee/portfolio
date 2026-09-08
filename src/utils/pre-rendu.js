@@ -1,6 +1,6 @@
 import posts from '@/data/posts'
 import projects from '@/data/projects'
-import { pageMeta, SITE_URL } from '@/utils/meta'
+import { pageMeta, shortSummary, SITE_URL } from '@/utils/meta'
 import en from '@/i18n/en'
 
 const stripTags = value => String(value).replace(/<[^>]*>/g, '')
@@ -40,7 +40,9 @@ export function prerenderedRoutes() {
     routes.push({
       path: `/projects/${project.link}`,
       title: project.name,
-      description: en.seo.project.description,
+      // Chaque fiche porte sa propre description : les cinq partageaient celle,
+      // générique, de `seo.project.description`.
+      description: shortSummary(en.projects.texts[project.infoKey]) || en.seo.project.description,
       image: `/screenshots/${project.img}.webp`
     })
   }
@@ -51,8 +53,17 @@ export function prerenderedRoutes() {
       title: en[post.key].title,
       description: stripTags(en[post.key].title2),
       cover: coverBaseName(post.cover),
-      lastmod: post.date
+      lastmod: post.date,
+      article: { published: post.date }
     })
+  }
+
+  // L'accueil et l'index du blog changent avec le dernier article publié : ils
+  // ont donc une date réelle à annoncer. Les autres routes n'en ont aucune, et
+  // en inventer une vaudrait moins que de n'en donner aucune.
+  const derniere = posts.map(post => post.date).sort().at(-1)
+  for (const route of routes) {
+    if (route.path === '/' || route.path === '/blog') route.lastmod = derniere
   }
 
   return routes
@@ -78,7 +89,8 @@ export function renderHeadTags(route) {
     title: route.title,
     description: route.description,
     path: route.path,
-    image: route.image
+    image: route.image,
+    article: route.article
   })
 
   const tags = [`<title data-prerendered>${escape(descriptor.title)}</title>`]
@@ -90,6 +102,12 @@ export function renderHeadTags(route) {
   }
 
   tags.push(`<link rel="canonical" href="${escape(descriptor.link.canonical.href)}" data-prerendered>`)
+
+  if (descriptor.script?.ldJson) {
+    tags.push(
+      `<script type="application/ld+json" data-prerendered>${descriptor.script.ldJson.innerHTML}</script>`
+    )
+  }
 
   return tags.join('\n    ')
 }
@@ -111,6 +129,7 @@ export function stripPrerenderedTags(html) {
   return html
     .replace(/\s*<title\b[^>]*>[\s\S]*?<\/title>/g, '')
     .replace(/\s*<link\b[^>]*\bdata-font-preload\b[^>]*>/g, '')
+    .replace(/\s*<script\b[^>]*\bdata-prerendered\b[^>]*>[\s\S]*?<\/script>/g, '')
     .replace(/\s*<(?:meta|link)\b[^>]*\bdata-prerendered\b[^>]*>/g, '')
 }
 
