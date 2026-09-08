@@ -34,6 +34,30 @@ describe('configuration', () => {
     expect(config.faireConfianceAuProxy).toBe(false)
   })
 
+  // `Number('')` vaut 0, et 0 est fini : une cle presente mais vide gagnait
+  // contre son defaut. Le `.env.example` livre ces trois cles en commentaire.
+  it('retombe sur les valeurs par defaut quand une variable numerique est vide', () => {
+    const config = chargerConfig({
+      ...ENV_COMPLET,
+      PORT: '',
+      SMTP_PORT: '',
+      RECAPTCHA_SCORE_MIN: '',
+      RATE_LIMIT_WINDOW_MS: '',
+      RATE_LIMIT_MAX: '   '
+    })
+
+    expect(config.port).toBe(3000)
+    expect(config.smtp.port).toBe(465)
+    expect(config.recaptcha.seuil).toBe(0.5)
+    expect(config.limite.fenetreMs).toBeGreaterThan(0)
+    expect(config.limite.maximum).toBeGreaterThan(0)
+  })
+
+  it('respecte une valeur numerique explicite, y compris zero', () => {
+    expect(chargerConfig({ ...ENV_COMPLET, RECAPTCHA_SCORE_MIN: '0.7' }).recaptcha.seuil).toBe(0.7)
+    expect(chargerConfig({ ...ENV_COMPLET, RECAPTCHA_SCORE_MIN: '0' }).recaptcha.seuil).toBe(0)
+  })
+
   it('bascule en STARTTLS quand le port est 587', () => {
     expect(chargerConfig({ ...ENV_COMPLET, SMTP_PORT: '587' }).smtp.secure).toBe(false)
   })
@@ -105,7 +129,7 @@ describe('validation', () => {
   })
 
   it('applique les bornes que le front annonce dans ses règles', () => {
-    expect(BORNES).toEqual({ nom: 1024, message: 5120 })
+    expect(BORNES).toEqual({ nom: 1024, message: 5120, jeton: 4096 })
     expect(validerDemande({ ...valide, name: 'a'.repeat(1024) }).motif).toBe('nom_trop_long')
     expect(validerDemande({ ...valide, message: 'a'.repeat(5120) }).motif).toBe('message_trop_long')
   })
@@ -121,6 +145,20 @@ describe('limiteur', () => {
 
     maintenant = 1001
     expect(limiteur.verifier('a').autorise).toBe(true)
+  })
+
+  it('ne laisse pas une fenetre vide desarmer le compteur', () => {
+    // Avec `RATE_LIMIT_WINDOW_MS=`, la fenetre valait 0 et chaque appel purgeait
+    // l'entree precedente : cinquante requetes de suite etaient autorisees.
+    const config = chargerConfig({ ...ENV_COMPLET, RATE_LIMIT_WINDOW_MS: '', RATE_LIMIT_MAX: '5' })
+    let maintenant = 0
+    const limiteur = creerLimiteur({ ...config.limite, horloge: () => maintenant })
+
+    const autorisees = Array.from({ length: 50 }, () => limiteur.verifier('a').autorise).filter(
+      Boolean
+    ).length
+
+    expect(autorisees).toBe(5)
   })
 
   it('oublie les entrées expirées au lieu de croître sans fin', () => {
@@ -177,6 +215,43 @@ describe('reCAPTCHA Enterprise', () => {
     const { verifier } = verificateurAvec(valide(0.9, 'login'))
 
     expect((await verifier('jeton')).motif).toBe('action_inattendue:login')
+  })
+
+  // Le refus par defaut, sur les deux lectures qui laissaient passer.
+  it('refuse quand Google ne rapporte aucune action', async () => {
+    // `proprietes.action && ...` sautait la comparaison sur une action vide ou
+    // absente : le controle existait, et ne s'appliquait pas.
+    for (const proprietes of [
+      { valid: true, action: '' },
+      { valid: true }
+    ]) {
+      const { verifier } = verificateurAvec({ tokenProperties: proprietes, riskAnalysis: { score: 0.9 } })
+      const resultat = await verifier('jeton')
+
+      expect(resultat.accepte).toBe(false)
+      expect(resultat.motif).toBe('action_inattendue:absente')
+    }
+  })
+
+  it('refuse un verdict sans score exploitable', async () => {
+    // `typeof score === 'number' && score < seuil` acceptait tout ce qui n'etait
+    // pas un nombre : cle mal configuree, reponse partielle, score en chaine.
+    for (const analyse of [undefined, {}, { score: '0.1' }, { score: null }, { score: NaN }]) {
+      const charge = { tokenProperties: { valid: true, action: 'submit' } }
+      if (analyse !== undefined) charge.riskAnalysis = analyse
+
+      const resultat = await verificateurAvec(charge).verifier('jeton')
+
+      expect(resultat.accepte).toBe(false)
+      expect(resultat.motif).toBe('score_absent')
+    }
+  })
+
+  it('accepte un score a la limite du seuil', async () => {
+    await expect(verificateurAvec(valide(0.5)).verifier('jeton')).resolves.toEqual({
+      accepte: true,
+      score: 0.5
+    })
   })
 
   it('rapporte la raison du refus de Google', async () => {
@@ -280,9 +355,31 @@ describe('expéditeur', () => {
 
     const message = sendMail.mock.calls[0][0]
     expect(message.from).toBe('boite@baskewitsch.lu')
-    expect(message.replyTo).toBe('Une personne <personne@example.com>')
+    expect(message.replyTo).toEqual({ name: 'Une personne', address: 'personne@example.com' })
     expect(message.subject).toBe('[portfolio] Une personne')
     expect(message.text).toContain('Bonjour')
+  })
+
+  it('ne laisse pas un nom glisser une seconde adresse dans Reply-To', async () => {
+    // `assainirSujet` n'ote que les fins de ligne : `<`, `>` et la virgule
+    // passaient, et l'adresse injectee se placait devant celle du visiteur.
+    // L'adresse structuree fait citer le nom par nodemailer.
+    const sendMail = vi.fn(async () => ({}))
+    const envoyer = creerExpediteur({
+      smtp: { host: 'mailrelay', port: 587, secure: false, user: '' },
+      courriel: { from: 'boite@baskewitsch.lu', to: 'moi@example.com', sujet: '[portfolio]' },
+      transport: { sendMail }
+    })
+
+    await envoyer({
+      name: 'Bob <attaquant@evil.example>, Autre',
+      email: 'personne@example.com',
+      message: 'Bonjour'
+    })
+
+    const { replyTo } = sendMail.mock.calls[0][0]
+    expect(replyTo.address).toBe('personne@example.com')
+    expect(replyTo.name).toBe('Bob <attaquant@evil.example>, Autre')
   })
 
   it('neutralise une tentative d\'injection d\'en-tête par le nom', () => {

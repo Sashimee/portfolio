@@ -14,7 +14,10 @@
 const MOTIF_COURRIEL =
   /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/
 
-export const BORNES = { nom: 1024, message: 5120 }
+// Le jeton reCAPTCHA tourne autour de 600 octets ; la borne est large exprès.
+// Sans elle, une « chaîne » de plusieurs mégaoctets partait telle quelle chez
+// Google, à nos frais et sur notre quota.
+export const BORNES = { nom: 1024, message: 5120, jeton: 4096 }
 
 function chaineNonVide(valeur) {
   return typeof valeur === 'string' && valeur.trim().length > 0
@@ -40,6 +43,7 @@ export function validerDemande(corps) {
   if (message.length >= BORNES.message) return { valide: false, motif: 'message_trop_long' }
 
   if (!chaineNonVide(token)) return { valide: false, motif: 'jeton_manquant' }
+  if (token.length >= BORNES.jeton) return { valide: false, motif: 'jeton_trop_long' }
 
   return {
     valide: true,

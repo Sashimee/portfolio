@@ -30,12 +30,17 @@
 <script>
 import { useRoute } from 'vue-router'
 import { usePageMeta } from '@/composables/use-page-meta'
+import { useReveal } from '@/composables/use-reveal'
 import icons from '@/data/icons'
 
 export default {
   name: 'ErrorNotFound',
   setup() {
     const route = useRoute()
+    // Même raison que dans projects/Show.vue : sans observer, le pied de page
+    // hérité de la page précédente reste masqué.
+    useReveal()
+
     usePageMeta({
       titleKey: 'seo.notFound.title',
       descriptionKey: 'seo.notFound.description',

@@ -11,6 +11,7 @@
  * contrat qui n'avait pas de tort.
  */
 import { Hono } from 'hono'
+import { bodyLimit } from 'hono/body-limit'
 
 import { creerLimiteur } from './rate-limit.js'
 import { validerDemande } from './validation.js'
@@ -49,62 +50,83 @@ export function creerApp({ config, verifierJeton, envoyerCourriel, journal = con
 
   app.get('/health', c => c.json({ ok: true }))
 
-  app.post('/api/mail', async c => {
-    const origine = c.req.header('origin')
-    // Une origine absente est acceptée (curl, sonde) ; une origine présente et
-    // inconnue ne l'est pas — c'est un site tiers qui se sert du formulaire.
-    if (origine && !origineAutorisee(origine)) {
-      journal.warn(`mail: origine refusée ${origine}`)
-      return refus(c, 403, 'origine_refusee')
+  // Le corps est lu avant toute validation : sans plafond, cinq requêtes par
+  // fenêtre suffisaient à faire tamponner des centaines de Mo dans le tas.
+  app.post(
+    '/api/mail',
+    bodyLimit({
+      maxSize: 64 * 1024,
+      onError: c => {
+        journal.warn('mail: corps trop volumineux')
+        return refus(c, 413, 'corps_trop_volumineux')
+      }
+    }),
+    async c => {
+      const origine = c.req.header('origin')
+      // Une origine absente est acceptée (curl, sonde) ; une origine présente et
+      // inconnue ne l'est pas — c'est un site tiers qui se sert du formulaire.
+      if (origine && !origineAutorisee(origine)) {
+        journal.warn(`mail: origine refusée ${origine}`)
+        return refus(c, 403, 'origine_refusee')
+      }
+
+      const ip = adresseClient(c, config.faireConfianceAuProxy)
+
+      const debit = limiteur.verifier(ip)
+      if (!debit.autorise) {
+        journal.warn(`mail: débit dépassé pour ${ip}`)
+        c.res.headers.set('retry-after', String(Math.ceil(debit.resteMs / 1000)))
+        return refus(c, 429, 'trop_de_demandes')
+      }
+
+      let corps
+      try {
+        corps = await c.req.json()
+      } catch {
+        journal.warn(`mail: corps illisible depuis ${ip}`)
+        return refus(c, 400, 'corps_illisible')
+      }
+
+      const validation = validerDemande(corps)
+      if (!validation.valide) {
+        journal.warn(`mail: charge refusée (${validation.motif})`)
+        return refus(c, 400, validation.motif)
+      }
+
+      const { token, ...demande } = validation.donnees
+
+      let verdict
+      try {
+        verdict = await verifierJeton(token, config.faireConfianceAuProxy ? ip : undefined)
+      } catch (erreur) {
+        journal.error('mail: vérification du jeton impossible', erreur)
+        return refus(c, 502, 'verification_indisponible')
+      }
+
+      if (!verdict.accepte) {
+        // Le vérificateur ne lève pas sur une panne réseau : sans ce tri, une
+        // indisponibilité de Google se lisait dans le journal comme une vague de
+        // visiteurs aux jetons douteux, et le 502 ci-dessus restait hors d'atteinte.
+        if (verdict.motif.startsWith('verification_indisponible')) {
+          journal.error(`mail: vérification indisponible (${verdict.motif})`)
+          return refus(c, 502, 'verification_indisponible')
+        }
+
+        journal.warn(`mail: jeton refusé (${verdict.motif})`)
+        return refus(c, 403, 'jeton_refuse')
+      }
+
+      try {
+        await envoyerCourriel(demande)
+      } catch (erreur) {
+        journal.error('mail: envoi SMTP échoué', erreur)
+        return refus(c, 502, 'envoi_impossible')
+      }
+
+      journal.info(`mail: message relayé (score ${verdict.score ?? 'n/c'})`)
+      return c.body(null, 204)
     }
-
-    const ip = adresseClient(c, config.faireConfianceAuProxy)
-
-    const debit = limiteur.verifier(ip)
-    if (!debit.autorise) {
-      journal.warn(`mail: débit dépassé pour ${ip}`)
-      c.res.headers.set('retry-after', String(Math.ceil(debit.resteMs / 1000)))
-      return refus(c, 429, 'trop_de_demandes')
-    }
-
-    let corps
-    try {
-      corps = await c.req.json()
-    } catch {
-      return refus(c, 400, 'corps_illisible')
-    }
-
-    const validation = validerDemande(corps)
-    if (!validation.valide) {
-      journal.warn(`mail: charge refusée (${validation.motif})`)
-      return refus(c, 400, validation.motif)
-    }
-
-    const { token, ...demande } = validation.donnees
-
-    let verdict
-    try {
-      verdict = await verifierJeton(token, config.faireConfianceAuProxy ? ip : undefined)
-    } catch (erreur) {
-      journal.error('mail: vérification du jeton impossible', erreur)
-      return refus(c, 502, 'verification_indisponible')
-    }
-
-    if (!verdict.accepte) {
-      journal.warn(`mail: jeton refusé (${verdict.motif})`)
-      return refus(c, 403, 'jeton_refuse')
-    }
-
-    try {
-      await envoyerCourriel(demande)
-    } catch (erreur) {
-      journal.error('mail: envoi SMTP échoué', erreur)
-      return refus(c, 502, 'envoi_impossible')
-    }
-
-    journal.info(`mail: message relayé (score ${verdict.score ?? 'n/c'})`)
-    return c.body(null, 204)
-  })
+  )
 
   app.notFound(c => refus(c, 404, 'inconnu'))
 

@@ -44,7 +44,10 @@
 <script>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { usePageMeta } from '@/composables/use-page-meta'
+import { shortSummary } from '@/utils/meta'
+import { useReveal } from '@/composables/use-reveal'
 import projectsData from '@/data/projects'
 import icons from '@/data/icons'
 
@@ -52,6 +55,12 @@ export default {
   name: 'PageShowProject',
   setup() {
     const route = useRoute()
+    const { t } = useI18n()
+    // Le pied de page vit hors du router-view et porte `data-reveal` : sans
+    // observer sur cette page, il restait à opacité nulle — invisible, mais
+    // toujours cliquable et toujours dans l'ordre de tabulation.
+    useReveal()
+
     // The route guard in src/router/routes.js already rejected unknown
     // shortcodes, so there is always a match here.
     const project = computed(() =>
@@ -60,7 +69,9 @@ export default {
 
     usePageMeta({
       title: () => project.value.name,
-      descriptionKey: 'seo.project.description',
+      // Le texte propre au projet, tronqué : les cinq fiches partageaient
+      // sinon la description générique de `seo.project.description`.
+      description: () => shortSummary(t(`projects.texts.${project.value.infoKey}`)),
       path: () => route.path,
       image: () => '/screenshots/' + project.value.img + '.webp'
     })

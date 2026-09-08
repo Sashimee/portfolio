@@ -13,7 +13,11 @@ function gtag() {
 }
 
 export function hasTrackingConsent() {
-  return Cookies.get(CONSENT_COOKIE) === true
+  // Quasar ne déballe le JSON d'un cookie que pour un objet ou un tableau : le
+  // booléen écrit à l'acceptation revient donc en chaîne. Comparer à `true`
+  // seul n'a jamais rien laissé passer.
+  const valeur = Cookies.get(CONSENT_COOKIE)
+  return valeur === true || valeur === 'true'
 }
 
 /** Cookie domain GA writes to, so we can clean up after ourselves. */
@@ -25,7 +29,13 @@ function cookieDomain() {
 
 /** Injects gtag.js once. No-op without consent, or on the server. */
 export function loadAnalytics() {
-  if (scriptLoaded || typeof window === 'undefined' || !hasTrackingConsent()) return
+  if (typeof window === 'undefined' || !hasTrackingConsent()) return
+
+  // Se réinscrire doit lever le drapeau posé par `clearAnalytics()` : sinon
+  // gtag continue d'écarter chaque appel jusqu'à la fin de la session.
+  window[`ga-disable-${GA_ID}`] = false
+
+  if (scriptLoaded) return
 
   window.dataLayer = window.dataLayer || []
   gtag('js', new Date())

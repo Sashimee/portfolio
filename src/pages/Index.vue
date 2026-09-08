@@ -69,7 +69,7 @@
           data-reveal
           :style="`--d: ${position * 0.1}s`"
         >
-          <project-card :project="project" />
+          <project-card :project="project" :priority="position === 0" />
         </div>
       </div>
     </section>
