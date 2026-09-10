@@ -143,13 +143,16 @@ describe('language selector', () => {
 
     const german = items.find(item => item.attributes('lang') === 'de')
     await german.trigger('click')
+    // `setLocale` attend le fragment de la langue : un `trigger` seul rend la
+    // main avant que la bascule ait eu lieu.
+    await flushPromises()
 
     expect(header.vm.locale).toBe('de')
     expect(header.find('.lang__list').exists()).toBe(false)
     expect(header.find('.lang__trigger').text()).toContain('DE')
     expect(document.documentElement.getAttribute('lang')).toBe('de')
 
-    setLocale('en')
+    await setLocale('en')
   })
 
   it('marks the current locale and only that one', async () => {

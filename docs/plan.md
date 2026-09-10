@@ -36,12 +36,12 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R28** | **Rien de l'audit d'accessibilité n'a été vu à l'écran.** Les ratios de contraste sont calculés sur les jetons, les trous clavier sont lus dans la source. `--ink-3`, `--border-strong`, la bascule de consentement et le retour du focus ont changé sans qu'un navigateur ni un lecteur d'écran ne le confirme. | Ouvrir `/about`, `/projects`, `/contact` et le dialogue légal dans les deux thèmes, parcourir l'en-tête à la tabulation seule, et écouter la liste des langues sous NVDA ou VoiceOver. Referme aussi R20. |
 | **R29** | **Les six illustrations de `article_one` restent servies en 1200 px pour un cadre de 180 px**, `challenges.webp` en tête avec 255 442 octets — 0,237 octet par pixel contre 0,075 de médiane dans le dépôt. Ce n'est pas un oubli : aucun encodeur (`cwebp`, ImageMagick, PIL) n'était disponible dans la session qui l'a constaté. | Ré-encoder les six à 480 px de large, qualité 80, et reprendre la mesure. La visionneuse n'ouvre que `post.cover`, jamais ces images : rien n'a besoin de leur pleine résolution. **Corrigé au lot 18 : `article_one` en porte cinq, pas six, et `article_three` a le même défaut — neuf fichiers, 595 934 octets.** |
 | **R30** | **Les démos tirent encore 328 714 octets de Font Awesome pour sept glyphes** (`x1` : cinq ; `pet4u` et `cupcake` : un chacun), plus Bootstrap et jQuery. C'est mot pour mot ce que le principe 4 interdit, sur un domaine que le site sert lui-même. Le traceur mort de `liberty` est parti au lot 17, la police reste. **Corrigé au lot 18 : ces octets viennent de six CDN tiers, pas de notre domaine — c'est donc autant un problème de consentement que de poids. `popper.js`, chargé par deux démos et utilisé par aucune, est parti.** | Les sept tracés dans `src/data/icons.js` puis en SVG en ligne dans les trois gabarits — ou l'aveu écrit que les démos sont des archives figées, et qu'on n'y touche plus. À décider, pas à ignorer. |
-| **R31** | **L'i18n reste chargé en entier dans l'entrée du bundle** : 166 006 octets bruts, 63 642 compressés, les trois langues sur toutes les pages. `src/i18n/index.js` les importe statiquement. | Un `import()` par langue déclenché par `setLocale()`, et la mesure refaite. Écarté au lot 17 : le premier rendu a besoin du paquet, et le rendre asynchrone touche l'amorçage — un sujet à part, pas une retouche. **Corrigé au lot 18 : le paquet n'est pas dans le fragment d'entrée mais importé statiquement par `MainLayout` — même effet, autre point de correction.** |
 | **R32** | **Il ne reste que le pied de page, et il demande un œil.** La mesure d'audience, les balises servies au moissonneur et les cinq descriptions de fiches sont vérifiées sur la production (voir ci-dessous). Reste que personne n'a regardé `/projects/:shortcode` ni `/404` pour constater que le pied de page s'y voit enfin — c'est la seule correction du lot 18 qu'aucune commande ne peut établir. | Ouvrir les deux pages, dans les deux thèmes, et voir le pied de page. Recoupe R28. |
 | **R33** | **Les trois couvertures dupliquées n'ont pas été fusionnées.** `aura-cover.webp`, `schoulbus-cover.webp` et `portfolio-cover.webp` sont **identiques au md5** à trois vignettes de `public/screenshots/`, et `dist/spa` livre les deux copies : 130 738 octets, dans deux seaux de cache différents. La fusion n'est pas qu'une édition de `posts.js` : les couvertures sont des imports ESM (donc hachées et `immutable`), les vignettes des chemins publics (`max-age=86400`). Les unifier fait perdre le cache perpétuel à l'une ou complique le pipeline de pré-rendu pour porter les deux formes. | Un arbitrage : ou bien tout passe en `/screenshots/` (le pipeline se simplifie, `coverBaseName` et le chargeur d'images du script disparaissent, les couvertures perdent `immutable`), ou bien on assume les deux copies et on l'écrit. **À décider, pas à ignorer.** |
 | **R34** | **Le multilinguisme reste invisible pour un moissonneur.** La langue est choisie côté client et n'entre jamais dans l'adresse : les trois langues partagent une URL, aucun `hreflang`, et les quinze instantanés portent `<html lang=en>` avec du texte anglais. Les paquets FR et DE — 335 clés chacun, quatre articles longs, ce que `test/i18n.spec.js` protège — ne rapportent aucune visite de recherche. | Des adresses localisées (`/fr/…`, `/de/…`) ou un paramètre, plus `hreflang` réciproque et un instantané par langue. C'est un chantier de routage, pas une retouche : écarté de ce lot pour cette raison. |
 | **R35** | **Confirmé en production le 2026-09-09** : `/projects/jeanne`, qui n'existe pas, répond **200** avec `<title>Home | Alex Baskewitsch</title>`, la canonique de l'accueil et aucune balise `robots`. **Toute adresse inconnue répond 200 avec le titre et la canonique de l'accueil.** `try_files … /index.html` retombe sur l'instantané de l'accueil ; la 404 n'existe que côté client, après hydratation, quand le moissonneur a déjà son 200. Chaque faute de frappe devient donc un duplicata de l'accueil, canonique vers `/`. | Un instantané `404.html` avec `noindex`, servi en **statut 404** pour ce qui ne correspond à aucune route pré-rendue. À vérifier avec soin : les quinze routes sont pré-rendues, mais une route future qui ne le serait pas tomberait alors en 404 dure. |
 | **R36** | **Purge du CSS Quasar, brotli, ré-encodage des images et sous-ensemble de Lexend : mesurés, non faits.** 82 109 octets de règles `.q-*` pour des composants que le site ne rend jamais (10 787 octets compressés sur **chaque** page, en tête de rendu) ; 32 017 octets (13 %) que brotli prendrait ; ~490 Ko sur neuf illustrations d'articles et ~288 Ko sur treize vignettes ; ~80 Ko sur trois fontes portant 845 glyphes pour 121 points de code utilisés. | Les deux derniers attendent un encodeur : `cwebp`, ImageMagick, PIL et fontTools sont tous absents de l'environnement — c'est le blocage que R29 nomme déjà. La purge CSS et brotli attendent autre chose : un **regard**. Purger sans qu'aucun navigateur ne relise le site rouvrirait R28 en plus grand, et une directive brotli qu'un module absent refuse **empêche NGINX de démarrer**. |
+| **R37** | **La bascule de langue n'a jamais été cliquée dans un navigateur depuis qu'elle est asynchrone.** `setLocale()` attend maintenant un fragment réseau avant de basculer : sur une connexion lente, le panneau se ferme et la page reste dans l'ancienne langue le temps du téléchargement — personne n'a vu ce délai. Et si le fragment échoue (hors ligne, cache vide), la promesse est rejetée sans que rien ne le montre au visiteur. Les tests couvrent le chargement, pas l'attente ni l'échec. | Ouvrir le site publié, changer de langue trois fois, et regarder — puis recommencer avec le réseau bridé dans les outils du navigateur. |
 
 ---
 
@@ -51,6 +51,7 @@ Barrées avec une entrée datée et un élément de preuve, comme le veut la con
 
 | | Refermée le | Preuve |
 | --- | --- | --- |
+| ~~**R31**~~ | 2026-09-10 | **Mesuré sur deux constructions du même arbre.** Avant : un fragment `i18n-*.js` de 166 006 octets bruts / 63 641 compressés, préchargé à l'amorçage *et* importé statiquement par `MainLayout` — les trois langues, sur chaque page, pour n'en afficher qu'une. Après : trois fragments (`en` 19 909 gz, `fr` 21 828, `de` 22 518), dont un seul part. **43 732 octets compressés de moins par visite en anglais, −69 %.** `MainLayout` n'importe plus aucune langue. Le prix est un aller-retour de plus avant le premier rendu, faute de connaître la langue du visiteur côté serveur — c'est R34, et c'est écrit au lot 20. |
 | ~~**R32**, parties mesure, balises et descriptions~~ | 2026-09-09 | **Un `page_view` est enfin arrivé.** Alex confirme depuis la production que la mesure d'audience fonctionne. C'est la seule preuve possible : le défaut était que Quasar rend en chaîne le booléen écrit à l'acceptation, si bien que `hasTrackingConsent()` refusait tout le monde en silence — aucun test hors d'un vrai navigateur, sur un vrai cookie, ne distinguait un visiteur consentant d'un visiteur refusé. La propriété n'avait donc rien reçu depuis la mise en place. **Et le moissonneur a lu l'instantané.** `curl -A "facebookexternalhit/1.1"` sur `/blog/royaume-foot-3d-for-children` rend 200 et ses **propres** balises : `og:type: article`, `article:published_time: 2026-09-08`, son `og:title`, sa canonique, et un bloc JSON-LD qui s'analyse en `BlogPosting` — dont l'`image` annoncée répond 200 en `immutable`. Les cinq fiches de projet servent **cinq** descriptions distinctes (`x1`, `pet4u`, `cupcake`, `liberty`, `news`), et non plus la même. `favicon.ico` répond `max-age=86400`. **Ceci referme aussi R24 pour la partie moissonneur.** Reste le pied de page, que seule une paire d'yeux peut confirmer. |
 | ~~**R23**~~ | 2026-09-08 | **La configuration a tourné.** Déployée sur la production et vérifiée au `curl` : `content-encoding: gzip` sur la feuille de style, `cache-control: public, max-age=31536000, immutable` sur `/assets/`, `no-cache` sur le document, `301` sur `/blog/article` vers `/blog/green-coding-fintech`, et `x-robots-tag: noindex` sur une démo. `server: nginx/1.31.5` — le conteneur démarre, ce qui était l'inquiétude. **Et c'est en tournant qu'elle a montré deux défauts qu'aucune lecture n'aurait donnés** : `try_files $uri $uri/` faisait répondre 301 aux quatorze routes pré-rendues sur l'adresse même que leur canonique publie, et `$scheme` valant `http` derrière le proxy TLS, toute redirection partait en clair. Corrigés dans la foulée, et tenus par `test/pre-rendu.spec.js`. |
 | ~~**R18**~~ | 2026-09-08 | **Les démos sont converties.** `public/projects_folder/` passe de 15,1 Mo à 1,6 Mo. Deux mesures, pas une : 39 images référencées converties en WebP (6 494 200 → 1 323 438 octets), et **quatre images que rien ne référençait** — dont trois JPEG de 2 à 3,8 Mo dans `x1` — supprimées (8 642 574 octets). L'audit a été fait en cherchant chaque nom de fichier dans les sources HTML/CSS/JS ; aucune adresse n'est construite dynamiquement, ce qui a été vérifié avant de supprimer quoi que ce soit. Les 26 références d'image des démos résolvent toutes après coup. Le site ne plaide donc plus pour une sobriété que son propre domaine contredisait. |
@@ -758,5 +759,52 @@ statiquement par `MainLayout`, ce qui revient au même à l'usage mais déplace 
 
 *Réserves ouvertes par ce lot : R32, R33, R34, R35, R36. Aucune refermée : tout ce que ce
 lot a corrigé se vérifie par des tests, rien par un navigateur.*
+
+---
+
+### Lot 20 — Les trois langues voyageaient ensemble · fait le 2026-09-10
+
+**Le défaut.** `src/i18n/index.js` réunit les trois paquets en un objet, et cet objet était
+importé statiquement : par le chargeur d'amorçage, qui le préchargeait, **et** par
+`MainLayout`. Un fragment de 166 006 octets bruts, 63 641 compressés, téléchargé par tout
+le monde, sur toutes les pages, pour n'afficher qu'une langue sur trois. Le lot 17 avait
+écarté la correction — le premier rendu a besoin du paquet, donc elle touche l'amorçage.
+
+**La correction.** `src/i18n/paquets.js` tient un `import()` par langue, avec les chemins
+écrits en clair : un spécifieur calculé empêcherait l'outil de construction de découper.
+`setLocale()` devient asynchrone et pose les messages **avant** de basculer — l'ordre
+inverse rendrait les clés brutes le temps du téléchargement. L'amorçage l'attend, donc
+l'application ne se monte pas avant que sa langue soit là. `src/i18n/index.js` ne bouge
+pas : les tests le lisent encore pour comparer les trois paquets d'un coup, et il n'entre
+plus dans le graphe de l'application.
+
+**Mesuré** sur deux constructions du même arbre, à l'octet :
+
+| | Avant | Après |
+| --- | --- | --- |
+| Fragments de langue | 1 — `i18n-*.js`, 166 006 brut / **63 641 gz** | 3 — `en` 50 714 / **19 909 gz**, `fr` 57 493 / **21 828 gz**, `de` 57 238 / **22 518 gz** |
+| Ce qu'un visiteur télécharge | les trois, toujours | **un seul** |
+| Économie par visite | — | **43 732 gz** en anglais (−69 %), 41 813 en français, 41 123 en allemand |
+
+`MainLayout` n'importe plus aucune langue ; le fragment d'amorçage qui porte les trois
+`import()` pèse 1 117 octets.
+
+**Le prix, écrit ici pour ne pas être redécouvert.** La langue n'est plus dans le graphe
+statique : le navigateur ne la demande qu'une fois l'amorçage exécuté, donc **un aller-retour
+de plus avant le premier rendu**. Un `modulepreload` dans les instantanés le supprimerait,
+mais il faudrait connaître la langue du visiteur côté serveur — c'est exactement ce que
+R34 n'a pas. À reprendre avec R34, pas avant.
+
+**Quatre tests** : un paquet par langue déclarée et pas un de plus ; chaque paquet chargé
+rend les mêmes clés que le fichier réuni ; une langue sans paquet **lève** au lieu
+d'afficher des clés ; et `setLocale` ne charge que la langue demandée, garde celles déjà
+là, et a ses messages en place au moment où il bascule. `test/pages.spec.js` attend
+désormais la promesse après un clic sur la liste des langues — sans quoi il constatait la
+bascule avant qu'elle ait eu lieu.
+
+Porte complète au vert : `lint`, `test` (92, contre 86), `build`, `verify:api-url`.
+
+*Réserve refermée : R31. Ouverte : R37 — la bascule est asynchrone, et personne ne
+l'a vue dans un navigateur.*
 
 ---
