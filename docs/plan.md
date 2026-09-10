@@ -40,7 +40,7 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R32** | **Il ne reste que le pied de page, et il demande un œil.** La mesure d'audience, les balises servies au moissonneur et les cinq descriptions de fiches sont vérifiées sur la production (voir ci-dessous). Reste que personne n'a regardé `/projects/:shortcode` ni `/404` pour constater que le pied de page s'y voit enfin — c'est la seule correction du lot 18 qu'aucune commande ne peut établir. | Ouvrir les deux pages, dans les deux thèmes, et voir le pied de page. Recoupe R28. |
 | **R33** | **Les trois couvertures dupliquées n'ont pas été fusionnées.** `aura-cover.webp`, `schoulbus-cover.webp` et `portfolio-cover.webp` sont **identiques au md5** à trois vignettes de `public/screenshots/`, et `dist/spa` livre les deux copies : 130 738 octets, dans deux seaux de cache différents. La fusion n'est pas qu'une édition de `posts.js` : les couvertures sont des imports ESM (donc hachées et `immutable`), les vignettes des chemins publics (`max-age=86400`). Les unifier fait perdre le cache perpétuel à l'une ou complique le pipeline de pré-rendu pour porter les deux formes. | Un arbitrage : ou bien tout passe en `/screenshots/` (le pipeline se simplifie, `coverBaseName` et le chargeur d'images du script disparaissent, les couvertures perdent `immutable`), ou bien on assume les deux copies et on l'écrit. **À décider, pas à ignorer.** |
 | **R34** | **Le multilinguisme reste invisible pour un moissonneur.** La langue est choisie côté client et n'entre jamais dans l'adresse : les trois langues partagent une URL, aucun `hreflang`, et les quinze instantanés portent `<html lang=en>` avec du texte anglais. Les paquets FR et DE — 335 clés chacun, quatre articles longs, ce que `test/i18n.spec.js` protège — ne rapportent aucune visite de recherche. | Des adresses localisées (`/fr/…`, `/de/…`) ou un paramètre, plus `hreflang` réciproque et un instantané par langue. C'est un chantier de routage, pas une retouche : écarté de ce lot pour cette raison. |
-| **R35** | **Confirmé en production le 2026-09-09** : `/projects/jeanne`, qui n'existe pas, répond **200** avec `<title>Home | Alex Baskewitsch</title>`, la canonique de l'accueil et aucune balise `robots`. **Toute adresse inconnue répond 200 avec le titre et la canonique de l'accueil.** `try_files … /index.html` retombe sur l'instantané de l'accueil ; la 404 n'existe que côté client, après hydratation, quand le moissonneur a déjà son 200. Chaque faute de frappe devient donc un duplicata de l'accueil, canonique vers `/`. | Un instantané `404.html` avec `noindex`, servi en **statut 404** pour ce qui ne correspond à aucune route pré-rendue. À vérifier avec soin : les quinze routes sont pré-rendues, mais une route future qui ne le serait pas tomberait alors en 404 dure. |
+| **R35** | **Corrigé au lot 19, pas encore vu en production.** L'instantané `404.html` est écrit, `try_files` se termine par `=404`, et la vérification a été faite **dans le conteneur** : `/projects/jeanne`, `/blog/nexistepas` et `/404` répondent **404** avec `<title>Page not found</title>`, `noindex, follow` et **aucune** canonique ; `/`, `/about`, `/projects/x1` et `/blog` restent en 200 ; `/blog/article` reste en 301. Reste que rien de tout cela n'a été mesuré sur `alex.baskewitsch.lu`, où le défaut a été constaté le 2026-09-09. | Un `curl -I` sur la production après déploiement : `404` sur une adresse inventée, `200` sur `/` et sur un article. |
 | **R36** | **Purge du CSS Quasar, brotli, ré-encodage des images et sous-ensemble de Lexend : mesurés, non faits.** 82 109 octets de règles `.q-*` pour des composants que le site ne rend jamais (10 787 octets compressés sur **chaque** page, en tête de rendu) ; 32 017 octets (13 %) que brotli prendrait ; ~490 Ko sur neuf illustrations d'articles et ~288 Ko sur treize vignettes ; ~80 Ko sur trois fontes portant 845 glyphes pour 121 points de code utilisés. | Les deux derniers attendent un encodeur : `cwebp`, ImageMagick, PIL et fontTools sont tous absents de l'environnement — c'est le blocage que R29 nomme déjà. La purge CSS et brotli attendent autre chose : un **regard**. Purger sans qu'aucun navigateur ne relise le site rouvrirait R28 en plus grand, et une directive brotli qu'un module absent refuse **empêche NGINX de démarrer**. |
 
 ---
@@ -758,5 +758,42 @@ statiquement par `MainLayout`, ce qui revient au même à l'usage mais déplace 
 
 *Réserves ouvertes par ce lot : R32, R33, R34, R35, R36. Aucune refermée : tout ce que ce
 lot a corrigé se vérifie par des tests, rien par un navigateur.*
+
+---
+
+### Lot 19 — Toute adresse inconnue répondait 200 · fait le 2026-09-10
+
+**Le défaut.** `try_files $uri $uri/index.html $uri/ /index.html` faisait retomber sur
+l'instantané de l'accueil tout ce qui ne correspondait à aucune route. `/projects/jeanne`
+répondait donc **200**, avec `<title>Home | Alex Baskewitsch</title>` et la canonique de
+l'accueil : la 404 n'existe que côté client, après hydratation, quand le moissonneur a déjà
+son statut. Chaque faute de frappe et chaque vieux lien devenaient un duplicata de
+l'accueil — et le signal de tous partait sur `/`.
+
+**La correction, en trois pièces.** `notFoundRoute()` dans `src/utils/pre-rendu.js` décrit
+la page d'erreur comme les quinze autres routes, mais avec `noindex` et **sans canonique** :
+un même document répond à toutes les adresses inconnues, donc la seule canonique qu'il
+pourrait écrire désignerait une autre page que celle demandée. `scripts/pre-rendu.mjs`
+dépose cet instantané en `dist/spa/404.html`, hors du plan du site. `nginx/default.conf`
+termine son `try_files` par `=404` et sert ce fichier en `error_page 404`, dans un
+`location = /404.html { internal; }` — servi directement, l'instantané serait une page de
+plus, en 200.
+
+**Le risque, et ce qui le tient.** `=404` ne pardonne rien : une route de l'application
+sans instantané ne retombe plus sur l'accueil, elle tombe en 404 dure. Deux tests le
+gardent — l'un parcourt `src/router/routes.js` et exige un instantané pour chaque route
+sans paramètre, l'autre exige que chaque redirection littérale du routeur (`/blog/article`)
+ait son `return 301` côté NGINX, la seule chose qui la sauve maintenant que la retombée a
+disparu. Ajouter une route sans la pré-rendre échoue donc ici, pas en production.
+
+**Vérifié dans le conteneur**, `docker build` puis `curl` sur les huit adresses :
+`/projects/jeanne`, `/blog/nexistepas`, `/404` et `/404.html` rendent **404** avec le titre
+de la page d'erreur, `noindex, follow` et aucune canonique ; `/`, `/about`, `/projects/x1`,
+`/projects/cupcake`, `/blog` et la démo `/projects_folder/x1/` restent en **200** avec leurs
+propres balises ; `/blog/article` reste en **301**. Porte complète au vert : `lint`,
+`test` (95, contre 86), `build`, `verify:api-url`.
+
+*Réserve : R35 reste ouverte, resserrée — le comportement est vérifié dans le conteneur,
+pas sur `alex.baskewitsch.lu`.*
 
 ---

@@ -8,6 +8,7 @@ import posts from '@/data/posts'
 import projects from '@/data/projects'
 import {
   coverBaseName,
+  notFoundRoute,
   prerenderedRoutes,
   renderFontPreload,
   renderHeadTags,
@@ -124,6 +125,42 @@ describe('les routes pré-rendues', () => {
     expect(renderHeadTags(routes.find(r => r.path === '/about'))).toContain(
       'property="og:type" content="website"'
     )
+  })
+})
+
+// `try_files … =404` fait tomber sur cet instantané tout ce qui ne correspond
+// à aucune route. Avant lui, la retombée était l'accueil : `/projects/jeanne`
+// répondait 200 avec le titre et la canonique de l'accueil, et chaque faute de
+// frappe devenait un duplicata.
+describe("l'instantané des adresses inconnues", () => {
+  const route = notFoundRoute()
+  const balises = renderHeadTags(route)
+
+  it('porte un titre et une description à lui', () => {
+    expect(route.title).toBeTruthy()
+    expect(route.description).toBeTruthy()
+    expect(balises).toContain(`<title data-prerendered>${route.title} | Alex Baskewitsch</title>`)
+  })
+
+  it('demande à ne pas être indexé', () => {
+    expect(balises).toContain('name="robots" content="noindex, follow"')
+  })
+
+  // Un même document répond à toutes les adresses inconnues : une canonique y
+  // désignerait `/404` depuis `/projects/jeanne`, c'est-à-dire une autre page
+  // que celle demandée.
+  it("n'écrit aucune canonique", () => {
+    expect(balises).not.toContain('rel="canonical"')
+  })
+
+  it("ne figure pas dans le plan du site", () => {
+    expect(chemins).not.toContain('/404')
+    expect(renderSitemap(prerenderedRoutes())).not.toContain('/404')
+  })
+
+  it('marque tout ce qu\'il pose, pour que le démarrage puisse le retirer', () => {
+    const posees = balises.match(/<(?:title|meta|link)\b/g).length
+    expect(balises.match(/data-prerendered/g).length).toBe(posees)
   })
 })
 
@@ -291,5 +328,60 @@ describe('la configuration NGINX sert les instantanés', () => {
   // absolue renvoie sur un saut en clair avant de revenir en HTTPS.
   it('émet des redirections relatives', () => {
     expect(conf).toMatch(/absolute_redirect\s+off\s*;/)
+  })
+
+  // La retombée sur `/index.html` répondait 200 à toute adresse inconnue, avec
+  // le titre et la canonique de l'accueil.
+  it('termine sur =404, et sert 404.html à sa place', () => {
+    const fourreTout = conf.match(/location\s+\/\s*\{([^}]*)\}/)
+    const ordre = fourreTout[1].match(/try_files\s+([^;]+);/)[1].trim().split(/\s+/)
+
+    expect(ordre.at(-1)).toBe('=404')
+    expect(ordre).not.toContain('/index.html')
+    expect(conf).toMatch(/error_page\s+404\s+\/404\.html\s*;/)
+  })
+
+  // L'instantané ne doit répondre qu'à travers `error_page` : servi
+  // directement, il serait une page de plus, en 200.
+  it('garde /404.html interne', () => {
+    const bloc = conf.match(/location\s+=\s+\/404\.html\s*\{([^}]*)\}/)
+    expect(bloc, 'no `location = /404.html` block').not.toBeNull()
+    expect(bloc[1]).toMatch(/\binternal\s*;/)
+  })
+})
+
+// `=404` ne pardonne rien : une route de l'application sans instantané ne
+// tombe plus sur l'accueil, elle tombe en 404 dure. Le pré-rendu les dérive
+// toutes des données — ce test le vérifie plutôt que de l'espérer.
+describe('chaque route de l\'application a son instantané', () => {
+  const conf = readFileSync(`${process.cwd()}/nginx/default.conf`, 'utf8')
+
+  const statiques = []
+  const redirections = []
+  const parcourir = (liste, prefixe) => {
+    for (const route of liste) {
+      const chemin = `${prefixe}/${route.path}`.replace(/\/+/g, '/').replace(/(.)\/$/, '$1')
+      if (route.children) parcourir(route.children, chemin)
+      if (route.path.includes(':')) continue
+      if (route.redirect) redirections.push(chemin)
+      else if (route.component) statiques.push(chemin)
+    }
+  }
+  parcourir(appRoutes, '')
+
+  it('couvre chaque route sans paramètre', () => {
+    expect(statiques.length).toBeGreaterThan(4)
+    for (const chemin of statiques) expect(chemins, chemin).toContain(chemin)
+  })
+
+  // Une redirection du routeur n'a pas d'instantané, et n'en veut pas : elle
+  // doit répondre 301 depuis le serveur, sans quoi elle tombe en 404.
+  it('confie chaque redirection littérale à NGINX', () => {
+    expect(redirections).toContain('/blog/article')
+    for (const chemin of redirections) {
+      expect(conf, chemin).toMatch(
+        new RegExp(`location\\s+=\\s+${chemin.replace(/\//g, '\\/')}\\s*\\{[^}]*return\\s+301`)
+      )
+    }
   })
 })

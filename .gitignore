@@ -37,3 +37,6 @@ yarn-error.log*
 .env
 .env.*
 !.env.example
+
+# Working state, pas de la documentation.
+RESUME.md
