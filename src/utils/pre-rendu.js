@@ -69,6 +69,23 @@ export function prerenderedRoutes() {
   return routes
 }
 
+/**
+ * La route que sert le serveur pour ce qui ne correspond à aucun instantané.
+ *
+ * Elle n'est pas dans `prerenderedRoutes()` : le plan du site ne la cite pas,
+ * et son instantané est déposé à part, en `404.html`. Un même document répond
+ * à toutes les adresses inconnues, donc il ne peut pas déclarer de canonique —
+ * elle désignerait `/404` depuis `/projects/jeanne`. Il porte `noindex`.
+ */
+export function notFoundRoute() {
+  return {
+    path: '/404',
+    title: en.seo.notFound.title,
+    description: en.seo.notFound.description,
+    noindex: true
+  }
+}
+
 const escape = value =>
   String(value)
     .replaceAll('&', '&amp;')
@@ -90,7 +107,8 @@ export function renderHeadTags(route) {
     description: route.description,
     path: route.path,
     image: route.image,
-    article: route.article
+    article: route.article,
+    noindex: route.noindex === true
   })
 
   const tags = [`<title data-prerendered>${escape(descriptor.title)}</title>`]
@@ -101,7 +119,12 @@ export function renderHeadTags(route) {
     tags.push(`<meta ${attribute}="${escape(key)}" content="${escape(tag.content)}" data-prerendered>`)
   }
 
-  tags.push(`<link rel="canonical" href="${escape(descriptor.link.canonical.href)}" data-prerendered>`)
+  // Un instantané `noindex` répond à toutes les adresses inconnues : la seule
+  // canonique qu'il pourrait écrire désignerait une autre page que celle
+  // demandée.
+  if (!route.noindex) {
+    tags.push(`<link rel="canonical" href="${escape(descriptor.link.canonical.href)}" data-prerendered>`)
+  }
 
   if (descriptor.script?.ldJson) {
     tags.push(

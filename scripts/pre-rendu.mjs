@@ -15,8 +15,9 @@
  *
  * Chaque instantané est le `index.html` de la construction, augmenté des balises
  * de sa route ; l'application démarre par-dessus comme avant. `try_files
- * $uri $uri/ /index.html` les sert sans règle supplémentaire, le fichier étant
- * déposé en `dist/spa/<route>/index.html`.
+ * $uri $uri/index.html $uri/ =404` les sert à l'adresse qu'ils déclarent, le
+ * fichier étant déposé en `dist/spa/<route>/index.html` ; ce qui ne correspond à
+ * aucun d'eux tombe sur `404.html`, écrit ici aussi, et servi en statut 404.
  */
 import { existsSync } from 'node:fs'
 import { readdir, readFile, mkdir, writeFile } from 'node:fs/promises'
@@ -73,6 +74,7 @@ registerHooks({
 })
 
 const {
+  notFoundRoute,
   prerenderedRoutes,
   renderHeadTags,
   renderSitemap,
@@ -128,7 +130,16 @@ for (const route of routes) {
   await writeFile(join(dossier, 'index.html'), document)
 }
 
+// L'instantané que NGINX sert, en statut 404, pour ce qui ne correspond à aucune
+// route. Sans lui, `try_files … /index.html` répondait 200 avec le titre et la
+// canonique de l'accueil : chaque faute de frappe devenait un duplicata.
+const introuvable = notFoundRoute()
+await writeFile(
+  join(SORTIE, '404.html'),
+  gabarit.replace('</head>', `  ${preload}\n    ${renderHeadTags(introuvable)}\n</head>`)
+)
+
 await writeFile(join(SORTIE, 'sitemap.xml'), renderSitemap(routes))
 await writeFile(join(SORTIE, 'robots.txt'), renderRobots())
 
-console.info(`✓ ${routes.length} instantanés de route, plus sitemap.xml et robots.txt`)
+console.info(`✓ ${routes.length} instantanés de route, plus 404.html, sitemap.xml et robots.txt`)
