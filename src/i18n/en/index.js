@@ -90,6 +90,8 @@ export default {
       archive: "Archive"
     },
     texts: {
+      picCollage:
+        "A photo collage maker and editor that runs entirely in the browser: no account, no backend, nothing uploaded. React 19, TypeScript and Konva, installable as a PWA on iPhone and Android and usable offline. Photos are decoded, edited and exported on the device \u2014 the bytes live in IndexedDB and never travel. Preset grids from one to sixteen photos plus draw-your-own layouts, text, stickers, shapes, a filter stack, on-device retouching that downloads no model at all, and export to PNG, JPG, SVG, PDF or a ZIP of every page. Six languages, light and dark, and a first load of 221 kilobytes gzipped \u2014 the PDF writer is four hundred more, fetched only by the people who ask for a PDF. Static files on GitHub Pages, deployed by a push.",
       royaumeFoot:
         "A 3D football game for six-year-olds, played by princesses and knights: flick towards the goal, and it is the wardrobe rather than the score that you play for. React 19, TypeScript and three.js through react-three-fiber, installable as a PWA and fully playable offline. No account and nothing uploaded \u2014 progress lives in localStorage, six languages are bundled, and the whole thing is static files behind nginx. Almost nothing is a file: characters, castle and keepers are built from primitives, textures are painted on a 2D canvas at startup, sounds are synthesised with Web Audio, and every image in the repository comes to nine kilobytes. A difficulty harness in CI sweeps every plausible flick and fails the build if the game stops being kind.",
       aura:
