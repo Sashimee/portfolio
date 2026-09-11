@@ -11,6 +11,14 @@ import { AVAILABLE_LOCALES } from '@/utils/preferences'
 import posts from '@/data/posts'
 import projects from '@/data/projects'
 
+// `setLocale` reste le vrai : seule l'enveloppe permet d'en tenir l'attente et
+// l'échec, que rien d'autre ne sait provoquer — le fragment de langue se charge
+// pour de bon dans cette suite.
+vi.mock('@/boot/i18n', async importOriginal => {
+  const reel = await importOriginal()
+  return { ...reel, setLocale: vi.fn(reel.setLocale) }
+})
+
 // Pages are QPages: they only render inside the layout, which is also what the
 // router does in the real app.
 async function mountAt(path) {
@@ -195,6 +203,61 @@ describe('language selector', () => {
     // écran il est à gauche, et le panneau sortait de l'écran par la gauche.
     expect(header.find('.menu-overlay .lang__list').classes()).toContain('lang__list--start')
     expect(header.find('.lang.gt-sm .lang__list').classes()).not.toContain('lang__list--start')
+  })
+
+  it('stays open and busy until the language has actually arrived', async () => {
+    const wrapper = await mountAt('/')
+    const header = wrapper.findComponent(TheHeader)
+
+    let arrive
+    setLocale.mockImplementationOnce(value => new Promise(resolve => {
+      arrive = () => resolve(value)
+    }))
+
+    await header.find('.lang__trigger').trigger('click')
+    const german = header.findAll('.lang__item').find(item => item.attributes('lang') === 'de')
+    await german.trigger('click')
+    await flushPromises()
+
+    // Fermer le panneau avant l'attente laissait le visiteur devant la page
+    // inchangée, sans rien qui l'explique — c'est ce que R37 a trouvé en 3G.
+    expect(header.find('.lang__list').exists()).toBe(true)
+    expect(header.find('.lang__list').attributes('aria-busy')).toBe('true')
+    expect(header.findAll('.lang__item').every(i => i.attributes('disabled') !== undefined)).toBe(true)
+    expect(german.find('.lang__spinner').exists()).toBe(true)
+    expect(header.vm.locale).toBe('en')
+
+    arrive()
+    await flushPromises()
+
+    expect(header.find('.lang__list').exists()).toBe(false)
+    expect(header.vm.locale).toBe('de')
+
+    await setLocale('en')
+  })
+
+  it('tells the visitor when the language fails to load, and leaves the choice open', async () => {
+    const wrapper = await mountAt('/')
+    const header = wrapper.findComponent(TheHeader)
+    const notify = vi.spyOn(header.vm.$q, 'notify').mockImplementation(() => {})
+
+    setLocale.mockImplementationOnce(() => Promise.reject(new Error('hors ligne')))
+
+    await header.find('.lang__trigger').trigger('click')
+    const german = header.findAll('.lang__item').find(item => item.attributes('lang') === 'de')
+    await german.trigger('click')
+    await flushPromises()
+
+    expect(notify).toHaveBeenCalledTimes(1)
+    expect(notify.mock.calls[0][0]).toMatchObject({ color: 'negative' })
+    // Le panneau reste ouvert : le choix a échoué, le visiteur doit pouvoir
+    // le refaire sans rouvrir la liste.
+    expect(header.find('.lang__list').exists()).toBe(true)
+    expect(header.find('.lang__list').attributes('aria-busy')).toBe('false')
+    expect(header.vm.localePending).toBe(null)
+    expect(header.vm.locale).toBe('en')
+
+    notify.mockRestore()
   })
 
   it('closes when the click lands outside it', async () => {

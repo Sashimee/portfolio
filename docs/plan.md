@@ -40,7 +40,7 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R33** | **Les trois couvertures dupliquées n'ont pas été fusionnées.** `aura-cover.webp`, `schoulbus-cover.webp` et `portfolio-cover.webp` sont **identiques au md5** à trois vignettes de `public/screenshots/`, et `dist/spa` livre les deux copies : 130 738 octets, dans deux seaux de cache différents. La fusion n'est pas qu'une édition de `posts.js` : les couvertures sont des imports ESM (donc hachées et `immutable`), les vignettes des chemins publics (`max-age=86400`). Les unifier fait perdre le cache perpétuel à l'une ou complique le pipeline de pré-rendu pour porter les deux formes. | Un arbitrage : ou bien tout passe en `/screenshots/` (le pipeline se simplifie, `coverBaseName` et le chargeur d'images du script disparaissent, les couvertures perdent `immutable`), ou bien on assume les deux copies et on l'écrit. **À décider, pas à ignorer.** |
 | **R34** | **Le multilinguisme reste invisible pour un moissonneur.** La langue est choisie côté client et n'entre jamais dans l'adresse : les trois langues partagent une URL, aucun `hreflang`, et les quinze instantanés portent `<html lang=en>` avec du texte anglais. Les paquets FR et DE — 335 clés chacun, quatre articles longs, ce que `test/i18n.spec.js` protège — ne rapportent aucune visite de recherche. | Des adresses localisées (`/fr/…`, `/de/…`) ou un paramètre, plus `hreflang` réciproque et un instantané par langue. C'est un chantier de routage, pas une retouche : écarté de ce lot pour cette raison. |
 | **R36** | **Purge du CSS Quasar, brotli, ré-encodage des images et sous-ensemble de Lexend : mesurés, non faits.** 82 109 octets de règles `.q-*` pour des composants que le site ne rend jamais (10 787 octets compressés sur **chaque** page, en tête de rendu) ; 32 017 octets (13 %) que brotli prendrait ; ~490 Ko sur neuf illustrations d'articles et ~288 Ko sur treize vignettes ; ~80 Ko sur trois fontes portant 845 glyphes pour 121 points de code utilisés. | Les deux derniers attendent un encodeur : `cwebp`, ImageMagick, PIL et fontTools sont tous absents de l'environnement — c'est le blocage que R29 nomme déjà. La purge CSS et brotli attendent autre chose : un **regard**. Purger sans qu'aucun navigateur ne relise le site rouvrirait R28 en plus grand, et une directive brotli qu'un module absent refuse **empêche NGINX de démarrer**. |
-| **R37** | **La bascule de langue n'a jamais été cliquée dans un navigateur depuis qu'elle est asynchrone.** `setLocale()` attend maintenant un fragment réseau avant de basculer : sur une connexion lente, le panneau se ferme et la page reste dans l'ancienne langue le temps du téléchargement — personne n'a vu ce délai. Et si le fragment échoue (hors ligne, cache vide), la promesse est rejetée sans que rien ne le montre au visiteur. Les tests couvrent le chargement, pas l'attente ni l'échec. | Ouvrir le site publié, changer de langue trois fois, et regarder — puis recommencer avec le réseau bridé dans les outils du navigateur. |
+| **R38** | **La correction du lot 22 n'a pas été vue, et le chemin d'échec n'a toujours pas été emprunté.** Le tour du 2026-09-11 a bien éprouvé l'attente (1c : lien bridé, défaut confirmé), mais **pas** l'échec : hors ligne, les fragments `fr` et `de` étaient déjà dans le cache HTTP, chargés aux étapes précédentes — la bascule a donc réussi, plus vite qu'en 3G. R37 demandait « hors ligne, **cache vide** » ; c'est la moitié qui manque. | Recharger en vidant le cache (*Disable cache* ou navigation privée), passer hors ligne **avant** d'avoir affiché la langue visée, puis la choisir : le panneau doit rester ouvert et la notification d'échec s'afficher. Et sur lien bridé, voir le panneau rester ouvert avec son indicateur au lieu de se fermer. |
 
 ---
 
@@ -50,6 +50,7 @@ Barrées avec une entrée datée et un élément de preuve, comme le veut la con
 
 | | Refermée le | Preuve |
 | --- | --- | --- |
+| ~~**R37**~~ | 2026-09-11 | **Regardée, et elle avait raison.** Alex a fait le tour sur téléphone puis avec le réseau bridé. Trois bascules d'affilée en conditions normales : rien à signaler. **En lien bridé, le défaut soupçonné est réel** — `pickLocale()` fermait le panneau et le menu *avant* d'attendre `setLocale()`, si bien que la page restait dans l'ancienne langue le temps du téléchargement, sans rien qui l'explique au visiteur. C'est corrigé au lot 22. La moitié « hors ligne » de la vérification n'a pas pu être faite faute de cache vide : elle devient R38. |
 | ~~**R35**~~ | 2026-09-11 | **Vérifié sur `alex.baskewitsch.lu`**, exactement le critère que la réserve nommait. Cinq adresses inconnues — `/projects/jeanne`, `/blog/nexistepas`, `/404`, `/404.html`, `/nimportequoi` — répondent **404**, avec `<title data-prerendered>Page not found \| Alex Baskewitsch</title>`, `noindex, follow` et **aucune** canonique : une faute de frappe n'est donc plus un duplicata de l'accueil canonique vers `/`. **Et le risque que le lot 19 nommait ne s'est pas réalisé** : `=404` ne pardonne rien, mais les routes réelles tiennent — `/`, `/about`, `/projects`, `/blog`, `/contact`, `/projects/x1`, `/projects/cupcake`, `/blog/green-coding-fintech` et la démo `/projects_folder/x1/` rendent **200**, et `/blog/article` reste en **301** vers `/blog/green-coding-fintech`. `/legal` répond 404, ce qui est juste : l'avis légal est un dialogue, pas une route de `src/router/routes.js`. |
 | ~~**R31**~~ | 2026-09-10 | **Mesuré sur deux constructions du même arbre.** Avant : un fragment `i18n-*.js` de 166 006 octets bruts / 63 641 compressés, préchargé à l'amorçage *et* importé statiquement par `MainLayout` — les trois langues, sur chaque page, pour n'en afficher qu'une. Après : trois fragments (`en` 19 909 gz, `fr` 21 828, `de` 22 518), dont un seul part. **43 732 octets compressés de moins par visite en anglais, −69 %.** `MainLayout` n'importe plus aucune langue. Le prix est un aller-retour de plus avant le premier rendu, faute de connaître la langue du visiteur côté serveur — c'est R34, et c'est écrit au lot 20. |
 | ~~**R32**, parties mesure, balises et descriptions~~ | 2026-09-09 | **Un `page_view` est enfin arrivé.** Alex confirme depuis la production que la mesure d'audience fonctionne. C'est la seule preuve possible : le défaut était que Quasar rend en chaîne le booléen écrit à l'acceptation, si bien que `hasTrackingConsent()` refusait tout le monde en silence — aucun test hors d'un vrai navigateur, sur un vrai cookie, ne distinguait un visiteur consentant d'un visiteur refusé. La propriété n'avait donc rien reçu depuis la mise en place. **Et le moissonneur a lu l'instantané.** `curl -A "facebookexternalhit/1.1"` sur `/blog/royaume-foot-3d-for-children` rend 200 et ses **propres** balises : `og:type: article`, `article:published_time: 2026-09-08`, son `og:title`, sa canonique, et un bloc JSON-LD qui s'analyse en `BlogPosting` — dont l'`image` annoncée répond 200 en `immutable`. Les cinq fiches de projet servent **cinq** descriptions distinctes (`x1`, `pet4u`, `cupcake`, `liberty`, `news`), et non plus la même. `favicon.ico` répond `max-age=86400`. **Ceci referme aussi R24 pour la partie moissonneur.** Reste le pied de page, que seule une paire d'yeux peut confirmer. |
@@ -876,3 +877,52 @@ le contraste des états ainsi que le parcours clavier n'ont toujours pas été r
 
 *Réserve ouverte par ce lot : aucune. R20 et R37 restent ouvertes — R37 n'a toujours pas pu
 être éprouvée, le sélecteur étant inutilisable sur téléphone jusqu'ici.*
+
+---
+
+### Lot 22 — La bascule de langue attendait sans le dire · fait le 2026-09-11
+
+**Ce que le regard a trouvé.** R37 soupçonnait deux défauts derrière la bascule devenue
+asynchrone au lot 20. Le tour du 2026-09-11 en a confirmé un et laissé l'autre intact.
+
+`pickLocale()` fermait le panneau **et** le menu plein écran, *puis* attendait `setLocale()` :
+
+```js
+this.closeLocaleMenu()
+this.menu = false
+this.locale = await setLocale(value)
+```
+
+Sur un lien bridé, le visiteur voyait donc l'interface se refermer sur une page restée dans
+l'ancienne langue, sans rien qui l'explique. Et un fragment qui n'arrive pas rejetait la
+promesse **sans capture** — la suite de tests le montre en clair dès qu'on retire la
+correction : `Unhandled error during execution of native event handler`.
+
+**La correction.** L'ordre est inversé : le panneau reste ouvert jusqu'à ce que la langue
+soit là. Pendant l'attente, la liste porte `aria-busy`, ses entrées sont désactivées — un
+second clic ne peut plus lancer un second chargement — et celle qu'on charge porte un
+`q-spinner`. En cas d'échec, `$q.notify` en `negative` avec `layout.language_failed`, les
+trois langues comme le veut le principe 2, et **le panneau reste ouvert** : le choix a
+échoué, il doit pouvoir être refait sans rouvrir la liste. C'est le motif de
+`src/pages/Contact.vue`, pas un motif neuf.
+
+Le retour du focus est relevé **avant** l'attente : `closeLocaleMenu()` lisait
+`document.activeElement`, et après plusieurs secondes de téléchargement ce n'est plus le
+bouton cliqué. C'est la raison qui avait fait fermer le panneau en premier ; elle est
+satisfaite autrement.
+
+**Deux tests, tous deux vérifiés en échec avant d'être gardés.** L'un tient l'attente — le
+panneau ouvert, `aria-busy`, les entrées désactivées, le spinner sur la bonne, la langue
+encore inchangée — puis la fermeture une fois la promesse résolue. L'autre tient l'échec :
+la notification en `negative`, le panneau toujours ouvert, `localePending` rendu à `null`.
+`setLocale` est enveloppé plutôt que remplacé : le vrai chargement reste en place pour tout
+le reste de la suite. Porte complète au vert : `lint`, `test` (104, contre 102), `build`,
+`verify:api-url`.
+
+**Au passage, le lot 21 est confirmé.** Alex a vu le panneau de langues s'ouvrir entièrement
+dans l'écran sur téléphone — la correction n'était jusque-là que testée. R20 reste ouverte
+pour le reste : contraste des états, parcours clavier, lecteur d'écran.
+
+*Réserve refermée : R37. Ouverte : R38 — la correction de ce lot n'a pas encore été vue, et
+la moitié « hors ligne, cache vide » de R37 n'a jamais été éprouvée, les fragments étant
+déjà en cache au moment du test.*
