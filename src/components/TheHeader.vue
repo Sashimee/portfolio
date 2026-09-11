@@ -198,10 +198,13 @@ export default {
       const path = this.$route.path
       return item.exact ? path === item.to : path.startsWith(item.to)
     },
-    pickLocale(value) {
-      this.locale = setLocale(value)
+    // La fermeture d'abord : `closeLocaleMenu` lit `document.activeElement`
+    // pour rendre le focus au déclencheur, et `setLocale` attend maintenant le
+    // fragment de la langue — après cette attente, le focus a pu bouger.
+    async pickLocale(value) {
       this.closeLocaleMenu()
       this.menu = false
+      this.locale = await setLocale(value)
     },
     /**
      * La liste disparaît du DOM en se fermant, et avec elle le bouton focalisé :
