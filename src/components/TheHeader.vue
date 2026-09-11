@@ -119,7 +119,7 @@
             <span class="lang__caret" aria-hidden="true"></span>
           </button>
 
-          <ul v-if="localeMenu" class="lang__list lang__list--up" role="menu">
+          <ul v-if="localeMenu" class="lang__list lang__list--up lang__list--start" role="menu">
             <li v-for="option in localeOptions" :key="option.value" role="none">
               <button
                 type="button"
@@ -417,6 +417,10 @@ body.is-locked
   &--up
     top: auto
     bottom: calc(100% + 0.4rem)
+
+  &--start
+    right: auto
+    left: 0
 
 .lang__item
   display: flex

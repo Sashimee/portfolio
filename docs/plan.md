@@ -845,3 +845,34 @@ Porte complète au vert : `lint`, `test` (101, contre 95), `build`, `verify:api-
 l'a vue dans un navigateur.*
 
 ---
+
+### Lot 21 — Le sélecteur de langue sortait de l'écran sur téléphone · fait le 2026-09-11
+
+**Le défaut, trouvé par Alex au premier regard sur un téléphone.** `.lang__list` est en
+`position: absolute` avec `right: 0` : son bord droit s'aligne sur celui du déclencheur, et
+le panneau — large de `10rem` — s'étend donc vers la **gauche**. Dans l'en-tête de bureau
+c'est juste, le déclencheur étant à droite. Mais le second `.lang` vit dans
+`.menu-overlay__foot`, en `justify-content: space-between`, dont il est le **premier**
+enfant : il est collé au bord gauche. Le panneau partait donc à gauche d'un déclencheur
+déjà à gauche, et sortait de l'écran.
+
+**La correction.** Un modificateur `.lang__list--start` (`right: auto` / `left: 0`), posé
+sur la seule instance du menu plein écran. L'axe horizontal reste distinct de l'axe
+vertical que `--up` porte déjà : les conflater aurait rendu la classe illisible le jour où
+un panneau doit s'ouvrir vers le haut *et* vers la droite.
+
+**Ce que le test garde.** jsdom ne calcule aucune mise en page — il ne peut donc pas voir un
+débordement. Ce qu'il peut tenir, c'est la distinction qui était fausse : le panneau du menu
+plein écran porte `--start`, celui de l'en-tête ne le porte pas. Le test échoue bien sans la
+correction (`expected [ 'lang__list', 'lang__list--up' ] to include 'lang__list--start'`),
+ce qui a été vérifié avant de le garder. Porte complète au vert : `lint`, `test` (102,
+contre 101), `build`, `verify:api-url`.
+
+**Ce que ça dit de R20.** Cette réserve annonçait exactement ce genre de défaut — elle cite
+« le dépassement du panneau ouvert vers le haut dans le menu plein écran ». Le premier
+regard réel en a trouvé un autre, sur l'axe horizontal, qu'aucun des 101 tests ne voyait.
+R20 **reste ouverte** : la correction elle-même n'a pas encore été vue sur un téléphone, et
+le contraste des états ainsi que le parcours clavier n'ont toujours pas été regardés.
+
+*Réserve ouverte par ce lot : aucune. R20 et R37 restent ouvertes — R37 n'a toujours pas pu
+être éprouvée, le sélecteur étant inutilisable sur téléphone jusqu'ici.*

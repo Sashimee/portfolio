@@ -182,6 +182,21 @@ describe('language selector', () => {
     expect(header.vm.menu).toBe(false)
   })
 
+  it('opens the panel inward on mobile, where the trigger sits at the left edge', async () => {
+    const wrapper = await mountAt('/')
+    const header = wrapper.findComponent(TheHeader)
+
+    await header.setData({ menu: true })
+    await header.find('.menu-overlay .lang__trigger').trigger('click')
+
+    // `.lang__list` est en `right: 0` : aligné sur le bord droit du
+    // déclencheur, il s'étend vers la gauche. Dans l'en-tête le déclencheur est
+    // à droite, donc le panneau rentre dans l'écran ; au pied du menu plein
+    // écran il est à gauche, et le panneau sortait de l'écran par la gauche.
+    expect(header.find('.menu-overlay .lang__list').classes()).toContain('lang__list--start')
+    expect(header.find('.lang.gt-sm .lang__list').classes()).not.toContain('lang__list--start')
+  })
+
   it('closes when the click lands outside it', async () => {
     const wrapper = await mountAt('/')
     const header = wrapper.findComponent(TheHeader)
