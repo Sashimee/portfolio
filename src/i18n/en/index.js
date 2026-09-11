@@ -11,7 +11,8 @@ export default {
     menu: "Menu",
     close: "Close",
     theme: "Switch theme",
-    skip: "Skip to content"
+    skip: "Skip to content",
+    language_failed: "That language could not be loaded. Check your connection and try again."
   },
   home: {
     eyebrow: "Green coding",

@@ -11,7 +11,8 @@ export default {
     menu: "Menu",
     close: "Fermer",
     theme: "Changer de thème",
-    skip: "Aller au contenu"
+    skip: "Aller au contenu",
+    language_failed: "Cette langue n'a pas pu être chargée. Vérifiez votre connexion et réessayez."
   },
   home: {
     eyebrow: "Green coding",

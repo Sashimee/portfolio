@@ -11,7 +11,8 @@ export default {
     menu: "Menü",
     close: "Schließen",
     theme: "Design wechseln",
-    skip: "Zum Inhalt springen"
+    skip: "Zum Inhalt springen",
+    language_failed: "Diese Sprache konnte nicht geladen werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut."
   },
   home: {
     eyebrow: "Green Coding",

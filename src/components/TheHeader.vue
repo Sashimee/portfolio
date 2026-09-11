@@ -34,7 +34,7 @@
             <span class="lang__caret" aria-hidden="true"></span>
           </button>
 
-          <ul v-if="localeMenu" class="lang__list" role="menu">
+          <ul v-if="localeMenu" class="lang__list" :aria-busy="localePending !== null" role="menu">
             <li v-for="option in localeOptions" :key="option.value" role="none">
               <button
                 type="button"
@@ -43,10 +43,12 @@
                 :aria-checked="option.value === locale"
                 :class="{ 'is-active': option.value === locale }"
                 :lang="option.value"
+                :disabled="localePending !== null"
                 @click="pickLocale(option.value)"
               >
                 <span class="lang__code">{{ option.value.toUpperCase() }}</span>
                 {{ option.label }}
+                <q-spinner v-if="localePending === option.value" class="lang__spinner" size="1em" />
               </button>
             </li>
           </ul>
@@ -119,7 +121,7 @@
             <span class="lang__caret" aria-hidden="true"></span>
           </button>
 
-          <ul v-if="localeMenu" class="lang__list lang__list--up lang__list--start" role="menu">
+          <ul v-if="localeMenu" class="lang__list lang__list--up lang__list--start" :aria-busy="localePending !== null" role="menu">
             <li v-for="option in localeOptions" :key="option.value" role="none">
               <button
                 type="button"
@@ -128,10 +130,12 @@
                 :aria-checked="option.value === locale"
                 :class="{ 'is-active': option.value === locale }"
                 :lang="option.value"
+                :disabled="localePending !== null"
                 @click="pickLocale(option.value)"
               >
                 <span class="lang__code">{{ option.value.toUpperCase() }}</span>
                 {{ option.label }}
+                <q-spinner v-if="localePending === option.value" class="lang__spinner" size="1em" />
               </button>
             </li>
           </ul>
@@ -172,6 +176,7 @@ export default {
       icons,
       menu: false,
       localeMenu: false,
+      localePending: null,
       scrolled: false,
       darkMode: Dark.isActive,
       locale: currentLocale(),
@@ -198,13 +203,33 @@ export default {
       const path = this.$route.path
       return item.exact ? path === item.to : path.startsWith(item.to)
     },
-    // La fermeture d'abord : `closeLocaleMenu` lit `document.activeElement`
-    // pour rendre le focus au déclencheur, et `setLocale` attend maintenant le
-    // fragment de la langue — après cette attente, le focus a pu bouger.
+    // `setLocale` attend le fragment de la langue : fermer le panneau d'abord
+    // laissait le visiteur devant la page inchangée, sans rien qui l'explique,
+    // et un fragment qui n'arrive pas ne se voyait nulle part. Le panneau reste
+    // donc ouvert jusqu'à ce que la langue soit là. Le déclencheur du retour de
+    // focus est relevé avant l'attente : après elle, `document.activeElement`
+    // a pu bouger.
     async pickLocale(value) {
-      this.closeLocaleMenu()
+      if (this.localePending) return
+      const bloc = document.activeElement?.closest('.lang')
+      this.localePending = value
+      try {
+        this.locale = await setLocale(value)
+      } catch (error) {
+        this.$q.notify({
+          color: 'negative',
+          textColor: 'white',
+          icon: icons.cloudOff,
+          message: this.$t('layout.language_failed')
+        })
+        console.error(error)
+        return
+      } finally {
+        this.localePending = null
+      }
+      this.localeMenu = false
       this.menu = false
-      this.locale = await setLocale(value)
+      this.$nextTick(() => bloc?.querySelector('.lang__trigger')?.focus())
     },
     /**
      * La liste disparaît du DOM en se fermant, et avec elle le bouton focalisé :
@@ -438,9 +463,12 @@ body.is-locked
   cursor: pointer
   transition: color 0.3s, background 0.3s
 
-  &:hover
+  &:hover:not(:disabled)
     color: var(--ink)
     background: var(--surface-2)
+
+  &:disabled
+    cursor: default
 
   &.is-active
     color: var(--ink)
@@ -448,6 +476,11 @@ body.is-locked
     .lang__code
       color: var(--acc-ink)
       background: var(--acc)
+
+.lang__spinner
+  align-self: center
+  margin-left: auto
+  color: var(--ink-3)
 
 .lang__code
   padding: 0.1rem 0.3rem
