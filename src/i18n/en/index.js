@@ -163,6 +163,91 @@ export default {
     cta: "Let's build something lighter",
     top: "Back to top"
   },
+  blogPost6: {
+    title: "The collage app that never sees your photos",
+    title2:
+      "A photo editor with no server, no account and no upload \u2014 and the bugs that only exist <strong>after a reload</strong>.",
+    sections: [
+      {
+        title: "An editor with nothing behind it",
+        paragraphs: [
+          "<strong>Pic Collage Maker</strong> makes photo collages and edits them, and it runs entirely in your browser. Static files on GitHub Pages, at <em>sashimee.github.io/Pic-Collage-Maker</em>. No account, no backend, nothing uploaded. It installs to a home screen on iPhone and Android and keeps working with the aeroplane mode on.",
+          "React 19, Vite and TypeScript, with Konva driving the canvas. Six languages, a light theme and a dark one. The board is 1080 \u00d7 1350 by default, and every element on it is stored in <strong>board design units</strong> rather than screen pixels \u2014 which is why an export is the same file whatever your zoom happened to be when you pressed the button.",
+          "The claim that nothing is uploaded is not a feature of this app, it is the whole of it. What follows is what that costs in code, including the three places where it quietly stopped being true."
+        ],
+        img: ""
+      },
+      {
+        title: "A photo app with no photo server",
+        paragraphs: [
+          "The ordinary shape of this product is an account, an upload, and a render on somebody else\u2019s machine. The repository refuses that in an architecture decision record on its first page, and then has to pay for it everywhere else: decoding, editing, filtering, laying out and exporting all happen in the tab you have open. Photo bytes go into IndexedDB, and so do saved projects, version snapshots and uploaded fonts.",
+          "You get PNG, JPG, SVG, PDF, a photo book fitted onto a chosen sheet at 300 DPI, a ZIP of every page, and the Web Share sheet on a phone. None of it passes through a server, because there is no server to pass through.",
+          "The price is written in the README rather than buried: <strong>clearing site data deletes your projects.</strong> There is no copy anywhere else and no account to recover them with. That is the honest other half of the promise, and it belongs in the same sentence as the promise.",
+          "The only requests the app ever makes are a same-origin <em>version.json</em> poll, so it can tell you a new version is ready, and an anonymous cookieless visit count. There is no cookie banner because there is nothing to consent to \u2014 and Do Not Track and Global Privacy Control are checked <em>before</em> the counter script is requested, so an opted-out visitor makes no third-party request at all."
+        ],
+        img: "export"
+      },
+      {
+        title: "Layout first, because a blank canvas is not an invitation",
+        paragraphs: [
+          "The app opens on a gallery of layouts rather than an empty board: presets from one photo to sixteen, sorted into classic, editorial, social and creative, and a custom mode where you draw the layout yourself \u2014 a stroke splits a zone in two, a closed loop cuts a circle out of it.",
+          "That order is the design. An empty canvas is a question, and a question is the fastest way to lose somebody who opened your app to make one collage of one holiday. A grid is a suggestion, and a suggestion can be accepted in a single tap.",
+          "Everything after that is the editor proper: move, resize, rotate, reorder, duplicate, group and layer; text with real typographic controls and uploaded fonts; emoji stickers, shapes and freehand drawing; solid, gradient, pattern or full-board photo backgrounds; a filter stack with temperature, tint, vignette and blur on top of the usual three; snapping guides, undo and redo, autosave, watermarks and print marks."
+        ],
+        img: "mises-en-page"
+      },
+      {
+        title: "The bug that only exists after a reload",
+        paragraphs: [
+          "A photo element holds its pixels as a <em>blob:</em> URL. That is a handle into the document you currently have open, and it dies with it; the actual bytes live in IndexedDB under a photo id. Saved projects and version history both shipped without knowing that. You saved a project, reloaded the page, opened it again \u2014 and it came back with its layout perfectly intact and <strong>every photo gone</strong>.",
+          "Nothing threw. Nothing logged. It looked entirely correct right up to the reload, which is precisely the thing you do not do while you are building the feature that saves things.",
+          "The fix is two functions, one on the way out and one on the way back. And then the same bug a second time, in a place the first fix could not reach: <strong>the background is not an element.</strong> Those functions walk the element list, so a full-board photo background kept dying on reload while every photo in front of it survived.",
+          "The rule that came out of it is now the loudest line in the project guide: anything that holds pixels needs both halves wired at every save and every load site, and persistence is tested with an actual page reload, never with a state assertion."
+        ],
+        img: ""
+      },
+      {
+        title: "The AI is arithmetic",
+        paragraphs: [
+          "Auto-enhance, background removal, portrait retouch, smart crop, blemish healing and caption suggestions. <strong>985 lines across seven files</strong>, and not one byte of model download.",
+          "Background removal samples a twenty-pixel border, averages it into a background colour, floods inward by colour distance and feathers the edge. It is good on a photo with a distinct background and unremarkable on a busy one, and the panel does not pretend otherwise.",
+          "The alternative was a segmentation model: several megabytes over the network the first time somebody taps the button, on a page whose entire argument is that nothing needs to travel. Arithmetic that works most of the time and costs nothing beat a model that works more often and costs a download on a phone \u2014 and the word <em>AI</em> is doing no work in either case."
+        ],
+        img: ""
+      },
+      {
+        title: "221 kilobytes, and the 400 you usually do not pay",
+        paragraphs: [
+          "First load is five files and <strong>221,263 bytes gzipped</strong> \u2014 application, framework, stylesheet, everything the editor needs to open.",
+          "What is <em>not</em> in that number is the more interesting half. The PDF writer is 421,184 bytes raw and <strong>175,887 gzipped</strong>, very nearly the weight of the whole app again, and it is fetched the first time somebody exports a PDF and never otherwise. The ZIP writer is another 28 KB gzipped on the same terms. The heaviest dependency in the repository is one most visitors never download.",
+          "Poppins is self-hosted, latin subset, three weights, <strong>23,700 bytes</strong> in total. It used to come from a Google Fonts link, which put a third origin \u2014 a DNS lookup, a TLS handshake, a stylesheet, then the font files \u2014 in front of first paint, and quietly made the no-outbound-traffic claim above untrue.",
+          "Two smaller disciplines hold the rest. <em>index.html</em> paints an app shell with inline styles before React runs, so first paint is not gated on parsing the bundle \u2014 move those styles into a stylesheet and the shell goes back behind the network. And framer-motion is wrapped so that only the features actually used are bundled; converting five files that had imported it directly took the eager chunk from 150.9 kB to 104.7 kB."
+        ],
+        img: ""
+      },
+      {
+        title: "What the tests hold, and what they caught",
+        paragraphs: [
+          "<strong>286 unit tests</strong> in 23 files, and <strong>78 end-to-end tests</strong> in 15 Playwright specs.",
+          "The canvas is a single <em>&lt;canvas&gt;</em> element: there is nothing in the DOM to query and nothing to assert on. So the end-to-end suite drives dev-only seams instead \u2014 handles onto the editor, the project store, the version store and the board\u2019s on-screen rectangle, exposed only in a development build. Tests that have to survive a page reload have no other way in, because module imports and React refs are gone by then.",
+          "Two defects from that suite are worth the space. The first: a flag that swapped photos to full resolution for export was set, used and cleared in three consecutive statements \u2014 React never re-rendered in between, so the flag never took effect and <strong>every export silently used the 1080-pixel preview</strong>. The second: an image inside a pointer drag starts the browser\u2019s own image drag, which fires <em>pointercancel</em> and kills the pointer stream after roughly one move. The page reorder did nothing at all, with no error anywhere, until one attribute was added.",
+          "Both belong to the same family: the code runs, nothing fails, and the result is not what you think it is. That is the class of defect a browser never reports \u2014 the same argument this blog made about page weight, pointed at behaviour."
+        ],
+        img: "calques"
+      },
+      {
+        title: "What is not done",
+        paragraphs: [
+          "<strong>Every keyboard shortcut fires twice.</strong> Two overlapping keydown maps grew in parallel and both are still listening. It is open as issue #3 and it is not fixed.",
+          "One end-to-end spec is flaky: the custom-layout suite fails about half the time, on a different test each run. That is issue #4, and a flaky test is worse than a missing one \u2014 it teaches you to read red as noise.",
+          "The interface ships in six languages and I can vouch for two of them. German, Spanish, Italian and Portuguese were written here and have not been read by anyone who speaks them, which is exactly the reserve this site already carries about its own German. Writing it down is not the same as closing it.",
+          "The performance gate in continuous integration is set at 0.75, not at 0.9. It is set where the app actually is rather than where I would like it to be, which is honest and is not the same as good.",
+          "And the promise cuts both ways. No server means nothing to hack, nothing to leak and nothing to subpoena \u2014 and also nothing to restore from. Export what you want to keep. It is free, it installs in one tap, and it does not know who you are."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost5: {
     title: "The test that fails when the game gets mean",
     title2:
