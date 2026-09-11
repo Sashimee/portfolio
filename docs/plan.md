@@ -25,7 +25,7 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R15** | **reCAPTCHA v3 n'a pas arrêté un navigateur automatisé.** L'envoi de vérification du 2026-08-28 a été fait par Playwright — un Chromium piloté, sans interaction humaine — et a obtenu **0.9**, très au-dessus du seuil de 0.5. reCAPTCHA v3 ne bloque pas : il *note*, et la note s'est trompée. La protection réelle du formulaire repose donc sur le contrôle d'origine, le limiteur de débit et la vérification d'action, pas sur le score. | Rien ne « referme » ceci — c'est une propriété du produit. Mais : relever le seuil (0.7), et alimenter l'API d'annotations d'Enterprise pour que le modèle apprenne. À décider, pas à ignorer. |
 | **R16** | Les chiffres de l'article (27,4 Mo → 905 Ko, 42,6 Mo, 696 052 octets de polices) sont reconstitués depuis les **objets git**, pas depuis ce qu'un navigateur télécharge. Le lot 16 a mesuré la production, mais **par fichier** (`curl` sur neuf ressources : 1 128 514 octets, aucune compressée), pas en chargement de page complet. | Un chargement à froid de l'accueil et d'un article mesuré dans un navigateur — octets reçus, images et document compris — **après** le déploiement du lot 16. |
 | **R17** | Premier article **sans aucune illustration de section** : les huit portent `img: ""`. Les trois articles précédents en ont tous au moins une, donc le rythme d'`article.vue` sans images n'a jamais été vu. Le dossier `article_four` est déclaré dans le registre mais n'existe pas sur le disque — inoffensif tant qu'aucune section ne le désigne. | L'article publié, lu sur téléphone en portrait, dans les deux thèmes — la vérification qui a refermé R14. |
-| **R19** | **L'allemand n'a été relu par personne dont c'est la langue.** Les 133 clés — dont quatre articles longs, à la syntaxe travaillée — ont été traduites ici. C'est exactement la réserve que l'article `blogPost2` pose lui-même à propos du luxembourgeois de Schoulbus, et elle vaut maintenant pour ce site. | Une relecture par un locuteur natif, au moins sur le chrome (`layout`, `home`, `contact`, `consent`, `footer`) et les titres d'articles. **Le lot 15 y a ajouté un cinquième article complet**, neuf sections de plus, écrites ici comme les autres. |
+| **R19** | **L'allemand n'a été relu par personne dont c'est la langue.** Les 133 clés — dont quatre articles longs, à la syntaxe travaillée — ont été traduites ici. C'est exactement la réserve que l'article `blogPost2` pose lui-même à propos du luxembourgeois de Schoulbus, et elle vaut maintenant pour ce site. | Une relecture par un locuteur natif, au moins sur le chrome (`layout`, `home`, `contact`, `consent`, `footer`) et les titres d'articles. **Le lot 15 y a ajouté un cinquième article complet**, neuf sections de plus, écrites ici comme les autres. **Le lot 23 y ajoute un sixième**, huit sections, plus le texte d'un projet. |
 | **R20** | La liste de langues n'a été vue que **montée dans jsdom**. Le rendu réel n'a pas été regardé : dépassement du panneau ouvert vers le haut dans le menu plein écran, contraste des états `:hover` et `.is-active` en thème sombre, et navigation au clavier seule (la liste ne piège pas le focus et ne le déplace pas sur la première option). | Ouvrir l'en-tête sur la production, bureau et téléphone, dans les deux thèmes, et parcourir la liste à la tabulation. |
 | **R21** | Les six captures de **Royaume Foot** (vignette du projet, couverture et cinq illustrations) ont été prises ici, sur un serveur de développement local, dans un Chromium **sans GPU** (`--use-gl=swiftshader`) et **sans les polices du système** — c'est DejaVu Sans et Noto Color Emoji qui rendent le texte et les émojis, pas la pile que le jeu obtient sur un vrai appareil. Le rendu 3D est le vrai ; la typographie du HUD ne l'est pas forcément. | Une capture de `foot.bas.lu` prise dans un navigateur ordinaire, sur un téléphone, et les images reprises depuis celle-là. |
 | **R22** | Les chiffres de l'article Royaume Foot — 333 Ko compressés dont 185 pour three.js, 9 388 octets d'images en cinq fichiers, 667 tirs balayés, 144 tests — ont été mesurés le **2026-09-08** sur le dépôt `royaume-foot`, en local, et **revérifiés au commit `694ca42`** après qu'une autre session y a livré sa phase 5 pendant la rédaction — inchangés. Ils décrivent ce dépôt-là ce jour-là, pas ce qu'un navigateur télécharge depuis `foot.bas.lu`. | Rien — mais le jour où l'article est remis en avant, les relire, comme R5. |
@@ -41,6 +41,7 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R34** | **Le multilinguisme reste invisible pour un moissonneur.** La langue est choisie côté client et n'entre jamais dans l'adresse : les trois langues partagent une URL, aucun `hreflang`, et les quinze instantanés portent `<html lang=en>` avec du texte anglais. Les paquets FR et DE — 335 clés chacun, quatre articles longs, ce que `test/i18n.spec.js` protège — ne rapportent aucune visite de recherche. | Des adresses localisées (`/fr/…`, `/de/…`) ou un paramètre, plus `hreflang` réciproque et un instantané par langue. C'est un chantier de routage, pas une retouche : écarté de ce lot pour cette raison. |
 | **R36** | **Purge du CSS Quasar, brotli, ré-encodage des images et sous-ensemble de Lexend : mesurés, non faits.** 82 109 octets de règles `.q-*` pour des composants que le site ne rend jamais (10 787 octets compressés sur **chaque** page, en tête de rendu) ; 32 017 octets (13 %) que brotli prendrait ; ~490 Ko sur neuf illustrations d'articles et ~288 Ko sur treize vignettes ; ~80 Ko sur trois fontes portant 845 glyphes pour 121 points de code utilisés. | Les deux derniers attendent un encodeur : `cwebp`, ImageMagick, PIL et fontTools sont tous absents de l'environnement — c'est le blocage que R29 nomme déjà. La purge CSS et brotli attendent autre chose : un **regard**. Purger sans qu'aucun navigateur ne relise le site rouvrirait R28 en plus grand, et une directive brotli qu'un module absent refuse **empêche NGINX de démarrer**. |
 | **R38** | **La correction du lot 22 n'a pas été vue, et le chemin d'échec n'a toujours pas été emprunté.** Le tour du 2026-09-11 a bien éprouvé l'attente (1c : lien bridé, défaut confirmé), mais **pas** l'échec : hors ligne, les fragments `fr` et `de` étaient déjà dans le cache HTTP, chargés aux étapes précédentes — la bascule a donc réussi, plus vite qu'en 3G. R37 demandait « hors ligne, **cache vide** » ; c'est la moitié qui manque. | Recharger en vidant le cache (*Disable cache* ou navigation privée), passer hors ligne **avant** d'avoir affiché la langue visée, puis la choisir : le panneau doit rester ouvert et la notification d'échec s'afficher. Et sur lien bridé, voir le panneau rester ouvert avec son indicateur au lieu de se fermer. |
+| **R39** | **Les captures et les chiffres de l'article `blogPost6` viennent d'ici, pas de la production.** Les captures de Pic Collage Maker ont été prises sur `npm run dev` du dépôt voisin, dans un Chromium sans GPU, à 1440 × 900 — pas sur `sashimee.github.io/Pic-Collage-Maker`, où c'est une construction de production derrière un agent de service qui répond. Et les 221 263 octets du premier chargement sont mesurés sur le `dist/` local, en `gzip -9` ; GitHub Pages sert autre chose. | Ouvrir l'application publiée, relever le poids réellement transféré dans l'onglet réseau, et reprendre les captures depuis elle. Le chiffre cité est un plancher, pas une mesure du service. |
 
 ---
 
@@ -926,3 +927,47 @@ pour le reste : contraste des états, parcours clavier, lecteur d'écran.
 *Réserve refermée : R37. Ouverte : R38 — la correction de ce lot n'a pas encore été vue, et
 la moitié « hors ligne, cache vide » de R37 n'a jamais été éprouvée, les fragments étant
 déjà en cache au moment du test.*
+
+---
+
+### Lot 23 — Pic Collage Maker, le projet et son article · fait le 2026-09-12
+
+**Ce qui a été ajouté.** Un projet et un article, aux quatre endroits que le guide nomme,
+dans cet ordre : `src/data/projects.js`, `projects.texts.picCollage` dans les trois langues,
+`src/data/posts.js`, puis le compte de `test/pages.spec.js` — 13 projets, puis 14.
+
+Le projet est posé **en tête** de la liste, ce qui est une décision et pas un détail :
+l'accueil met en avant les trois premiers projets `live`, donc Pic Collage Maker y prend la
+place de Schoulbus. C'est l'intention — c'est le projet le plus récent — mais la une a
+changé et il valait mieux l'écrire.
+
+**L'article.** `blogPost6`, slug `pic-collage-on-device`, huit sections, EN/FR/DE d'un seul
+tenant comme l'exige le principe 2. Il raconte ce que coûte la promesse « rien ne remonte » :
+l'architecture sans serveur et son prix (vider les données du site efface les projets), la
+galerie de mises en page avant la planche vide, le bogue des URL `blob:` qui ne se voit
+qu'après un rechargement, les 985 lignes d'« IA » qui ne sont que de l'arithmétique, les
+221 263 octets du premier chargement contre les 175 887 du PDF que presque personne ne
+télécharge, et deux défauts que seule une suite de bout en bout pouvait attraper. La
+dernière section nomme ce qui n'est pas fait, y compris les deux *issues* ouvertes du dépôt
+voisin (#3, raccourcis doublés ; #4, scénario instable).
+
+**Les images, sans encodeur.** Le blocage noté depuis le lot 17 — ni `cwebp`, ni
+ImageMagick, ni PIL, ni `sharp` dans cet environnement — a été contourné : les captures sont
+prises par Playwright sur le serveur de développement du dépôt voisin, puis **encodées en
+WebP par le canevas de Chromium** (`canvas.toDataURL('image/webp')`), qui sait le faire
+depuis toujours. La vignette du projet fait 1440 × 900 pour 42 530 octets ; les trois
+illustrations font 640 px de large, de 8 738 à 13 854 octets — sous la barre que R29 réclame,
+cette fois dès la pose. La même voie est ouverte pour R29 et la moitié image de R36, si Alex
+la veut.
+
+Une quatrième capture a été jetée après coup : la planche seule est verticale (640 × 789), et
+au plafond de 180 px des illustrations courantes elle tenait sur un timbre. Les trois qui
+restent sont horizontales.
+
+**Porte complète au vert** : `lint`, `test` (**105**, contre 104 — le nouvel article ajoute
+sa route à la boucle de montage), `build` (**16 instantanés** de route, contre 15) et
+`verify:api-url`. Les cinq pages touchées ont en plus été ouvertes dans un navigateur sur le
+`dist/` construit : accueil, `/projects`, `/blog`, `/blog/pic-collage-on-device` et son bas
+de page, **aucune erreur de console**, et le titre pré-rendu bien posé dans l'instantané.
+
+*Réserves ouvertes par ce lot : **R39**. **R19** s'alourdit d'un sixième article.*

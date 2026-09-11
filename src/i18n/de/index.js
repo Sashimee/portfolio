@@ -90,6 +90,8 @@ export default {
       archive: "Archiv"
     },
     texts: {
+      picCollage:
+        "Ein Fotocollagen-Editor, der vollständig im Browser läuft: kein Konto, kein Backend, nichts wird hochgeladen. React 19, TypeScript und Konva, als PWA auf iPhone und Android installierbar und offline nutzbar. Fotos werden auf dem Gerät dekodiert, bearbeitet und exportiert — die Bytes liegen in IndexedDB und reisen nie. Fertige Raster von einem bis sechzehn Fotos sowie selbst gezeichnete Layouts, Text, Sticker, Formen, ein Filterstapel, eine Retusche auf dem Gerät, die kein einziges Modell herunterlädt, und Export als PNG, JPG, SVG, PDF oder ZIP aller Seiten. Sechs Sprachen, helles und dunkles Thema, und ein erster Ladevorgang von 221 Kilobyte gzip-komprimiert — der PDF-Schreiber wiegt vierhundert weitere, die nur abruft, wer ein PDF verlangt. Statische Dateien auf GitHub Pages, per Push ausgerollt.",
       royaumeFoot:
         "Ein 3D-Fu\u00dfballspiel f\u00fcr Sechsj\u00e4hrige, gespielt von Prinzessinnen und Rittern: Man wischt Richtung Tor, und wonach man wirklich spielt, ist die Garderobe, nicht der Punktestand. React 19, TypeScript und three.js \u00fcber react-three-fiber, als PWA installierbar und vollst\u00e4ndig offline spielbar. Kein Konto, nichts wird hochgeladen \u2014 der Fortschritt liegt im localStorage, die sechs Sprachen sind mit eingepackt, und das Ganze sind statische Dateien hinter nginx. Fast nichts ist eine Datei: Figuren, Burg und Torh\u00fcter bestehen aus Primitiven, die Texturen werden beim Start auf ein 2D-Canvas gemalt, die Kl\u00e4nge sind mit Web Audio synthetisiert, und s\u00e4mtliche Bilder des Repositorys zusammen ergeben neun Kilobyte. Ein Schwierigkeits-Pr\u00fcfstand in der CI durchl\u00e4uft jede Wischbewegung, die ein Kind hinbekommt, und l\u00e4sst den Build scheitern, sobald das Spiel aufh\u00f6rt, freundlich zu sein.",
       aura:
@@ -161,6 +163,91 @@ export default {
     cta_eyebrow: "Nächster Schritt",
     cta: "Bauen wir etwas Leichteres",
     top: "Nach oben"
+  },
+  blogPost6: {
+    title: "Die Collage-App, die Ihre Fotos nie zu sehen bekommt",
+    title2:
+      "Ein Fotoeditor ohne Server, ohne Konto und ohne Upload — und die Fehler, die es erst <strong>nach einem Neuladen</strong> gibt.",
+    sections: [
+      {
+        title: "Ein Editor mit nichts dahinter",
+        paragraphs: [
+          "<strong>Pic Collage Maker</strong> baut Fotocollagen und bearbeitet sie, und zwar vollständig im Browser. Statische Dateien auf GitHub Pages, unter <em>sashimee.github.io/Pic-Collage-Maker</em>. Kein Konto, kein Backend, nichts wird hochgeladen. Die App legt sich auf den Startbildschirm, auf iPhone wie auf Android, und arbeitet im Flugmodus weiter.",
+          "React 19, Vite und TypeScript, mit Konva als Zeichenfläche. Sechs Sprachen, ein helles und ein dunkles Thema. Die Arbeitsfläche misst standardmäßig 1080 × 1350, und jedes Element darauf wird in <strong>Flächeneinheiten</strong> gespeichert statt in Bildschirmpixeln — deshalb ergibt ein Export dieselbe Datei, ganz gleich, wie weit beim Drücken hineingezoomt war.",
+          "Dass nichts hochgeladen wird, ist keine Eigenschaft dieser App, es ist die ganze App. Was folgt, ist der Preis dafür im Code, samt der drei Stellen, an denen es still aufgehört hatte zu stimmen."
+        ],
+        img: ""
+      },
+      {
+        title: "Eine Foto-App ohne Fotoserver",
+        paragraphs: [
+          "Die übliche Gestalt dieses Produkts ist ein Konto, ein Upload und ein Rendern auf fremder Hardware. Das Repository lehnt das schon in seiner ersten Architekturentscheidung ab und bezahlt dafür überall sonst: Dekodieren, Bearbeiten, Filtern, Anordnen und Exportieren geschehen alle im geöffneten Tab. Die Bytes der Fotos wandern in IndexedDB, ebenso gespeicherte Projekte, der Versionsverlauf und hochgeladene Schriften.",
+          "Heraus kommen PNG, JPG, SVG, PDF, ein Fotobuch mit 300 dpi auf einem gewählten Bogen, ein ZIP aller Seiten und auf dem Telefon das Teilen-Blatt des Systems. Nichts davon läuft über einen Server, weil es keinen gibt, über den es laufen könnte.",
+          "Der Preis steht in der <em>README</em> und nicht im Kleingedruckten: <strong>Werden die Websitedaten gelöscht, sind die Projekte weg.</strong> Es gibt keine Kopie anderswo und kein Konto, mit dem sich etwas zurückholen ließe. Das ist die ehrliche andere Hälfte des Versprechens, und sie gehört in denselben Satz wie das Versprechen.",
+          "Die einzigen Anfragen, die die App überhaupt stellt, sind ein Abruf von <em>version.json</em> derselben Herkunft, damit sie eine neue Version ankündigen kann, und eine anonyme, cookielose Besuchszählung. Es gibt kein Zustimmungsbanner, weil es nichts zuzustimmen gibt — und <em>Do Not Track</em> wie <em>Global Privacy Control</em> werden gelesen, <em>bevor</em> das Zählskript überhaupt angefordert wird: Wer widersprochen hat, stellt keine einzige Drittanfrage."
+        ],
+        img: "export"
+      },
+      {
+        title: "Erst das Layout, denn eine leere Fläche lädt niemanden ein",
+        paragraphs: [
+          "Die App öffnet mit einer Layout-Galerie statt mit einer leeren Fläche: Raster von einem bis sechzehn Fotos, sortiert nach klassisch, redaktionell, sozial und kreativ, dazu ein Modus, in dem man das Layout selbst zeichnet — ein Strich teilt eine Zone, eine geschlossene Schleife schneidet einen Kreis heraus.",
+          "Diese Reihenfolge ist der Entwurf. Eine leere Fläche ist eine Frage, und eine Frage ist der schnellste Weg, jemanden zu verlieren, der nur eine einzige Collage eines einzigen Wochenendes machen wollte. Ein Raster ist ein Vorschlag, und ein Vorschlag lässt sich mit einem Fingertipp annehmen.",
+          "Alles Weitere ist der eigentliche Editor: bewegen, skalieren, drehen, umsortieren, duplizieren, gruppieren und stapeln; Text mit echten typografischen Reglern und selbst hochgeladenen Schriften; Emoji-Sticker, Formen und freies Zeichnen; Hintergründe einfarbig, als Verlauf, als Muster oder als flächenfüllendes Foto; ein Filterstapel mit Temperatur, Tönung, Vignette und Unschärfe über den üblichen dreien; magnetische Hilfslinien, Rückgängig, automatisches Speichern, Wasserzeichen und Druckmarken."
+        ],
+        img: "mises-en-page"
+      },
+      {
+        title: "Der Fehler, den es erst nach dem Neuladen gibt",
+        paragraphs: [
+          "Ein Fotoelement hält seine Pixel in einer <em>blob:</em>-URL. Das ist ein Griff in das gerade geöffnete Dokument, und er stirbt mit ihm; die Bytes selbst liegen unter einer Foto-Kennung in IndexedDB. Das Speichern von Projekten und der Versionsverlauf gingen beide in Betrieb, ohne das zu wissen. Man speicherte ein Projekt, lud die Seite neu, öffnete es wieder — und es kam mit vollkommen intaktem Layout zurück und <strong>ohne ein einziges Foto</strong>.",
+          "Nichts warf einen Fehler. Nichts landete im Protokoll. Es sah bis zum Neuladen völlig richtig aus, und genau das tut man nicht, während man die Funktion schreibt, die speichert.",
+          "Die Behebung sind zwei Funktionen, eine auf dem Hinweg und eine auf dem Rückweg. Und dann derselbe Fehler ein zweites Mal, an einer Stelle, die die erste Behebung nicht erreichen konnte: <strong>der Hintergrund ist kein Element.</strong> Diese Funktionen laufen die Elementliste ab; ein flächenfüllender Fotohintergrund starb also beim Neuladen weiter, während jedes Foto davor überlebte.",
+          "Die Regel, die daraus wurde, ist heute die lauteste Zeile im Projektleitfaden: Alles, was Pixel hält, braucht beide Hälften, an jeder Speicher- und jeder Ladestelle — und Persistenz wird mit einem echten Neuladen der Seite geprüft, nie mit einer Zusicherung auf den Zustand."
+        ],
+        img: ""
+      },
+      {
+        title: "Die KI ist Arithmetik",
+        paragraphs: [
+          "Automatische Bildverbesserung, Hintergrundentfernung, Porträtretusche, intelligenter Zuschnitt, Retuschepinsel und Bildunterschrift-Vorschläge. <strong>985 Zeilen in sieben Dateien</strong>, und kein einziges Byte heruntergeladenes Modell.",
+          "Die Hintergrundentfernung tastet einen zwanzig Pixel breiten Rand ab, mittelt ihn zu einer Hintergrundfarbe, füllt nach innen nach Farbabstand und weicht die Kante auf. Auf einem Foto mit klarem Hintergrund ist sie gut, auf einem unruhigen unauffällig, und das Bedienfeld behauptet nichts anderes.",
+          "Der andere Weg wäre ein Segmentierungsmodell gewesen: mehrere Megabyte über das Netz beim ersten Tippen auf die Schaltfläche, auf einer Seite, deren ganzes Argument lautet, dass nichts reisen muss. Arithmetik, die meistens funktioniert und nichts kostet, schlägt ein Modell, das öfter funktioniert und auf einem Telefon einen Download kostet — und das Wort <em>KI</em> leistet in beiden Fällen keine Arbeit."
+        ],
+        img: ""
+      },
+      {
+        title: "221 Kilobyte, und die 400, die man gewöhnlich nicht zahlt",
+        paragraphs: [
+          "Der erste Ladevorgang sind fünf Dateien und <strong>221 263 Byte gzip-komprimiert</strong> — Anwendung, Framework, Stylesheet, alles, was der Editor zum Öffnen braucht.",
+          "Interessanter ist, was in dieser Zahl <em>nicht</em> steckt. Der PDF-Schreiber wiegt 421 184 Byte roh und <strong>175 887 komprimiert</strong>, beinahe noch einmal das Gewicht der ganzen App, und er wird beim ersten PDF-Export geholt und sonst nie. Der ZIP-Schreiber, weitere 28 KB komprimiert, folgt derselben Regel. Die schwerste Abhängigkeit des Repositorys ist die, die die meisten Besucher nie herunterladen.",
+          "Poppins ist selbst gehostet, lateinische Teilmenge, drei Schnitte, zusammen <strong>23 700 Byte</strong>. Sie kam einmal von einem Google-Fonts-Link, der eine dritte Herkunft — eine DNS-Auflösung, einen TLS-Handschlag, ein Stylesheet und dann die Schriftdateien — vor den ersten Bildaufbau setzte und die Behauptung, es gebe keinen ausgehenden Verkehr, still unwahr machte.",
+          "Zwei kleinere Disziplinen halten den Rest. <em>index.html</em> zeichnet mit eingebetteten Stilen eine App-Hülle, bevor React startet, damit der erste Bildaufbau nicht am Auswerten des Bundles hängt — wandern diese Stile in ein externes Stylesheet, rutscht die Hülle wieder hinter das Netz. Und die Animationsbibliothek ist so verpackt, dass nur ausgeliefert wird, was tatsächlich benutzt wird: Fünf Dateien umzustellen, die sie direkt importiert hatten, brachte das sofort geladene Bündel von 150,9 kB auf 104,7 kB."
+        ],
+        img: ""
+      },
+      {
+        title: "Was die Tests halten, und was sie gefangen haben",
+        paragraphs: [
+          "<strong>286 Unit-Tests</strong> in 23 Dateien und <strong>78 Ende-zu-Ende-Tests</strong> in 15 Playwright-Spezifikationen.",
+          "Die Zeichenfläche ist ein einziges <em>&lt;canvas&gt;</em>-Element: Im DOM gibt es nichts abzufragen und nichts, worauf sich eine Zusicherung stützen könnte. Die Ende-zu-Ende-Suite steuert deshalb Nähte, die es nur in der Entwicklung gibt — Griffe auf den Editor, den Projektspeicher, den Versionsspeicher und auf das Rechteck, das die Arbeitsfläche am Bildschirm einnimmt, ausschließlich in einem Entwicklungs-Build sichtbar. Tests, die ein Neuladen überstehen müssen, haben keinen anderen Zugang: Modulimporte und React-Referenzen sind dann verschwunden.",
+          "Zwei Fehler aus dieser Suite sind den Platz wert. Der erste: Ein Schalter, der Fotos für den Export auf volle Auflösung umstellt, wurde in drei aufeinanderfolgenden Anweisungen gesetzt, gelesen und zurückgenommen — React rendert dazwischen nie, der Schalter wurde also nie wirksam, und <strong>jeder Export benutzte stillschweigend die 1080-Pixel-Vorschau</strong>. Der zweite: Ein Bild innerhalb einer Zeigergeste startet das bildeigene Ziehen des Browsers, das <em>pointercancel</em> auslöst und den Zeigerstrom nach etwa einer Bewegung abbricht. Das Umsortieren der Seiten tat deshalb überhaupt nichts, ohne irgendwo eine Fehlermeldung, bis ein einziges Attribut ergänzt wurde.",
+          "Beide gehören zur selben Familie: Der Code läuft, nichts schlägt fehl, und das Ergebnis ist nicht das, was man denkt. Das ist die Fehlerklasse, die ein Browser nie meldet — dasselbe Argument, das dieses Blog über das Gewicht von Seiten gemacht hat, nur auf das Verhalten gerichtet."
+        ],
+        img: "calques"
+      },
+      {
+        title: "Was nicht erledigt ist",
+        paragraphs: [
+          "<strong>Jedes Tastenkürzel löst zweimal aus.</strong> Zwei überlappende Tastaturtabellen sind nebeneinander gewachsen, und beide hören noch zu. Das ist Issue Nr. 3, offen, und es ist nicht behoben.",
+          "Eine Ende-zu-Ende-Spezifikation ist unzuverlässig: die der gezeichneten Layouts fällt etwa in der Hälfte der Läufe durch, bei jedem Lauf an einem anderen Test. Das ist Issue Nr. 4, und ein unzuverlässiger Test ist schlimmer als ein fehlender — er bringt einem bei, Rot als Rauschen zu lesen.",
+          "Die Oberfläche erscheint in sechs Sprachen, und für zwei davon stehe ich gerade. Deutsch, Spanisch, Italienisch und Portugiesisch wurden hier geschrieben und von niemandem gelesen, der sie spricht — genau der Vorbehalt, den diese Website über ihr eigenes Deutsch bereits führt. Ihn aufzuschreiben heißt nicht, ihn zu schließen.",
+          "Die Leistungsschwelle in der Continuous Integration steht bei 0,75 und nicht bei 0,9. Sie steht dort, wo die App tatsächlich ist, und nicht dort, wo ich sie gern hätte — das ist ehrlich und nicht dasselbe wie gut.",
+          "Und das Versprechen schneidet nach beiden Seiten. Kein Server heißt nichts zu hacken, nichts, was abfließen kann, und nichts, was beschlagnahmt werden könnte — und eben auch nichts, woraus sich etwas wiederherstellen ließe. Exportieren Sie, was Sie behalten wollen. Es ist kostenlos, es installiert sich mit einem Fingertipp, und es weiß nicht, wer Sie sind."
+        ],
+        img: ""
+      }
+    ]
   },
   blogPost5: {
     title: "Der Test, der fehlschl\u00e4gt, wenn das Spiel gemein wird",
