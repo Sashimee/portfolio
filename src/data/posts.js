@@ -19,9 +19,17 @@ import couvertureGreenCoding from '@/assets/gc_info_fr.webp'
 import couvertureAura from '@/assets/aura-cover.webp'
 import couverturePortfolio from '@/assets/portfolio-cover.webp'
 import couvertureRoyaumeFoot from '@/assets/royaume-foot-cover.webp'
+import couverturePicCollage from '@/assets/pic-collage-cover.webp'
 
 /** Du plus récent au plus ancien : `Blog.vue` numérote dans cet ordre. */
 export default [
+  {
+    slug: 'pic-collage-on-device',
+    key: 'blogPost6',
+    date: '2026-09-12',
+    cover: couverturePicCollage,
+    illustrations: 'article_six'
+  },
   {
     slug: 'royaume-foot-3d-for-children',
     key: 'blogPost5',

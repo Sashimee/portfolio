@@ -91,6 +91,8 @@ export default {
       archive: "Archive"
     },
     texts: {
+      picCollage:
+        "Un fabricant de collages photo, qui tourne entièrement dans le navigateur\u202f: aucun compte, aucun serveur, rien qui remonte. React 19, TypeScript et Konva, installable en PWA sur iPhone et Android, utilisable hors ligne. Les photos sont décodées, retouchées et exportées sur l\u2019appareil — les octets vivent dans IndexedDB et ne voyagent jamais. Des grilles prêtes à l\u2019emploi, d\u2019une à seize photos, plus des mises en page qu\u2019on dessine soi-même, du texte, des autocollants, des formes, une pile de filtres, une retouche embarquée qui ne télécharge aucun modèle, et un export en PNG, JPG, SVG, PDF ou en archive de toutes les pages. Six langues, thème clair et sombre, et un premier chargement de 221 kilo-octets compressés — l\u2019écrivain de PDF en pèse quatre cents de plus, demandés seulement par qui réclame un PDF. Des fichiers statiques sur GitHub Pages, déployés par une poussée.",
       royaumeFoot:
         "Un jeu de foot en 3D pour des enfants de six ans, jou\u00e9 par des princesses et des chevaliers\u202f: on glisse vers le but, et ce qu'on vient chercher est la garde-robe, pas le score. React 19, TypeScript et three.js via react-three-fiber, installable en PWA et enti\u00e8rement jouable hors ligne. Aucun compte, rien qui remonte\u202f: la progression tient dans localStorage, les six langues sont embarqu\u00e9es, et l'ensemble n'est que des fichiers statiques derri\u00e8re nginx. Presque rien n'est un fichier\u202f: personnages, ch\u00e2teau et gardiens sont b\u00e2tis en primitives, les textures sont peintes sur un canevas 2D au d\u00e9marrage, les sons sont synth\u00e9tis\u00e9s en Web Audio, et toutes les images du d\u00e9p\u00f4t r\u00e9unies font neuf kilo-octets. Un harnais de difficult\u00e9, en int\u00e9gration continue, balaie tous les gestes qu'un enfant peut produire et fait \u00e9chouer la construction si le jeu cesse d'\u00eatre gentil.",
       aura:
@@ -163,6 +165,91 @@ export default {
     cta_eyebrow: "La suite",
     cta: "Construisons quelque chose de plus léger",
     top: "Haut de page"
+  },
+  blogPost6: {
+    title: "L\u2019application de collage qui ne voit jamais vos photos",
+    title2:
+      "Un éditeur photo sans serveur, sans compte et sans envoi — et les bogues qui n\u2019existent qu\u2019<strong>après un rechargement</strong>.",
+    sections: [
+      {
+        title: "Un éditeur avec rien derrière",
+        paragraphs: [
+          "<strong>Pic Collage Maker</strong> fabrique des collages photo et les retouche, entièrement dans le navigateur. Des fichiers statiques sur GitHub Pages, à l\u2019adresse <em>sashimee.github.io/Pic-Collage-Maker</em>. Aucun compte, aucun serveur, rien qui remonte. L\u2019application s\u2019installe sur un écran d\u2019accueil, iPhone comme Android, et continue de fonctionner en mode avion.",
+          "React 19, Vite et TypeScript, avec Konva qui tient le canevas. Six langues, un thème clair et un sombre. La planche fait 1080 × 1350 par défaut, et chaque élément posé dessus est stocké en <strong>unités de planche</strong> et non en pixels d\u2019écran — c\u2019est pour cela qu\u2019un export donne le même fichier quel que soit le zoom au moment où l\u2019on appuie.",
+          "Que rien ne remonte n\u2019est pas une fonctionnalité de cette application, c\u2019en est la totalité. Ce qui suit est ce que cela coûte en code, y compris les trois endroits où c\u2019avait discrètement cessé d\u2019être vrai."
+        ],
+        img: ""
+      },
+      {
+        title: "Une application photo sans serveur de photos",
+        paragraphs: [
+          "La forme habituelle de ce produit, c\u2019est un compte, un envoi, et un rendu sur la machine de quelqu\u2019un d\u2019autre. Le dépôt refuse cela dès sa première décision d\u2019architecture, et le paie partout ailleurs\u202f: décodage, retouche, filtres, mise en page et export ont tous lieu dans l\u2019onglet ouvert. Les octets des photos vont dans IndexedDB, comme les projets enregistrés, l\u2019historique des versions et les polices envoyées.",
+          "On en sort du PNG, du JPG, du SVG, du PDF, un livre photo calé à 300 points par pouce sur un format choisi, une archive de toutes les pages, et la feuille de partage du système sur téléphone. Rien ne traverse un serveur, puisqu\u2019il n\u2019y en a aucun à traverser.",
+          "Le prix est écrit dans le <em>README</em> plutôt qu\u2019enterré\u202f: <strong>vider les données du site efface vos projets.</strong> Il n\u2019en existe aucune copie ailleurs, et aucun compte pour les récupérer. C\u2019est l\u2019autre moitié honnête de la promesse, et sa place est dans la même phrase que la promesse.",
+          "Les seules requêtes que l\u2019application émet sont un appel de même origine à <em>version.json</em>, pour pouvoir annoncer qu\u2019une nouvelle version est prête, et un comptage de visite anonyme et sans cookie. Il n\u2019y a pas de bandeau de consentement parce qu\u2019il n\u2019y a rien à consentir — et <em>Do Not Track</em> comme <em>Global Privacy Control</em> sont lus <em>avant</em> que le script de comptage ne soit demandé\u202f: un visiteur qui s\u2019est retiré n\u2019émet aucune requête tierce, pas même une."
+        ],
+        img: "export"
+      },
+      {
+        title: "La mise en page d\u2019abord, parce qu\u2019une page blanche n\u2019invite personne",
+        paragraphs: [
+          "L\u2019application s\u2019ouvre sur une galerie de mises en page et non sur une planche vide\u202f: des grilles d\u2019une à seize photos, rangées en classique, éditorial, réseaux et créatif, plus un mode où l\u2019on dessine la mise en page soi-même — un trait coupe une zone en deux, une boucle fermée y découpe un rond.",
+          "Cet ordre-là est le dessin. Une planche vide est une question, et une question est la façon la plus rapide de perdre quelqu\u2019un venu faire un seul collage d\u2019un seul week-end. Une grille est une proposition, et une proposition s\u2019accepte d\u2019un doigt.",
+          "Tout ce qui suit est l\u2019éditeur proprement dit\u202f: déplacer, redimensionner, pivoter, réordonner, dupliquer, grouper et superposer\u202f; du texte avec de vraies commandes typographiques et des polices qu\u2019on téléverse\u202f; des autocollants, des formes et du dessin à main levée\u202f; des fonds unis, dégradés, à motif ou en photo pleine planche\u202f; une pile de filtres avec température, teinte, vignettage et flou par-dessus les trois habituels\u202f; des guides magnétiques, l\u2019annulation, l\u2019enregistrement automatique, le filigrane et les repères d\u2019impression."
+        ],
+        img: "mises-en-page"
+      },
+      {
+        title: "Le bogue qui n\u2019existe qu\u2019après un rechargement",
+        paragraphs: [
+          "Un élément photo garde ses pixels dans une URL <em>blob:</em>. C\u2019est une poignée vers le document actuellement ouvert, et elle meurt avec lui\u202f; les octets, eux, vivent dans IndexedDB sous un identifiant de photo. L\u2019enregistrement des projets et l\u2019historique des versions ont tous deux été livrés sans le savoir. On enregistrait un projet, on rechargeait la page, on le rouvrait — et il revenait avec sa mise en page parfaitement intacte et <strong>toutes ses photos disparues</strong>.",
+          "Rien n\u2019était levé. Rien n\u2019était journalisé. Tout avait l\u2019air juste jusqu\u2019au rechargement, c\u2019est-à-dire jusqu\u2019à la seule chose qu\u2019on ne fait pas pendant qu\u2019on écrit la fonction qui enregistre.",
+          "Le correctif tient en deux fonctions, une à l\u2019aller et une au retour. Puis le même bogue une seconde fois, dans un endroit que le premier correctif ne pouvait pas atteindre\u202f: <strong>le fond n\u2019est pas un élément.</strong> Ces deux fonctions parcourent la liste des éléments\u202f; un fond de planche en photo continuait donc de mourir au rechargement pendant que toutes les photos posées devant survivaient.",
+          "La règle qui en est sortie est aujourd\u2019hui la ligne la plus sonore du guide du projet\u202f: tout ce qui tient des pixels demande les deux moitiés, à chaque point d\u2019enregistrement et à chaque point de chargement, et la persistance se teste avec un vrai rechargement de page, jamais avec une assertion sur l\u2019état."
+        ],
+        img: ""
+      },
+      {
+        title: "L\u2019IA est de l\u2019arithmétique",
+        paragraphs: [
+          "Amélioration automatique, détourage du fond, retouche de portrait, recadrage intelligent, correcteur localisé et suggestions de légende. <strong>985 lignes réparties sur sept fichiers</strong>, et pas un octet de modèle téléchargé.",
+          "Le détourage échantillonne une bordure de vingt pixels, en fait une couleur de fond moyenne, remplit vers l\u2019intérieur par distance colorimétrique et adoucit le bord. Il est bon sur une photo au fond franc, quelconque sur un fond chargé, et le panneau ne prétend pas autre chose.",
+          "L\u2019autre voie était un modèle de segmentation\u202f: plusieurs mégaoctets sur le réseau la première fois qu\u2019on appuie sur le bouton, dans une page dont l\u2019argument entier est que rien n\u2019a besoin de voyager. De l\u2019arithmétique qui marche la plupart du temps et ne coûte rien l\u2019emporte sur un modèle qui marche plus souvent et coûte un téléchargement sur un téléphone — et le mot <em>IA</em> ne travaille dans aucun des deux cas."
+        ],
+        img: ""
+      },
+      {
+        title: "221 kilo-octets, et les 400 qu\u2019on ne paie pas",
+        paragraphs: [
+          "Le premier chargement, c\u2019est cinq fichiers et <strong>221 263 octets compressés</strong> — l\u2019application, le cadriciel, la feuille de style, tout ce qu\u2019il faut pour que l\u2019éditeur s\u2019ouvre.",
+          "Ce qui n\u2019est <em>pas</em> dans ce chiffre est la moitié la plus intéressante. L\u2019écrivain de PDF pèse 421 184 octets bruts et <strong>175 887 compressés</strong>, presque le poids de toute l\u2019application une seconde fois, et il n\u2019est demandé qu\u2019à la première exportation d\u2019un PDF, jamais autrement. L\u2019écrivain d\u2019archives ZIP, 28 Ko compressés, suit la même règle. La dépendance la plus lourde du dépôt est celle que la plupart des visiteurs ne téléchargent jamais.",
+          "Poppins est auto-hébergée, sous-ensemble latin, trois graisses, <strong>23 700 octets</strong> en tout. Elle venait d\u2019un lien Google Fonts, qui plaçait une troisième origine — une résolution DNS, une poignée de main TLS, une feuille de style, puis les fichiers de fonte — devant le premier rendu, et rendait discrètement faux l\u2019argument d\u2019absence de trafic sortant écrit plus haut.",
+          "Deux disciplines plus modestes tiennent le reste. <em>index.html</em> peint une coquille d\u2019application en styles en ligne avant que React ne démarre, pour que le premier rendu ne dépende pas de l\u2019analyse du paquet — ces styles déplacés dans une feuille externe, la coquille repasse derrière le réseau. Et la bibliothèque d\u2019animation est emballée de façon à ne livrer que ce qui sert vraiment\u202f: convertir cinq fichiers qui l\u2019importaient directement a fait passer le fragment chargé d\u2019emblée de 150,9 ko à 104,7 ko."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce que les tests tiennent, et ce qu\u2019ils ont attrapé",
+        paragraphs: [
+          "<strong>286 tests unitaires</strong> dans 23 fichiers, et <strong>78 tests de bout en bout</strong> dans 15 scénarios Playwright.",
+          "Le canevas est un unique élément <em>&lt;canvas&gt;</em>\u202f: il n\u2019y a rien à interroger dans le DOM, rien sur quoi porter une assertion. La suite de bout en bout pilote donc des coutures réservées au développement — des poignées sur l\u2019éditeur, sur le magasin de projets, sur celui des versions et sur le rectangle occupé par la planche à l\u2019écran, exposées uniquement dans une construction de développement. Les tests qui doivent survivre à un rechargement n\u2019ont pas d\u2019autre entrée\u202f: les imports de modules et les références React ont disparu à ce moment-là.",
+          "Deux défauts venus de cette suite méritent leur place. Le premier\u202f: un drapeau qui bascule les photos en pleine résolution pour l\u2019export était posé, lu et retiré en trois instructions consécutives — React ne rendait jamais entre les deux, le drapeau ne prenait donc jamais effet, et <strong>tous les exports utilisaient en silence l\u2019aperçu de 1080 pixels</strong>. Le second\u202f: une image prise dans un glissement au pointeur déclenche le glisser-déposer d\u2019image du navigateur, qui émet <em>pointercancel</em> et tue le flux de pointeur au bout d\u2019un mouvement environ. Le réordonnancement des pages ne faisait donc rien du tout, sans la moindre erreur nulle part, jusqu\u2019à ce qu\u2019un attribut soit ajouté.",
+          "Les deux appartiennent à la même famille\u202f: le code tourne, rien n\u2019échoue, et le résultat n\u2019est pas celui qu\u2019on croit. C\u2019est la classe de défaut qu\u2019un navigateur ne signale jamais — le même argument que ce blog a tenu sur le poids des pages, pointé cette fois vers le comportement."
+        ],
+        img: "calques"
+      },
+      {
+        title: "Ce qui n\u2019est pas fait",
+        paragraphs: [
+          "<strong>Chaque raccourci clavier se déclenche deux fois.</strong> Deux tables de touches se sont développées en parallèle et écoutent toujours toutes les deux. C\u2019est l\u2019issue n\u00ba 3, ouverte, et elle n\u2019est pas corrigée.",
+          "Un scénario de bout en bout est instable\u202f: celui des mises en page dessinées échoue une fois sur deux environ, sur un test différent à chaque exécution. C\u2019est l\u2019issue n\u00ba 4, et un test instable est pire qu\u2019un test absent — il apprend à lire le rouge comme du bruit.",
+          "L\u2019interface est livrée en six langues et je réponds de deux. L\u2019allemand, l\u2019espagnol, l\u2019italien et le portugais ont été écrits ici et n\u2019ont été relus par personne dont c\u2019est la langue, ce qui est exactement la réserve que ce site porte déjà sur son propre allemand. L\u2019écrire n\u2019est pas la refermer.",
+          "La barrière de performance en intégration continue est posée à 0,75, pas à 0,9. Elle est posée là où l\u2019application se trouve et non là où j\u2019aimerais qu\u2019elle soit, ce qui est honnête et n\u2019est pas la même chose que bon.",
+          "Et la promesse coupe des deux côtés. Pas de serveur, donc rien à pirater, rien à laisser fuir et rien à réquisitionner — et rien non plus à restaurer. Exportez ce que vous tenez à garder. C\u2019est gratuit, cela s\u2019installe d\u2019un doigt, et cela ne sait pas qui vous êtes."
+        ],
+        img: ""
+      }
+    ]
   },
   blogPost5: {
     title: "Le test qui \u00e9choue quand le jeu devient m\u00e9chant",

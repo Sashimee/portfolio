@@ -13,6 +13,15 @@ export const PROJECT_CATEGORIES = ['live', 'template', 'archive']
 
 export default [
   {
+    name: 'Pic Collage Maker',
+    category: 'live',
+    link: 'https://sashimee.github.io/Pic-Collage-Maker/',
+    img: 'pic-collage',
+    tags: ['React', 'Konva', 'PWA'],
+    target: 'external',
+    infoKey: 'picCollage'
+  },
+  {
     name: 'Royaume Foot',
     category: 'live',
     link: 'https://foot.bas.lu',
