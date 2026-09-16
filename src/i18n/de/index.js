@@ -217,9 +217,9 @@ export default {
         img: ""
       },
       {
-        title: "221 Kilobyte, und die 400, die man gewöhnlich nicht zahlt",
+        title: "338 Kilobyte, und die 400, die man gewöhnlich nicht zahlt",
         paragraphs: [
-          "Der erste Ladevorgang sind fünf Dateien und <strong>221 263 Byte gzip-komprimiert</strong> — Anwendung, Framework, Stylesheet, alles, was der Editor zum Öffnen braucht.",
+          "Der erste Ladevorgang — an der veröffentlichten Anwendung gemessen, nicht an einem lokalen Build — sind zwanzig Anfragen und <strong>337 866 Byte</strong>: davon 279 126 für die vier Skripte und das Stylesheet, die der Editor zum Öffnen braucht, 23 700 für die drei Schriftdateien, der Rest kleine Teile, die beim Öffnen der Panels geholt werden. Ein gzip desselben Builds auf meinem Rechner nannte 221 263; GitHub Pages liefert etwas anderes, und die ehrliche Zahl ist die, die der Browser empfängt.",
           "Interessanter ist, was in dieser Zahl <em>nicht</em> steckt. Der PDF-Schreiber wiegt 421 184 Byte roh und <strong>175 887 komprimiert</strong>, beinahe noch einmal das Gewicht der ganzen App, und er wird beim ersten PDF-Export geholt und sonst nie. Der ZIP-Schreiber, weitere 28 KB komprimiert, folgt derselben Regel. Die schwerste Abhängigkeit des Repositorys ist die, die die meisten Besucher nie herunterladen.",
           "Poppins ist selbst gehostet, lateinische Teilmenge, drei Schnitte, zusammen <strong>23 700 Byte</strong>. Sie kam einmal von einem Google-Fonts-Link, der eine dritte Herkunft — eine DNS-Auflösung, einen TLS-Handschlag, ein Stylesheet und dann die Schriftdateien — vor den ersten Bildaufbau setzte und die Behauptung, es gebe keinen ausgehenden Verkehr, still unwahr machte.",
           "Zwei kleinere Disziplinen halten den Rest. <em>index.html</em> zeichnet mit eingebetteten Stilen eine App-Hülle, bevor React startet, damit der erste Bildaufbau nicht am Auswerten des Bundles hängt — wandern diese Stile in ein externes Stylesheet, rutscht die Hülle wieder hinter das Netz. Und die Animationsbibliothek ist so verpackt, dass nur ausgeliefert wird, was tatsächlich benutzt wird: Fünf Dateien umzustellen, die sie direkt importiert hatten, brachte das sofort geladene Bündel von 150,9 kB auf 104,7 kB."
