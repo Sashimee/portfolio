@@ -1,6 +1,7 @@
 import { useMeta } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { pageMeta } from '@/utils/meta'
+import { localePath } from '@/utils/locale-paths'
 
 const resolve = value => (typeof value === 'function' ? value() : value)
 
@@ -49,7 +50,9 @@ export function usePageMeta({
     pageMeta({
       title: titleKey ? t(titleKey) : resolve(title),
       description: descriptionKey ? t(descriptionKey) : resolve(description),
-      path: resolve(path),
+      // Les pages déclarent leur adresse sans langue (`/projects`) : le préfixe
+      // est posé ici, une fois, pour la canonique comme pour les `hreflang`.
+      path: localePath(resolve(path), locale.value),
       image: resolve(image),
       locale: locale.value,
       noindex,

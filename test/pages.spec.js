@@ -8,6 +8,7 @@ import ProjectsPage from '@/pages/Projects.vue'
 import TheHeader from '@/components/TheHeader.vue'
 import { setLocale } from '@/boot/i18n'
 import { AVAILABLE_LOCALES } from '@/utils/preferences'
+import { localePath } from '@/utils/locale-paths'
 import posts from '@/data/posts'
 import projects from '@/data/projects'
 
@@ -46,7 +47,7 @@ describe('routes render', () => {
   // Dérivé des registres plutôt qu'énuméré : la liste écrite à la main avait
   // pris deux articles de retard, et un article ajouté n'était donc plus monté
   // — alors que c'est exactement ce que ce fichier promet de vérifier.
-  const paths = [
+  const nues = [
     '/',
     '/about',
     '/projects',
@@ -56,6 +57,17 @@ describe('routes render', () => {
     '/blog/article',
     ...posts.map(post => `/blog/${post.slug}`),
     '/nope'
+  ]
+
+  const paths = [
+    // Chaque route sous sa langue, les trois — un paquet qui manque ou une page
+    // qui suppose l'anglais se voit ici, pas en production.
+    ...AVAILABLE_LOCALES.flatMap(locale => nues.map(chemin => localePath(chemin, locale))),
+    // Et les adresses d'avant le préfixe, qui doivent continuer de rendre :
+    // elles sont indexées et partagées, et c'est le routeur qui les rattrape.
+    '/',
+    '/about',
+    `/blog/${posts[0].slug}`
   ]
 
   for (const path of paths) {
@@ -94,9 +106,9 @@ describe('page content', () => {
   // carries its own `beforeRouteUpdate`. That guard only runs on a mounted
   // component, which is why it is checked here and not in routes.spec.js.
   it('404s a bad slug reached from another article', async () => {
-    const wrapper = await mountAt('/blog/schoulbus-claude-code')
+    const wrapper = await mountAt('/en/blog/schoulbus-claude-code')
 
-    await wrapper.router.push('/blog/does-not-exist')
+    await wrapper.router.push('/en/blog/does-not-exist')
     await flushPromises()
 
     expect(wrapper.router.currentRoute.value.name).toBe('not-found')
@@ -134,6 +146,13 @@ describe('projects page', () => {
 })
 
 describe('language selector', () => {
+  // Une bascule qui échoue en cours de test laisserait la langue à l'allemand
+  // pour tous les suivants : ils se mettraient à échouer en cascade, loin de
+  // la cause.
+  afterEach(async () => {
+    await setLocale('en')
+  })
+
   it('opens a list of every available locale and closes on choice', async () => {
     const wrapper = await mountAt('/')
     const header = wrapper.findComponent(TheHeader)
@@ -159,6 +178,26 @@ describe('language selector', () => {
     expect(header.find('.lang__list').exists()).toBe(false)
     expect(header.find('.lang__trigger').text()).toContain('DE')
     expect(document.documentElement.getAttribute('lang')).toBe('de')
+
+    await setLocale('en')
+  })
+
+  // La langue est dans l'adresse depuis le lot 28 : la choisir est une
+  // navigation. Sans elle, la page resterait publiée sous le préfixe de la
+  // langue précédente — canonique et `hreflang` compris.
+  it('navigates to the same page under the chosen language', async () => {
+    const wrapper = await mountAt(`/en/blog/${posts[0].slug}`)
+    const header = wrapper.findComponent(TheHeader)
+
+    await header.find('.lang__trigger').trigger('click')
+    await header.findAll('.lang__item').find(item => item.attributes('lang') === 'fr').trigger('click')
+    await flushPromises()
+
+    expect(wrapper.router.currentRoute.value.path).toBe(`/fr/blog/${posts[0].slug}`)
+    expect(header.vm.locale).toBe('fr')
+
+    // Et les liens de l'en-tête suivent : ils portaient `/blog` tout court.
+    expect(header.find('a[href="/fr/blog"]').exists()).toBe(true)
 
     await setLocale('en')
   })

@@ -1,7 +1,7 @@
 <template>
   <q-header class="site-header" :class="{ 'is-scrolled': scrolled }">
     <div class="container site-header__bar">
-      <router-link to="/" class="brand">
+      <router-link :to="$lp('/')" class="brand">
         <span class="brand__mark" aria-hidden="true">AB</span>
         <span class="brand__name">Alex Baskewitsch</span>
       </router-link>
@@ -10,7 +10,7 @@
         <router-link
           v-for="(item, position) in navigation"
           :key="item.to"
-          :to="item.to"
+          :to="$lp(item.to)"
           class="nav__link"
           :class="{ 'is-active': isActive(item) }"
           :aria-current="isActive(item) ? 'page' : undefined"
@@ -95,7 +95,7 @@
         <router-link
           v-for="(item, position) in navigation"
           :key="item.to"
-          :to="item.to"
+          :to="$lp(item.to)"
           class="menu-overlay__link"
           :class="{ 'is-active': isActive(item) }"
           :aria-current="isActive(item) ? 'page' : undefined"
@@ -164,6 +164,7 @@ import { Dark } from 'quasar'
 import { syncAddressbarColor } from '@/boot/addressbar-color'
 import { currentLocale, setLocale } from '@/boot/i18n'
 import { AVAILABLE_LOCALES, setStoredDark } from '@/utils/preferences'
+import { localePath, splitLocalePath } from '@/utils/locale-paths'
 import socialLinks from '@/data/links'
 import icons from '@/data/icons'
 
@@ -200,7 +201,7 @@ export default {
   },
   methods: {
     isActive(item) {
-      const path = this.$route.path
+      const path = splitLocalePath(this.$route.path).path
       return item.exact ? path === item.to : path.startsWith(item.to)
     },
     // `setLocale` attend le fragment de la langue : fermer le panneau d'abord
@@ -215,6 +216,10 @@ export default {
       this.localePending = value
       try {
         this.locale = await setLocale(value)
+        // La langue est dans l'adresse : la changer est une navigation, sinon
+        // la page resterait publiée sous le préfixe de la langue précédente.
+        const { path } = splitLocalePath(this.$route.path)
+        await this.$router.push(localePath(path, this.locale))
       } catch (error) {
         this.$q.notify({
           color: 'negative',

@@ -6,7 +6,7 @@
       <p class="eyebrow">{{ $t('footer.cta_eyebrow') }}</p>
       <!-- Le pied de page est toujours hors écran au chargement : l'entrée est
            déclenchée au scroll, pas au montage. -->
-      <router-link to="/contact" class="site-footer__shout" data-reveal>
+      <router-link :to="$lp('/contact')" class="site-footer__shout" data-reveal>
         <span>{{ $t('footer.cta') }}</span>
         <q-icon :name="icons.arrowForward" />
       </router-link>
@@ -33,11 +33,11 @@
 
       <nav class="site-footer__col" :aria-label="$t('footer.navigate')">
         <h2 class="overline">{{ $t('footer.navigate') }}</h2>
-        <router-link to="/">{{ $t('layout.home') }}</router-link>
-        <router-link to="/about">{{ $t('layout.about') }}</router-link>
-        <router-link to="/projects">{{ $t('layout.projects') }}</router-link>
-        <router-link to="/blog">{{ $t('layout.blog') }}</router-link>
-        <router-link to="/contact">{{ $t('layout.contact') }}</router-link>
+        <router-link :to="$lp('/')">{{ $t('layout.home') }}</router-link>
+        <router-link :to="$lp('/about')">{{ $t('layout.about') }}</router-link>
+        <router-link :to="$lp('/projects')">{{ $t('layout.projects') }}</router-link>
+        <router-link :to="$lp('/blog')">{{ $t('layout.blog') }}</router-link>
+        <router-link :to="$lp('/contact')">{{ $t('layout.contact') }}</router-link>
       </nav>
 
       <div class="site-footer__col">

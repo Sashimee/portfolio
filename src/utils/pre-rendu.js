@@ -1,7 +1,11 @@
 import posts from '@/data/posts'
 import projects from '@/data/projects'
 import { pageMeta, shortSummary, SITE_URL } from '@/utils/meta'
-import en from '@/i18n/en'
+import messages from '@/i18n'
+import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from '@/utils/preferences'
+import { localeAlternates, localePath } from '@/utils/locale-paths'
+
+const en = messages[DEFAULT_LOCALE]
 
 const stripTags = value => String(value).replace(/<[^>]*>/g, '')
 
@@ -9,48 +13,70 @@ const stripTags = value => String(value).replace(/<[^>]*>/g, '')
  * Les routes qu'un moissonneur peut atteindre, chacune avec le descripteur que
  * la page correspondante déclare à `usePageMeta`.
  *
- * Les textes viennent du paquet anglais : les trois langues partagent une même
- * adresse, il n'y a donc qu'un instantané par route, et l'anglais est la langue
- * par défaut du site.
+ * **Une par langue depuis le lot 28** : les trois partageaient une adresse, et
+ * l'instantané était en anglais. Chaque langue a désormais son préfixe, son
+ * instantané, son texte, et les `hreflang` des deux autres.
  */
 export function prerenderedRoutes() {
-  const routes = [
-    { path: '/', title: en.seo.home.title, description: en.seo.home.description },
-    { path: '/about', title: en.seo.about.title, description: en.seo.about.description },
-    { path: '/projects', title: en.seo.projects.title, description: en.seo.projects.description },
-    { path: '/blog', title: en.seo.blog.title, description: en.seo.blog.description },
-    { path: '/contact', title: en.seo.contact.title, description: en.seo.contact.description }
-  ]
+  const routes = []
 
-  for (const project of projects) {
-    if (project.target !== 'internal') continue
-    routes.push({
-      path: `/projects/${project.link}`,
-      title: project.name,
-      // Chaque fiche porte sa propre description : les cinq partageaient celle,
-      // générique, de `seo.project.description`.
-      description: shortSummary(en.projects.texts[project.infoKey]) || en.seo.project.description,
-      image: `/screenshots/${project.img}.webp`
-    })
-  }
+  for (const locale of AVAILABLE_LOCALES) {
+    const paquet = messages[locale]
 
-  for (const post of posts) {
-    routes.push({
-      path: `/blog/${post.slug}`,
-      title: en[post.key].title,
-      description: stripTags(en[post.key].title2),
-      image: post.cover,
-      lastmod: post.date,
-      article: { published: post.date }
-    })
-  }
+    const pages = [
+      { path: '/', title: paquet.seo.home.title, description: paquet.seo.home.description },
+      { path: '/about', title: paquet.seo.about.title, description: paquet.seo.about.description },
+      {
+        path: '/projects',
+        title: paquet.seo.projects.title,
+        description: paquet.seo.projects.description
+      },
+      { path: '/blog', title: paquet.seo.blog.title, description: paquet.seo.blog.description },
+      {
+        path: '/contact',
+        title: paquet.seo.contact.title,
+        description: paquet.seo.contact.description
+      }
+    ]
 
-  // L'accueil et l'index du blog changent avec le dernier article publié : ils
-  // ont donc une date réelle à annoncer. Les autres routes n'en ont aucune, et
-  // en inventer une vaudrait moins que de n'en donner aucune.
-  const derniere = posts.map(post => post.date).sort().at(-1)
-  for (const route of routes) {
-    if (route.path === '/' || route.path === '/blog') route.lastmod = derniere
+    for (const project of projects) {
+      if (project.target !== 'internal') continue
+      pages.push({
+        path: `/projects/${project.link}`,
+        title: project.name,
+        // Chaque fiche porte sa propre description : les cinq partageaient celle,
+        // générique, de `seo.project.description`.
+        description:
+          shortSummary(paquet.projects.texts[project.infoKey]) || paquet.seo.project.description,
+        image: `/screenshots/${project.img}.webp`
+      })
+    }
+
+    for (const post of posts) {
+      pages.push({
+        path: `/blog/${post.slug}`,
+        title: paquet[post.key].title,
+        description: stripTags(paquet[post.key].title2),
+        image: post.cover,
+        lastmod: post.date,
+        article: { published: post.date }
+      })
+    }
+
+    // L'accueil et l'index du blog changent avec le dernier article publié : ils
+    // ont donc une date réelle à annoncer. Les autres routes n'en ont aucune, et
+    // en inventer une vaudrait moins que de n'en donner aucune.
+    const derniere = posts.map(post => post.date).sort().at(-1)
+
+    for (const page of pages) {
+      if (page.path === '/' || page.path === '/blog') page.lastmod = derniere
+      routes.push({
+        ...page,
+        locale,
+        path: localePath(page.path, locale),
+        alternates: localeAlternates(page.path)
+      })
+    }
   }
 
   return routes
@@ -66,7 +92,10 @@ export function prerenderedRoutes() {
  */
 export function notFoundRoute() {
   return {
+    // Un seul document répond à toutes les adresses inconnues, dans les trois
+    // langues : il ne peut donc ni porter de préfixe, ni déclarer d'alternates.
     path: '/404',
+    locale: DEFAULT_LOCALE,
     title: en.seo.notFound.title,
     description: en.seo.notFound.description,
     noindex: true
@@ -94,6 +123,7 @@ export function renderHeadTags(route) {
     description: route.description,
     path: route.path,
     image: route.image,
+    locale: route.locale || DEFAULT_LOCALE,
     article: route.article,
     noindex: route.noindex === true
   })
@@ -111,6 +141,16 @@ export function renderHeadTags(route) {
   // demandée.
   if (!route.noindex) {
     tags.push(`<link rel="canonical" href="${escape(descriptor.link.canonical.href)}" data-prerendered>`)
+
+    // Les trois adresses d'une page se déclarent l'une l'autre, plus le
+    // `x-default`. Sans ces liens, un instantané français est un document sans
+    // rapport avec son équivalent anglais — au mieux, un duplicata.
+    for (const [clef, lien] of Object.entries(descriptor.link)) {
+      if (clef === 'canonical') continue
+      tags.push(
+        `<link rel="alternate" hreflang="${escape(lien.hreflang)}" href="${escape(lien.href)}" data-prerendered>`
+      )
+    }
   }
 
   if (descriptor.script?.ldJson) {
@@ -160,13 +200,22 @@ export function renderFontPreload(href) {
 export function renderSitemap(routes) {
   const entries = routes
     .map(route => {
-      const loc = `    <loc>${escape(SITE_URL + (route.path === '/' ? '/' : route.path))}</loc>`
+      const loc = `    <loc>${escape(SITE_URL + route.path)}</loc>`
       const lastmod = route.lastmod ? `\n    <lastmod>${route.lastmod}</lastmod>` : ''
-      return `  <url>\n${loc}${lastmod}\n  </url>`
+      // Les trois adresses d'une page sont déclarées sur chacune des trois :
+      // c'est la forme que Google demande, et elle double le rôle des
+      // `hreflang` du document, qu'un plan de site ne remplace pas.
+      const alternates = (route.alternates || [])
+        .map(
+          alt =>
+            `\n    <xhtml:link rel="alternate" hreflang="${escape(alt.locale)}" href="${escape(SITE_URL + alt.path)}"/>`
+        )
+        .join('')
+      return `  <url>\n${loc}${lastmod}${alternates}\n  </url>`
     })
     .join('\n')
 
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${entries}\n</urlset>\n`
 }
 
 /**
