@@ -35,7 +35,7 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R27** | **Le formulaire n'a pas été renvoyé depuis le changement de reCAPTCHA.** Le greffon `vue-recaptcha-v3` a été remplacé par un appel direct à `recaptcha-v3`, chargé au montage des deux pages qui postent. La clé, le mode Enterprise et l'action `submit` sont inchangés, et les 65 tests passent — mais aucun jeton réel n'a été évalué depuis. | Un envoi depuis le formulaire publié, et `score` dans le journal du service, comme au lot 12. |
 | **R28** | **Rien de l'audit d'accessibilité n'a été vu à l'écran.** Les ratios de contraste sont calculés sur les jetons, les trous clavier sont lus dans la source. `--ink-3`, `--border-strong`, la bascule de consentement et le retour du focus ont changé sans qu'un navigateur ni un lecteur d'écran ne le confirme. | Ouvrir `/about`, `/projects`, `/contact` et le dialogue légal dans les deux thèmes, parcourir l'en-tête à la tabulation seule, et écouter la liste des langues sous NVDA ou VoiceOver. Referme aussi R20. |
 | **R29** | **Les six illustrations de `article_one` restent servies en 1200 px pour un cadre de 180 px**, `challenges.webp` en tête avec 255 442 octets — 0,237 octet par pixel contre 0,075 de médiane dans le dépôt. Ce n'est pas un oubli : aucun encodeur (`cwebp`, ImageMagick, PIL) n'était disponible dans la session qui l'a constaté. | Ré-encoder les six à 480 px de large, qualité 80, et reprendre la mesure. La visionneuse n'ouvre que `post.cover`, jamais ces images : rien n'a besoin de leur pleine résolution. **Corrigé au lot 18 : `article_one` en porte cinq, pas six, et `article_three` a le même défaut — neuf fichiers, 595 934 octets.** |
-| **R30** | **Les démos tirent encore 328 714 octets de Font Awesome pour sept glyphes** (`x1` : cinq ; `pet4u` et `cupcake` : un chacun), plus Bootstrap et jQuery. C'est mot pour mot ce que le principe 4 interdit, sur un domaine que le site sert lui-même. Le traceur mort de `liberty` est parti au lot 17, la police reste. **Corrigé au lot 18 : ces octets viennent de six CDN tiers, pas de notre domaine — c'est donc autant un problème de consentement que de poids. `popper.js`, chargé par deux démos et utilisé par aucune, est parti.** | Les sept tracés dans `src/data/icons.js` puis en SVG en ligne dans les trois gabarits — ou l'aveu écrit que les démos sont des archives figées, et qu'on n'y touche plus. À décider, pas à ignorer. |
+| **R30** | **Font Awesome est parti des trois démos au lot 26** — sept glyphes, dix éléments, désormais des tracés SVG en ligne : 500 746 octets et trois requêtes CDN de moins par page. Restent **Bootstrap, jQuery et Google Fonts**, chargés depuis cinq CDN tiers : c'est autant une question de consentement que de poids. | Les retirer n'est plus remplacer une icône : `pet4u/scripts/main.js` est écrit en jQuery de bout en bout et le menu de `x1` est un `data-toggle="collapse"` de Bootstrap. Ou bien une réécriture de ces deux démos, ou bien l'aveu écrit qu'elles sont des archives figées. **À décider, pas à ignorer.** |
 | **R32** | **Il ne reste que le pied de page, et il demande un œil.** La mesure d'audience, les balises servies au moissonneur et les cinq descriptions de fiches sont vérifiées sur la production (voir ci-dessous). Reste que personne n'a regardé `/projects/:shortcode` ni `/404` pour constater que le pied de page s'y voit enfin — c'est la seule correction du lot 18 qu'aucune commande ne peut établir. | Ouvrir les deux pages, dans les deux thèmes, et voir le pied de page. Recoupe R28. |
 | **R34** | **Le multilinguisme reste invisible pour un moissonneur.** La langue est choisie côté client et n'entre jamais dans l'adresse : les trois langues partagent une URL, aucun `hreflang`, et les quinze instantanés portent `<html lang=en>` avec du texte anglais. Les paquets FR et DE — 335 clés chacun, quatre articles longs, ce que `test/i18n.spec.js` protège — ne rapportent aucune visite de recherche. | Des adresses localisées (`/fr/…`, `/de/…`) ou un paramètre, plus `hreflang` réciproque et un instantané par langue. C'est un chantier de routage, pas une retouche : écarté de ce lot pour cette raison. |
 | **R36** | **Purge du CSS Quasar, brotli, ré-encodage des images et sous-ensemble de Lexend : mesurés, non faits.** 82 109 octets de règles `.q-*` pour des composants que le site ne rend jamais (10 787 octets compressés sur **chaque** page, en tête de rendu) ; 32 017 octets (13 %) que brotli prendrait ; ~490 Ko sur neuf illustrations d'articles et ~288 Ko sur treize vignettes ; ~80 Ko sur trois fontes portant 845 glyphes pour 121 points de code utilisés. | Les deux derniers attendent un encodeur : `cwebp`, ImageMagick, PIL et fontTools sont tous absents de l'environnement — c'est le blocage que R29 nomme déjà. La purge CSS et brotli attendent autre chose : un **regard**. Purger sans qu'aucun navigateur ne relise le site rouvrirait R28 en plus grand, et une directive brotli qu'un module absent refuse **empêche NGINX de démarrer**. |
@@ -1027,3 +1027,46 @@ porte exactement le `cover` de `posts.js`, et ce chemin désigne un fichier qui 
 `og:image = https://alex.baskewitsch.lu/screenshots/aura.webp`.
 
 *Réserve refermée : **R33**. Aucune ouverte.*
+
+---
+
+### Lot 26 — Les démos n'appellent plus Font Awesome · fait le 2026-09-16
+
+**La décision d'Alex sur R30** : remplacer, pas figer. Les sept glyphes que les démos
+tiraient d'une police entière sont désormais des **tracés SVG en ligne** — dix éléments
+`<i>` en tout, pris dans Font Awesome Free 5.15.4 (`dog`, `dollar-sign`, `users`, `paw`,
+`bars`, `facebook-square`, `twitter-square`), avec `fill="currentColor"` pour que la
+couleur de chaque démo continue de s'appliquer, et `role="img"` avec une étiquette là où
+l'icône porte du sens.
+
+**Ce qui ne part plus sur le réseau**, par page et par démo :
+
+| Démo | Ce qui est retiré | Ce qui est ajouté |
+| --- | --- | --- |
+| `x1` | `all.css` 70 523 + `fa-solid` 75 728 + `fa-brands` 75 336 = **221 587 o** | 3 151 o de tracés, 269 o de CSS |
+| `pet4u` | `all.min.css` 57 180 + `fa-solid` 75 728 = **132 908 o** | 3 509 o |
+| `cupcake` | `all.css` 70 523 + `fa-solid` 75 728 = **146 251 o** | 382 o |
+
+Soit **500 746 octets retirés contre 7 311 ajoutés**, et trois requêtes de moins vers un
+CDN tiers sur chacune des trois pages — c'est autant la question du consentement que celle
+du poids, comme le lot 18 l'avait relevé.
+
+**Ce qui reste, et pourquoi.** Bootstrap et jQuery ne partent pas : `pet4u/scripts/main.js`
+est écrit en jQuery de bout en bout, et le menu de `x1` est un `data-toggle="collapse"` de
+Bootstrap. Les retirer, ce n'est plus remplacer une icône, c'est réécrire une démo
+archivée. Les trois feuilles Google Fonts restent pour la même raison. R30 se rétrécit donc
+à ces deux-là au lieu de se refermer.
+
+**Un défaut attrapé à l'écran, et pas autrement.** Les trois icônes de `x1` avaient
+`padding: 2rem` et le `box-sizing: border-box` de Bootstrap : le tracé rentrait *dans* le
+padding et tombait à huit pixels de côté. Les mesures disaient « 72 × 72 » et la page
+montrait trois points. Une règle `box-sizing: content-box` dans la feuille de la démo le
+corrige ; les icônes font 136 px, comme avant.
+
+**Vu à l'écran**, dans le Chromium local, sur les trois démos : les cinq icônes de `x1` (en
+rose, à leur taille), les quatre pattes de `pet4u` (et ses fiches, donc jQuery tourne
+toujours), et le menu de `cupcake` — caché au-dessus de 800 px comme sa feuille le
+demande, visible et à 16 px en 390 px de large. Aucune erreur de console.
+
+*Réserve rétrécie : **R30** — Font Awesome est parti des trois démos ; Bootstrap, jQuery et
+Google Fonts restent, et ce sont des dépendances de comportement, pas de décoration.*
