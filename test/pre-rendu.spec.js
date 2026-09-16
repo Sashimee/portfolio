@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
@@ -7,7 +8,6 @@ import appRoutes from '@/router/routes'
 import posts from '@/data/posts'
 import projects from '@/data/projects'
 import {
-  coverBaseName,
   notFoundRoute,
   prerenderedRoutes,
   renderFontPreload,
@@ -164,13 +164,24 @@ describe("l'instantané des adresses inconnues", () => {
   })
 })
 
-describe('coverBaseName', () => {
-  // La valeur d'un import d'image diffère selon qui exécute le module ; seule
-  // la racine du nom est commune, et c'est elle qui retrouve le fichier haché.
-  it("retire le dossier, l'empreinte de requête et l'extension", () => {
-    expect(coverBaseName('/src/assets/aura-cover.webp')).toBe('aura-cover')
-    expect(coverBaseName('/assets/aura-cover.webp?used')).toBe('aura-cover')
-    expect(coverBaseName('aura-cover.webp')).toBe('aura-cover')
+describe('la couverture des articles', () => {
+  // Elles ont été des imports ESM, hachés par Vite et retrouvés après coup dans
+  // `dist/spa/assets/` par le script. Ce sont des chemins publics depuis le lot
+  // 25, donc la valeur écrite dans `posts.js` est celle que porte l'instantané :
+  // il n'y a plus d'étape entre les deux, et plus rien à faire échouer en
+  // silence si un fichier manque.
+  it('sort telle quelle de posts.js dans la route pré-rendue', () => {
+    for (const post of posts) {
+      const route = prerenderedRoutes().find(r => r.path === `/blog/${post.slug}`)
+      expect(route.image, post.slug).toBe(post.cover)
+      expect(route.image, post.slug).toMatch(/^\/screenshots\/.+\.webp$/)
+    }
+  })
+
+  it('désigne un fichier qui existe sur le disque', () => {
+    for (const post of posts) {
+      expect(existsSync(join(process.cwd(), 'public', post.cover)), post.cover).toBe(true)
+    }
   })
 })
 
