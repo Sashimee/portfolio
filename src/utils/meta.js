@@ -1,4 +1,6 @@
 import links from '@/data/links'
+import { localeAlternates, localePath, splitLocalePath } from '@/utils/locale-paths'
+import { DEFAULT_LOCALE } from '@/utils/preferences'
 
 // The portfolio is served from the alex. subdomain; the apex baskewitsch.lu
 // currently answers with the hosting provider's placeholder page.
@@ -26,6 +28,34 @@ export function shortSummary(text, max = 160) {
   const cut = flat.slice(0, max)
   const espace = cut.lastIndexOf(' ')
   return `${(espace > max * 0.6 ? cut.slice(0, espace) : cut).replace(/[\s,;:.\u2014-]+$/, '')}…`
+}
+
+/**
+ * Les liens `hreflang` d'une page, plus le `x-default`.
+ *
+ * Réciproques, et c'est la condition que Google pose : chacune des trois
+ * adresses déclare les trois. Sans eux, les versions FR et DE d'une page se
+ * présentent comme des documents sans rapport — ou, pire, comme un duplicata.
+ * `x-default` désigne l'anglais, la langue vers laquelle `/` redirige.
+ */
+export function alternateLinks(path) {
+  const liens = {}
+
+  for (const { locale, path: chemin } of localeAlternates(path)) {
+    liens[`alternate_${locale}`] = {
+      rel: 'alternate',
+      hreflang: locale,
+      href: absolute(chemin)
+    }
+  }
+
+  liens.alternate_default = {
+    rel: 'alternate',
+    hreflang: 'x-default',
+    href: absolute(localePath(path, DEFAULT_LOCALE))
+  }
+
+  return liens
 }
 
 function absolute(path) {
@@ -106,7 +136,8 @@ export function pageMeta({
     htmlAttr: { lang: locale || 'en' },
     meta,
     link: {
-      canonical: { rel: 'canonical', href: url }
+      canonical: { rel: 'canonical', href: url },
+      ...alternateLinks(path)
     }
   }
 
@@ -115,6 +146,7 @@ export function pageMeta({
     description,
     path,
     image,
+    locale: locale || DEFAULT_LOCALE,
     article,
     sameAs: links.map(lien => lien.url)
   })
@@ -144,7 +176,15 @@ export function serializeJsonLd(data) {
  * seule que l'on puisse poser sans toucher au routage — contrairement au
  * multilinguisme des adresses, qui reste ouvert.
  */
-export function structuredData({ title, description, path, image, article = null, sameAs = [] }) {
+export function structuredData({
+  title,
+  description,
+  path,
+  image,
+  locale = DEFAULT_LOCALE,
+  article = null,
+  sameAs = []
+}) {
   const url = absolute(path)
   const auteur = {
     '@type': 'Person',
@@ -165,11 +205,13 @@ export function structuredData({ title, description, path, image, article = null
       author: auteur,
       publisher: auteur,
       mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-      inLanguage: 'en'
+      inLanguage: locale
     }
   }
 
-  if (path === '/' || path === undefined) {
+  // L'accueil d'une langue est `/en`, `/fr` ou `/de` : c'est sa racine une fois
+  // le préfixe retiré. Avant le lot 28, la comparaison portait sur `/`.
+  if (path === undefined || splitLocalePath(path).path === '/') {
     return {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
@@ -177,7 +219,7 @@ export function structuredData({ title, description, path, image, article = null
       url: SITE_URL + '/',
       description,
       author: auteur,
-      inLanguage: 'en'
+      inLanguage: locale
     }
   }
 

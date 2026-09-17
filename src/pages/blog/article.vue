@@ -8,7 +8,7 @@
         no-caps
         flat
         :icon="icons.arrowBack"
-        to="/blog"
+        :to="$lp('/blog')"
         :label="$t('blog.back')"
       />
 

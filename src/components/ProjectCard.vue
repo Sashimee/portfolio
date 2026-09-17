@@ -13,7 +13,7 @@
 
     <div class="project__body">
       <h3 class="project__title">
-        <router-link v-if="isInternal" class="stretched-link" :to="`/projects/${project.link}`">
+        <router-link v-if="isInternal" class="stretched-link" :to="$lp(`/projects/${project.link}`)">
           {{ project.name }}
         </router-link>
         <a v-else class="stretched-link" :href="project.link" target="_blank" rel="noopener">

@@ -90,6 +90,15 @@ configuration ESLint à lui.
   `import.meta.env.X`, jamais `process.env.X`. `npm run verify:api-url` existe pour
   attraper précisément cette rechute après un `build`.
 
+- **La langue est dans l'adresse, et un lien interne qui l'oublie annule le travail.**
+  Depuis le lot 28, les trois langues sont préfixées — `/en/…`, `/fr/…`, `/de/…` — et `/`
+  répond 301 vers `/en`. Un gabarit écrit donc `:to="$lp('/projects')"`, jamais
+  `to="/projects"` : l'adresse nue marche encore (le routeur la rattrape, NGINX la
+  redirige), mais elle renvoie le visiteur **en anglais** et prive les pages FR et DE de
+  tout lien entrant. `src/utils/locale-paths.js` est la seule chose qui compose ces
+  adresses ; y reposer un préfixe le remplace, sans quoi une bascule de langue donnerait
+  `/fr/en/about`. Une route ajoutée est donc **48 instantanés**, pas 16.
+
 - **Une SPA ne sert aucune balise à un moissonneur.** `src/utils/meta.js` compose un
   descripteur soigné par page, et le greffon Meta de Quasar le pose *depuis le
   navigateur* : WhatsApp, LinkedIn, Slack et Discord n'en voyaient rien. D'où
@@ -109,7 +118,7 @@ configuration ESLint à lui.
 | `src/composables/` | `use-page-meta` (SEO par page), `use-reveal` (entrées au défilement). |
 | `src/data/` | `projects.js`, `stack.js`, `posts.js`, `links.js` — les quatre sources uniques — et `icons.js`, les trente-huit tracés SVG. |
 | `src/i18n/{en,fr,de}/` | Les traductions. Mêmes clés dans les trois, un test l'exige. |
-| `src/utils/` | `analytics` (GA4, sous consentement), `api` (l'instance axios, hors de l'entrée du bundle), `meta`, `pre-rendu` (routes et balises des instantanés), `preferences`, `recaptcha` (chargé à la demande), `validation`, `reading-time`. |
+| `src/utils/` | `analytics` (GA4, sous consentement), `api` (l'instance axios, hors de l'entrée du bundle), `meta`, `locale-paths` (composer et décomposer `/fr/about` — la seule chose qui sache le faire), `pre-rendu` (routes et balises des instantanés), `preferences`, `recaptcha` (chargé à la demande), `validation`, `reading-time`. |
 | `public/screenshots/` | Captures des projets, et illustrations d'articles dans un sous-dossier par article. |
 | `public/projects_folder/` | Démos statiques servies en iframe par `/projects/:shortcode`. |
 | `test/` | `i18n` (parité), `routes` (résolution, données), `pages` (montage réel), `meta`. |

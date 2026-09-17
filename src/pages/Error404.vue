@@ -16,11 +16,11 @@
             class="app-btn app-btn--primary"
             no-caps
             unelevated
-            to="/"
+            :to="$lp('/')"
             :icon="icons.arrowBack"
             :label="$t('notFound.home')"
           />
-          <q-btn class="app-btn app-btn--ghost" no-caps unelevated to="/projects" :label="$t('buttons.projects')" />
+          <q-btn class="app-btn app-btn--ghost" no-caps unelevated :to="$lp('/projects')" :label="$t('buttons.projects')" />
         </div>
       </div>
     </div>

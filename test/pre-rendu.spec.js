@@ -7,6 +7,9 @@ import MainLayout from '@/layouts/MainLayout.vue'
 import appRoutes from '@/router/routes'
 import posts from '@/data/posts'
 import projects from '@/data/projects'
+import messagesI18n from '@/i18n'
+import { AVAILABLE_LOCALES, DEFAULT_LOCALE } from '@/utils/preferences'
+import { localePath } from '@/utils/locale-paths'
 import {
   notFoundRoute,
   prerenderedRoutes,
@@ -20,14 +23,46 @@ import {
 const routes = prerenderedRoutes()
 const chemins = routes.map(route => route.path)
 
+// Les trois langues sont préfixées depuis le lot 28 : une route de l'accueil
+// s'écrit `/en`, jamais `/`. Ces deux aides disent la même chose que les
+// chemins nus d'avant, en laissant le préfixe à `locale-paths`.
+const enLangue = (chemin, locale = DEFAULT_LOCALE) => localePath(chemin, locale)
+const route = (chemin, locale = DEFAULT_LOCALE) =>
+  routes.find(r => r.path === enLangue(chemin, locale))
+
 describe('les routes pré-rendues', () => {
-  it('couvre les cinq pages fixes, les démos et tous les articles', () => {
-    for (const chemin of ['/', '/about', '/projects', '/blog', '/contact']) {
-      expect(chemins).toContain(chemin)
+  it('couvre les cinq pages fixes, les démos et tous les articles, dans les trois langues', () => {
+    for (const locale of AVAILABLE_LOCALES) {
+      for (const chemin of ['/', '/about', '/projects', '/blog', '/contact']) {
+        expect(chemins, `${chemin} en ${locale}`).toContain(enLangue(chemin, locale))
+      }
+      for (const post of posts) {
+        expect(chemins, post.slug).toContain(enLangue(`/blog/${post.slug}`, locale))
+      }
+      for (const project of projects.filter(p => p.target === 'internal')) {
+        expect(chemins, project.link).toContain(enLangue(`/projects/${project.link}`, locale))
+      }
     }
-    for (const post of posts) expect(chemins).toContain(`/blog/${post.slug}`)
-    for (const project of projects.filter(p => p.target === 'internal')) {
-      expect(chemins).toContain(`/projects/${project.link}`)
+  })
+
+  // Une langue oubliée quelque part rendrait l'anglais : les titres des trois
+  // instantanés d'une même page doivent donc différer.
+  it("écrit chaque instantané dans sa langue", () => {
+    const accueils = AVAILABLE_LOCALES.map(locale => route('/', locale).title)
+    expect(new Set(accueils).size, accueils.join(' | ')).toBe(AVAILABLE_LOCALES.length)
+
+    for (const locale of AVAILABLE_LOCALES) {
+      expect(route('/about', locale).locale).toBe(locale)
+      expect(route('/about', locale).description).toBe(messagesI18n[locale].seo.about.description)
+    }
+  })
+
+  // Réciproques, et c'est la condition que Google pose : les trois adresses
+  // d'une page se déclarent l'une l'autre, depuis chacune des trois.
+  it('donne à chaque route les trois adresses de sa page', () => {
+    for (const r of routes) {
+      expect(r.alternates.map(a => a.locale), r.path).toEqual(AVAILABLE_LOCALES)
+      expect(r.alternates.map(a => a.path), r.path).toContain(r.path)
     }
   })
 
@@ -41,8 +76,8 @@ describe('les routes pré-rendues', () => {
   // Le sous-titre d'un article porte du balisage, que la page affiche mais
   // qu'une méta-description ne doit pas recopier telle quelle.
   it("ne laisse pas de balisage dans la description d'un article", () => {
-    for (const route of routes.filter(r => r.path.startsWith('/blog/'))) {
-      expect(route.description, route.path).not.toMatch(/[<>]/)
+    for (const r of routes.filter(r => r.path.includes('/blog/'))) {
+      expect(r.description, r.path).not.toMatch(/[<>]/)
     }
   })
 
@@ -50,19 +85,21 @@ describe('les routes pré-rendues', () => {
   // une date réelle. Les autres n'en ont aucune à annoncer, et une date inventée
   // vaudrait moins qu'un silence.
   it('date les articles, plus les deux pages que le dernier article change', () => {
-    const datees = new Set(['/', '/blog'])
+    const datees = new Set(
+      AVAILABLE_LOCALES.flatMap(locale => [enLangue('/', locale), enLangue('/blog', locale)])
+    )
 
-    for (const route of routes) {
-      if (route.path.startsWith('/blog/') || datees.has(route.path)) {
-        expect(route.lastmod, route.path).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    for (const r of routes) {
+      if (r.path.includes('/blog/') || datees.has(r.path)) {
+        expect(r.lastmod, r.path).toMatch(/^\d{4}-\d{2}-\d{2}$/)
       } else {
-        expect(route.lastmod, route.path).toBeUndefined()
+        expect(r.lastmod, r.path).toBeUndefined()
       }
     }
 
     const plusRecente = posts.map(post => post.date).sort().at(-1)
     for (const chemin of datees) {
-      expect(routes.find(route => route.path === chemin).lastmod).toBe(plusRecente)
+      expect(routes.find(r => r.path === chemin).lastmod, chemin).toBe(plusRecente)
     }
   })
 
@@ -74,18 +111,23 @@ describe('les routes pré-rendues', () => {
       return trouve ? JSON.parse(trouve[1].replaceAll('\\u003c', '<')) : null
     }
 
-    const accueil = ld(renderHeadTags(routes.find(r => r.path === '/')))
+    const accueil = ld(renderHeadTags(route('/')))
     expect(accueil['@type']).toBe('WebSite')
     expect(accueil.author.sameAs).toContain('https://github.com/Sashimee')
+    expect(accueil.inLanguage).toBe(DEFAULT_LOCALE)
 
-    const article = ld(renderHeadTags(routes.find(r => r.path.startsWith('/blog/'))))
+    // La langue de la page entre dans les données structurées : les trois
+    // annonçaient `en`, y compris l'allemande.
+    expect(ld(renderHeadTags(route('/', 'de'))).inLanguage).toBe('de')
+
+    const article = ld(renderHeadTags(routes.find(r => r.path.includes('/blog/'))))
     expect(article['@type']).toBe('BlogPosting')
     expect(article.datePublished).toMatch(/^\d{4}-\d{2}-\d{2}$/)
     expect(article.image).toMatch(/^https:\/\//)
 
     // Une fiche de projet n'a pas de type schema.org qui lui aille : aucune
     // balise plutôt qu'une balise creuse.
-    expect(ld(renderHeadTags(routes.find(r => r.path.startsWith('/projects/'))))).toBeNull()
+    expect(ld(renderHeadTags(routes.find(r => r.path.includes('/projects/'))))).toBeNull()
   })
 
   it('n\'ouvre jamais la balise qui porte le JSON-LD', () => {
@@ -103,28 +145,30 @@ describe('les routes pré-rendues', () => {
   })
 
   it('donne à chaque fiche de projet sa propre description', () => {
-    const fiches = routes.filter(route => route.path.startsWith('/projects/'))
+    // Par langue : les cinq fiches doivent différer entre elles, pas d'une
+    // langue à l'autre.
+    for (const locale of AVAILABLE_LOCALES) {
+      const fiches = routes.filter(r => r.locale === locale && r.path.includes('/projects/'))
 
-    expect(fiches.length).toBeGreaterThan(1)
-    expect(new Set(fiches.map(route => route.description)).size).toBe(fiches.length)
-    for (const route of fiches) {
-      expect(route.description.length, route.path).toBeLessThanOrEqual(161)
-      expect(route.description, route.path).not.toMatch(/[<>]/)
+      expect(fiches.length, locale).toBeGreaterThan(1)
+      expect(new Set(fiches.map(r => r.description)).size, locale).toBe(fiches.length)
+      for (const r of fiches) {
+        expect(r.description.length, r.path).toBeLessThanOrEqual(161)
+        expect(r.description, r.path).not.toMatch(/[<>]/)
+      }
     }
   })
 
   it("déclare un article comme un article, avec sa date", () => {
-    for (const route of routes.filter(r => r.path.startsWith('/blog/'))) {
-      expect(route.article).toEqual({ published: route.lastmod })
+    for (const r of routes.filter(r => r.path.includes('/blog/'))) {
+      expect(r.article, r.path).toEqual({ published: r.lastmod })
     }
 
-    const balises = renderHeadTags(routes.find(r => r.path.startsWith('/blog/')))
+    const balises = renderHeadTags(routes.find(r => r.path.includes('/blog/')))
     expect(balises).toContain('property="og:type" content="article"')
     expect(balises).toContain('property="article:published_time"')
 
-    expect(renderHeadTags(routes.find(r => r.path === '/about'))).toContain(
-      'property="og:type" content="website"'
-    )
+    expect(renderHeadTags(route('/about'))).toContain('property="og:type" content="website"')
   })
 })
 
@@ -172,9 +216,9 @@ describe('la couverture des articles', () => {
   // silence si un fichier manque.
   it('sort telle quelle de posts.js dans la route pré-rendue', () => {
     for (const post of posts) {
-      const route = prerenderedRoutes().find(r => r.path === `/blog/${post.slug}`)
-      expect(route.image, post.slug).toBe(post.cover)
-      expect(route.image, post.slug).toMatch(/^\/screenshots\/.+\.webp$/)
+      const r = route(`/blog/${post.slug}`)
+      expect(r.image, post.slug).toBe(post.cover)
+      expect(r.image, post.slug).toMatch(/^\/screenshots\/.+\.webp$/)
     }
   })
 
@@ -272,11 +316,25 @@ describe('le plan du site et robots.txt', () => {
     for (const loc of locs) expect(loc).toMatch(/^https:\/\/alex\.baskewitsch\.lu\//)
   })
 
-  it('date les articles', () => {
-    for (const post of posts) {
-      expect(sitemap).toContain(`<loc>https://alex.baskewitsch.lu/blog/${post.slug}</loc>`)
+  it('date les articles, dans chaque langue', () => {
+    for (const locale of AVAILABLE_LOCALES) {
+      for (const post of posts) {
+        expect(sitemap).toContain(
+          `<loc>https://alex.baskewitsch.lu${enLangue(`/blog/${post.slug}`, locale)}</loc>`
+        )
+      }
     }
-    expect([...sitemap.matchAll(/<lastmod>/g)]).toHaveLength(posts.length + 2)
+    expect([...sitemap.matchAll(/<lastmod>/g)]).toHaveLength(
+      (posts.length + 2) * AVAILABLE_LOCALES.length
+    )
+  })
+
+  // Un plan de site qui ne dit pas que trois adresses sont la même page laisse
+  // Google choisir laquelle garder — et écarter les deux autres en doublon.
+  it('déclare les trois adresses de chaque page', () => {
+    const alternates = [...sitemap.matchAll(/<xhtml:link\b[^>]*hreflang="([a-z]{2})"/g)]
+    expect(alternates).toHaveLength(routes.length * AVAILABLE_LOCALES.length)
+    expect(sitemap).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"')
   })
 
   it('renvoie robots.txt vers le plan du site', () => {
@@ -369,11 +427,18 @@ describe('chaque route de l\'application a son instantané', () => {
 
   const statiques = []
   const redirections = []
+  // Le paramètre de langue est le seul qu'on sache remplir : il vaut l'une des
+  // trois valeurs de la liste, et l'anglais suffit à vérifier la couverture.
+  const sansParametreDeLangue = chemin =>
+    chemin.replace(`:locale(${AVAILABLE_LOCALES.join('|')})`, DEFAULT_LOCALE)
+
   const parcourir = (liste, prefixe) => {
     for (const route of liste) {
-      const chemin = `${prefixe}/${route.path}`.replace(/\/+/g, '/').replace(/(.)\/$/, '$1')
+      const chemin = sansParametreDeLangue(
+        `${prefixe}/${route.path}`.replace(/\/+/g, '/').replace(/(.)\/$/, '$1')
+      )
       if (route.children) parcourir(route.children, chemin)
-      if (route.path.includes(':')) continue
+      if (route.path.includes(':') && !route.path.startsWith(':locale')) continue
       if (route.redirect) redirections.push(chemin)
       else if (route.component) statiques.push(chemin)
     }
@@ -388,10 +453,14 @@ describe('chaque route de l\'application a son instantané', () => {
   // Une redirection du routeur n'a pas d'instantané, et n'en veut pas : elle
   // doit répondre 301 depuis le serveur, sans quoi elle tombe en 404.
   it('confie chaque redirection littérale à NGINX', () => {
-    expect(redirections).toContain('/blog/article')
+    // `/blog/article` est écrite sous la langue depuis le lot 28 ; NGINX répond
+    // 301 sur l'adresse nue, celle qui a été partagée.
+    expect(redirections).toContain(`/${DEFAULT_LOCALE}/blog/article`)
     for (const chemin of redirections) {
-      expect(conf, chemin).toMatch(
-        new RegExp(`location\\s+=\\s+${chemin.replace(/\//g, '\\/')}\\s*\\{[^}]*return\\s+301`)
+      const nu = chemin.replace(new RegExp(`^/(${AVAILABLE_LOCALES.join('|')})`), '')
+      if (nu === '') continue
+      expect(conf, nu).toMatch(
+        new RegExp(`location\\s+=\\s+${nu.replace(/\//g, '\\/')}\\s*\\{[^}]*return\\s+301`)
       )
     }
   })

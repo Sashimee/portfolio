@@ -26,6 +26,7 @@ import { pathToFileURL } from 'node:url'
 import { registerHooks } from 'node:module'
 
 const RACINE = resolve(import.meta.dirname, '..')
+const SOURCES = pathToFileURL(join(RACINE, 'src')).href
 const SORTIE = join(RACINE, 'dist/spa')
 const ASSETS = join(SORTIE, 'assets')
 
@@ -45,6 +46,16 @@ registerHooks({
   resolve(specifier, context, next) {
     if (specifier.startsWith('@/')) {
       return next(pathToFileURL(fichierDuModule(join(RACINE, 'src', specifier.slice(2)))).href, context)
+    }
+
+    // `src/i18n/index.js` importe ses trois paquets en relatif (`./de`), et
+    // Node refuse un dossier : `ERR_UNSUPPORTED_DIR_IMPORT`. Vite le résout,
+    // lui — le script n'a pas ce luxe.
+    // Restreint aux modules de `src/` : appliqué partout, il détournerait aussi
+    // les imports relatifs de node_modules, que Node résout très bien seul.
+    if (specifier.startsWith('.') && context.parentURL?.startsWith(SOURCES)) {
+      const chemin = new URL(specifier, context.parentURL).pathname
+      return next(pathToFileURL(fichierDuModule(chemin)).href, context)
     }
 
     return next(specifier, context)
@@ -84,8 +95,13 @@ const routes = prerenderedRoutes()
 
 for (const route of routes) {
   const tags = `${preload}\n    ${renderHeadTags(route)}`
-  const document = gabarit.replace('</head>', `  ${tags}\n</head>`)
-  const dossier = route.path === '/' ? SORTIE : join(SORTIE, route.path)
+  // `lang` vient du gabarit, donc de `index.html`, donc `en` pour les trois
+  // langues : un instantané français annonçait de l'anglais au moissonneur
+  // comme au lecteur d'écran. Il porte celui de sa route.
+  const document = gabarit
+    .replace(/<html\b[^>]*>/, `<html lang=${route.locale}>`)
+    .replace('</head>', `  ${tags}\n</head>`)
+  const dossier = join(SORTIE, route.path)
 
   await mkdir(dossier, { recursive: true })
   await writeFile(join(dossier, 'index.html'), document)

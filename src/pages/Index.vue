@@ -26,12 +26,12 @@
               class="app-btn app-btn--primary"
               no-caps
               unelevated
-              to="/projects"
+              :to="$lp('/projects')"
               :icon-right="icons.arrowForward"
               :label="$t('buttons.projects')"
             />
-            <q-btn class="app-btn app-btn--ghost" no-caps unelevated to="/contact" :label="$t('buttons.contact')" />
-            <q-btn class="app-btn app-btn--quiet" no-caps flat to="/about" :label="$t('home.more')" />
+            <q-btn class="app-btn app-btn--ghost" no-caps unelevated :to="$lp('/contact')" :label="$t('buttons.contact')" />
+            <q-btn class="app-btn app-btn--quiet" no-caps flat :to="$lp('/about')" :label="$t('home.more')" />
           </div>
         </div>
       </div>
@@ -56,7 +56,7 @@
           class="app-btn app-btn--ghost"
           no-caps
           unelevated
-          to="/projects"
+          :to="$lp('/projects')"
           :icon-right="icons.arrowForward"
           :label="$t('home.featured_all')"
         />

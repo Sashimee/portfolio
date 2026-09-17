@@ -36,7 +36,6 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R29** | **Les six illustrations de `article_one` restent servies en 1200 px pour un cadre de 180 px**, `challenges.webp` en tête avec 255 442 octets — 0,237 octet par pixel contre 0,075 de médiane dans le dépôt. Ce n'est pas un oubli : aucun encodeur (`cwebp`, ImageMagick, PIL) n'était disponible dans la session qui l'a constaté. | Ré-encoder les six à 480 px de large, qualité 80, et reprendre la mesure. La visionneuse n'ouvre que `post.cover`, jamais ces images : rien n'a besoin de leur pleine résolution. **Corrigé au lot 18 : `article_one` en porte cinq, pas six, et `article_three` a le même défaut — neuf fichiers, 595 934 octets.** |
 | **R30** | **Font Awesome est parti des trois démos au lot 26** — sept glyphes, dix éléments, désormais des tracés SVG en ligne : 500 746 octets et trois requêtes CDN de moins par page. Restent **Bootstrap, jQuery et Google Fonts**, chargés depuis cinq CDN tiers : c'est autant une question de consentement que de poids. | Les retirer n'est plus remplacer une icône : `pet4u/scripts/main.js` est écrit en jQuery de bout en bout et le menu de `x1` est un `data-toggle="collapse"` de Bootstrap. Ou bien une réécriture de ces deux démos, ou bien l'aveu écrit qu'elles sont des archives figées. **À décider, pas à ignorer.** |
 | **R32** | **Il ne reste que le pied de page, et il demande un œil.** La mesure d'audience, les balises servies au moissonneur et les cinq descriptions de fiches sont vérifiées sur la production (voir ci-dessous). Reste que personne n'a regardé `/projects/:shortcode` ni `/404` pour constater que le pied de page s'y voit enfin — c'est la seule correction du lot 18 qu'aucune commande ne peut établir. | Ouvrir les deux pages, dans les deux thèmes, et voir le pied de page. Recoupe R28. |
-| **R34** | **Le multilinguisme reste invisible pour un moissonneur.** La langue est choisie côté client et n'entre jamais dans l'adresse : les trois langues partagent une URL, aucun `hreflang`, et les quinze instantanés portent `<html lang=en>` avec du texte anglais. Les paquets FR et DE — 335 clés chacun, quatre articles longs, ce que `test/i18n.spec.js` protège — ne rapportent aucune visite de recherche. | Des adresses localisées (`/fr/…`, `/de/…`) ou un paramètre, plus `hreflang` réciproque et un instantané par langue. C'est un chantier de routage, pas une retouche : écarté de ce lot pour cette raison. |
 | **R36** | **Purge du CSS Quasar, brotli, ré-encodage des images et sous-ensemble de Lexend : mesurés, non faits.** 82 109 octets de règles `.q-*` pour des composants que le site ne rend jamais (10 787 octets compressés sur **chaque** page, en tête de rendu) ; 32 017 octets (13 %) que brotli prendrait ; ~490 Ko sur neuf illustrations d'articles et ~288 Ko sur treize vignettes ; ~80 Ko sur trois fontes portant 845 glyphes pour 121 points de code utilisés. | Les deux derniers attendent un encodeur : `cwebp`, ImageMagick, PIL et fontTools sont tous absents de l'environnement — c'est le blocage que R29 nomme déjà. La purge CSS et brotli attendent autre chose : un **regard**. Purger sans qu'aucun navigateur ne relise le site rouvrirait R28 en plus grand, et une directive brotli qu'un module absent refuse **empêche NGINX de démarrer**. |
 | **R38** | **La correction du lot 22 n'a pas été vue, et le chemin d'échec n'a toujours pas été emprunté.** Le tour du 2026-09-11 a bien éprouvé l'attente (1c : lien bridé, défaut confirmé), mais **pas** l'échec : hors ligne, les fragments `fr` et `de` étaient déjà dans le cache HTTP, chargés aux étapes précédentes — la bascule a donc réussi, plus vite qu'en 3G. R37 demandait « hors ligne, **cache vide** » ; c'est la moitié qui manque. | Recharger en vidant le cache (*Disable cache* ou navigation privée), passer hors ligne **avant** d'avoir affiché la langue visée, puis la choisir : le panneau doit rester ouvert et la notification d'échec s'afficher. Et sur lien bridé, voir le panneau rester ouvert avec son indicateur au lieu de se fermer. |
 
@@ -48,6 +47,7 @@ Barrées avec une entrée datée et un élément de preuve, comme le veut la con
 
 | | Refermée le | Preuve |
 | --- | --- | --- |
+| ~~**R34**~~ | 2026-09-16 | **Les trois langues ont leur adresse** : `/en/`, `/fr/`, `/de/` — les trois préfixées, choix d'Alex — avec `hreflang` réciproques, `x-default` sur l'anglais, un instantané par langue (48 au lieu de 16), `inLanguage` dans les données structurées, et `/` → 301 `/en`. Les adresses d'avant répondent 301 vers leur équivalent anglais, côté NGINX comme côté routeur. Vérifié dans l'image Docker, au `curl -A facebookexternalhit` et dans un navigateur. Lot 28. |
 | ~~**R3**~~ | 2026-09-16 | **La vignette est une capture de `www.schoulbus.lu`**, prise sur le site publié en 1440 × 900 (51 294 o) — plus une composition de trois captures de l'application faite ici. Lot 27. |
 | ~~**R39**~~ | 2026-09-16 | **Repris depuis `sashimee.github.io/Pic-Collage-Maker`** : les quatre images viennent de l'application publiée, avec de vraies photos chargées dans l'éditeur. Et le poids est mesuré là où il compte — **337 866 octets en vingt requêtes**, contre les 221 263 d'un `gzip -9` local que l'article citait ; le chiffre est corrigé dans les trois langues. Lot 27. |
 | ~~**R33**~~ | 2026-09-16 | **Arbitré par Alex : tout passe en `/screenshots/`.** Les quatre couvertures dupliquées — `aura-cover`, `schoulbus-cover`, `portfolio-cover`, `pic-collage-cover`, **173 268 octets** — sont supprimées, `posts.js` désignant la vignette qui existait déjà ; les deux sans doublon sont déplacées dans `public/screenshots/`, et `src/assets/` ne porte plus d'image. Le pipeline se simplifie du même coup : `coverBaseName`, `couvertureHachee` et le crochet `image:` de `scripts/pre-rendu.mjs` ont disparu. Le prix est écrit : les couvertures perdent `immutable` et tombent à `max-age=86400`. Lot 25.
@@ -1116,3 +1116,61 @@ ici.
 y remédier), **R21** (les captures viennent de `foot.bas.lu`, mais d'un Chromium sans GPU
 sur cette machine, pas d'un vrai téléphone). **R4** reste ouverte, avec son point de
 blocage écrit.*
+
+---
+
+### Lot 28 — Les trois langues ont enfin leur adresse · fait le 2026-09-16
+
+**L'arbitrage de R34**, tranché par Alex : **les trois préfixées**, l'anglais compris.
+`/en/about`, `/fr/about`, `/de/about` ; `/` répond **301 vers `/en`**. C'est la forme la
+plus symétrique et la plus simple à expliquer, au prix assumé que toutes les adresses
+d'avant deviennent des redirections.
+
+**Ce qui change dans le routage.** `src/router/routes.js` place les seize routes sous un
+parent `/:locale(en|fr|de)`, et tout ce qui n'est pas préfixé rejoint l'anglais en gardant
+son chemin. `src/utils/locale-paths.js` est la seule chose qui sache composer
+(`localePath`) et décomposer (`splitLocalePath`) ces adresses ; **reposer un préfixe sur
+une adresse qui en porte déjà un le remplace**, sans quoi changer de langue donnerait
+`/fr/en/about` — c'est le cas courant, pas le cas limite, et un test le tient.
+
+**La langue vient de l'adresse, plus du navigateur.** Le fichier d'amorçage lit
+`location.pathname` avant de monter — donc un seul paquet téléchargé, pas celui du choix
+mémorisé puis celui de l'URL — et un garde de routeur bascule à chaque navigation. Le
+choix mémorisé et la langue du navigateur ne servent plus qu'à une adresse sans préfixe.
+
+**Les liens internes portent la langue.** Un greffon donne `$lp('/projects')` aux
+gabarits ; dix-neuf liens y passent, en-tête, pied de page, cartes de projet et boutons
+compris. Sans eux, un moissonneur suivant les liens du site n'aurait jamais trouvé les
+pages FR et DE : il serait retombé à chaque fois sur la redirection anglaise. Choisir une
+langue est désormais **une navigation** — la page reste la même, l'adresse change.
+
+**Ce qu'un moissonneur reçoit.** Quarante-huit instantanés au lieu de seize, chacun dans
+sa langue : titre, description, `og:*` et `<html lang>` — le gabarit imposait `lang=en` à
+tous, y compris à l'allemand. Chaque page déclare les **trois adresses en `hreflang`**,
+plus un `x-default` sur l'anglais, et le plan du site les répète en `xhtml:link` sur
+chacune des 48 entrées. Les données structurées portent enfin `inLanguage` de la page.
+
+**Ce que NGINX répond**, et c'est là que le signal se gagne ou se perd : `/` → 301 `/en`,
+`/about|/projects|/blog|/contact` (et tout ce qui est dessous) → 301 `/en/…`,
+`/blog/article` → 301 `/en/blog/green-coding-fintech`. La liste est explicite plutôt
+qu'attrape-tout : une expression large aurait aussi redirigé `/assets/` et les démos.
+
+**Vérifié dans l'image Docker, pas seulement en test.** Les neuf adresses attendues
+répondent ce qu'elles doivent (301, 200, 404 aux bons endroits) ; `curl -A
+facebookexternalhit` sur `/fr/about` rend « À propos », sur `/de/blog/pic-collage-on-device`
+rend son titre allemand. Et dans un navigateur : la bascule EN → FR depuis `/en/projects`
+atterrit sur `/fr/projects` avec la canonique, les quatre `hreflang` et `lang=fr` justes,
+**un seul `<title>` et une seule canonique** — le nettoyage des balises pré-rendues tient —
+et **aucune erreur de console**.
+
+**Porte complète au vert** : `lint`, `test` (**158**, contre 106 — un fichier neuf pour
+`locale-paths`, les routes et les instantanés vérifiés dans les trois langues, et la
+bascule de langue éprouvée comme navigation), `build` (**48 instantanés**),
+`verify:api-url`.
+
+**Ce que ça ne fait pas.** Un visiteur qui revient sur `/` repart en anglais : son choix
+mémorisé ne rattrape pas la redirection du serveur, qui est délibérément fixe — c'est le
+prix d'un `x-default` qui ne ment pas. Et les adresses d'avant restent des 301 : le
+référencement acquis se transfère, il ne se conserve pas tel quel.
+
+*Réserve refermée : **R34**. Aucune ouverte.*

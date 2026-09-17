@@ -6,7 +6,7 @@
         no-caps
         flat
         :icon="icons.arrowBack"
-        to="/projects"
+        :to="$lp('/projects')"
         :label="$t('projects.back')"
       />
 
