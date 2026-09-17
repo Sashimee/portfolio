@@ -216,9 +216,9 @@ export default {
         img: ""
       },
       {
-        title: "221 kilobytes, and the 400 you usually do not pay",
+        title: "338 kilobytes, and the 400 you usually do not pay",
         paragraphs: [
-          "First load is five files and <strong>221,263 bytes gzipped</strong> \u2014 application, framework, stylesheet, everything the editor needs to open.",
+          "First load, measured on the published app rather than on a local build, is twenty requests and <strong>337,866 bytes</strong> \u2014 of which 279,126 are the four scripts and the stylesheet the editor needs to open, 23,700 the three font files, and the rest small chunks fetched as panels appear. A gzip of the same build on my own machine said 221,263; GitHub Pages serves something else, and the honest number is the one the browser receives.",
           "What is <em>not</em> in that number is the more interesting half. The PDF writer is 421,184 bytes raw and <strong>175,887 gzipped</strong>, very nearly the weight of the whole app again, and it is fetched the first time somebody exports a PDF and never otherwise. The ZIP writer is another 28 KB gzipped on the same terms. The heaviest dependency in the repository is one most visitors never download.",
           "Poppins is self-hosted, latin subset, three weights, <strong>23,700 bytes</strong> in total. It used to come from a Google Fonts link, which put a third origin \u2014 a DNS lookup, a TLS handshake, a stylesheet, then the font files \u2014 in front of first paint, and quietly made the no-outbound-traffic claim above untrue.",
           "Two smaller disciplines hold the rest. <em>index.html</em> paints an app shell with inline styles before React runs, so first paint is not gated on parsing the bundle \u2014 move those styles into a stylesheet and the shell goes back behind the network. And framer-motion is wrapped so that only the features actually used are bundled; converting five files that had imported it directly took the eager chunk from 150.9 kB to 104.7 kB."
