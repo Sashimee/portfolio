@@ -22,7 +22,7 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R11** | L'article Aura décrit le comportement des plateformes (WhatsApp trois à sept jours, X une semaine, Slack une demi-heure…) d'après la documentation du dépôt `aura`, elle-même tirée de la documentation des plateformes. **Aucun lien n'a été collé dans une vraie messagerie.** | Un lien collé dans WhatsApp, l'humeur changée, le lien frais recollé, et la seconde carte différente de la première. |
 | **R12** | Les illustrations de l'article sont des captures de `mood.bas.lu` prises le **2026-08-28**. L'humeur en ligne était alors une humeur de test (« D Test ») et la carte partagée la montre. | Une vraie humeur posée sur le compte, et les captures reprises. |
 | **R13** | Le dépôt `aura` annonce encore « *Nothing is deployed* » dans son `README.md` et son journal de réserves, alors que `mood.bas.lu` sert bien l'application. Le portfolio publie désormais le projet en `live` — les deux sources se contredisent. | Le `README.md` et le journal de réserves d'`aura` mis à jour après le déploiement du 2026-08-28. |
-| **R15** | **reCAPTCHA v3 n'a pas arrêté un navigateur automatisé.** L'envoi de vérification du 2026-08-28 a été fait par Playwright — un Chromium piloté, sans interaction humaine — et a obtenu **0.9**, très au-dessus du seuil de 0.5. reCAPTCHA v3 ne bloque pas : il *note*, et la note s'est trompée. La protection réelle du formulaire repose donc sur le contrôle d'origine, le limiteur de débit et la vérification d'action, pas sur le score. | Rien ne « referme » ceci — c'est une propriété du produit. Mais : relever le seuil (0.7), et alimenter l'API d'annotations d'Enterprise pour que le modèle apprenne. À décider, pas à ignorer. |
+| **R15** | **reCAPTCHA v3 n'a pas arrêté un navigateur automatisé.** L'envoi de vérification du 2026-08-28 a été fait par Playwright — un Chromium piloté, sans interaction humaine — et a obtenu **0.9**, très au-dessus du seuil de 0.5. reCAPTCHA v3 ne bloque pas : il *note*, et la note s'est trompée. La protection réelle du formulaire repose donc sur le contrôle d'origine, le limiteur de débit et la vérification d'action, pas sur le score. **Le seuil est passé à 0.7 au lot 24** — ce qui n'aurait pas arrêté ce navigateur-là, noté 0.9 : la réserve se rétrécit, elle ne se referme pas. | Rien ne « referme » ceci — c'est une propriété du produit. Reste la seconde moitié : alimenter l'**API d'annotations** d'Enterprise pour que le modèle apprenne, et voir un envoi réel passer le seuil relevé (R27). |
 | **R16** | Les chiffres de l'article (27,4 Mo → 905 Ko, 42,6 Mo, 696 052 octets de polices) sont reconstitués depuis les **objets git**, pas depuis ce qu'un navigateur télécharge. Le lot 16 a mesuré la production, mais **par fichier** (`curl` sur neuf ressources : 1 128 514 octets, aucune compressée), pas en chargement de page complet. | Un chargement à froid de l'accueil et d'un article mesuré dans un navigateur — octets reçus, images et document compris — **après** le déploiement du lot 16. |
 | **R17** | Premier article **sans aucune illustration de section** : les huit portent `img: ""`. Les trois articles précédents en ont tous au moins une, donc le rythme d'`article.vue` sans images n'a jamais été vu. Le dossier `article_four` est déclaré dans le registre mais n'existe pas sur le disque — inoffensif tant qu'aucune section ne le désigne. | L'article publié, lu sur téléphone en portrait, dans les deux thèmes — la vérification qui a refermé R14. |
 | **R19** | **L'allemand n'a été relu par personne dont c'est la langue.** Les 133 clés — dont quatre articles longs, à la syntaxe travaillée — ont été traduites ici. C'est exactement la réserve que l'article `blogPost2` pose lui-même à propos du luxembourgeois de Schoulbus, et elle vaut maintenant pour ce site. | Une relecture par un locuteur natif, au moins sur le chrome (`layout`, `home`, `contact`, `consent`, `footer`) et les titres d'articles. **Le lot 15 y a ajouté un cinquième article complet**, neuf sections de plus, écrites ici comme les autres. **Le lot 23 y ajoute un sixième**, huit sections, plus le texte d'un projet. |
@@ -971,3 +971,25 @@ sa route à la boucle de montage), `build` (**16 instantanés** de route, contre
 de page, **aucune erreur de console**, et le titre pré-rendu bien posé dans l'instantané.
 
 *Réserves ouvertes par ce lot : **R39**. **R19** s'alourdit d'un sixième article.*
+
+---
+
+### Lot 24 — Le seuil de score passe à 0.7 · fait le 2026-09-16
+
+**La décision d'Alex sur R15**, prise le 2026-09-16 : relever le seuil. `RECAPTCHA_SCORE_MIN`
+vaut désormais **0.7** par défaut (`service/mail/src/config.js`), et le `.env.example` le dit.
+
+**Ce que ça ne fait pas.** Le navigateur piloté du lot 12 avait obtenu **0.9** : ce seuil-ci
+ne l'aurait pas arrêté non plus. Relever de 0.5 à 0.7 resserre la bande, rien de plus — la
+protection réelle reste le contrôle d'origine, le limiteur de débit et la vérification
+d'action. C'est écrit en clair dans le commentaire du fichier, pour que personne ne relise
+ce seuil comme une barrière.
+
+**Ce que le test tient.** Un cas neuf — « refuse au seuil de production ce que 0.5 laissait
+passer » — évalue un jeton à 0.6 contre un seuil à 0.7 et attend `score_insuffisant` ; le
+constructeur du vérificateur des tests prend maintenant son seuil en paramètre au lieu de le
+figer. Suite du service : **59 tests** au vert.
+
+*Réserve : **R15** reste ouverte, rétrécie à sa seconde moitié — l'API d'annotations
+d'Enterprise n'est toujours pas alimentée, et le seuil relevé n'a pas encore vu un envoi
+réel (c'est aussi ce que R27 demande).*

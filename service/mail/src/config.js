@@ -77,8 +77,12 @@ export function chargerConfig(env = process.env) {
       cleSite: env.RECAPTCHA_SITE_KEY,
       // reCAPTCHA v3 rend un score, pas un verdict. 0.5 est le seuil que Google
       // donne en exemple ; au-dessus, un formulaire de contact commence à
-      // refuser des humains sur navigateur durci.
-      seuil: nombre(env.RECAPTCHA_SCORE_MIN, 0.5),
+      // refuser des humains sur navigateur durci. C'est 0.7 ici depuis le
+      // 2026-09-16 : l'envoi de vérification du lot 12 était piloté par
+      // Playwright et a obtenu 0.9, donc ce seuil-ci ne l'aurait pas arrêté non
+      // plus — il resserre la bande, il ne remplace pas le contrôle d'origine,
+      // le limiteur de débit et la vérification d'action.
+      seuil: nombre(env.RECAPTCHA_SCORE_MIN, 0.7),
       // Les deux appels du front (`Contact.vue`, `blog/article.vue`) demandent
       // le jeton pour l'action « submit ». Vérifier l'action empêche qu'un
       // jeton pris ailleurs sur le site serve ici.

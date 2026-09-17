@@ -29,7 +29,7 @@ describe('configuration', () => {
     expect(config.port).toBe(3000)
     expect(config.smtp.port).toBe(465)
     expect(config.smtp.secure).toBe(true)
-    expect(config.recaptcha.seuil).toBe(0.5)
+    expect(config.recaptcha.seuil).toBe(0.7)
     expect(config.origines).toEqual(['https://alex.baskewitsch.lu'])
     expect(config.faireConfianceAuProxy).toBe(false)
   })
@@ -48,7 +48,7 @@ describe('configuration', () => {
 
     expect(config.port).toBe(3000)
     expect(config.smtp.port).toBe(465)
-    expect(config.recaptcha.seuil).toBe(0.5)
+    expect(config.recaptcha.seuil).toBe(0.7)
     expect(config.limite.fenetreMs).toBeGreaterThan(0)
     expect(config.limite.maximum).toBeGreaterThan(0)
   })
@@ -177,13 +177,13 @@ describe('limiteur', () => {
 describe('reCAPTCHA Enterprise', () => {
   // La forme des reponses est celle relevee sur l'API le 2026-08-28, contre le
   // vrai projet : verdict dans `tokenProperties`, score dans `riskAnalysis`.
-  function verificateurAvec(charge, ok = true) {
+  function verificateurAvec(charge, ok = true, seuil = 0.5) {
     const fetchImpl = vi.fn(async () => ({ ok, status: ok ? 200 : 503, json: async () => charge }))
     const verifier = creerVerificateur({
       projet: 'baskewitsch',
       cleApi: 'cle-api',
       cleSite: '6LdMd50tAAAAAI2C4RJMsBKEbHy-zjMG355X2Y-h',
-      seuil: 0.5,
+      seuil,
       action: 'submit',
       fetchImpl
     })
@@ -252,6 +252,12 @@ describe('reCAPTCHA Enterprise', () => {
       accepte: true,
       score: 0.5
     })
+  })
+
+  it('refuse au seuil de production ce que 0.5 laissait passer', async () => {
+    const resultat = await verificateurAvec(valide(0.6), true, 0.7).verifier('jeton')
+
+    expect(resultat).toEqual({ accepte: false, motif: 'score_insuffisant', score: 0.6 })
   })
 
   it('rapporte la raison du refus de Google', async () => {
