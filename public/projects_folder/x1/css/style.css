@@ -59,3 +59,11 @@ footer .fab {
     font-size: 1.5rem;
     padding: 0.1rem;
 }
+
+/* Les icônes sont des SVG en ligne, plus des glyphes de police : avec le
+   `box-sizing: border-box` de Bootstrap, le padding ci-dessus rognait le tracé
+   jusqu'à huit pixels au lieu de l'entourer. */
+.features .fas,
+footer .fab {
+    box-sizing: content-box;
+}
