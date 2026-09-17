@@ -6,19 +6,6 @@ import en from '@/i18n/en'
 const stripTags = value => String(value).replace(/<[^>]*>/g, '')
 
 /**
- * Nom de fichier de la couverture d'un article, sans son empreinte.
- *
- * `post.cover` est un import ESM : sa valeur est une adresse produite par
- * l'outil de construction, et elle diffère selon qui exécute ce module. Seule
- * la racine du nom est commune, et elle suffit à retrouver le fichier haché
- * dans `dist/spa/assets/`.
- */
-export function coverBaseName(cover) {
-  const file = String(cover).split('?')[0].split('/').pop()
-  return file.replace(/\.[a-z0-9]+$/i, '')
-}
-
-/**
  * Les routes qu'un moissonneur peut atteindre, chacune avec le descripteur que
  * la page correspondante déclare à `usePageMeta`.
  *
@@ -52,7 +39,7 @@ export function prerenderedRoutes() {
       path: `/blog/${post.slug}`,
       title: en[post.key].title,
       description: stripTags(en[post.key].title2),
-      cover: coverBaseName(post.cover),
+      image: post.cover,
       lastmod: post.date,
       article: { published: post.date }
     })

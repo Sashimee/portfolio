@@ -37,7 +37,6 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R29** | **Les six illustrations de `article_one` restent servies en 1200 px pour un cadre de 180 px**, `challenges.webp` en tête avec 255 442 octets — 0,237 octet par pixel contre 0,075 de médiane dans le dépôt. Ce n'est pas un oubli : aucun encodeur (`cwebp`, ImageMagick, PIL) n'était disponible dans la session qui l'a constaté. | Ré-encoder les six à 480 px de large, qualité 80, et reprendre la mesure. La visionneuse n'ouvre que `post.cover`, jamais ces images : rien n'a besoin de leur pleine résolution. **Corrigé au lot 18 : `article_one` en porte cinq, pas six, et `article_three` a le même défaut — neuf fichiers, 595 934 octets.** |
 | **R30** | **Les démos tirent encore 328 714 octets de Font Awesome pour sept glyphes** (`x1` : cinq ; `pet4u` et `cupcake` : un chacun), plus Bootstrap et jQuery. C'est mot pour mot ce que le principe 4 interdit, sur un domaine que le site sert lui-même. Le traceur mort de `liberty` est parti au lot 17, la police reste. **Corrigé au lot 18 : ces octets viennent de six CDN tiers, pas de notre domaine — c'est donc autant un problème de consentement que de poids. `popper.js`, chargé par deux démos et utilisé par aucune, est parti.** | Les sept tracés dans `src/data/icons.js` puis en SVG en ligne dans les trois gabarits — ou l'aveu écrit que les démos sont des archives figées, et qu'on n'y touche plus. À décider, pas à ignorer. |
 | **R32** | **Il ne reste que le pied de page, et il demande un œil.** La mesure d'audience, les balises servies au moissonneur et les cinq descriptions de fiches sont vérifiées sur la production (voir ci-dessous). Reste que personne n'a regardé `/projects/:shortcode` ni `/404` pour constater que le pied de page s'y voit enfin — c'est la seule correction du lot 18 qu'aucune commande ne peut établir. | Ouvrir les deux pages, dans les deux thèmes, et voir le pied de page. Recoupe R28. |
-| **R33** | **Les trois couvertures dupliquées n'ont pas été fusionnées.** `aura-cover.webp`, `schoulbus-cover.webp` et `portfolio-cover.webp` sont **identiques au md5** à trois vignettes de `public/screenshots/`, et `dist/spa` livre les deux copies : 130 738 octets, dans deux seaux de cache différents. La fusion n'est pas qu'une édition de `posts.js` : les couvertures sont des imports ESM (donc hachées et `immutable`), les vignettes des chemins publics (`max-age=86400`). Les unifier fait perdre le cache perpétuel à l'une ou complique le pipeline de pré-rendu pour porter les deux formes. | Un arbitrage : ou bien tout passe en `/screenshots/` (le pipeline se simplifie, `coverBaseName` et le chargeur d'images du script disparaissent, les couvertures perdent `immutable`), ou bien on assume les deux copies et on l'écrit. **À décider, pas à ignorer.** |
 | **R34** | **Le multilinguisme reste invisible pour un moissonneur.** La langue est choisie côté client et n'entre jamais dans l'adresse : les trois langues partagent une URL, aucun `hreflang`, et les quinze instantanés portent `<html lang=en>` avec du texte anglais. Les paquets FR et DE — 335 clés chacun, quatre articles longs, ce que `test/i18n.spec.js` protège — ne rapportent aucune visite de recherche. | Des adresses localisées (`/fr/…`, `/de/…`) ou un paramètre, plus `hreflang` réciproque et un instantané par langue. C'est un chantier de routage, pas une retouche : écarté de ce lot pour cette raison. |
 | **R36** | **Purge du CSS Quasar, brotli, ré-encodage des images et sous-ensemble de Lexend : mesurés, non faits.** 82 109 octets de règles `.q-*` pour des composants que le site ne rend jamais (10 787 octets compressés sur **chaque** page, en tête de rendu) ; 32 017 octets (13 %) que brotli prendrait ; ~490 Ko sur neuf illustrations d'articles et ~288 Ko sur treize vignettes ; ~80 Ko sur trois fontes portant 845 glyphes pour 121 points de code utilisés. | Les deux derniers attendent un encodeur : `cwebp`, ImageMagick, PIL et fontTools sont tous absents de l'environnement — c'est le blocage que R29 nomme déjà. La purge CSS et brotli attendent autre chose : un **regard**. Purger sans qu'aucun navigateur ne relise le site rouvrirait R28 en plus grand, et une directive brotli qu'un module absent refuse **empêche NGINX de démarrer**. |
 | **R38** | **La correction du lot 22 n'a pas été vue, et le chemin d'échec n'a toujours pas été emprunté.** Le tour du 2026-09-11 a bien éprouvé l'attente (1c : lien bridé, défaut confirmé), mais **pas** l'échec : hors ligne, les fragments `fr` et `de` étaient déjà dans le cache HTTP, chargés aux étapes précédentes — la bascule a donc réussi, plus vite qu'en 3G. R37 demandait « hors ligne, **cache vide** » ; c'est la moitié qui manque. | Recharger en vidant le cache (*Disable cache* ou navigation privée), passer hors ligne **avant** d'avoir affiché la langue visée, puis la choisir : le panneau doit rester ouvert et la notification d'échec s'afficher. Et sur lien bridé, voir le panneau rester ouvert avec son indicateur au lieu de se fermer. |
@@ -51,6 +50,7 @@ Barrées avec une entrée datée et un élément de preuve, comme le veut la con
 
 | | Refermée le | Preuve |
 | --- | --- | --- |
+| ~~**R33**~~ | 2026-09-16 | **Arbitré par Alex : tout passe en `/screenshots/`.** Les quatre couvertures dupliquées — `aura-cover`, `schoulbus-cover`, `portfolio-cover`, `pic-collage-cover`, **173 268 octets** — sont supprimées, `posts.js` désignant la vignette qui existait déjà ; les deux sans doublon sont déplacées dans `public/screenshots/`, et `src/assets/` ne porte plus d'image. Le pipeline se simplifie du même coup : `coverBaseName`, `couvertureHachee` et le crochet `image:` de `scripts/pre-rendu.mjs` ont disparu. Le prix est écrit : les couvertures perdent `immutable` et tombent à `max-age=86400`. Lot 25.
 | ~~**R37**~~ | 2026-09-11 | **Regardée, et elle avait raison.** Alex a fait le tour sur téléphone puis avec le réseau bridé. Trois bascules d'affilée en conditions normales : rien à signaler. **En lien bridé, le défaut soupçonné est réel** — `pickLocale()` fermait le panneau et le menu *avant* d'attendre `setLocale()`, si bien que la page restait dans l'ancienne langue le temps du téléchargement, sans rien qui l'explique au visiteur. C'est corrigé au lot 22. La moitié « hors ligne » de la vérification n'a pas pu être faite faute de cache vide : elle devient R38. |
 | ~~**R35**~~ | 2026-09-11 | **Vérifié sur `alex.baskewitsch.lu`**, exactement le critère que la réserve nommait. Cinq adresses inconnues — `/projects/jeanne`, `/blog/nexistepas`, `/404`, `/404.html`, `/nimportequoi` — répondent **404**, avec `<title data-prerendered>Page not found \| Alex Baskewitsch</title>`, `noindex, follow` et **aucune** canonique : une faute de frappe n'est donc plus un duplicata de l'accueil canonique vers `/`. **Et le risque que le lot 19 nommait ne s'est pas réalisé** : `=404` ne pardonne rien, mais les routes réelles tiennent — `/`, `/about`, `/projects`, `/blog`, `/contact`, `/projects/x1`, `/projects/cupcake`, `/blog/green-coding-fintech` et la démo `/projects_folder/x1/` rendent **200**, et `/blog/article` reste en **301** vers `/blog/green-coding-fintech`. `/legal` répond 404, ce qui est juste : l'avis légal est un dialogue, pas une route de `src/router/routes.js`. |
 | ~~**R31**~~ | 2026-09-10 | **Mesuré sur deux constructions du même arbre.** Avant : un fragment `i18n-*.js` de 166 006 octets bruts / 63 641 compressés, préchargé à l'amorçage *et* importé statiquement par `MainLayout` — les trois langues, sur chaque page, pour n'en afficher qu'une. Après : trois fragments (`en` 19 909 gz, `fr` 21 828, `de` 22 518), dont un seul part. **43 732 octets compressés de moins par visite en anglais, −69 %.** `MainLayout` n'importe plus aucune langue. Le prix est un aller-retour de plus avant le premier rendu, faute de connaître la langue du visiteur côté serveur — c'est R34, et c'est écrit au lot 20. |
@@ -993,3 +993,37 @@ figer. Suite du service : **59 tests** au vert.
 *Réserve : **R15** reste ouverte, rétrécie à sa seconde moitié — l'API d'annotations
 d'Enterprise n'est toujours pas alimentée, et le seuil relevé n'a pas encore vu un envoi
 réel (c'est aussi ce que R27 demande).*
+
+---
+
+### Lot 25 — Les couvertures rejoignent les captures · fait le 2026-09-16
+
+**L'arbitrage de R33**, tranché par Alex : tout passe en `/screenshots/`. Les couvertures
+d'articles étaient des imports ESM (`src/assets/*-cover.webp`), donc hachées et servies
+`immutable` ; **quatre** d'entre elles étaient identiques au md5 à quatre vignettes de
+`public/screenshots/`, et `dist/spa` livrait les deux copies.
+
+**Ce qui disparaît.** Les quatre doublons — `aura-cover`, `schoulbus-cover`,
+`portfolio-cover`, `pic-collage-cover`, **173 268 octets** — sont supprimés : `posts.js`
+désigne désormais la vignette qui existait déjà. Les deux couvertures sans doublon
+(`royaume-foot-cover.webp`, `gc_info_fr.webp`) sont déplacées dans
+`public/screenshots/`. `src/assets/` ne contient plus que `UFL.txt`.
+
+**Ce qui se simplifie, et c'était l'autre moitié de l'arbitrage.** `coverBaseName` n'existe
+plus, ni `couvertureHachee` dans `scripts/pre-rendu.mjs`, ni le crochet `image:` qui
+apprenait à Node à charger un `.webp` — le script ne cherche plus un fichier haché dans
+`dist/spa/assets/` après coup, il recopie le chemin écrit dans `posts.js`. Une couverture
+manquante se voyait jusqu'ici par un `process.exit(1)` du script ; elle se voit maintenant
+dans un test, avant la construction.
+
+**Ce que ça coûte, et c'est assumé.** Un chemin public n'est pas `immutable` :
+les couvertures passent de `max-age=31536000` à `max-age=86400` (`nginx/default.conf`).
+Une capture changée sans changer de nom se voit donc en un jour, au lieu de jamais.
+
+**Deux tests neufs** remplacent celui de `coverBaseName` : la route pré-rendue d'un article
+porte exactement le `cover` de `posts.js`, et ce chemin désigne un fichier qui existe sous
+`public/`. Porte complète au vert : `lint`, `test` (**106**), `build` (16 instantanés),
+`verify:api-url` — et l'instantané de `/blog/aura-share-cards` porte bien
+`og:image = https://alex.baskewitsch.lu/screenshots/aura.webp`.
+
+*Réserve refermée : **R33**. Aucune ouverte.*

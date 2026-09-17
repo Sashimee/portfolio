@@ -30,10 +30,10 @@ const SORTIE = join(RACINE, 'dist/spa')
 const ASSETS = join(SORTIE, 'assets')
 
 // `src/utils/pre-rendu.js` est écrit pour l'application : il résout ses voisins
-// en `@/…` et importe des images. Node ne sait faire ni l'un ni l'autre, d'où
-// ces deux crochets — l'alternative aurait été de recopier ici la liste des
-// articles et des projets, c'est-à-dire de la dédoubler.
-const EXTENSIONS_IMAGE = /\.(webp|png|jpe?g|svg|gif)$/i
+// en `@/…`, ce que Node ne sait pas faire — d'où ce crochet. L'alternative
+// aurait été de recopier ici la liste des articles et des projets, c'est-à-dire
+// de la dédoubler. Les couvertures, elles, sont des chemins publics depuis le
+// lot 25 : plus aucun module chargé ici n'importe d'image.
 
 /** `@/data/posts` désigne un fichier, `@/i18n/en` un dossier : les deux formes servent. */
 function fichierDuModule(chemin) {
@@ -43,33 +43,11 @@ function fichierDuModule(chemin) {
 
 registerHooks({
   resolve(specifier, context, next) {
-    // L'image d'abord : une couverture d'article s'importe en `@/assets/….webp`,
-    // donc elle passerait par la branche de l'alias et Node buterait sur
-    // l'extension.
-    if (EXTENSIONS_IMAGE.test(specifier)) {
-      const chemin = specifier.startsWith('@/')
-        ? join(RACINE, 'src', specifier.slice(2))
-        : new URL(specifier, `${dirname(context.parentURL ?? pathToFileURL(RACINE).href)}/`).pathname
-      return { url: `image:${chemin}`, shortCircuit: true }
-    }
-
     if (specifier.startsWith('@/')) {
       return next(pathToFileURL(fichierDuModule(join(RACINE, 'src', specifier.slice(2)))).href, context)
     }
 
     return next(specifier, context)
-  },
-
-  load(url, context, next) {
-    if (url.startsWith('image:')) {
-      return {
-        format: 'module',
-        source: `export default ${JSON.stringify(url.slice('image:'.length))}`,
-        shortCircuit: true
-      }
-    }
-
-    return next(url, context)
   }
 })
 
@@ -85,21 +63,6 @@ const {
   await import(
     pathToFileURL(join(RACINE, 'src/utils/pre-rendu.js')).href
   )
-
-/**
- * Retrouve la couverture hachée d'un article. Le nom sort de l'outil de
- * construction, donc il ne peut pas être écrit dans `posts.js` — seule sa
- * racine est stable.
- */
-async function couvertureHachee(base) {
-  const fichiers = await readdir(ASSETS)
-  const trouve = fichiers.find(f => f.startsWith(`${base}-`) && EXTENSIONS_IMAGE.test(f))
-  if (!trouve) {
-    console.error(`✗ Couverture introuvable dans dist/spa/assets : « ${base}-*.webp ».`)
-    process.exit(1)
-  }
-  return `/assets/${trouve}`
-}
 
 const gabarit = stripPrerenderedTags(await readFile(join(SORTIE, 'index.html'), 'utf8'))
 
@@ -120,8 +83,6 @@ const preload = renderFontPreload(`/assets/${police}`)
 const routes = prerenderedRoutes()
 
 for (const route of routes) {
-  if (route.cover) route.image = await couvertureHachee(route.cover)
-
   const tags = `${preload}\n    ${renderHeadTags(route)}`
   const document = gabarit.replace('</head>', `  ${tags}\n</head>`)
   const dossier = route.path === '/' ? SORTIE : join(SORTIE, route.path)
