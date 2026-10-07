@@ -163,6 +163,86 @@ export default {
     cta: "Let's build something lighter",
     top: "Back to top"
   },
+  blogPost7: {
+    title: "The language belongs in the address",
+    title2:
+      "Three languages, one URL each, and what a crawler finally sees — plus <strong>half a megabyte of icons</strong> that were drawing seven glyphs.",
+    sections: [
+      {
+        title: "Three languages, one address",
+        paragraphs: [
+          "This site has been in English, French and German for months. Until mid-September, all three lived at the same address. The language was a preference: stored in the browser, guessed from <em>navigator.language</em>, switched by a menu. <em>/about</em> was <em>/about</em> whatever you were reading.",
+          "For a visitor that works. For anything that is not a visitor, it means the French and German pages do not exist. A search engine fetches <em>/about</em>, gets English, and has no address to ask for anything else. A link shared on LinkedIn by a French reader previews in English. Two thirds of the writing on this site had no way of being found.",
+          "So the language moved into the address. This is what that took, along with two smaller jobs from the same week that I will also be honest about."
+        ],
+        img: ""
+      },
+      {
+        title: "Three prefixes, English included",
+        paragraphs: [
+          "The usual compromise is to leave the default language bare and prefix the others: <em>/about</em> in English, <em>/fr/about</em> in French. I prefixed all three. <em>/en/about</em>, <em>/fr/about</em>, <em>/de/about</em>, and <em>/</em> answers a <strong>301 to /en</strong>.",
+          "It is the most symmetrical form and the simplest one to explain, and its price is that every address that existed before is now a redirect. Those redirects are written out in NGINX as an explicit list (<em>/about</em>, <em>/projects</em>, <em>/blog</em>, <em>/contact</em> and what sits under them) rather than one broad pattern, because a broad pattern would also have redirected <em>/assets/</em> and the project demos.",
+          "The language now comes from the URL, not from the browser. The boot file reads <em>location.pathname</em> before the app mounts, so only one translation bundle is downloaded instead of the remembered one followed by the right one. Your stored choice and your browser language are now consulted only when the address carries no prefix."
+        ],
+        img: ""
+      },
+      {
+        title: "The bug that is the common case",
+        paragraphs: [
+          "One file, <em>locale-paths.js</em>, composes these addresses and takes them apart, and nothing else is allowed to. Its first rule looks like an edge case and is actually the main path: <strong>putting a prefix on an address that already has one replaces it.</strong> Without that rule, switching to French from <em>/en/about</em> produces <em>/fr/en/about</em>. Every language switch goes through this code, and a test holds it.",
+          "Then there are the internal links. A template now writes <em>$lp(’/projects’)</em> rather than <em>’/projects’</em>, and nineteen links were changed, across the header, the footer, the project cards and the buttons. The bare address would still have worked, because the router catches it and NGINX redirects it. But it would send a French reader back to English, and a crawler following the site’s own links would land on the English redirect every time and never reach a French or German page.",
+          "Choosing a language is now a <strong>navigation</strong>. The page stays the same and the address changes, which is exactly what it should have been doing all along."
+        ],
+        img: ""
+      },
+      {
+        title: "What a crawler receives",
+        paragraphs: [
+          "This site is a single-page app, and a single-page app serves no tags to a crawler. That problem was solved earlier with one pre-rendered <em>index.html</em> per route, written after the build. The language change turns <strong>16 snapshots into 48</strong>, each one in its own language: title, description, Open Graph tags, and <em>&lt;html lang&gt;</em>. That last one is the embarrassing part, because the template had been forcing <em>lang=en</em> on every page, the German ones included.",
+          "Every page now lists all three of its addresses as <em>hreflang</em> alternates, plus an <em>x-default</em> pointing at English. The sitemap repeats those links on each of its 48 entries, and the structured data finally says which language it is written in.",
+          "I checked it in the Docker image rather than only in tests. The nine addresses that matter return 301, 200 or 404 where they should. <em>curl -A facebookexternalhit</em> on <em>/fr/about</em> gets « À propos », and on the German Pic Collage article it gets the German title. In a browser, switching from English to French on <em>/en/projects</em> lands on <em>/fr/projects</em> with one title, one canonical, four <em>hreflang</em> tags and no console error. That is 158 tests, up from 106."
+        ],
+        img: ""
+      },
+      {
+        title: "Half a megabyte for seven glyphs",
+        paragraphs: [
+          "Three of the old project demos (x1, pet4u and cupcake) loaded Font Awesome from a CDN, which means a full icon stylesheet and one or two complete fonts on every page. Across ten elements, they used seven glyphs.",
+          "Those seven glyphs are now inline SVG paths taken from the same icon set, using <em>fill=“currentColor”</em> so each demo keeps its colours, and with a label wherever an icon carries meaning. <strong>500,746 bytes removed, 7,311 added</strong>, and three fewer requests to a third-party CDN on each page. That is as much about consent as it is about weight.",
+          "One defect only showed up on screen. The x1 icons had <em>padding: 2rem</em> under Bootstrap’s <em>border-box</em>, so the SVG was drawn <em>inside</em> the padding and shrank to eight pixels. The measurements said 72 × 72, while the page showed three dots. One <em>box-sizing: content-box</em> rule fixed it, but no test would have caught it."
+        ],
+        img: ""
+      },
+      {
+        title: "A number I published was wrong",
+        paragraphs: [
+          "Every screenshot on this site was retaken from the <strong>published</strong> sites, with Playwright, for fifteen images in total. Until then, several had come from local development servers, which show the version I had on my machine, not the one you can open.",
+          "Doing that turned up a mistake in the previous article. I had written that the Pic Collage app loads in 221,263 compressed bytes. That figure was a <em>gzip -9</em> of my local build. The deployed app actually transfers <strong>337,866 bytes over twenty requests</strong>. The figure is now corrected in all three languages, and the section title went from 221 to 338 kilobytes.",
+          "The same session showed something nobody had noticed: the published app calls an analytics counter, GoatCounter, on a third-party origin when it loads. That is a request leaving the device, in an app whose whole argument is that nothing does. The argument is true of the photos and not of the visit, and that is how it has to be said."
+        ],
+        img: ""
+      },
+      {
+        title: "Two smaller things",
+        paragraphs: [
+          "Blog covers used to be imported through the bundler, which hashed them and served them as <em>immutable</em>. Four of them were byte-for-byte identical to project thumbnails that already existed, so the build shipped both copies. They now point at the thumbnail, which removes <strong>173,268 bytes</strong> and a chunk of pre-render code. The cost is the cache, because a public path is not immutable: covers are cached for one day instead of one year.",
+          "The contact form’s reCAPTCHA threshold went from 0.5 to 0.7. I am writing it down mainly to say what it does not do: the automated browser I tested with in August scored <strong>0.9</strong>, and this threshold would not have stopped it either. The form is really protected by the origin check, the rate limiter and the action check, and the score is a hint."
+        ],
+        img: ""
+      },
+      {
+        title: "What is not done",
+        paragraphs: [
+          "A visitor who returns to <em>/</em> starts in English. Their remembered choice cannot override a server redirect that is fixed on purpose, and that is the price of an <em>x-default</em> that does not lie.",
+          "The old addresses are 301s. Search ranking already earned on them is transferred, not kept as it was, and it will take a while to settle.",
+          "The demos still load Bootstrap, jQuery and Google Fonts. Those are behaviour rather than decoration: one demo is written in jQuery from top to bottom, and another opens its menu with a Bootstrap <em>collapse</em>. Removing them would mean rewriting an archived demo, not swapping an icon, and I have not decided whether that is worth doing.",
+          "The Schoulbus article still shows screenshots from the old design. The app no longer needs an account to try it, but adding a child, the step that unlocks every screen worth showing, did not go through under automation. That step needs a real phone and a real hand.",
+          "And the German on this site, this article included, has not been read by a native speaker yet."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost6: {
     title: "The collage app that never sees your photos",
     title2:

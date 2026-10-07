@@ -22,6 +22,13 @@
 /** Du plus récent au plus ancien : `Blog.vue` numérote dans cet ordre. */
 export default [
   {
+    slug: 'language-in-the-address',
+    key: 'blogPost7',
+    date: '2026-10-07',
+    cover: '/screenshots/baskewitsch.lu.webp',
+    illustrations: 'article_seven'
+  },
+  {
     slug: 'pic-collage-on-device',
     key: 'blogPost6',
     date: '2026-09-12',

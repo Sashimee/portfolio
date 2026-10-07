@@ -166,6 +166,86 @@ export default {
     cta: "Construisons quelque chose de plus léger",
     top: "Haut de page"
   },
+  blogPost7: {
+    title: "La langue est dans l’adresse",
+    title2:
+      "Trois langues, une adresse chacune, et ce qu’un moissonneur voit enfin — plus <strong>un demi-mégaoctet d’icônes</strong> pour dessiner sept glyphes.",
+    sections: [
+      {
+        title: "Trois langues, une seule adresse",
+        paragraphs: [
+          "Ce site est en anglais, en français et en allemand depuis des mois. Jusqu’à la mi-septembre, les trois vivaient à la même adresse. La langue était une préférence : retenue dans le navigateur, devinée depuis <em>navigator.language</em>, changée par un menu. <em>/about</em> était <em>/about</em>, quelle que soit la langue lue.",
+          "Pour un visiteur, ça marche. Pour tout ce qui n’est pas un visiteur, cela veut dire que les pages françaises et allemandes n’existent pas. Un moteur de recherche demande <em>/about</em>, reçoit de l’anglais, et n’a aucune adresse où demander autre chose. Un lien partagé sur LinkedIn par un lecteur francophone s’affiche en anglais. Les deux tiers de ce qui est écrit ici n’avaient aucun moyen d’être trouvés.",
+          "La langue est donc passée dans l’adresse. Voici ce que cela a demandé, et deux chantiers plus petits de la même semaine, dont je rends compte aussi franchement."
+        ],
+        img: ""
+      },
+      {
+        title: "Trois préfixes, l’anglais compris",
+        paragraphs: [
+          "Le compromis habituel laisse la langue par défaut sans préfixe et préfixe les autres : <em>/about</em> en anglais, <em>/fr/about</em> en français. J’ai préfixé les trois. <em>/en/about</em>, <em>/fr/about</em>, <em>/de/about</em>, et <em>/</em> répond par un <strong>301 vers /en</strong>.",
+          "C’est la forme la plus symétrique et la plus simple à expliquer, et son prix est que toutes les adresses d’avant sont désormais des redirections. NGINX les écrit sous forme de liste explicite (<em>/about</em>, <em>/projects</em>, <em>/blog</em>, <em>/contact</em> et ce qui se trouve dessous) plutôt qu’avec un motif large, parce qu’un motif large aurait aussi redirigé <em>/assets/</em> et les démos des projets.",
+          "La langue vient maintenant de l’adresse, plus du navigateur. L’amorçage lit <em>location.pathname</em> avant le montage de l’application, si bien qu’un seul paquet de traductions est téléchargé, au lieu de celui qui avait été retenu suivi du bon. Le choix enregistré et la langue du navigateur ne sont plus consultés que lorsque l’adresse ne porte aucun préfixe."
+        ],
+        img: ""
+      },
+      {
+        title: "Le bogue qui est le cas courant",
+        paragraphs: [
+          "Un seul fichier, <em>locale-paths.js</em>, compose ces adresses et les décompose, et rien d’autre n’en a le droit. Sa première règle a l’air d’un cas limite et c’est en réalité le chemin principal : <strong>poser un préfixe sur une adresse qui en porte déjà un le remplace.</strong> Sans cette règle, passer au français depuis <em>/en/about</em> donne <em>/fr/en/about</em>. Chaque changement de langue passe par ce code, et un test le tient.",
+          "Viennent ensuite les liens internes. Un gabarit écrit désormais <em>$lp(’/projects’)</em> plutôt que <em>’/projects’</em>, et dix-neuf liens ont été changés, dans l’en-tête, le pied de page, les cartes de projet et les boutons. L’adresse nue aurait encore fonctionné, puisque le routeur la rattrape et que NGINX la redirige. Mais elle aurait renvoyé un lecteur francophone vers l’anglais, et un moissonneur qui suit les liens du site serait tombé à chaque fois sur la redirection anglaise, sans jamais atteindre une page française ou allemande.",
+          "Choisir une langue est maintenant une <strong>navigation</strong>. La page reste la même et l’adresse change, ce qu’elle aurait toujours dû faire."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce que reçoit un moissonneur",
+        paragraphs: [
+          "Ce site est une application monopage, et une application monopage ne sert aucune balise à un moissonneur. Le problème avait été réglé plus tôt avec un <em>index.html</em> pré-rendu par route, écrit après la construction. Le passage aux adresses par langue fait passer <strong>16 instantanés à 48</strong>, chacun dans sa langue : titre, description, balises Open Graph, et <em>&lt;html lang&gt;</em>. Ce dernier point est le plus gênant, parce que le gabarit imposait <em>lang=en</em> à toutes les pages, allemandes comprises.",
+          "Chaque page annonce désormais ses trois adresses comme alternatives <em>hreflang</em>, plus un <em>x-default</em> qui pointe vers l’anglais. Le plan du site reprend ces liens sur chacune de ses 48 entrées, et les données structurées disent enfin dans quelle langue elles sont écrites.",
+          "Je l’ai vérifié dans l’image Docker, et pas seulement dans les tests. Les neuf adresses qui comptent répondent 301, 200 ou 404 là où il le faut. <em>curl -A facebookexternalhit</em> sur <em>/fr/about</em> reçoit « À propos », et sur l’article allemand de Pic Collage, le titre allemand. Dans un navigateur, passer de l’anglais au français sur <em>/en/projects</em> mène à <em>/fr/projects</em>, avec un seul titre, une seule canonique, quatre balises <em>hreflang</em> et aucune erreur en console. Cela fait 158 tests, contre 106."
+        ],
+        img: ""
+      },
+      {
+        title: "Un demi-mégaoctet pour sept glyphes",
+        paragraphs: [
+          "Trois des anciennes démos de projets (x1, pet4u et cupcake) chargeaient Font Awesome depuis un CDN, c’est-à-dire une feuille de style d’icônes complète et une ou deux polices entières à chaque page. Sur dix éléments, elles utilisaient sept glyphes.",
+          "Ces sept glyphes sont désormais des tracés SVG en ligne, repris du même jeu d’icônes, en <em>fill=« currentColor »</em> pour que chaque démo garde ses couleurs, et avec un libellé partout où une icône porte un sens. <strong>500 746 octets retirés, 7 311 ajoutés</strong>, et trois requêtes de moins vers un CDN tiers à chaque page. C’est une question de consentement autant que de poids.",
+          "Un défaut n’est apparu qu’à l’écran. Les icônes de x1 avaient un <em>padding: 2rem</em> sous le <em>border-box</em> de Bootstrap, si bien que le SVG était dessiné <em>dans</em> la marge intérieure et tombait à huit pixels. Les mesures disaient 72 × 72, la page montrait trois points. Une règle <em>box-sizing: content-box</em> l’a corrigé, mais aucun test ne l’aurait attrapé."
+        ],
+        img: ""
+      },
+      {
+        title: "Un chiffre que j’ai publié était faux",
+        paragraphs: [
+          "Toutes les captures de ce site ont été refaites depuis les sites <strong>publiés</strong>, avec Playwright, soit quinze images. Jusque-là, plusieurs venaient de serveurs de développement locaux, qui montrent la version qui était sur ma machine, pas celle que vous pouvez ouvrir.",
+          "Ce travail a fait apparaître une erreur dans l’article précédent. J’avais écrit que l’application Pic Collage se chargeait en 221 263 octets compressés. Ce chiffre était un <em>gzip -9</em> de ma construction locale. L’application déployée transfère en réalité <strong>337 866 octets en vingt requêtes</strong>. Le chiffre est corrigé dans les trois langues, et le titre de section est passé de 221 à 338 kilo-octets.",
+          "La même séance a montré une chose que personne n’avait relevée : l’application publiée appelle au chargement un compteur d’audience, GoatCounter, sur une origine tierce. C’est une requête qui quitte l’appareil, dans une application dont tout l’argument est que rien n’en sort. L’argument est vrai des photos et pas de la visite, et c’est ainsi qu’il faut le dire."
+        ],
+        img: ""
+      },
+      {
+        title: "Deux choses plus petites",
+        paragraphs: [
+          "Les couvertures des articles étaient importées par le bundler, qui les hachait et les servait en <em>immutable</em>. Quatre d’entre elles étaient identiques, octet pour octet, à des vignettes de projet qui existaient déjà, et la construction livrait donc les deux copies. Elles pointent maintenant vers la vignette, ce qui retire <strong>173 268 octets</strong> et un morceau du code de pré-rendu. Le coût porte sur le cache, parce qu’un chemin public n’est pas immuable : les couvertures sont gardées un jour au lieu d’un an.",
+          "Le seuil reCAPTCHA du formulaire de contact est passé de 0,5 à 0,7. Je le note surtout pour dire ce qu’il ne fait pas : le navigateur automatisé avec lequel j’ai testé en août a obtenu <strong>0,9</strong>, et ce seuil ne l’aurait pas arrêté non plus. Le formulaire est réellement protégé par le contrôle d’origine, le limiteur de débit et la vérification d’action, et le score n’est qu’un indice."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce qui n’est pas fait",
+        paragraphs: [
+          "Un visiteur qui revient sur <em>/</em> commence en anglais. Son choix enregistré ne peut pas l’emporter sur une redirection serveur fixée exprès, et c’est le prix d’un <em>x-default</em> qui ne ment pas.",
+          "Les anciennes adresses sont des 301. Le référencement déjà acquis sur elles est transféré, pas conservé tel quel, et il lui faudra un moment pour se stabiliser.",
+          "Les démos chargent encore Bootstrap, jQuery et Google Fonts. Ce sont des dépendances de comportement, pas de décoration : une démo est écrite en jQuery de bout en bout, une autre ouvre son menu par un <em>collapse</em> de Bootstrap. Les retirer voudrait dire réécrire une démo archivée, pas remplacer une icône, et je n’ai pas décidé si cela en vaut la peine.",
+          "L’article sur Schoulbus montre encore des captures de l’ancienne charte. L’application n’exige plus de compte pour être essayée, mais l’ajout d’un enfant, l’étape qui débloque tous les écrans qui valent d’être montrés, n’a pas abouti en pilotage automatique. Cette étape demande un vrai téléphone et une vraie main.",
+          "Et l’allemand de ce site, cet article compris, n’a pas encore été relu par une personne dont c’est la langue maternelle."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost6: {
     title: "L\u2019application de collage qui ne voit jamais vos photos",
     title2:

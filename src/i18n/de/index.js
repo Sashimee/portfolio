@@ -164,6 +164,86 @@ export default {
     cta: "Bauen wir etwas Leichteres",
     top: "Nach oben"
   },
+  blogPost7: {
+    title: "Die Sprache gehört in die Adresse",
+    title2:
+      "Drei Sprachen, je eine Adresse, und was ein Crawler endlich zu sehen bekommt — dazu <strong>ein halbes Megabyte Icons</strong> für sieben Glyphen.",
+    sections: [
+      {
+        title: "Drei Sprachen, eine Adresse",
+        paragraphs: [
+          "Diese Seite gibt es seit Monaten auf Englisch, Französisch und Deutsch. Bis Mitte September lagen alle drei unter derselben Adresse. Die Sprache war eine Einstellung: im Browser gespeichert, aus <em>navigator.language</em> erraten, über ein Menü umgeschaltet. <em>/about</em> war <em>/about</em>, egal in welcher Sprache man las.",
+          "Für Besucher funktioniert das. Für alles, was kein Besucher ist, heißt es, dass die französischen und deutschen Seiten nicht existieren. Eine Suchmaschine ruft <em>/about</em> ab, bekommt Englisch und hat keine Adresse, unter der sie etwas anderes anfragen könnte. Ein Link, den eine französischsprachige Leserin auf LinkedIn teilt, erscheint in der Vorschau auf Englisch. Zwei Drittel der Texte auf dieser Seite konnten schlicht nicht gefunden werden.",
+          "Also ist die Sprache in die Adresse gewandert. Hier steht, was das gekostet hat, und dazu zwei kleinere Arbeiten aus derselben Woche, über die ich ebenso offen berichte."
+        ],
+        img: ""
+      },
+      {
+        title: "Drei Präfixe, Englisch eingeschlossen",
+        paragraphs: [
+          "Der übliche Kompromiss lässt die Standardsprache ohne Präfix und versieht nur die anderen damit: <em>/about</em> auf Englisch, <em>/fr/about</em> auf Französisch. Ich habe alle drei mit einem Präfix versehen. <em>/en/about</em>, <em>/fr/about</em>, <em>/de/about</em>, und <em>/</em> antwortet mit einem <strong>301 auf /en</strong>.",
+          "Das ist die symmetrischste Form und die am einfachsten zu erklärende, und ihr Preis ist, dass jede frühere Adresse jetzt eine Weiterleitung ist. NGINX führt diese Weiterleitungen als ausdrückliche Liste (<em>/about</em>, <em>/projects</em>, <em>/blog</em>, <em>/contact</em> und was darunter liegt) statt als breites Muster, denn ein breites Muster hätte auch <em>/assets/</em> und die Projektdemos umgeleitet.",
+          "Die Sprache kommt jetzt aus der Adresse, nicht mehr aus dem Browser. Der Start liest <em>location.pathname</em>, bevor die App eingebunden wird, sodass nur ein einziges Übersetzungspaket geladen wird statt erst des gespeicherten und dann des richtigen. Die gespeicherte Wahl und die Browsersprache werden nur noch befragt, wenn die Adresse kein Präfix trägt."
+        ],
+        img: ""
+      },
+      {
+        title: "Der Fehler, der der Normalfall ist",
+        paragraphs: [
+          "Eine einzige Datei, <em>locale-paths.js</em>, setzt diese Adressen zusammen und zerlegt sie, und nichts anderes darf das. Ihre erste Regel sieht nach einem Sonderfall aus und ist in Wahrheit der Hauptweg: <strong>Ein Präfix auf eine Adresse zu setzen, die schon eines trägt, ersetzt es.</strong> Ohne diese Regel ergibt der Wechsel ins Französische von <em>/en/about</em> aus <em>/fr/en/about</em>. Jeder Sprachwechsel läuft durch diesen Code, und ein Test hält ihn fest.",
+          "Dann die internen Links. Eine Vorlage schreibt jetzt <em>$lp(’/projects’)</em> statt <em>’/projects’</em>, und neunzehn Links wurden geändert, in Kopfzeile, Fußzeile, Projektkarten und Schaltflächen. Die nackte Adresse hätte weiter funktioniert, weil der Router sie abfängt und NGINX sie weiterleitet. Aber sie hätte eine französische Leserin zurück ins Englische geschickt, und ein Crawler, der den Links der Seite folgt, wäre jedes Mal auf der englischen Weiterleitung gelandet und nie bei einer französischen oder deutschen Seite angekommen.",
+          "Eine Sprache zu wählen ist jetzt eine <strong>Navigation</strong>. Die Seite bleibt dieselbe und die Adresse ändert sich, und genau das hätte sie von Anfang an tun sollen."
+        ],
+        img: ""
+      },
+      {
+        title: "Was ein Crawler bekommt",
+        paragraphs: [
+          "Diese Seite ist eine Single-Page-App, und eine Single-Page-App liefert einem Crawler keine Tags. Das Problem war schon früher gelöst worden, mit einer vorgerenderten <em>index.html</em> pro Route, die nach dem Build geschrieben wird. Der Sprachwechsel macht aus <strong>16 Snapshots 48</strong>, jeder in seiner eigenen Sprache: Titel, Beschreibung, Open-Graph-Tags und <em>&lt;html lang&gt;</em>. Letzteres ist der peinliche Teil, denn die Vorlage hatte jeder Seite <em>lang=en</em> aufgezwungen, den deutschen eingeschlossen.",
+          "Jede Seite nennt jetzt alle drei ihrer Adressen als <em>hreflang</em>-Alternativen, dazu ein <em>x-default</em>, das auf Englisch zeigt. Die Sitemap wiederholt diese Links bei jedem ihrer 48 Einträge, und die strukturierten Daten sagen endlich, in welcher Sprache sie geschrieben sind.",
+          "Ich habe es im Docker-Image geprüft, nicht nur in Tests. Die neun Adressen, auf die es ankommt, antworten mit 301, 200 oder 404, wo sie sollen. <em>curl -A facebookexternalhit</em> auf <em>/fr/about</em> bekommt „À propos“, und auf dem deutschen Pic-Collage-Artikel den deutschen Titel. Im Browser führt der Wechsel von Englisch zu Französisch auf <em>/en/projects</em> zu <em>/fr/projects</em>, mit einem Titel, einer Canonical, vier <em>hreflang</em>-Tags und keinem Konsolenfehler. Das sind 158 Tests, vorher 106."
+        ],
+        img: ""
+      },
+      {
+        title: "Ein halbes Megabyte für sieben Glyphen",
+        paragraphs: [
+          "Drei der alten Projektdemos (x1, pet4u und cupcake) luden Font Awesome von einem CDN, also auf jeder Seite ein vollständiges Icon-Stylesheet und ein oder zwei ganze Schriften. Auf zehn Elementen verwendeten sie sieben Glyphen.",
+          "Diese sieben Glyphen sind jetzt eingebettete SVG-Pfade aus demselben Icon-Satz, mit <em>fill=„currentColor“</em>, damit jede Demo ihre Farben behält, und mit einer Beschriftung überall dort, wo ein Icon eine Bedeutung trägt. <strong>500.746 Bytes entfernt, 7.311 hinzugefügt</strong>, und drei Anfragen weniger an ein fremdes CDN auf jeder Seite. Das ist ebenso eine Frage der Einwilligung wie des Gewichts.",
+          "Ein Fehler zeigte sich nur auf dem Bildschirm. Die Icons von x1 hatten <em>padding: 2rem</em> unter dem <em>border-box</em> von Bootstrap, sodass das SVG <em>innerhalb</em> des Innenabstands gezeichnet wurde und auf acht Pixel schrumpfte. Die Messung sagte 72 × 72, die Seite zeigte drei Punkte. Eine Regel <em>box-sizing: content-box</em> hat es behoben, aber kein Test hätte es gefunden."
+        ],
+        img: ""
+      },
+      {
+        title: "Eine Zahl, die ich veröffentlicht habe, war falsch",
+        paragraphs: [
+          "Alle Screenshots dieser Seite wurden mit Playwright von den <strong>veröffentlichten</strong> Seiten neu aufgenommen, insgesamt fünfzehn Bilder. Bis dahin stammten mehrere von lokalen Entwicklungsservern, die die Version auf meinem Rechner zeigen, nicht die, die man öffnen kann.",
+          "Dabei kam ein Fehler im vorigen Artikel ans Licht. Ich hatte geschrieben, dass die Pic-Collage-App in 221.263 komprimierten Bytes lädt. Diese Zahl war ein <em>gzip -9</em> meines lokalen Builds. Die ausgelieferte App überträgt tatsächlich <strong>337.866 Bytes in zwanzig Anfragen</strong>. Die Zahl ist in allen drei Sprachen korrigiert, und der Abschnittstitel ging von 221 auf 338 Kilobyte.",
+          "Dieselbe Sitzung zeigte etwas, das niemand bemerkt hatte: Die veröffentlichte App ruft beim Laden einen Besucherzähler, GoatCounter, auf einem fremden Ursprung auf. Das ist eine Anfrage, die das Gerät verlässt, in einer App, deren ganzes Argument lautet, dass nichts es verlässt. Das Argument stimmt für die Fotos und nicht für den Besuch, und so muss man es auch sagen."
+        ],
+        img: ""
+      },
+      {
+        title: "Zwei kleinere Dinge",
+        paragraphs: [
+          "Die Titelbilder der Artikel wurden über den Bundler importiert, der sie mit einem Hash versah und als <em>immutable</em> auslieferte. Vier davon waren Byte für Byte identisch mit bereits vorhandenen Projekt-Vorschaubildern, also lieferte der Build beide Kopien aus. Sie verweisen jetzt auf das Vorschaubild, was <strong>173.268 Bytes</strong> und ein Stück Prerender-Code entfernt. Der Preis ist der Cache, denn ein öffentlicher Pfad ist nicht unveränderlich: Titelbilder werden einen Tag statt eines Jahres zwischengespeichert.",
+          "Die reCAPTCHA-Schwelle des Kontaktformulars ist von 0,5 auf 0,7 gestiegen. Ich schreibe das vor allem auf, um zu sagen, was sie nicht leistet: Der automatisierte Browser, mit dem ich im August getestet habe, bekam <strong>0,9</strong>, und auch diese Schwelle hätte ihn nicht aufgehalten. Wirklich geschützt wird das Formular durch die Ursprungsprüfung, die Ratenbegrenzung und die Aktionsprüfung, und der Score ist nur ein Hinweis."
+        ],
+        img: ""
+      },
+      {
+        title: "Was nicht erledigt ist",
+        paragraphs: [
+          "Wer auf <em>/</em> zurückkehrt, beginnt auf Englisch. Die gespeicherte Wahl kann eine absichtlich feste Serverweiterleitung nicht überstimmen, und das ist der Preis eines <em>x-default</em>, das nicht lügt.",
+          "Die alten Adressen sind 301-Weiterleitungen. Das dort bereits erworbene Suchranking wird übertragen, nicht unverändert behalten, und es wird eine Weile dauern, bis es sich gesetzt hat.",
+          "Die Demos laden weiterhin Bootstrap, jQuery und Google Fonts. Das ist Verhalten, keine Dekoration: Eine Demo ist von vorne bis hinten in jQuery geschrieben, eine andere öffnet ihr Menü mit einem Bootstrap-<em>collapse</em>. Sie zu entfernen hieße, eine archivierte Demo neu zu schreiben, nicht ein Icon auszutauschen, und ich habe noch nicht entschieden, ob sich das lohnt.",
+          "Der Schoulbus-Artikel zeigt noch Screenshots im alten Design. Die App braucht zum Ausprobieren kein Konto mehr, aber das Hinzufügen eines Kindes, der Schritt, der jeden sehenswerten Bildschirm freischaltet, ließ sich nicht automatisiert durchführen. Dieser Schritt braucht ein echtes Telefon und eine echte Hand.",
+          "Und das Deutsch auf dieser Seite, dieser Artikel eingeschlossen, wurde noch von keiner Muttersprachlerin und keinem Muttersprachler gegengelesen."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost6: {
     title: "Die Collage-App, die Ihre Fotos nie zu sehen bekommt",
     title2:

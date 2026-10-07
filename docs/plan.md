@@ -24,7 +24,7 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R15** | **reCAPTCHA v3 n'a pas arrêté un navigateur automatisé.** L'envoi de vérification du 2026-08-28 a été fait par Playwright — un Chromium piloté, sans interaction humaine — et a obtenu **0.9**, très au-dessus du seuil de 0.5. reCAPTCHA v3 ne bloque pas : il *note*, et la note s'est trompée. La protection réelle du formulaire repose donc sur le contrôle d'origine, le limiteur de débit et la vérification d'action, pas sur le score. **Le seuil est passé à 0.7 au lot 24** — ce qui n'aurait pas arrêté ce navigateur-là, noté 0.9 : la réserve se rétrécit, elle ne se referme pas. | Rien ne « referme » ceci — c'est une propriété du produit. Reste la seconde moitié : alimenter l'**API d'annotations** d'Enterprise pour que le modèle apprenne, et voir un envoi réel passer le seuil relevé (R27). |
 | **R16** | Les chiffres de l'article (27,4 Mo → 905 Ko, 42,6 Mo, 696 052 octets de polices) sont reconstitués depuis les **objets git**, pas depuis ce qu'un navigateur télécharge. Le lot 16 a mesuré la production, mais **par fichier** (`curl` sur neuf ressources : 1 128 514 octets, aucune compressée), pas en chargement de page complet. | Un chargement à froid de l'accueil et d'un article mesuré dans un navigateur — octets reçus, images et document compris — **après** le déploiement du lot 16. |
 | **R17** | Premier article **sans aucune illustration de section** : les huit portent `img: ""`. Les trois articles précédents en ont tous au moins une, donc le rythme d'`article.vue` sans images n'a jamais été vu. Le dossier `article_four` est déclaré dans le registre mais n'existe pas sur le disque — inoffensif tant qu'aucune section ne le désigne. | L'article publié, lu sur téléphone en portrait, dans les deux thèmes — la vérification qui a refermé R14. |
-| **R19** | **L'allemand n'a été relu par personne dont c'est la langue.** Les 133 clés — dont quatre articles longs, à la syntaxe travaillée — ont été traduites ici. C'est exactement la réserve que l'article `blogPost2` pose lui-même à propos du luxembourgeois de Schoulbus, et elle vaut maintenant pour ce site. | Une relecture par un locuteur natif, au moins sur le chrome (`layout`, `home`, `contact`, `consent`, `footer`) et les titres d'articles. **Le lot 15 y a ajouté un cinquième article complet**, neuf sections de plus, écrites ici comme les autres. **Le lot 23 y ajoute un sixième**, huit sections, plus le texte d'un projet. |
+| **R19** | **L'allemand n'a été relu par personne dont c'est la langue.** Les 133 clés — dont quatre articles longs, à la syntaxe travaillée — ont été traduites ici. C'est exactement la réserve que l'article `blogPost2` pose lui-même à propos du luxembourgeois de Schoulbus, et elle vaut maintenant pour ce site. | Une relecture par un locuteur natif, au moins sur le chrome (`layout`, `home`, `contact`, `consent`, `footer`) et les titres d'articles. **Le lot 15 y a ajouté un cinquième article complet**, neuf sections de plus, écrites ici comme les autres. **Le lot 23 y ajoute un sixième**, huit sections, plus le texte d'un projet. **Le lot 29 y ajoute un septième**, huit sections. |
 | **R20** | La liste de langues n'a été vue que **montée dans jsdom**. Le rendu réel n'a pas été regardé : dépassement du panneau ouvert vers le haut dans le menu plein écran, contraste des états `:hover` et `.is-active` en thème sombre, et navigation au clavier seule (la liste ne piège pas le focus et ne le déplace pas sur la première option). | Ouvrir l'en-tête sur la production, bureau et téléphone, dans les deux thèmes, et parcourir la liste à la tabulation. |
 | **R21** | **Rétrécie au lot 27** : les sept images viennent maintenant de `foot.bas.lu`, le site publié — mais toujours du Chromium sans GPU de cette machine, donc la réserve de typographie tient. Les six captures de **Royaume Foot** (vignette du projet, couverture et cinq illustrations) ont été prises ici, sur un serveur de développement local, dans un Chromium **sans GPU** (`--use-gl=swiftshader`) et **sans les polices du système** — c'est DejaVu Sans et Noto Color Emoji qui rendent le texte et les émojis, pas la pile que le jeu obtient sur un vrai appareil. Le rendu 3D est le vrai ; la typographie du HUD ne l'est pas forcément. | Une capture de `foot.bas.lu` prise dans un navigateur ordinaire, sur un téléphone, et les images reprises depuis celle-là. |
 | **R22** | Les chiffres de l'article Royaume Foot — 333 Ko compressés dont 185 pour three.js, 9 388 octets d'images en cinq fichiers, 667 tirs balayés, 144 tests — ont été mesurés le **2026-09-08** sur le dépôt `royaume-foot`, en local, et **revérifiés au commit `694ca42`** après qu'une autre session y a livré sa phase 5 pendant la rédaction — inchangés. Ils décrivent ce dépôt-là ce jour-là, pas ce qu'un navigateur télécharge depuis `foot.bas.lu`. | Rien — mais le jour où l'article est remis en avant, les relire, comme R5. |
@@ -1174,3 +1174,22 @@ prix d'un `x-default` qui ne ment pas. Et les adresses d'avant restent des 301 :
 référencement acquis se transfère, il ne se conserve pas tel quel.
 
 *Réserve refermée : **R34**. Aucune ouverte.*
+
+### Lot 29 — L'article sur la langue dans l'adresse · fait le 2026-10-07
+
+**Un septième article, `blogPost7`** (`/blog/language-in-the-address`), qui raconte les
+lots 24 à 28 : le seuil reCAPTCHA relevé, les couvertures sorties du bundle, les démos
+sans Font Awesome, les captures reprises des sites publiés, et surtout les trois langues
+préfixées. Huit sections dans les trois langues, toutes en `img: ""` — comme R17, aucune
+illustration ; la couverture reprend `baskewitsch.lu.webp`. Chaque fait cité est tiré de
+ce registre, pas de mémoire.
+
+**Ce qui en découle sans rien écrire d'autre** : 51 instantanés au lieu de 48, 51 entrées
+au plan du site, chacune avec ses `xhtml:link`. Audit `seo-prerendu` sur le `dist/` :
+langue, titre, canonique, `og:*` et quatre `hreflang` justes dans les trois instantanés.
+
+**Porte complète au vert** : `lint`, `test` (**161**), `build` (**51 instantanés**),
+`verify:api-url`.
+
+*Réserve étendue : **R19** (l'allemand du septième article n'est relu par personne).
+Aucune ouverte.*
