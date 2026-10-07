@@ -22,6 +22,27 @@
 /** Du plus récent au plus ancien : `Blog.vue` numérote dans cet ordre. */
 export default [
   {
+    slug: 'ball-through-the-goalkeeper',
+    key: 'blogPost10',
+    date: '2026-10-07',
+    cover: '/screenshots/royaume-foot.webp',
+    illustrations: 'article_ten'
+  },
+  {
+    slug: 'merged-is-not-deployed',
+    key: 'blogPost9',
+    date: '2026-10-07',
+    cover: '/screenshots/schoulbus.webp',
+    illustrations: 'article_nine'
+  },
+  {
+    slug: 'one-prompt-931-commits',
+    key: 'blogPost8',
+    date: '2026-10-07',
+    cover: '/screenshots/baskewitsch.lu.webp',
+    illustrations: 'article_eight'
+  },
+  {
     slug: 'language-in-the-address',
     key: 'blogPost7',
     date: '2026-10-07',

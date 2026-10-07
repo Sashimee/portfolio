@@ -163,6 +163,212 @@ export default {
     cta: "Let's build something lighter",
     top: "Back to top"
   },
+  blogPost10: {
+    title: "The test passed, and the ball went through the goalkeeper",
+    title2:
+      "A follow-up on the football game for children: three bugs that <strong>only a screen could show</strong>, and one that a test could hold once it was understood.",
+    sections: [
+      {
+        title: "A month after launch",
+        paragraphs: [
+          "Royaume Foot, the 3D football game I built for children, has had a month of real play since the last article. In that month there were 35 commits, unit tests went from 144 to 173, the end-to-end suite stayed at 17 out of 17, and the bundle sits at 338 KB gzipped.",
+          "None of those numbers found the bugs that mattered. Children found them, or a tablet did, or I did by watching a replay frame by frame. This article is about the distance between a green suite and a game that looks right."
+        ],
+        img: ""
+      },
+      {
+        title: "The ball that teleported",
+        paragraphs: [
+          "In keeper mode, the ball sometimes jumped. It left the foot, flew for a moment and then appeared somewhere else further along its path.",
+          "The cause was a timer. The ball’s flight was computed from the time elapsed in the current <em>phase</em> of the game, and some phase changes reset that clock in the middle of a shot. The ball did not know a phase had changed. It simply learned that less time had passed than a moment ago, and drew itself where that earlier time put it.",
+          "The fix gives the ball its own clock, which nothing else resets. The test that came with it does not check a position. It checks an <strong>invariant</strong>: whatever happens around it, the ball’s flight time never goes backwards. That test would have caught the bug on the first day, and I only knew to write it once I had seen the jump."
+        ],
+        img: ""
+      },
+      {
+        title: "Through the goalkeeper",
+        paragraphs: [
+          "The worst one was a save that looked like a goal. The keeper reached the ball, the game counted a save, and the ball carried on <em>through</em> him into the net before bouncing back out.",
+          "The rules were right. Whether a shot is saved is decided where the ball crosses the goal line, and the keeper stands <strong>0.55 units in front of that line</strong>. The rebound was launched from the crossing point, which is behind his hands and therefore already inside the goal. For a few frames, every save played out a goal.",
+          "The fix is one function, <em>punchClear()</em>, which starts the rebound from the keeper’s own plane, where his hands actually are. Five tests hold it. The original suite was green the whole time, because it tested the verdict, and the verdict was never wrong."
+        ],
+        img: ""
+      },
+      {
+        title: "What a tablet hides",
+        paragraphs: [
+          "In cup mode, a banner announces each leg of the tournament. On a large screen it sat above the action. On a tablet, the screen a child actually uses, it covered the ball.",
+          "The banner moved into the HUD. The lesson is the usual one, and I keep relearning it: a layout checked at one size has been checked at one size. The same week, a second shot could be fired after a save had already counted, and a guard now stops the ball being sent twice."
+        ],
+        img: ""
+      },
+      {
+        title: "“Perfect, except the bird and the snowflake”",
+        paragraphs: [
+          "The game has three new keeper species. After a playtest, the verdict was: <em>“Perfect, except the bird and the snowflake do not resemble at all.”</em> Two of the three, the griffin and the yeti, did not read as what they were meant to be.",
+          "This is the kind of feedback no test produces. A dedicated agent, the creature sculptor, redrew both from primitive shapes with one rule: each creature must be <strong>nameable at the distance it is seen in the game</strong>, not in a close-up.",
+          "Two smaller features came out of the same playtest. Children can now pick one accessory for the princess or the knight. The ball picker now shows the ball you are choosing, not just its name. And the dragon had his wings rebuilt, because, in the words of the commit, he was reading “as a cow with knives”."
+        ],
+        img: ""
+      },
+      {
+        title: "What is not done",
+        paragraphs: [
+          "The goalkeeper fix and the new creatures are merged into the development branch and <strong>not yet released</strong>. The game online still has the ball that goes through the keeper. That will change at the next release, and I would rather say so than have this article describe a version you cannot play yet.",
+          "The creature redesign has not been through a second playtest. Whether the griffin now reads as a griffin is a question for the same small judges, not for me."
+        ],
+        img: ""
+      }
+    ]
+  },
+  blogPost9: {
+    title: "Merged is not deployed",
+    title2:
+      "Three weeks on Schoulbus: a showcase and an app that must look like the same product, screenshots of a design that no longer existed, and <strong>a merge that published nothing</strong>.",
+    sections: [
+      {
+        title: "Two repositories, one product",
+        paragraphs: [
+          "Schoulbus is two things. <em>schoulbus.lu</em> is the showcase, a static site in five languages. <em>app.schoulbus.lu</em> is the app itself, which families use to follow the school bus. Each has its own repository, its own build and its own deployment, but for the person using them they are one product, and they have to look like it.",
+          "Most of the work between 7 and 26 September went into that seam. This is an account of what broke there, and of the cases where the thing that broke was my own assumption."
+        ],
+        img: ""
+      },
+      {
+        title: "One palette, copied by a script",
+        paragraphs: [
+          "The app has a design charter: colours, radii, type scale, all declared as tokens. The showcase used to have its own copy, written by hand and already drifting.",
+          "Now a script copies the tokens from the app into the showcase (<em>jetons:reprendre</em>), and a second mode checks that they still match (<em>jetons:verifier</em>). The check is part of the showcase’s verify command, so a palette change in the app that has not reached the showcase stops the build.",
+          "One day the check reported that the tokens had diverged when they had not. My local copy of the app’s <em>main</em> branch was stale, so I was comparing against an old palette. The check is right only if it compares against <strong>origin/main</strong>, the published state, and it now does."
+        ],
+        img: ""
+      },
+      {
+        title: "Screenshots of an app that no longer existed",
+        paragraphs: [
+          "The showcase illustrates each feature with a screenshot of the app, one per feature. They were generated automatically, which sounded reliable. They were in fact taken from a version of the app from <strong>before the design charter</strong>. Every image was sharp, correctly framed and out of date.",
+          "Regenerating them exposed a second problem: two runs did not produce the same image. Four of the ten weekly views came out different each time. The map places its tiles and pins with CSS transforms, which no DOM observer sees, so the page looked settled before the map was.",
+          "What has to be stable is the image, not the DOM. The rule now is that an image is kept only if <strong>two takes are identical</strong>. The simulated clock is frozen on a fixed Tuesday morning, and map tiles come from local fixtures. An image that changes between two runs is not a screenshot; it is a sample."
+        ],
+        img: ""
+      },
+      {
+        title: "Five languages, reviewed by agents",
+        paragraphs: [
+          "The showcase is in Luxembourgish, French, German, Portuguese and English, which matches the families who actually ride the bus. I am fluent in some of those languages and not in others.",
+          "Each language was reviewed by an agent instructed to read as a native speaker and to cite a source for every correction. That produced <strong>33 sourced corrections</strong> in Luxembourgish, Portuguese, English and German. The decision I recorded is that this review counts as a review. What it does not replace is also written down: a parent reading the page on their phone and telling me what sounds wrong."
+        ],
+        img: ""
+      },
+      {
+        title: "Fifty kilobytes for one hydration",
+        paragraphs: [
+          "The showcase is mostly static. It still shipped React to hydrate its few interactive pieces.",
+          "Replacing React with <em>preact/compat</em> took the JavaScript from <strong>70.8 KB to 20.6 KB</strong>. The risk with that kind of swap is a page that renders and then quietly stops responding, so a Playwright check now confirms that hydration actually happens, by clicking something and seeing it answer. The same week an animation library went too, because the one gesture it powered fits in a few lines of CSS."
+        ],
+        img: ""
+      },
+      {
+        title: "Merged is not deployed",
+        paragraphs: [
+          "Pull requests were merged into <em>main</em>, CI was green, and the containers kept serving the previous build.",
+          "It was a setting. Automatic deployment was <strong>off</strong> on the hosting platform for that application. A merge was a merge and nothing more. The repository’s documentation said otherwise, and it was wrong.",
+          "The fix took one click. The lesson is now written in the repository: <em>merged</em> and <em>deployed</em> are two different claims, and only one of them can be checked by looking at the site. A release is confirmed by looking at the live page, not at the CI status."
+        ],
+        img: ""
+      },
+      {
+        title: "The noindex was mine",
+        paragraphs: [
+          "Search Console reported <em>app.schoulbus.lu</em> as excluded from search, with a <em>noindex</em>. Nothing outside the app was at fault: it had simply never been opened to search engines, and it had no <em>robots.txt</em> or sitemap.",
+          "A small Vite plugin now writes both at build time, and the app is open to search engines."
+        ],
+        img: ""
+      },
+      {
+        title: "What also happened",
+        paragraphs: [
+          "The contact form’s mail relay refused to send because the sender address did not match the domain the relay is allowed to send for. The service now sends from the authenticated domain, keeps the visitor’s address as <em>Reply-To</em>, and refuses to start if the two are misaligned, so the mistake cannot ship quietly a second time.",
+          "Google Calendar sync went to production. It uses OAuth with PKCE in the browser and the narrowest scope that does the job, <em>calendar.app.created</em>: the app can only see the calendar it creates, never the rest of a parent’s diary.",
+          "A release was blocked by CI over dependency alerts, which is exactly what that gate is for. And thirty remote branches came down to two."
+        ],
+        img: ""
+      },
+      {
+        title: "What is not done",
+        paragraphs: [
+          "The language review is by agents. It is sourced and careful, but it is not a parent, and I will only know whether the Luxembourgish sounds natural when one tells me.",
+          "And the noindex fix is recent. Search Console takes its time, and I will not claim the app is indexed until it says so."
+        ],
+        img: ""
+      }
+    ]
+  },
+  blogPost8: {
+    title: "One prompt, 931 commits",
+    title2:
+      "Three weeks of building a marketplace with a loop of agents that <strong>trusts nothing it wrote itself</strong> — including the day the loop chose the wrong priority.",
+    sections: [
+      {
+        title: "What this is",
+        paragraphs: [
+          "Since mid-September I have been building a marketplace for photographers. It is not launched, and I am not naming it here. It is a monorepo with a Next.js website, an Expo mobile app, a NestJS API, Prisma on PostgreSQL with PostGIS, and Stripe Connect for payments.",
+          "The figures for three weeks: <strong>931 commits</strong>, 266 pull requests, 315 issues, about 245,000 lines added, over 19 working sessions. I did not type most of those lines. This article is about the loop that did, and above all about what keeps it honest."
+        ],
+        img: ""
+      },
+      {
+        title: "The loop",
+        paragraphs: [
+          "Each session starts from the same short prompt. It does not describe a feature. It describes a procedure: read the resume file, check it against the repository, and pick the next thing to do in a fixed order. A <strong>red CI comes first</strong>, then an open pull request, then the next feature in the plan.",
+          "The resume file is treated as <em>a claim, not truth</em>. A session that was cut off mid-write leaves it stale, so every new session reconciles it against the git log, the branch state and the open pull requests before trusting a word of it. That single rule is what lets the work survive crashes, context resets and usage limits without me rebuilding the state by hand.",
+          "Each feature then goes through a fixed chain of agents. The implementer writes it. A test-writer covers it. A check-runner runs lint, types, tests and coverage, and reports the actual output. Then a code reviewer and a security reviewer each read the diff. There are fourteen agents in total, each with one narrow job, and none of them is a catch-all helper."
+        ],
+        img: ""
+      },
+      {
+        title: "Reviewers that found real things",
+        paragraphs: [
+          "The rule for reviews is strict: <strong>only blockers are fixed in the feature</strong>. Everything else becomes an issue, labelled for a later phase, so a review never turns into an open-ended rewrite.",
+          "The blockers were real. The mobile app sent a default <em>Origin</em> header that the WebSocket handshake rightly rejected, so mobile chat would never have connected. Uploaded photos kept their <strong>EXIF data, GPS included</strong>, unless they happened to be resized; now every image is re-encoded. A double tap on a quote button could create two bookings. Signing in could create a duplicate profile.",
+          "None of those would have failed a test that the implementer wrote, because the implementer did not think of them. That is the point of a second reader with a different brief."
+        ],
+        img: ""
+      },
+      {
+        title: "The day the loop was wrong",
+        paragraphs: [
+          "Halfway through, the reviews had produced a backlog of 26 non-blocking issues. The loop did what its rules said and worked through them: a full day of clean-up, all correct, and <strong>nothing visible</strong> on the preview site. The people testing it had nothing new to try.",
+          "That became a recorded decision, number 28 of 29: features first. The clean-up backlog is parked for the next phase, and reviews fix blockers only. The loop was not broken. It was faithfully optimising for the wrong thing, and only a person looking at the preview could see it."
+        ],
+        img: ""
+      },
+      {
+        title: "The work is uneven",
+        paragraphs: [
+          "Three days account for more than half of the commits: 150 on 17 September, 230 on the 18th, and 143 on the 25th. Those are the days when a session ran for hours with a clear plan in front of it. Other days produced ten commits, because they were spent on a question only I could answer.",
+          "The commit trailers record which model wrote what. About 490 commits are from the larger models and about 125 from the smaller ones, which were used for scoped implementation and test-writing, with the larger ones on design, debugging and review. Choosing a model by the job, rather than by habit, is written into every agent file, along with the reason."
+        ],
+        img: ""
+      },
+      {
+        title: "What a loop cannot decide",
+        paragraphs: [
+          "The open questions are not code. Whether the 5% commission is right, for instance: an analysis showed it nets only <strong>3.3 to 3.5% after Stripe’s fees</strong>, because the platform absorbs payment processing out of its own cut. That is a business decision, and no agent should take it.",
+          "The loop handles that by stopping. Anything that needs me goes into a short list in the resume file, and the loop carries on with whatever does not depend on it. Most days, the most useful thing I did for the project was answer one item on that list."
+        ],
+        img: ""
+      },
+      {
+        title: "What is not done",
+        paragraphs: [
+          "Nothing has been charged yet. The release to the main branch waits for Stripe test keys, which only I can create. 243 issues are still open, most of them deliberately parked.",
+          "And the number in the title is not a measure of quality. 931 commits say that the loop runs. Whether it built the right thing will be decided by the first photographer who uses it."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost7: {
     title: "The language belongs in the address",
     title2:
