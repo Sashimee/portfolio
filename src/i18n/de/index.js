@@ -164,6 +164,212 @@ export default {
     cta: "Bauen wir etwas Leichteres",
     top: "Nach oben"
   },
+  blogPost10: {
+    title: "Der Test war grün, und der Ball flog durch den Torwart",
+    title2:
+      "Fortsetzung zum Fußballspiel für Kinder: drei Fehler, die <strong>nur ein Bildschirm zeigen konnte</strong>, und einer, den ein Test halten konnte, sobald er verstanden war.",
+    sections: [
+      {
+        title: "Ein Monat nach dem Start",
+        paragraphs: [
+          "Royaume Foot, das 3D-Fußballspiel, das ich für Kinder gebaut habe, hat seit dem letzten Artikel einen Monat echter Spiele hinter sich. In diesem Monat gab es 35 Commits, die Unit-Tests stiegen von 144 auf 173, die End-to-End-Suite blieb bei 17 von 17, und das Bundle liegt bei 338 KB komprimiert.",
+          "Keine dieser Zahlen hat die Fehler gefunden, auf die es ankam. Kinder haben sie gefunden, oder ein Tablet, oder ich, als ich eine Wiederholung Bild für Bild angesehen habe. Dieser Artikel handelt vom Abstand zwischen einer grünen Suite und einem Spiel, das richtig aussieht."
+        ],
+        img: ""
+      },
+      {
+        title: "Der Ball, der sich teleportierte",
+        paragraphs: [
+          "Im Torwartmodus sprang der Ball manchmal. Er verließ den Fuß, flog einen Moment und tauchte dann weiter vorn auf seiner Bahn wieder auf.",
+          "Die Ursache war eine Uhr. Der Flug des Balls wurde aus der Zeit berechnet, die in der aktuellen <em>Phase</em> des Spiels vergangen war, und manche Phasenwechsel setzten diese Uhr mitten im Schuss zurück. Der Ball wusste nicht, dass sich eine Phase geändert hatte. Er erfuhr nur, dass weniger Zeit vergangen war als einen Augenblick zuvor, und zeichnete sich dort, wo ihn diese frühere Zeit hinstellte.",
+          "Die Korrektur gibt dem Ball eine eigene Uhr, die nichts anderes zurücksetzt. Der Test dazu prüft keine Position. Er prüft eine <strong>Invariante</strong>: Was auch immer um ihn herum geschieht, die Flugzeit des Balls läuft nie rückwärts. Dieser Test hätte den Fehler am ersten Tag gefunden, und ich wusste erst, dass ich ihn schreiben musste, als ich den Sprung gesehen hatte."
+        ],
+        img: ""
+      },
+      {
+        title: "Durch den Torwart",
+        paragraphs: [
+          "Am schlimmsten war eine Parade, die wie ein Tor aussah. Der Torwart erreichte den Ball, das Spiel zählte eine Parade, und der Ball flog <em>durch</em> ihn hindurch ins Netz, bevor er wieder herausprallte.",
+          "Die Regeln stimmten. Ob ein Schuss gehalten wird, entscheidet sich daran, wo der Ball die Torlinie kreuzt, und der Torwart steht <strong>0,55 Einheiten vor dieser Linie</strong>. Der Abpraller startete am Kreuzungspunkt, also hinter seinen Händen und damit schon im Tor. Für ein paar Bilder spielte jede Parade ein Tor.",
+          "Die Korrektur ist eine einzige Funktion, <em>punchClear()</em>, die den Abpraller von der Ebene des Torwarts selbst starten lässt, dort, wo seine Hände wirklich sind. Fünf Tests halten sie. Die ursprüngliche Suite blieb die ganze Zeit grün, weil sie das Urteil testete, und das Urteil war nie falsch."
+        ],
+        img: ""
+      },
+      {
+        title: "Was ein Tablet verdeckt",
+        paragraphs: [
+          "Im Pokalmodus kündigt ein Banner jede Runde des Turniers an. Auf einem großen Bildschirm schwebte es über dem Geschehen. Auf einem Tablet, dem Bildschirm, den ein Kind tatsächlich benutzt, verdeckte es den Ball.",
+          "Das Banner ist in die Spielanzeige gewandert. Die Lehre ist die übliche, und ich lerne sie immer wieder neu: Ein Layout, das in einer Größe geprüft wurde, wurde in einer Größe geprüft. In derselben Woche konnte ein zweiter Schuss abgehen, nachdem eine Parade schon gezählt war; eine Sperre verhindert jetzt, dass der Ball zweimal getreten wird."
+        ],
+        img: ""
+      },
+      {
+        title: "„Perfekt, außer dem Vogel und der Schneeflocke“",
+        paragraphs: [
+          "Das Spiel hat drei neue Torwartarten. Nach einer Testrunde kam das Urteil: <em>„Perfekt, außer dem Vogel und der Schneeflocke, die überhaupt nicht ähnlich sehen.“</em> Zwei von drei, der Greif und der Yeti, waren nicht als das zu erkennen, was sie sein sollten.",
+          "Das ist die Art Rückmeldung, die kein Test liefert. Ein eigener Agent, der Kreaturenbildhauer, hat beide aus Grundformen neu gebaut, mit einer Regel: Jede Kreatur muss <strong>in der Entfernung benennbar sein, in der man sie im Spiel sieht</strong>, nicht in der Nahaufnahme.",
+          "Zwei kleinere Funktionen kamen aus derselben Runde. Kinder können jetzt ein Accessoire für die Prinzessin oder den Ritter wählen. Die Ballauswahl zeigt jetzt den Ball, den man wählt, und nicht nur seinen Namen. Und der Drache bekam neue Flügel, weil er, in den Worten des Commits, „wie eine Kuh mit Messern“ aussah."
+        ],
+        img: ""
+      },
+      {
+        title: "Was nicht fertig ist",
+        paragraphs: [
+          "Die Torwartkorrektur und die neuen Kreaturen sind in den Entwicklungszweig gemergt und <strong>noch nicht veröffentlicht</strong>. Im Live-Spiel fliegt der Ball weiterhin durch den Torwart. Das ändert sich mit der nächsten Veröffentlichung, und ich sage das lieber, als diesen Artikel eine Version beschreiben zu lassen, die man noch nicht spielen kann.",
+          "Die Überarbeitung der Kreaturen hat noch keine zweite Testrunde gesehen. Ob der Greif jetzt wie ein Greif aussieht, ist eine Frage für dieselben kleinen Richter, nicht für mich."
+        ],
+        img: ""
+      }
+    ]
+  },
+  blogPost9: {
+    title: "Gemergt ist nicht deployt",
+    title2:
+      "Drei Wochen an Schoulbus: eine Website und eine App, die wie dasselbe Produkt aussehen müssen, Screenshots eines Designs, das es nicht mehr gab, und <strong>ein Merge, der nichts veröffentlicht hat</strong>.",
+    sections: [
+      {
+        title: "Zwei Repositorys, ein Produkt",
+        paragraphs: [
+          "Schoulbus besteht aus zwei Dingen. <em>schoulbus.lu</em> ist die Website, eine statische Seite in fünf Sprachen. <em>app.schoulbus.lu</em> ist die App selbst, mit der Familien den Schulbus verfolgen. Beide haben ihr eigenes Repository, ihren eigenen Build und ihr eigenes Deployment, aber für die Nutzer ist es ein Produkt, und so muss es auch aussehen.",
+          "Die meiste Arbeit zwischen dem 7. und dem 26. September fand an dieser Naht statt. Hier ist, was dort kaputtging, und die Fälle, in denen das Kaputte meine eigene Annahme war."
+        ],
+        img: ""
+      },
+      {
+        title: "Eine Palette, von einem Skript kopiert",
+        paragraphs: [
+          "Die App hat ein Designsystem: Farben, Radien, eine Typografieskala, alles als Tokens deklariert. Die Website hatte ihre eigene Kopie, von Hand geschrieben und schon am Auseinanderdriften.",
+          "Jetzt kopiert ein Skript die Tokens der App in die Website (<em>jetons:reprendre</em>), und ein zweiter Modus prüft, dass sie noch übereinstimmen (<em>jetons:verifier</em>). Die Prüfung gehört zum Prüfbefehl der Website: Eine Paletten-Änderung in der App, die die Website nicht erreicht hat, stoppt den Build.",
+          "Einmal meldete die Prüfung, die Tokens wichen ab, obwohl sie es nicht taten. Meine lokale Kopie des <em>main</em>-Zweigs der App war veraltet, und ich verglich mit einer alten Palette. Die Prüfung hat nur recht, wenn sie mit <strong>origin/main</strong> vergleicht, dem veröffentlichten Stand, und genau das tut sie jetzt."
+        ],
+        img: ""
+      },
+      {
+        title: "Screenshots einer App, die es nicht mehr gab",
+        paragraphs: [
+          "Die Website illustriert jede Funktion mit einem Screenshot der App, einer pro Funktion. Sie wurden automatisch erzeugt, was verlässlich wirkte. Tatsächlich stammten sie aus einer Version der App <strong>vor dem Designsystem</strong>. Jedes Bild war scharf, gut zugeschnitten und veraltet.",
+          "Beim Neuerzeugen zeigte sich ein zweites Problem: Zwei Durchläufe ergaben nicht dasselbe Bild. Vier der zehn Wochenansichten kamen jedes Mal anders heraus. Die Karte platziert ihre Kacheln und Markierungen mit CSS-Transformationen, die kein DOM-Beobachter sieht, also wirkte die Seite stabil, bevor die Karte es war.",
+          "Stabil sein muss das Bild, nicht das DOM. Die Regel lautet jetzt, dass ein Bild nur behalten wird, wenn <strong>zwei Aufnahmen identisch sind</strong>. Die simulierte Uhr steht fest auf einem bestimmten Dienstagmorgen, und die Kartenkacheln kommen aus lokalen Fixtures. Ein Bild, das sich zwischen zwei Durchläufen ändert, ist kein Screenshot; es ist eine Stichprobe."
+        ],
+        img: ""
+      },
+      {
+        title: "Fünf Sprachen, von Agenten geprüft",
+        paragraphs: [
+          "Die Website gibt es auf Luxemburgisch, Französisch, Deutsch, Portugiesisch und Englisch, passend zu den Familien, die den Bus wirklich nutzen. Einige dieser Sprachen spreche ich fließend, andere nicht.",
+          "Jede Sprache wurde von einem Agenten geprüft, der als Muttersprachler lesen und für jede Korrektur eine Quelle nennen sollte. Daraus kamen <strong>33 belegte Korrekturen</strong> auf Luxemburgisch, Portugiesisch, Englisch und Deutsch. Die Entscheidung, die ich festgehalten habe, ist, dass diese Prüfung als Prüfung zählt. Was sie nicht ersetzt, steht ebenfalls dort: ein Elternteil, das die Seite auf dem Handy liest und mir sagt, was falsch klingt."
+        ],
+        img: ""
+      },
+      {
+        title: "Fünfzig Kilobyte für eine Hydration",
+        paragraphs: [
+          "Die Website ist fast vollständig statisch. Trotzdem lieferte sie React aus, um ihre wenigen interaktiven Elemente zu hydratisieren.",
+          "React durch <em>preact/compat</em> zu ersetzen, brachte das JavaScript von <strong>70,8 KB auf 20,6 KB</strong>. Das Risiko eines solchen Tauschs ist eine Seite, die erscheint und dann still nicht mehr reagiert; eine Playwright-Prüfung bestätigt deshalb, dass die Hydration wirklich stattfindet, indem sie etwas anklickt und es reagieren sieht. In derselben Woche flog auch eine Animationsbibliothek raus, weil die einzige Bewegung, die sie animierte, in ein paar Zeilen CSS passt."
+        ],
+        img: ""
+      },
+      {
+        title: "Gemergt ist nicht deployt",
+        paragraphs: [
+          "Pull Requests wurden in <em>main</em> gemergt, die CI war grün, und die Container lieferten weiter den vorherigen Build aus.",
+          "Es war eine Einstellung. Automatisches Deployment war auf der Hosting-Plattform für diese App <strong>ausgeschaltet</strong>. Ein Merge war ein Merge und nicht mehr. Die Dokumentation des Repositorys sagte das Gegenteil, und sie lag falsch.",
+          "Die Korrektur war ein Klick. Die Lehre steht jetzt im Repository: <em>gemergt</em> und <em>deployt</em> sind zwei verschiedene Aussagen, und nur eine lässt sich durch einen Blick auf die Seite prüfen. Eine Veröffentlichung wird auf der Live-Seite bestätigt, nicht im CI-Status."
+        ],
+        img: ""
+      },
+      {
+        title: "Das noindex kam von mir",
+        paragraphs: [
+          "Die Search Console meldete <em>app.schoulbus.lu</em> als von der Suche ausgeschlossen, mit einem <em>noindex</em>. Nichts außerhalb der App war schuld: Sie war schlicht nie für Suchmaschinen geöffnet worden und hatte weder <em>robots.txt</em> noch Sitemap.",
+          "Ein kleines Vite-Plugin schreibt jetzt beide beim Build, und die App ist für Suchmaschinen geöffnet."
+        ],
+        img: ""
+      },
+      {
+        title: "Was sonst noch geschah",
+        paragraphs: [
+          "Das Mail-Relay des Kontaktformulars weigerte sich zu senden, weil die Absenderadresse nicht zu der Domain passte, für die das Relay senden darf. Der Dienst sendet jetzt von der authentifizierten Domain, behält die Adresse des Besuchers als <em>Reply-To</em> und startet nicht, wenn die beiden nicht zusammenpassen, damit der Fehler nicht ein zweites Mal still durchrutscht.",
+          "Die Google-Kalender-Synchronisation ist live gegangen. Sie nutzt OAuth mit PKCE im Browser und den engsten Scope, der funktioniert, <em>calendar.app.created</em>: Die App sieht nur den Kalender, den sie selbst anlegt, nie den übrigen Kalender eines Elternteils.",
+          "Ein Release wurde von der CI wegen Abhängigkeitswarnungen blockiert, was genau die Aufgabe dieses Tors ist. Und dreißig Remote-Zweige sind auf zwei geschrumpft."
+        ],
+        img: ""
+      },
+      {
+        title: "Was nicht fertig ist",
+        paragraphs: [
+          "Die Sprachprüfung stammt von Agenten. Sie ist belegt und sorgfältig, aber sie ist kein Elternteil, und ob das Luxemburgisch natürlich klingt, weiß ich erst, wenn ein Elternteil es mir sagt.",
+          "Und die noindex-Korrektur ist neu. Die Search Console lässt sich Zeit, und ich werde nicht behaupten, dass die App indexiert ist, bevor sie es sagt."
+        ],
+        img: ""
+      }
+    ]
+  },
+  blogPost8: {
+    title: "Ein Prompt, 931 Commits",
+    title2:
+      "Drei Wochen Bau eines Marktplatzes mit einer Agentenschleife, die <strong>nichts glaubt, was sie selbst geschrieben hat</strong> — auch an dem Tag, an dem die Schleife die falsche Priorität wählte.",
+    sections: [
+      {
+        title: "Worum es geht",
+        paragraphs: [
+          "Seit Mitte September baue ich einen Marktplatz für Fotografen. Er ist nicht gestartet, und ich nenne ihn hier nicht. Es ist ein Monorepo mit einer Next.js-Website, einer Expo-App, einer NestJS-API, Prisma auf PostgreSQL mit PostGIS und Stripe Connect für Zahlungen.",
+          "Die Zahlen von drei Wochen: <strong>931 Commits</strong>, 266 Pull Requests, 315 Issues, rund 245.000 hinzugefügte Zeilen, in 19 Arbeitssitzungen. Die meisten dieser Zeilen habe ich nicht getippt. Dieser Artikel handelt von der Schleife, die es getan hat, und vor allem davon, was sie ehrlich hält."
+        ],
+        img: ""
+      },
+      {
+        title: "Die Schleife",
+        paragraphs: [
+          "Jede Sitzung beginnt mit demselben kurzen Prompt. Er beschreibt keine Funktion. Er beschreibt ein Verfahren: die Wiederaufnahmedatei lesen, sie mit dem Repository abgleichen und das Nächste in fester Reihenfolge wählen. Eine <strong>rote CI kommt zuerst</strong>, dann ein offener Pull Request, dann die nächste Funktion im Plan.",
+          "Die Wiederaufnahmedatei gilt als <em>eine Behauptung, nicht als Wahrheit</em>. Eine Sitzung, die mitten im Schreiben abbricht, hinterlässt sie veraltet; jede neue Sitzung gleicht sie deshalb mit dem Git-Log, dem Zustand der Zweige und den offenen Pull Requests ab, bevor sie ihr ein Wort glaubt. Diese eine Regel lässt die Arbeit Abstürze, Kontext-Resets und Nutzungsgrenzen überstehen, ohne dass ich den Zustand von Hand rekonstruiere.",
+          "Jede Funktion durchläuft dann eine feste Kette von Agenten. Der Implementierer schreibt sie. Ein Testschreiber deckt sie ab. Ein Prüfläufer startet Lint, Typen, Tests und Abdeckung und meldet die tatsächliche Ausgabe. Dann lesen ein Code-Reviewer und ein Sicherheits-Reviewer jeweils den Diff. Es gibt insgesamt vierzehn Agenten, jeder mit einer einzigen engen Aufgabe, und keiner ist ein Allzweckhelfer."
+        ],
+        img: ""
+      },
+      {
+        title: "Reviewer, die echte Dinge fanden",
+        paragraphs: [
+          "Die Regel für Reviews ist streng: <strong>Nur Blocker werden in der Funktion behoben</strong>. Alles andere wird ein Issue, markiert für eine spätere Phase, damit ein Review nie zu einer endlosen Neufassung wird.",
+          "Die Blocker waren echt. Die mobile App schickte einen Standard-<em>Origin</em>-Header, den der WebSocket-Handshake zu Recht ablehnte: Der mobile Chat hätte sich nie verbunden. Hochgeladene Fotos behielten ihre <strong>EXIF-Daten, GPS eingeschlossen</strong>, sofern sie nicht verkleinert wurden; jetzt wird jedes Bild neu kodiert. Ein doppeltes Tippen auf eine Angebotsschaltfläche konnte zwei Buchungen anlegen. Die Anmeldung konnte ein doppeltes Profil erzeugen.",
+          "Keiner dieser Fälle hätte einen Test des Implementierers fehlschlagen lassen, weil der Implementierer nicht an sie gedacht hatte. Genau dafür gibt es einen zweiten Leser mit einem anderen Prompt."
+        ],
+        img: ""
+      },
+      {
+        title: "Der Tag, an dem die Schleife falsch lag",
+        paragraphs: [
+          "Auf halber Strecke hatten die Reviews einen Rückstand von 26 nicht blockierenden Issues erzeugt. Die Schleife tat, was ihre Regeln sagten, und arbeitete sie ab: ein ganzer Tag Aufräumen, ordentlich erledigt, und <strong>nichts Sichtbares</strong> auf der Vorschauseite. Die Leute, die sie testeten, hatten nichts Neues auszuprobieren.",
+          "Daraus wurde eine festgehaltene Entscheidung, Nummer 28 von 29: Funktionen zuerst. Der Aufräumrückstand wird auf die nächste Phase verschoben, und Reviews beheben nur Blocker. Die Schleife war nicht kaputt. Sie optimierte treu das Falsche, und nur ein Mensch, der auf die Vorschau schaute, konnte das sehen."
+        ],
+        img: ""
+      },
+      {
+        title: "Die Arbeit ist ungleich verteilt",
+        paragraphs: [
+          "Drei Tage machen mehr als die Hälfte der Commits aus: 150 am 17. September, 230 am 18. und 143 am 25. Das sind die Tage, an denen eine Sitzung stundenlang mit einem klaren Plan vor sich lief. Andere Tage brachten nur zehn Commits, weil sie mit einer Frage verbracht wurden, die nur ich beantworten konnte.",
+          "Die Commit-Trailer zeigen, welches Modell was geschrieben hat. Rund 490 Commits stammen von den größeren Modellen und rund 125 von den kleineren, die für begrenzte Implementierung und das Schreiben von Tests eingesetzt wurden, während die größeren Design, Debugging und Review übernahmen. Ein Modell nach der Aufgabe zu wählen und nicht aus Gewohnheit, steht in jeder Agentendatei, mit Begründung."
+        ],
+        img: ""
+      },
+      {
+        title: "Was eine Schleife nicht entscheiden kann",
+        paragraphs: [
+          "Die offenen Fragen sind kein Code. Ob die Provision von 5 % die richtige ist, zum Beispiel: Eine Analyse zeigte, dass sie nach den Stripe-Gebühren nur <strong>3,3 bis 3,5 %</strong> einbringt, weil die Plattform die Zahlungsabwicklung aus ihrem eigenen Anteil trägt. Das ist eine Geschäftsentscheidung, und kein Agent sollte sie treffen.",
+          "Die Schleife geht damit um, indem sie anhält. Alles, was meine Meinung braucht, kommt auf eine kurze Liste in der Wiederaufnahmedatei, und die Schleife macht mit dem weiter, was nicht davon abhängt. An den meisten Tagen war das Nützlichste, was ich für das Projekt getan habe, eine Zeile dieser Liste zu beantworten."
+        ],
+        img: ""
+      },
+      {
+        title: "Was nicht fertig ist",
+        paragraphs: [
+          "Es wurde noch nichts abgerechnet. Das Release auf den Hauptzweig wartet auf Stripe-Testschlüssel, die nur ich anlegen kann. 243 Issues sind noch offen, die meisten bewusst zurückgestellt.",
+          "Und die Zahl im Titel ist kein Maß für Qualität. 931 Commits sagen, dass die Schleife läuft. Ob sie das Richtige gebaut hat, wird der erste Fotograf sagen, der sie benutzt."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost7: {
     title: "Die Sprache gehört in die Adresse",
     title2:

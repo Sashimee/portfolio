@@ -166,6 +166,212 @@ export default {
     cta: "Construisons quelque chose de plus léger",
     top: "Haut de page"
   },
+  blogPost10: {
+    title: "Le test passait, et le ballon traversait le gardien",
+    title2:
+      "Suite du jeu de football pour enfants : trois bugs que <strong>seul un écran pouvait montrer</strong>, et un qu’un test a su tenir une fois compris.",
+    sections: [
+      {
+        title: "Un mois après le lancement",
+        paragraphs: [
+          "Royaume Foot, le jeu de football en 3D que j’ai construit pour les enfants, a connu un mois de vraies parties depuis le dernier article. Dans ce mois : 35 commits, des tests unitaires passés de 144 à 173, une suite de bout en bout restée à 17 sur 17, et un bundle de 338 Ko compressé.",
+          "Aucun de ces chiffres n’a trouvé les bugs qui comptaient. Ce sont les enfants qui les ont trouvés, ou une tablette, ou moi en regardant un ralenti image par image. Cet article parle de la distance entre une suite verte et un jeu qui a l’air juste."
+        ],
+        img: ""
+      },
+      {
+        title: "Le ballon qui se téléportait",
+        paragraphs: [
+          "En mode gardien, le ballon sautait parfois. Il quittait le pied, volait un instant, puis réapparaissait plus loin sur sa trajectoire.",
+          "La cause était une horloge. Le vol du ballon se calculait depuis le temps écoulé dans la <em>phase</em> de jeu en cours, et certains changements de phase remettaient ce compteur à zéro en plein tir. Le ballon ne savait pas qu’une phase avait changé. Il apprenait seulement que moins de temps s’était écoulé qu’un instant plus tôt, et se dessinait là où ce temps-là le plaçait.",
+          "La correction donne au ballon sa propre horloge, que rien d’autre ne remet à zéro. Le test qui l’accompagne ne vérifie pas une position. Il vérifie un <strong>invariant</strong> : quoi qu’il arrive autour de lui, le temps de vol du ballon ne recule jamais. Ce test aurait attrapé le bug dès le premier jour, et je n’ai su l’écrire qu’après avoir vu le saut."
+        ],
+        img: ""
+      },
+      {
+        title: "À travers le gardien",
+        paragraphs: [
+          "Le pire était un arrêt qui ressemblait à un but. Le gardien atteignait le ballon, le jeu comptait un arrêt, et le ballon continuait <em>à travers</em> lui jusque dans le filet avant de rebondir dehors.",
+          "Les règles étaient justes. Un tir est arrêté ou non selon l’endroit où le ballon franchit la ligne de but, et le gardien se tient <strong>0,55 unité devant cette ligne</strong>. Le rebond partait du point de franchissement, qui est derrière ses mains et donc déjà dans le but. Pendant quelques images, chaque arrêt jouait un but.",
+          "La correction tient en une fonction, <em>punchClear()</em>, qui fait partir le rebond du plan du gardien lui-même, là où sont vraiment ses mains. Cinq tests la tiennent. La suite d’origine est restée verte tout du long, parce qu’elle testait le verdict, et que le verdict n’a jamais été faux."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce qu’une tablette cache",
+        paragraphs: [
+          "En mode coupe, un bandeau annonce chaque étape du tournoi. Sur un grand écran, il se tenait au-dessus de l’action. Sur une tablette, l’écran qu’un enfant utilise vraiment, il couvrait le ballon.",
+          "Le bandeau est passé dans l’interface de jeu. La leçon est la même que d’habitude, et je ne cesse de la réapprendre : une mise en page vérifiée à une taille a été vérifiée à une taille. La même semaine, un second tir pouvait partir après qu’un arrêt avait déjà été compté ; une garde empêche désormais le ballon d’être envoyé deux fois."
+        ],
+        img: ""
+      },
+      {
+        title: "« Parfait, sauf l’oiseau et le flocon »",
+        paragraphs: [
+          "Le jeu compte trois nouvelles espèces de gardiens. Après une séance de test, le verdict est tombé : <em>« Parfait, sauf l’oiseau et le flocon qui ne ressemblent pas du tout. »</em> Deux sur trois, le griffon et le yéti, ne se lisaient pas comme ce qu’ils devaient être.",
+          "C’est le genre de retour qu’aucun test ne produit. Un agent dédié, le sculpteur de créatures, a redessiné les deux à partir de formes primitives, avec une seule règle : chaque créature doit être <strong>nommable à la distance où on la voit dans le jeu</strong>, pas en gros plan.",
+          "Deux fonctions plus petites sont sorties de la même séance. Les enfants peuvent désormais choisir un accessoire pour la princesse ou le chevalier. Le sélecteur de ballon montre maintenant le ballon qu’on choisit, et plus seulement son nom. Et le dragon a vu ses ailes refaites, parce que, selon les mots du commit, il se lisait « comme une vache avec des couteaux »."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce qui n’est pas fait",
+        paragraphs: [
+          "La correction du gardien et les nouvelles créatures sont fusionnées dans la branche de développement et <strong>pas encore publiées</strong>. Le jeu en ligne a toujours le ballon qui traverse le gardien. Cela changera à la prochaine publication, et je préfère le dire plutôt que de laisser cet article décrire une version à laquelle on ne peut pas encore jouer.",
+          "La refonte des créatures n’est pas passée par une seconde séance de test. Savoir si le griffon se lit enfin comme un griffon est une question pour les mêmes petits juges, pas pour moi."
+        ],
+        img: ""
+      }
+    ]
+  },
+  blogPost9: {
+    title: "Fusionné n’est pas déployé",
+    title2:
+      "Trois semaines sur Schoulbus : une vitrine et une application qui doivent ressembler au même produit, des captures d’un design qui n’existait plus, et <strong>une fusion qui n’a rien publié</strong>.",
+    sections: [
+      {
+        title: "Deux dépôts, un produit",
+        paragraphs: [
+          "Schoulbus, ce sont deux choses. <em>schoulbus.lu</em> est la vitrine, un site statique en cinq langues. <em>app.schoulbus.lu</em> est l’application elle-même, avec laquelle les familles suivent le bus scolaire. Chacun a son dépôt, sa construction et son déploiement, mais pour qui s’en sert, c’est un seul produit, et il doit en avoir l’air.",
+          "L’essentiel du travail entre le 7 et le 26 septembre s’est fait sur cette couture. Voici ce qui y a cassé, et les cas où ce qui a cassé, c’était ma propre hypothèse."
+        ],
+        img: ""
+      },
+      {
+        title: "Une palette, recopiée par un script",
+        paragraphs: [
+          "L’application a une charte graphique : couleurs, rayons, échelle typographique, tous déclarés en jetons. La vitrine avait sa propre copie, écrite à la main et qui dérivait déjà.",
+          "Désormais, un script recopie les jetons de l’application vers la vitrine (<em>jetons:reprendre</em>), et un second mode vérifie qu’ils correspondent toujours (<em>jetons:verifier</em>). La vérification fait partie de la commande de contrôle de la vitrine : un changement de palette dans l’application qui n’a pas atteint la vitrine arrête la construction.",
+          "Un jour, la vérification a signalé que les jetons divergeaient alors que ce n’était pas le cas. Ma copie locale de la branche <em>main</em> de l’application était périmée : je comparais avec une ancienne palette. La vérification n’a raison que si elle compare avec <strong>origin/main</strong>, l’état publié, et c’est ce qu’elle fait maintenant."
+        ],
+        img: ""
+      },
+      {
+        title: "Des captures d’une application qui n’existait plus",
+        paragraphs: [
+          "La vitrine illustre chaque fonction par une capture de l’application, une par fonction. Elles étaient générées automatiquement, ce qui paraissait fiable. Elles venaient en réalité d’une version de l’application <strong>antérieure à la charte graphique</strong>. Chaque image était nette, bien cadrée, et périmée.",
+          "Les régénérer a révélé un second problème : deux passes ne donnaient pas la même image. Quatre des dix vues de la semaine sortaient différentes à chaque fois. La carte place ses tuiles et ses repères par des transformations CSS, qu’aucun observateur du DOM ne voit : la page semblait stable avant que la carte le soit.",
+          "Ce qui doit être stable, c’est l’image, pas le DOM. La règle est désormais qu’une image n’est gardée que si <strong>deux prises sont identiques</strong>. L’horloge simulée est figée sur un mardi matin fixe, et les tuiles de la carte viennent de fixtures locales. Une image qui change entre deux passes n’est pas une capture ; c’est un échantillon."
+        ],
+        img: ""
+      },
+      {
+        title: "Cinq langues, relues par des agents",
+        paragraphs: [
+          "La vitrine est en luxembourgeois, en français, en allemand, en portugais et en anglais, ce qui correspond aux familles qui prennent vraiment le bus. Je parle couramment certaines de ces langues, pas les autres.",
+          "Chaque langue a été relue par un agent chargé de lire en locuteur natif et de citer une source pour chaque correction. Il en est sorti <strong>33 corrections sourcées</strong>, en luxembourgeois, en portugais, en anglais et en allemand. La décision que j’ai consignée est que cette relecture compte comme une relecture. Ce qu’elle ne remplace pas est écrit aussi : un parent qui lit la page sur son téléphone et me dit ce qui sonne faux."
+        ],
+        img: ""
+      },
+      {
+        title: "Cinquante kilo-octets pour une hydratation",
+        paragraphs: [
+          "La vitrine est presque entièrement statique. Elle embarquait pourtant React pour hydrater ses quelques éléments interactifs.",
+          "Remplacer React par <em>preact/compat</em> a fait passer le JavaScript de <strong>70,8 Ko à 20,6 Ko</strong>. Le risque d’un tel échange est une page qui s’affiche puis cesse discrètement de répondre ; une vérification Playwright confirme donc que l’hydratation a bien lieu, en cliquant sur quelque chose et en le voyant répondre. La même semaine, une bibliothèque d’animation est partie aussi, parce que le seul geste qu’elle animait tient en quelques lignes de CSS."
+        ],
+        img: ""
+      },
+      {
+        title: "Fusionné n’est pas déployé",
+        paragraphs: [
+          "Des pull requests étaient fusionnées dans <em>main</em>, la CI était verte, et les conteneurs continuaient de servir la construction précédente.",
+          "C’était un réglage. Le déploiement automatique était <strong>désactivé</strong> sur la plateforme d’hébergement pour cette application. Une fusion était une fusion, rien de plus. La documentation du dépôt disait le contraire, et elle avait tort.",
+          "La correction a tenu en un clic. La leçon est désormais écrite dans le dépôt : <em>fusionné</em> et <em>déployé</em> sont deux affirmations différentes, et une seule se vérifie en regardant le site. Une publication se confirme en regardant la page en ligne, pas l’état de la CI."
+        ],
+        img: ""
+      },
+      {
+        title: "Le noindex venait de moi",
+        paragraphs: [
+          "La Search Console signalait <em>app.schoulbus.lu</em> comme exclue de la recherche, avec un <em>noindex</em>. Rien d’extérieur à l’application n’était en cause : elle n’avait simplement jamais été ouverte aux moteurs de recherche, et n’avait ni <em>robots.txt</em> ni plan du site.",
+          "Un petit greffon Vite écrit désormais les deux à la construction, et l’application est ouverte aux moteurs."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce qui s’est passé aussi",
+        paragraphs: [
+          "Le relais de courriel du formulaire de contact refusait d’envoyer, parce que l’adresse d’expédition ne correspondait pas au domaine pour lequel le relais a le droit d’émettre. Le service envoie désormais depuis le domaine authentifié, garde l’adresse du visiteur en <em>Reply-To</em>, et refuse de démarrer si les deux ne sont pas alignés : l’erreur ne peut plus repartir en silence une seconde fois.",
+          "La synchronisation avec Google Agenda est passée en production. Elle utilise OAuth avec PKCE dans le navigateur, et la portée la plus étroite qui fasse l’affaire, <em>calendar.app.created</em> : l’application ne voit que l’agenda qu’elle crée, jamais le reste de l’agenda d’un parent.",
+          "Une publication a été bloquée par la CI à cause d’alertes sur des dépendances, ce qui est exactement le rôle de cette porte. Et trente branches distantes sont tombées à deux."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce qui n’est pas fait",
+        paragraphs: [
+          "La relecture des langues est faite par des agents. Elle est sourcée et soignée, mais ce n’est pas un parent, et je ne saurai si le luxembourgeois sonne naturel que lorsqu’un parent me le dira.",
+          "Et la correction du noindex est récente. La Search Console prend son temps, et je n’affirmerai pas que l’application est indexée avant qu’elle le dise."
+        ],
+        img: ""
+      }
+    ]
+  },
+  blogPost8: {
+    title: "Une consigne, 931 commits",
+    title2:
+      "Trois semaines à construire une place de marché avec une boucle d’agents qui <strong>ne se fie à rien de ce qu’elle a écrit elle-même</strong> — y compris le jour où la boucle a choisi la mauvaise priorité.",
+    sections: [
+      {
+        title: "De quoi il s’agit",
+        paragraphs: [
+          "Depuis la mi-septembre, je construis une place de marché pour photographes. Elle n’est pas lancée, et je ne la nomme pas ici. C’est un monorepo avec un site Next.js, une application mobile Expo, une API NestJS, Prisma sur PostgreSQL avec PostGIS, et Stripe Connect pour les paiements.",
+          "Les chiffres de trois semaines : <strong>931 commits</strong>, 266 pull requests, 315 tickets, environ 245 000 lignes ajoutées, en 19 sessions de travail. Je n’ai pas tapé la plupart de ces lignes. Cet article parle de la boucle qui l’a fait, et surtout de ce qui la garde honnête."
+        ],
+        img: ""
+      },
+      {
+        title: "La boucle",
+        paragraphs: [
+          "Chaque session part de la même consigne courte. Elle ne décrit pas une fonction. Elle décrit une procédure : lire le fichier de reprise, le confronter au dépôt, et choisir la prochaine chose à faire dans un ordre fixe. Une <strong>CI rouge passe d’abord</strong>, puis une pull request ouverte, puis la fonction suivante du plan.",
+          "Le fichier de reprise est traité comme <em>une affirmation, pas une vérité</em>. Une session coupée en pleine écriture le laisse périmé ; chaque nouvelle session le confronte donc au journal git, à l’état des branches et aux pull requests ouvertes avant d’en croire un mot. C’est cette seule règle qui permet au travail de survivre aux plantages, aux remises à zéro du contexte et aux limites d’usage sans que je reconstruise l’état à la main.",
+          "Chaque fonction passe ensuite par une chaîne fixe d’agents. L’implémenteur l’écrit. Un rédacteur de tests la couvre. Un exécutant de contrôles lance lint, types, tests et couverture, et rapporte la sortie réelle. Puis un relecteur de code et un relecteur de sécurité lisent chacun le diff. Il y a quatorze agents en tout, chacun avec une seule tâche étroite, et aucun n’est un assistant à tout faire."
+        ],
+        img: ""
+      },
+      {
+        title: "Des relecteurs qui ont trouvé de vraies choses",
+        paragraphs: [
+          "La règle des relectures est stricte : <strong>seuls les bloquants sont corrigés dans la fonction</strong>. Tout le reste devient un ticket, étiqueté pour une phase ultérieure, de sorte qu’une relecture ne tourne jamais en réécriture sans fin.",
+          "Les bloquants étaient réels. L’application mobile envoyait un en-tête <em>Origin</em> par défaut que la poignée de main WebSocket rejetait à juste titre : la messagerie mobile ne se serait jamais connectée. Les photos téléversées gardaient leurs <strong>données EXIF, GPS compris</strong>, sauf si elles étaient redimensionnées ; désormais, chaque image est réencodée. Un double appui sur un bouton de devis pouvait créer deux réservations. Se connecter pouvait créer un profil en double.",
+          "Aucun de ces cas n’aurait fait échouer un test écrit par l’implémenteur, parce que l’implémenteur n’y avait pas pensé. C’est tout l’intérêt d’un second lecteur avec une autre consigne."
+        ],
+        img: ""
+      },
+      {
+        title: "Le jour où la boucle avait tort",
+        paragraphs: [
+          "À mi-parcours, les relectures avaient produit un arriéré de 26 tickets non bloquants. La boucle a fait ce que disaient ses règles et les a traités : une journée entière de nettoyage, tout juste, et <strong>rien de visible</strong> sur le site de prévisualisation. Les personnes qui le testaient n’avaient rien de neuf à essayer.",
+          "C’est devenu une décision consignée, la 28<sup>e</sup> sur 29 : les fonctions d’abord. L’arriéré de nettoyage est remis à la phase suivante, et les relectures ne corrigent que les bloquants. La boucle n’était pas cassée. Elle optimisait fidèlement la mauvaise chose, et seule une personne regardant la prévisualisation pouvait le voir."
+        ],
+        img: ""
+      },
+      {
+        title: "Le travail est inégal",
+        paragraphs: [
+          "Trois jours pèsent plus de la moitié des commits : 150 le 17 septembre, 230 le 18, et 143 le 25. Ce sont les jours où une session a tourné des heures avec un plan clair devant elle. D’autres jours n’ont produit que dix commits, parce qu’ils ont été passés sur une question à laquelle moi seul pouvais répondre.",
+          "Les mentions en pied de commit indiquent quel modèle a écrit quoi. Environ 490 commits viennent des grands modèles et environ 125 des plus petits, employés pour l’implémentation cadrée et l’écriture de tests, les grands se chargeant de la conception, du débogage et de la relecture. Choisir un modèle selon la tâche, et non par habitude, est écrit dans chaque fichier d’agent, avec la raison."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce qu’une boucle ne peut pas décider",
+        paragraphs: [
+          "Les questions ouvertes ne sont pas du code. Savoir si la commission de 5 % est la bonne, par exemple : une analyse a montré qu’elle ne rapporte que <strong>3,3 à 3,5 % après les frais de Stripe</strong>, parce que la plateforme absorbe le traitement des paiements sur sa propre part. C’est une décision commerciale, et aucun agent ne devrait la prendre.",
+          "La boucle s’en accommode en s’arrêtant. Tout ce qui demande mon avis va dans une courte liste du fichier de reprise, et la boucle continue avec ce qui n’en dépend pas. La plupart des jours, la chose la plus utile que j’ai faite pour le projet a été de répondre à une ligne de cette liste."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce qui n’est pas fait",
+        paragraphs: [
+          "Rien n’a encore été encaissé. La publication sur la branche principale attend des clés de test Stripe, que moi seul peux créer. 243 tickets sont encore ouverts, la plupart mis de côté exprès.",
+          "Et le nombre du titre n’est pas une mesure de qualité. 931 commits disent que la boucle tourne. Savoir si elle a construit la bonne chose, c’est le premier photographe qui s’en servira qui le dira."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost7: {
     title: "La langue est dans l’adresse",
     title2:
