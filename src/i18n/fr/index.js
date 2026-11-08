@@ -166,6 +166,73 @@ export default {
     cta: "Construisons quelque chose de plus léger",
     top: "Haut de page"
   },
+  blogPost14: {
+    title: "Vingt et un agents, puis six",
+    title2:
+      "1 644 commits en trois semaines, un orchestrateur qui n’écrit pas de code, et une branche de production qui n’a toujours qu’un commit : celui du premier soir.",
+    sections: [
+      {
+        title: "Un seul commit sur main",
+        paragraphs: [
+          "Le dépôt d’Aquarium compte 1 644 commits, et sa branche <em>main</em> en a un seul : « chore: bootstrap pnpm monorepo skeleton », le 12 octobre à 22 h 39. Tout le reste attend sur <em>dev</em>, qui en porte 777, ou sur les branches des 776 <em>pull requests</em> fusionnées, puisque chaque fusion regroupe en un seul les commits d’une branche. Aquarium n’est donc pas en production. Le 8 novembre, l’adresse qui lui est réservée répond par une erreur 502, et ce qui tourne est une préproduction que je ne mets pas en lien.",
+          "Aquarium est un aquarium en 3D dans le navigateur : des bacs d’eau douce et de récif, des poissons qui nagent comme des poissons, et qui meurent si on les néglige. C’est un monorepo pnpm en TypeScript, avec three.js et son moteur WebGPU pour le rendu (WebGL2 en repli), React pour l’interface, Fastify et Postgres derrière. Au dernier commit de <em>dev</em>, le 3 novembre, cela fait 242 290 lignes de TypeScript, tests compris, en 1 019 fichiers, dont 487 de tests.",
+          "Les commits vont du 12 octobre au 3 novembre. Ça fait trois semaines au calendrier, mais onze jours de travail seulement : rien les 17 et 18 octobre, deux commits le 20, puis plus rien du 24 octobre au 2 novembre. Le jour le plus chargé, le 15 octobre, en a vu passer 386. J’écris pour ceux qui font tourner des agents de code sur leur propre machine et qui se demandent combien en lancer à la fois. Le 19 octobre, ma réponse a changé trois fois."
+        ],
+        img: ""
+      },
+      {
+        title: "L’orchestrateur n’écrit pas de code",
+        paragraphs: [
+          "La règle est là dès le premier commit, dans le fichier de consignes du dépôt, <em>CLAUDE.md</em> : la session principale est l’orchestrateur, elle n’écrit pas elle-même le code des fonctionnalités et le confie aux agents de <em>.claude/agents/</em>. Ils sont onze, chacun avec son domaine (le rendu, le comportement des poissons, le serveur, la chaîne des modèles 3D, les tests…), dont un relecteur, <em>code-reviewer</em>, sans l’accord duquel rien ne fusionne. Chaque agent travaille dans sa propre copie du dépôt, un <em>worktree</em> de git, et ouvre une <em>pull request</em> vers <em>dev</em>. L’orchestrateur la fusionne quand les vérifications sont vertes et que la relecture dit oui.",
+          "Ce que j’ai demandé, moi, tient dans une commande, <em>/loop</em>, suivie la première fois d’une phrase qui commence par <em>« Continue building the aquarium: follow the “Orchestration loop” in CLAUDE.md exactly »</em>. Le reste, ce sont des retours de joueur et des réponses aux questions de l’orchestrateur. Dans les transcriptions de ces trois semaines, que je suis seul à avoir, je compte un peu moins de cent messages tapés par moi, dont dix-huit pour demander si la page de suivi était à jour, sous diverses orthographes (le 15 octobre, je l’ai demandé à 6 h 23, à 6 h 48 et à 8 h 14).",
+          "La règle a tenu, avec deux réserves. Le seul commit de <em>main</em>, le squelette du projet, est arrivé une minute après le lancement de la boucle, avec 38 fichiers et 2 604 lignes ; la consigne autorisait l’orchestrateur à le poser lui-même, et je pense qu’il avait été préparé par la session de planification du même soir, mais je ne l’ai pas vérifié. Ensuite, il ne code pas, mais il fusionne, et une fusion peut casser. Le 19 octobre à 19 h 34, dans la liste de ce qui ralentissait le projet, il a placé en quatrième position <em>« My own slip »</em> : sa fusion du n° 741, qui avait fait échouer un fragment des tests de bout en bout sur <em>dev</em>.",
+          "Les commits disent à peu près qui a écrit quoi. Sur les 1 644, 1 391 portent la mention de co-auteur d’un modèle Claude : 801 citent Opus, 626 Sonnet, et 36 les deux. Les 253 autres n’en portent aucune : 190 sont des commits de fusion, 52 des fusions faites sur GitHub dont le message n’a pas repris la mention, et 11 des commits ordinaires (des captures d’écran, des « wip »). Je ne me souviens d’aucun commit fait à la main, et git ne peut ni le confirmer ni le démentir, puisque les 1 644 sont signés de mon nom."
+        ],
+        img: ""
+      },
+      {
+        title: "Quatorze minutes sans plafond",
+        paragraphs: [
+          "Jusqu’au 19 octobre, les consignes fixaient six agents à la fois par défaut, relecteurs compris, et davantage quand les tâches étaient indépendantes, ce que j’avais autorisé le 14. Ce matin-là, à 9 h 28, dans une session ouverte pour faire le point, j’ai écrit : <em>« remove the maximum agents limit »</em>. Je n’ai pas donné de raison, et je n’en retrouve aucune dans la transcription. La <em>pull request</em> qui retire le plafond des consignes, n° 689, est fusionnée à 9 h 39.",
+          "Entre-temps, une nouvelle session avait repris la boucle, à 9 h 30. Elle a trouvé une machine où plus aucun agent ne tournait, et treize worktrees où les agents de la session précédente avaient laissé du travail non poussé. À 9 h 36, elle annonce : <em>« The loop is running again with 21 background agents »</em>. Ce chiffre de vingt et un est le sien, je ne l’ai pas recompté.",
+          "À 9 h 42, j’ai écrit <em>« pl limit the agents to 6 again this is a bit too much »</em>. Quelques secondes plus tard, l’orchestrateur a relevé l’état de la machine, et sa sortie est restée dans la transcription : une charge moyenne de 110,07 sur la dernière minute (67,23 sur cinq minutes, 30,61 sur quinze), 30 Go de mémoire utilisés sur 31, et 1 Go disponible. Une charge de 110, c’est en gros cent dix processus qui tournent ou attendent un processeur ou le disque.",
+          "Je ne sais plus ce qui m’a fait écrire ce message, si la machine ramait ou si c’était seulement le chiffre de vingt et un. Le relevé est venu après ma demande, pas avant. À 9 h 45, la charge était retombée à 22,85, avec 13 Go disponibles, et la règle des six agents est revenue dans les consignes à 9 h 49 (n° 693), cette fois sans exception. De mon premier message au second, le plafond aura été levé pendant quatorze minutes.",
+          "L’orchestrateur s’est laissé une note dans la mémoire du projet, avec la cause telle qu’il la comprend : chaque agent fait tourner pnpm, vitest, Playwright et Postgres dans son propre worktree, et une vingtaine à la fois affament une machine qui sert aussi à d’autres projets. Je n’ai pas mesuré la part de chacun."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce que les agents se partagent",
+        paragraphs: [
+          "La mémoire vive n’était pas la seule chose qu’ils se partageaient. Le 13 octobre vers 3 h 20, le disque avait déjà atteint 100 %, et l’orchestrateur en a noté la cause dans son fichier de reprise, hors du dépôt : soixante volumes Postgres anonymes, créés le jour même par les tests des agents et jamais supprimés. Il les a effacés, ce qui a rendu 5,6 Go, et il a demandé aux agents de lancer leurs bases jetables avec <em>docker run --rm</em>, données en mémoire. Le 19 au soir, le disque était de nouveau plein, cette fois avec 107 worktrees qui pesaient 9,7 Go à eux seuls, d’après le résumé de la session.",
+          "Le même 19 octobre, un relecteur a lancé un <em>rm -rf</em> sur les fichiers <em>.md</em> et <em>.log</em> à la racine du dossier de brouillon que partagent les agents d’une session, et il a effacé les journaux des autres, avec leurs brouillons de relecture et de <em>pull request</em>. Un autre agent a lancé, le même jour, un <em>pkill -f</em> sur les tests Playwright, qui pouvait arrêter ceux de ses voisins. À 17 h 16, j’ai demandé, avec moins de tact que d’habitude : <em>« Why in the world would that dumbass do this ? »</em>",
+          "Pour être juste envers lui, rien dans les définitions des agents ne disait que ce dossier était commun, et le ticket n° 750, ouvert à 17 h 19, le constate. La correction, n° 751, fusionnée à 18 h 13, ajoute aux onze définitions une section <em>« Shared machine »</em> : chaque agent garde ses fichiers temporaires dans son propre sous-dossier, n’efface que les chemins exacts qu’il a créés, et n’arrête que les processus qu’il a lancés, par leur numéro, jamais par motif. Les consignes communes à tous mes projets en contiennent aujourd’hui de très proches."
+        ],
+        img: ""
+      },
+      {
+        title: "Huit agents, et Playwright une fois à la fin",
+        paragraphs: [
+          "Le soir du 19, à 19 h 34, l’orchestrateur m’a expliqué pourquoi tout allait lentement, en commençant par la cause la plus lourde : les tests de bout en bout tournent sous Playwright sur les machines gratuites de GitHub, qui n’ont pas de carte graphique et rendent chaque scène en logiciel. Il comptait 30 à 50 minutes par passe, et une seule passe verte sur les huit dernières de <em>dev</em>.",
+          "Il proposait quatre remèdes, et j’ai répondu à 19 h 36 : <em>« Do 1, 3 and 4 »</em>. Le premier mettait en quarantaine un test de photo qui bloquait cinq <em>pull requests</em> approuvées, le troisième regroupait les tests de bout en bout par lots, et le quatrième remontait le plafond à huit agents, à condition qu’ils laissent Playwright à la CI. Le deuxième, des machines de CI plus rapides, avait un coût. Huit, c’est ce que disent encore les consignes aujourd’hui.",
+          "À 21 h 23, je suis allé plus loin : tout développer d’abord, et Playwright une seule fois à la fin, <em>« since playwright is what takes the most time »</em>. La <em>pull request</em> n° 794, fusionnée à 22 h 24, ne lance plus ces tests que sur demande. Sur chaque <em>pull request</em>, il restait le contrôle des types, le lint, les tests unitaires et la construction de l’image Docker.",
+          "Le 22 octobre à 6 h 57, j’ai ouvert la préproduction et écrit : <em>« the site looks broken, no loading screen and no menu »</em>. Une boîte de dialogue, <em>TrimDialog</em>, levait une erreur au chargement quand aucune partie n’était encore chargée, et l’erreur démontait toute l’interface. Les vérifications étaient vertes, parce qu’aucune n’ouvrait la page. Le ticket est ouvert à 6 h 59 (n° 1002), le correctif fusionné à 7 h 11 (n° 1003), et à 7 h 41 un test de fumée entre dans la CI (n° 1015) : un Chromium sans écran charge l’application sans compte, puis avec un compte jetable, et échoue à la première erreur dans la console. Le ticket qui l’avait demandé (n° 1005) visait une trentaine de secondes après la construction, et deux minutes au plus ; le 3 novembre, cette étape a pris 1 minute et 48 secondes. Je ne sais pas si les tests de bout en bout auraient attrapé ce plantage, puisqu’ils ne tournaient plus.",
+          "Ces tests à la demande ont été lancés douze fois. Les onze premières passes ont échoué, dont neuf d’affilée le 23 octobre, sur la même branche, et la douzième, le 3 novembre de 5 h 22 à 5 h 47, a vu ses 29 fragments passer au vert."
+        ],
+        img: ""
+      },
+      {
+        title: "Des poissons qui faisaient une crise cardiaque",
+        paragraphs: [
+          "Le 16 octobre à 1 h 31, j’ai demandé de construire les extras du plan et, dans la même phrase, d’arrêter les poissons qui montaient et descendaient en nageant : <em>« they look like they have a heartattack man »</em>. L’orchestrateur a ouvert le ticket une minute plus tard (n° 604), en reprenant ma comparaison dans son titre : « looks like a heart attack ». Il exigeait une mesure avant toute correction, un test de non-régression, et une séquence d’images avant et après.",
+          "L’agent du comportement des poissons a ouvert sa <em>pull request</em>, n° 670, à 2 h 23, fusionnée à 2 h 56. Il a commencé par mesurer, sur quatre graines de simulation et trente secondes de nage : les néons hochaient de 6,2 % de leur longueur en moyenne quadratique, avec des pointes à 44 %, à peu près une fois par seconde, au rythme de leurs coups de queue. Il a trouvé trois causes, toutes dans la simulation : l’assiette, c’est-à-dire l’inclinaison du poisson vers le haut ou le bas, suivait le réglage des virages, si bien que chaque coup de queue la jetait sur sa cible. Cette cible venait d’un <em>atan2</em> qui basculait à ±30° dès que la part horizontale du mouvement voulu s’annulait, contre une vitre par exemple. Et dans un banc, les voisins se repoussaient autant à la verticale qu’à l’horizontale.",
+          "La correction donne à l’assiette son propre régulateur, limité à 60° par seconde, et aplatit l’espace personnel des poissons à la verticale, en s’appuyant sur une étude de 2025 sur l’empilement des bancs. Les néons passent de 6,23 à 2,86 % de leur longueur, les poissons-clowns de 2,49 à 1,03 %, et la vitesse d’assiette maximale des néons tombe de 101 à 45° par seconde. Le test ajouté échoue sur <em>dev</em> sans la correction et passe avec. Il manque la séquence d’images que le ticket demandait : le Chromium sans écran de la machine n’avait pas WebGPU, et la charge était à 33. L’agent l’écrit lui-même, comme il écrit pourquoi il a renoncé à retoucher l’alignement des bancs, qui les faisait éclater en petits groupes.",
+          "Je n’ai pas de trace d’avoir regardé les néons après coup, ni d’avoir dit que c’était réglé. Le journal des modifications de la deuxième version candidate a été fusionné le 3 novembre à 6 h 21 (n° 1635), et à 6 h 58 la boucle s’est arrêtée d’elle-même, comme le veut la consigne, pour attendre mon feu vert sur la fusion de <em>dev</em> dans <em>main</em>. Je ne l’ai pas encore donné. S’il ne fallait garder qu’une <em>pull request</em> d’agent de ces trois semaines, ce serait la n° 670 : son tableau avant et après, et le paragraphe où elle écarte sa propre première idée. Merci de m’avoir lu jusque-là."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost13: {
     title: "Deux jours sur un globe, puis un revert",
     title2:
