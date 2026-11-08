@@ -88,7 +88,7 @@ peuvent changer. Les articles cessent de partager le même squelette.
 - [x] `blogPost2` et `blogPost9` (Schoulbus).
 - [x] `blogPost3` (Aura).
 - [x] `blogPost5` (Royaume Foot).
-- [ ] `blogPost6` (Pic Collage Maker).
+- [x] `blogPost6` (Pic Collage Maker).
 - [ ] `blogPost8` (931 commits) — plus un post-scriptum : la boucle est allée jusqu'à
       1 142 commits, puis s'est arrêtée seule, faute de rien qui ne dépende pas de moi.
       Toujours sans nommer la marque.

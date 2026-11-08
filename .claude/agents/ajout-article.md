@@ -47,3 +47,11 @@ toucher dans `routes.js` ni dans les pages.
 fichiers touchés, et ce qu'il reste à ajouter à `docs/plan.md` : un lot, et l'extension
 de **R19** (allemand non relu par un natif) avec le nombre de sections ajoutées.
 Rappelle de lancer `seo-prerendu` et `i18n-parite`.
+
+## Processus
+
+Tu ne tues que ce que tu as lancé toi-même. Pour mesurer une page, garde le PID de ton
+navigateur et arrête celui-là ; avant tout `kill`, lis la ligne de commande et le
+répertoire du processus (`ps -o pid,ppid,args`, `readlink /proc/<pid>/cwd`). D'autres
+sessions font tourner Chromium, `vite` et `vitest` sur cette machine (CoinPosh,
+`.claude/worktrees/`) : un Chromium qui n'est pas le tien se laisse.
