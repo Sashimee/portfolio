@@ -163,6 +163,70 @@ export default {
     cta: "Let's build something lighter",
     top: "Back to top"
   },
+  blogPost11: {
+    title: "The agent told me the project had never been started",
+    title2:
+      "A student game rebuilt from scratch in one night, then 259 commits from 2020 found behind a pull request I had opened and never merged.",
+    sections: [
+      {
+        title: "Four students who supposedly stopped",
+        paragraphs: [
+          "According to the README written on the night of 1–2 September 2026, four students wrote a project brief in 2020, drew two screens on paper, opened the Tiled map editor, drew a map, and stopped there. I was one of the four, and I made this game as a pair with GoStephano, who wrote its JavaScript: the game’s Phaser scenes and objects. On the <em>dev</em> branch of the same repository, 259 commits from the team, signed by four authors and dated 23 April to 12 May 2020, tell a different story.",
+          "The game is called Dawa’s Rise. It is a tower defence, where you place towers to stop waves of monsters, with a hero you walk around the map yourself and a player ranking; you can play it at dawa.bas.lu. I picked it up again in September with coding agents, in 60 commits between 1 September at 23:01 and 12 September at 00:44, and this article is mostly about the first night. I am writing it for anyone who hands an old repository to an agent, branches and all."
+        ],
+        img: ""
+      },
+      {
+        title: "Six commits before two in the morning",
+        paragraphs: [
+          "Credit first where it is due. The first commit, at 23:01, sets up a Laravel 13 and Phaser 4 application around a single rule: the server decides the score. The browser gets a seed, sends back the list of what the player did, and the server replays the game. At 23:29, one simulator in JavaScript and another in PHP reproduce exactly the same ten-wave winning run, 21,538 simulation ticks long. At 01:20 come forty tests, one of which starts six processes against the same market listing to check that only one buyer wins and that no gold appears from nowhere.",
+          "At 01:45, the merge into <em>master</em> brings 186 files and 23,399 lines. The message of the very first commit explained why it started from nothing: the repository held a 2020 brief and no code, namely a .docx file, two biro sketches, a Tiled screenshot and a dead link to a task board.",
+          "On <em>master</em>, that was accurate. The last 2020 commit on that branch is dated 25 April and adds an image, the first drawing of the map. The code was on <em>dev</em>, behind pull request #2, titled “Dev”, which I had opened from my own account on 28 April 2020 and which nobody had merged. It had been sitting in the repository’s pull request list for more than six years.",
+          "There is no transcript of that session left on my machine, only the commits, and the night’s commits are signed with my name, without the agent credit that the morning’s carry. So I do not know what the agent looked at before reaching its conclusion, only what it wrote about it, and in what order."
+        ],
+        img: ""
+      },
+      {
+        title: "The admission, in the same minute as the merge",
+        paragraphs: [
+          "The last commit of the rebuild, at 01:45, is titled “docs: record that the 2020 game exists, and why this is a rebuild”. It opens with two sentences I quote verbatim: <em>“I reported that this project had never been started. That was wrong.”</em> It then describes the original game fairly accurately: Phaser, JWT authentication, tower upgrades, an admin panel, a cookie banner. The merge commit, naturally, carries the same minute.",
+          "It counts “around two hundred” commits. I find 259 on <em>dev</em>, from 23 April at 13:07 to 12 May at 02:36, and the last one is called “bugfixin’” (today’s README still says “around 200”; I have not looked into where the rounding comes from).",
+          "More to the point, the admission does not change the decision. The commit keeps the rebuild for two reasons, spelled out. The first is the stack: PHP 7.2 and Laravel 7 no longer get security fixes, every third-party package would be end-of-life, and the way forward would be seven major versions with no tests to show what breaks. The second is a method of the 2020 game, <em>addGame</em>, which stored the score exactly as the request sent it; according to the commit, no spot fix would be enough.",
+          "Later that morning, at 11:28, the merge is undone with a revert, and at 11:30 a commit brings the 2020 game back onto <em>master</em>, keeping the rebuild preserved on its own branch. Pull request #2 shows as merged at 11:33, a little over six years and four months after it was opened.",
+          "The first reason did not last until lunch. At 12:18 the port to PHP 8.4 and Laravel 13.30 is merged, and its message notes that the five packages the team chose in 2020 all still exist for Laravel 13: none was replaced, and from Laravel 7.8 to 13 there were only six major versions to cross, not the seven the night’s commit counted. The second reason was sound, and it gets a section of its own."
+        ],
+        img: ""
+      },
+      {
+        title: "The account to credit came from the request",
+        paragraphs: [
+          "In 2020 the method was three lines long. It created a game record with the user id, the level and the score read from the request body, then looked up that same user, again from the request body, and added the score divided by a hundred to their gold. The route only required an account with a verified address. Any registered player could therefore send whatever score they liked onto whatever account they liked, and make gold appear there.",
+          "The fix is from 10:54, before the revert even happened, and it adds 19 lines and removes 4. Identity now comes from the session, the request body is validated, and gold is computed by integer division. The message says how the flaw was confirmed: locally, from an ordinary account, by writing 999,999,999 points and 10,000,000 gold onto the admin account. Those ten million are MySQL’s rounding of 9,999,999.99, and integer division now credits the exact number the end-of-game screen shows the player.",
+          "The same message admits what it does not solve: the score itself still comes from the browser. A player could no longer credit someone else’s account, but could still award themselves any score they wanted. On that point the night’s agent had it right, and the protocol had to change."
+        ],
+        img: ""
+      },
+      {
+        title: "The game replayed, 2020 flaws included",
+        paragraphs: [
+          "That change came six days later, in two steps. On 7 September at 22:36, the combat logic leaves the Phaser scenes for a small core that no longer depends on Phaser, <em>src/sim</em>, which advances in fixed 50-millisecond ticks instead of following the frame rate. The 2020 gameplay flaws are carried over unchanged, and the commit lists them, from an off-by-one in picking the targeted enemy to a fire-tower splash radius that only applies at level 1. I think that was the right call: the replayed game has to be the one the player saw, flaws included.",
+          "On 8 September at 00:28, the browser sends each game with the time-stamped list of its commands (place a tower, upgrade it), and the server replays it in a PHP copy of the simulator, written line for line. It stores its own score. If the browser’s differs, the discrepancy is logged and only the recomputed score is kept; an impossible command log is rejected. As of 8 November, the PHP copy is the larger of the two, with 19 files and 1,935 lines, against 13 files and 1,215 lines for the JavaScript simulator, tests and test data excluded.",
+          "For both languages to land on the same numbers, a few functions had to go. The floating-point standard only guarantees identical rounding across languages for the four basic operations and the square root, and <em>atan2</em>, <em>sin</em>, <em>cos</em> and <em>pow</em> are not among them. Projectile homing therefore goes through a square root, and the monsters’ hit-point tables through repeated multiplication.",
+          "That was, more or less, the central idea of the first night’s rebuild, this time built on the four students’ code. Eleven items of a thirteen-item plan were then merged on 12 September between 00:37 and 00:44, in five pull requests, with among other things rate limits, a JWT token in front of the routes, a slimmed-down public list of games, achievements to unlock, and the hero the 2020 brief promised. The two remaining items do not touch the game.",
+          "Today, 8 November, around 16:00, I checked what can be seen from outside. The public list of games answers in JSON, with no user id and no command log, with a limit of 30 requests announced in its headers, and a protected route called without a token answers 401. That list holds two games. If you would like to give it a third, the game is at dawa.bas.lu, and your score will be the one the server recomputed."
+        ],
+        img: ""
+      },
+      {
+        title: "Line 35",
+        paragraphs: [
+          "The 01:45 admission also added a rule to the repository’s instruction file, <em>CLAUDE.md</em>: read the old code before proposing a feature, since the market, the ranking and the tower upgrades had been their ideas first. The morning’s revert took it away with the rest of the rebuild, and it now lives only on the rebuild’s branch. At 16:20, a rewrite of the file describes instead what the repository actually contains, and names the three refs that must never be deleted: the tag that freezes the 2020 game, the <em>dev</em> branch and the rebuild’s branch.",
+          "Rereading that file for this article, I found the first night’s mistake, in reverse. On line 35 it still states that the server-side replay simulator and its parity tests belong to the rebuild and do not exist in this repository. That was true on 2 September, when the sentence was written and referred to the rebuild’s simulator; it has been false since 8 September at 00:28, when the 2020 game got its own. On line 96, a section titled “The score is server-replayed, not client-supplied” explains how they work, and the <em>DAWA/app/Sim</em> folder holds its nineteen files. As of 8 November, both passages are still in the same file, on the same branch, sixty-one lines apart."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost10: {
     title: "The test passed, and the ball went through the goalkeeper",
     title2:
