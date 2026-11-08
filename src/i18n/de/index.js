@@ -360,78 +360,35 @@ export default {
   blogPost7: {
     title: "Die Sprache gehört in die Adresse",
     title2:
-      "Drei Sprachen, je eine Adresse, und was ein Crawler endlich zu sehen bekommt — dazu <strong>ein halbes Megabyte Icons</strong> für sieben Glyphen.",
+      "Bis zum 16. September hatten die französischen und deutschen Seiten dieser Website keine eigene Adresse, und eine Suchmaschine sah nur Englisch.",
     sections: [
       {
-        title: "Drei Sprachen, eine Adresse",
+        title: "Ein Preis, notiert am Ende einer anderen Arbeit",
         paragraphs: [
-          "Diese Seite gibt es seit Monaten auf Englisch, Französisch und Deutsch. Bis Mitte September lagen alle drei unter derselben Adresse. Die Sprache war eine Einstellung: im Browser gespeichert, aus <em>navigator.language</em> erraten, über ein Menü umgeschaltet. <em>/about</em> war <em>/about</em>, egal in welcher Sprache man las.",
-          "Für Besucher funktioniert das. Für alles, was kein Besucher ist, heißt es, dass die französischen und deutschen Seiten nicht existieren. Eine Suchmaschine ruft <em>/about</em> ab, bekommt Englisch und hat keine Adresse, unter der sie etwas anderes anfragen könnte. Ein Link, den eine französischsprachige Leserin auf LinkedIn teilt, erscheint in der Vorschau auf Englisch. Zwei Drittel der Texte auf dieser Seite konnten schlicht nicht gefunden werden.",
-          "Also ist die Sprache in die Adresse gewandert. Hier steht, was das gekostet hat, und dazu zwei kleinere Arbeiten aus derselben Woche, über die ich ebenso offen berichte."
+          "Am 10. September habe ich überhaupt nicht an den Sprachen gearbeitet. Ich teilte die Übersetzungsdatei in drei Teile: Sie wog komprimiert 63.641 Byte, und jeder Besucher lud sie ganz, egal in welcher Sprache er las. Ein Besuch auf Englisch lädt jetzt nur noch 19.909 Byte, also 43.732 Byte oder 69 % weniger.",
+          "Der Preis passte in eine Zeile am Ende des Eintrags im Plan: ein Hin und Zurück mehr, bevor der Text erscheint. Der Server konnte die richtige Datei nicht im Voraus ankündigen, weil die Sprache nirgends in der Adresse stand. Sie war eine Einstellung, im Browser gespeichert oder aus seiner Konfiguration erraten, und <em>/about</em> blieb <em>/about</em> in allen drei Sprachen.",
+          "Französisch gibt es auf dieser Website seit April 2021, Deutsch seit dem 8. September 2026. Für Besucher reichte eine Adresse, weil das Menü die Sprache an Ort und Stelle wechselte. Für einen Crawler, also einen der Roboter, die das Web für Suchmaschinen und Linkvorschauen durchlaufen, gab es die französischen und deutschen Seiten nicht: Er fragte nach <em>/about</em> und bekam Englisch.",
+          "Aufgeschrieben hatte ich das schon zwei Tage vorher, in der Liste offener Punkte, die ich im Plan des Repositorys führe. Die Mehrsprachigkeit blieb für Crawler unsichtbar, und die fünfzehn Snapshots, die die Website gerade zu erzeugen gelernt hatte, trugen alle <em>lang=en</em>. Das sind HTML-Seiten, die beim Build für diese Roboter vorbereitet werden. Am 10. sah ich, dass beide Probleme dieselbe Ursache hatten."
         ],
         img: ""
       },
       {
-        title: "Drei Präfixe, Englisch eingeschlossen",
+        title: "/fr/en/about",
         paragraphs: [
-          "Der übliche Kompromiss lässt die Standardsprache ohne Präfix und versieht nur die anderen damit: <em>/about</em> auf Englisch, <em>/fr/about</em> auf Französisch. Ich habe alle drei mit einem Präfix versehen. <em>/en/about</em>, <em>/fr/about</em>, <em>/de/about</em>, und <em>/</em> antwortet mit einem <strong>301 auf /en</strong>.",
-          "Das ist die symmetrischste Form und die am einfachsten zu erklärende, und ihr Preis ist, dass jede frühere Adresse jetzt eine Weiterleitung ist. NGINX führt diese Weiterleitungen als ausdrückliche Liste (<em>/about</em>, <em>/projects</em>, <em>/blog</em>, <em>/contact</em> und was darunter liegt) statt als breites Muster, denn ein breites Muster hätte auch <em>/assets/</em> und die Projektdemos umgeleitet.",
-          "Die Sprache kommt jetzt aus der Adresse, nicht mehr aus dem Browser. Der Start liest <em>location.pathname</em>, bevor die App eingebunden wird, sodass nur ein einziges Übersetzungspaket geladen wird statt erst des gespeicherten und dann des richtigen. Die gespeicherte Wahl und die Browsersprache werden nur noch befragt, wenn die Adresse kein Präfix trägt."
+          "Am 16. September wanderte die Sprache in die Adresse. Der übliche Kompromiss lässt die Standardsprache ohne Präfix; ich habe alle drei mit einem Präfix versehen, Englisch eingeschlossen, damit jede Adresse dieselbe Form hat. <em>/</em> antwortet jetzt mit einer dauerhaften Weiterleitung auf <em>/en</em>, und die alten Adressen ebenso.",
+          "NGINX, der Server, der die Website ausliefert, leitet anhand einer von Hand geschriebenen Liste weiter: <em>/about</em>, <em>/projects</em>, <em>/blog</em>, <em>/contact</em> und alles darunter. Ein breiteres Muster wäre kürzer gewesen, hätte aber auch die Dateien unter <em>/assets/</em> und die Projektdemos nach <em>/en</em> geschickt.",
+          "Eine einzige Datei setzt diese Adressen zusammen und zerlegt sie wieder, <em>locale-paths.js</em>. Ihre erste Regel sieht aus wie ein Sonderfall und greift doch bei jedem Sprachwechsel: Wer ein Präfix auf eine Adresse setzt, die schon eines trägt, ersetzt es. Ohne diese Regel führt der Wechsel zu Französisch von <em>/en/about</em> nach <em>/fr/en/about</em>, und ein Test prüft das jetzt.",
+          "Danach mussten die internen Links angepasst werden, die jetzt <em>$lp('/projects')</em> statt der nackten Adresse schreiben. Der Commit ändert 21 davon in acht Komponenten (die erste Fassung dieses Artikels sprach von neunzehn; ich habe sie im Commit nachgezählt). Eine nackte Adresse hätte weiter funktioniert, vom Router oder von der Weiterleitung aufgefangen. Aber sie hätte Leser der deutschen Seiten ins Englische zurückgeschickt, und kein Link der Website hätte einen Roboter zu einer deutschen oder französischen Seite geführt.",
+          "Beim Start liest die Anwendung die Sprache jetzt aus <em>location.pathname</em>, bevor sie sich aufbaut. Der Browser lädt nur noch eine Übersetzungsdatei, die der Seite, und die gespeicherte Einstellung zählt nur bei einer Adresse ohne Präfix. Eine Sprache zu wählen heißt jetzt, zu einer anderen Adresse zu navigieren."
         ],
         img: ""
       },
       {
-        title: "Der Fehler, der der Normalfall ist",
+        title: "Was ein Roboter bekommt, der nach /fr/about fragt",
         paragraphs: [
-          "Eine einzige Datei, <em>locale-paths.js</em>, setzt diese Adressen zusammen und zerlegt sie, und nichts anderes darf das. Ihre erste Regel sieht nach einem Sonderfall aus und ist in Wahrheit der Hauptweg: <strong>Ein Präfix auf eine Adresse zu setzen, die schon eines trägt, ersetzt es.</strong> Ohne diese Regel ergibt der Wechsel ins Französische von <em>/en/about</em> aus <em>/fr/en/about</em>. Jeder Sprachwechsel läuft durch diesen Code, und ein Test hält ihn fest.",
-          "Dann die internen Links. Eine Vorlage schreibt jetzt <em>$lp(’/projects’)</em> statt <em>’/projects’</em>, und neunzehn Links wurden geändert, in Kopfzeile, Fußzeile, Projektkarten und Schaltflächen. Die nackte Adresse hätte weiter funktioniert, weil der Router sie abfängt und NGINX sie weiterleitet. Aber sie hätte eine französische Leserin zurück ins Englische geschickt, und ein Crawler, der den Links der Seite folgt, wäre jedes Mal auf der englischen Weiterleitung gelandet und nie bei einer französischen oder deutschen Seite angekommen.",
-          "Eine Sprache zu wählen ist jetzt eine <strong>Navigation</strong>. Die Seite bleibt dieselbe und die Adresse ändert sich, und genau das hätte sie von Anfang an tun sollen."
-        ],
-        img: ""
-      },
-      {
-        title: "Was ein Crawler bekommt",
-        paragraphs: [
-          "Diese Seite ist eine Single-Page-App, und eine Single-Page-App liefert einem Crawler keine Tags. Das Problem war schon früher gelöst worden, mit einer vorgerenderten <em>index.html</em> pro Route, die nach dem Build geschrieben wird. Der Sprachwechsel macht aus <strong>16 Snapshots 48</strong>, jeder in seiner eigenen Sprache: Titel, Beschreibung, Open-Graph-Tags und <em>&lt;html lang&gt;</em>. Letzteres ist der peinliche Teil, denn die Vorlage hatte jeder Seite <em>lang=en</em> aufgezwungen, den deutschen eingeschlossen.",
-          "Jede Seite nennt jetzt alle drei ihrer Adressen als <em>hreflang</em>-Alternativen, dazu ein <em>x-default</em>, das auf Englisch zeigt. Die Sitemap wiederholt diese Links bei jedem ihrer 48 Einträge, und die strukturierten Daten sagen endlich, in welcher Sprache sie geschrieben sind.",
-          "Ich habe es im Docker-Image geprüft, nicht nur in Tests. Die neun Adressen, auf die es ankommt, antworten mit 301, 200 oder 404, wo sie sollen. <em>curl -A facebookexternalhit</em> auf <em>/fr/about</em> bekommt „À propos“, und auf dem deutschen Pic-Collage-Artikel den deutschen Titel. Im Browser führt der Wechsel von Englisch zu Französisch auf <em>/en/projects</em> zu <em>/fr/projects</em>, mit einem Titel, einer Canonical, vier <em>hreflang</em>-Tags und keinem Konsolenfehler. Das sind 158 Tests, vorher 106."
-        ],
-        img: ""
-      },
-      {
-        title: "Ein halbes Megabyte für sieben Glyphen",
-        paragraphs: [
-          "Drei der alten Projektdemos (x1, pet4u und cupcake) luden Font Awesome von einem CDN, also auf jeder Seite ein vollständiges Icon-Stylesheet und ein oder zwei ganze Schriften. Auf zehn Elementen verwendeten sie sieben Glyphen.",
-          "Diese sieben Glyphen sind jetzt eingebettete SVG-Pfade aus demselben Icon-Satz, mit <em>fill=„currentColor“</em>, damit jede Demo ihre Farben behält, und mit einer Beschriftung überall dort, wo ein Icon eine Bedeutung trägt. <strong>500.746 Bytes entfernt, 7.311 hinzugefügt</strong>, und drei Anfragen weniger an ein fremdes CDN auf jeder Seite. Das ist ebenso eine Frage der Einwilligung wie des Gewichts.",
-          "Ein Fehler zeigte sich nur auf dem Bildschirm. Die Icons von x1 hatten <em>padding: 2rem</em> unter dem <em>border-box</em> von Bootstrap, sodass das SVG <em>innerhalb</em> des Innenabstands gezeichnet wurde und auf acht Pixel schrumpfte. Die Messung sagte 72 × 72, die Seite zeigte drei Punkte. Eine Regel <em>box-sizing: content-box</em> hat es behoben, aber kein Test hätte es gefunden."
-        ],
-        img: ""
-      },
-      {
-        title: "Eine Zahl, die ich veröffentlicht habe, war falsch",
-        paragraphs: [
-          "Alle Screenshots dieser Seite wurden mit Playwright von den <strong>veröffentlichten</strong> Seiten neu aufgenommen, insgesamt fünfzehn Bilder. Bis dahin stammten mehrere von lokalen Entwicklungsservern, die die Version auf meinem Rechner zeigen, nicht die, die man öffnen kann.",
-          "Dabei kam ein Fehler im vorigen Artikel ans Licht. Ich hatte geschrieben, dass die Pic-Collage-App in 221.263 komprimierten Bytes lädt. Diese Zahl war ein <em>gzip -9</em> meines lokalen Builds. Die ausgelieferte App überträgt tatsächlich <strong>337.866 Bytes in zwanzig Anfragen</strong>. Die Zahl ist in allen drei Sprachen korrigiert, und der Abschnittstitel ging von 221 auf 338 Kilobyte.",
-          "Dieselbe Sitzung zeigte etwas, das niemand bemerkt hatte: Die veröffentlichte App ruft beim Laden einen Besucherzähler, GoatCounter, auf einem fremden Ursprung auf. Das ist eine Anfrage, die das Gerät verlässt, in einer App, deren ganzes Argument lautet, dass nichts es verlässt. Das Argument stimmt für die Fotos und nicht für den Besuch, und so muss man es auch sagen."
-        ],
-        img: ""
-      },
-      {
-        title: "Zwei kleinere Dinge",
-        paragraphs: [
-          "Die Titelbilder der Artikel wurden über den Bundler importiert, der sie mit einem Hash versah und als <em>immutable</em> auslieferte. Vier davon waren Byte für Byte identisch mit bereits vorhandenen Projekt-Vorschaubildern, also lieferte der Build beide Kopien aus. Sie verweisen jetzt auf das Vorschaubild, was <strong>173.268 Bytes</strong> und ein Stück Prerender-Code entfernt. Der Preis ist der Cache, denn ein öffentlicher Pfad ist nicht unveränderlich: Titelbilder werden einen Tag statt eines Jahres zwischengespeichert.",
-          "Die reCAPTCHA-Schwelle des Kontaktformulars ist von 0,5 auf 0,7 gestiegen. Ich schreibe das vor allem auf, um zu sagen, was sie nicht leistet: Der automatisierte Browser, mit dem ich im August getestet habe, bekam <strong>0,9</strong>, und auch diese Schwelle hätte ihn nicht aufgehalten. Wirklich geschützt wird das Formular durch die Ursprungsprüfung, die Ratenbegrenzung und die Aktionsprüfung, und der Score ist nur ein Hinweis."
-        ],
-        img: ""
-      },
-      {
-        title: "Was nicht erledigt ist",
-        paragraphs: [
-          "Wer auf <em>/</em> zurückkehrt, beginnt auf Englisch. Die gespeicherte Wahl kann eine absichtlich feste Serverweiterleitung nicht überstimmen, und das ist der Preis eines <em>x-default</em>, das nicht lügt.",
-          "Die alten Adressen sind 301-Weiterleitungen. Das dort bereits erworbene Suchranking wird übertragen, nicht unverändert behalten, und es wird eine Weile dauern, bis es sich gesetzt hat.",
-          "Die Demos laden weiterhin Bootstrap, jQuery und Google Fonts. Das ist Verhalten, keine Dekoration: Eine Demo ist von vorne bis hinten in jQuery geschrieben, eine andere öffnet ihr Menü mit einem Bootstrap-<em>collapse</em>. Sie zu entfernen hieße, eine archivierte Demo neu zu schreiben, nicht ein Icon auszutauschen, und ich habe noch nicht entschieden, ob sich das lohnt.",
-          "Der Schoulbus-Artikel zeigt noch Screenshots im alten Design. Die App braucht zum Ausprobieren kein Konto mehr, aber das Hinzufügen eines Kindes, der Schritt, der jeden sehenswerten Bildschirm freischaltet, ließ sich nicht automatisiert durchführen. Dieser Schritt braucht ein echtes Telefon und eine echte Hand.",
-          "Und das Deutsch auf dieser Seite, dieser Artikel eingeschlossen, wurde noch von keiner Muttersprachlerin und keinem Muttersprachler gegengelesen."
+          "Aus den Snapshots, damals sechzehn, wurden achtundvierzig, einer pro Seite und Sprache, jeder mit der richtigen Sprache im <em>html</em>-Tag. Jeder nennt über <em>hreflang</em>-Tags seine drei Fassungen und eine Standardfassung, die am 8. September entstandene Sitemap führt sie ebenfalls auf, und die strukturierten Daten geben die Sprache der Seite an. Am 16. habe ich neun Adressen im Docker-Image geprüft: Als Vorschau-Roboter eines sozialen Netzwerks getarnt, fragte ich nach <em>/fr/about</em> und bekam den französischen Titel „À propos“. Die Testsuite wuchs von 106 auf 158 Tests.",
+          "Am 8. November, beim Überarbeiten dieses Artikels, habe ich die Prüfung auf der veröffentlichten Website wiederholt. <em>/fr/about</em> antwortet mit <em>lang=fr</em>, dem Titel „À propos“ und vier <em>hreflang</em>-Tags, und sowohl die nackte Adresse der Website als auch <em>/about</em> leiten auf ihre englische Fassung weiter. Der Build erzeugt heute 60 Snapshots, bei zehn Artikeln im Blog. Das Hin und Zurück, mit dem alles anfing, gibt es noch: Der Snapshot von <em>/fr/about</em> kündigt die französische Übersetzungsdatei nicht im Voraus an, obwohl er es jetzt könnte.",
+          "Wer die nackte Adresse der Website eintippt, landet also auf Englisch, auch wenn er am Vortag Deutsch gewählt hatte, weil die Weiterleitung geschieht, bevor der Browser seine Einstellung liest. Von einer dauerhaften Weiterleitung erwartet man, dass sie das Ranking der alten Adressen weitergibt, aber ich habe weder Suchergebnisse noch Besucherzahlen angesehen. Und die deutschen Seiten, die Sie gerade lesen, stehen unter eigener Adresse online, ohne dass jemand mit Deutsch als Muttersprache sie gelesen hat."
         ],
         img: ""
       }
@@ -616,78 +573,60 @@ export default {
   blogPost4: {
     title: "Siebenundzwanzig Megabyte meines eigenen Arguments",
     title2:
-      "2023 habe ich einer Branche gesagt, sie solle leichteren Code schreiben. Dann habe ich <strong>meine eigene Seite</strong> gewogen.",
+      "Diese Website wirbt für sparsameren Code und trug siebenundzwanzig Megabyte Bilder mit sich. Beim Korrigieren habe ich sogar eine falsche Zahl veröffentlicht.",
     sections: [
       {
-        title: "Der Artikel, der die Rechnung präsentierte",
+        title: "15. August, zwischen 21:07 und 23:59 Uhr",
         paragraphs: [
-          "Das Älteste in diesem Blog ist auf den <em>22. Juli 2023</em> datiert. Es heißt <strong>Die Zukunft der Fintech</strong> und argumentiert, dass ein großer Teil der Emissionen einer Branche aus ihrem eigenen Quellcode stammt — dass die Lösung strukturell ist, unspektakulär und heute vollständig verfügbar. Ich stehe noch immer zu jedem Wort.",
-          "Die Seite, die diesen Artikel auslieferte, lief mit Quasars Material-Standardtheme, <em>animate.css</em>, Roboto, fünf selbst gehosteten Schriftschnitten und siebenundzwanzig Megabyte Screenshots. Um elfhundert Wörter über leichteren Code zu lesen, luden Sie zuerst mehrere Megabyte PNG herunter.",
-          "Niemand hat darauf hingewiesen. Niemand musste es — die Seite lud, das Argument las sich gut, und Seitengewicht ist der eine Mangel, den ein Browser nie meldet. Der Neubau fand im August 2026 statt. Dies ist die Prüfung, mit Zahlen aus dem Repository statt aus der Erinnerung."
+          "Am 15. August 2026 um 21:07 Uhr habe ich diese Website auf die aktuelle Version von Quasar gehoben, das Framework, auf dem sie läuft. Um 21:38 Uhr baute ein zweiter Commit fast alles andere um. Um 23:59 Uhr machte ein dritter einen guten Teil des zweiten wieder rückgängig. Ich dachte, ich verbringe den Abend mit einem technischen Update.",
+          "Die Nachricht von 21:38 Uhr erwähnt eine Korrektur am Rande: Der einzige Artikel im Blog zeigte nur seinen Titel. Die Seite las ihre Abschnitte mit einer Funktion, die bei einem Array eine leere Zeichenkette liefert, und nichts beschwerte sich. Der Text vom Juli 2023 handelte vom Energieaufwand des Codes in der Fintech-Branche. Ich habe ihn am 8. November überarbeitet, und jetzt steht darin, dass die Maschinen verbrauchen und der Code entscheidet, wie viele es braucht. Seine sechs Fotos, allein 13.254.631 Byte, lagen im öffentlichen Ordner und warteten auf einen Artikeltext, der nicht erschien (seit wann, habe ich nicht nachgesehen).",
+          "Die erste Fassung dieses Artikels erschien am 7. September. Als ich sie am 8. November überarbeitete, habe ich jede Zahl im Repository nachgezählt, das öffentlich ist, und drei der veröffentlichten waren falsch. Ich korrigiere sie dort, wo sie vorkommen, und was sich seither geändert hat, trägt sein Datum."
         ],
         img: ""
       },
       {
-        title: "Dreiundzwanzig Dateien, siebenundzwanzig Megabyte",
+        title: "Neununddreißig Megabyte, aus dem Gedächtnis",
         paragraphs: [
-          "Die Messung ist reproduzierbar: jedes Rasterbild, das die Seite selbst auslieferte, beim letzten Commit vor dem Redesign, außerhalb des Ordners mit den archivierten Demos. <strong>Dreiundzwanzig Dateien, 27.430.278 Bytes.</strong> In WebP umgewandelt, bei gleichen Maßen und gleichem Beschnitt, wiegt derselbe Satz <strong>905.298 Bytes</strong> — dreißigmal weniger, für Bilder, die auf der Seite niemand auseinanderhalten könnte.",
-          "Die Verteilung ist schlimmer als die Summe. Ein einzelnes Projektbild, <em>x1.png</em>, wog 4,26 MB: ein dekorativer Screenshot in einem Raster, schwerer als die meisten Seiten, auf die er verwies. <em>liberty.png</em> wog 3,48 MB und wurde zu 27 KB, ein Faktor von einhundertachtundzwanzig. Eine Illustration im Artikel von 2023 selbst, <em>future.jpg</em>, ging von 2.794.288 Bytes auf 17.888 — <strong>hundertsechsundfünfzigmal kleiner</strong>.",
-          "Nichts davon verlangte ein Urteil. Kein Bild wurde neu komponiert, neu beschnitten oder verworfen, und nichts wurde umgestaltet, damit die Zahl besser aussieht. Es ist dieselbe Seite, nur sauber kodiert. Das ist der unangenehme Teil: Die gesamte Ersparnis war in den drei Jahren davor jederzeit verfügbar, für jeden, der auf die Idee gekommen wäre nachzusehen."
+          "Der Commit von 21:38 Uhr meldete Bilder, die von 39 MB auf 872 KB geschrumpft seien. Ich habe beide Zahlen in die README übernommen, dann in die Anweisungen des Repositorys, ohne nachzuzählen. Erst als ich sie im September hier zitieren wollte, habe ich sie gemessen, und keine von beiden stimmte.",
+          "Kurz vor der Überarbeitung enthielt die Website 23 Bilder außerhalb der Projektdemos, zusammen 27.430.278 Byte. Siebzehn wurden in WebP umgewandelt und schrumpften von 27.369.166 auf 905.298 Byte. Die übrigen sechs, vier Favicons, das Logo und das Vorschaubild für soziale Netzwerke, blieben PNG. Woher die 39 kam, weiß ich nicht: Mit den Demos kommt man auf 42,6 MB, was auch nicht passt.",
+          "Beim Nachzählen im November habe ich einen Fehler in der Korrektur selbst gefunden. Ich hatte geschrieben, die Bilder hätten ihre Abmessungen behalten, und das stimmt nicht. Die Fotos des Fintech-Artikels, das breiteste mit 6.334 Pixeln, wurden auf 1.200 verkleinert, die Screenshots mit 1.900 bis 2.500 Pixeln Breite auf 1.000. Die Pixelzahl sank um den Faktor 9,4 und das Gewicht um den Faktor 30; die Kodierung erklärt also nur etwa einen Faktor drei. Das bestätigt das einzige Bild, das seine Größe behielt: eine Infografik von 800 × 2.000 Pixeln, die von 211.220 auf 77.698 Byte fiel.",
+          "Das Eröffnungsfoto des Fintech-Artikels zeigt den Abstand gut. Es hatte 5.284 × 3.522 Pixel und 2.794.288 Byte, für einen Rahmen, den die Seite auf 180 Pixel Höhe begrenzt. Heute hat es 1.200 × 800 Pixel und 17.888 Byte, 156-mal weniger, und ist immer noch größer als das, was der Bildschirm davon zeigt. README und Anweisungen tragen seit dem 8. September die richtige Zahl."
         ],
         img: ""
       },
       {
-        title: "Die Schriften, auf deren Selbsthosting ich stolz war",
+        title: "Die Schriften, die ich falsch gezählt hatte",
         paragraphs: [
-          "Schriften selbst zu hosten ist gute Praxis, und ich hatte es getan: fünf Schnitte Lexend plus Ubuntu, als TrueType, <strong>696.052 Bytes</strong>, ausgeliefert an jeden Erstbesucher. Gute Praxis ohne Messung ist nur eine andere Art, schwer zu sein.",
-          "Vier dieser fünf Lexend-Schnitte wurden von keiner einzigen Regel im Stylesheet referenziert. Sie sind gegangen, zusammen mit Ubuntu und zusammen mit Roboto — das Quasar standardmäßig lädt und nach dem im Design nie jemand gefragt hat. Geblieben sind drei Schnitte, Medium, SemiBold und Bold, <em>nur für Überschriften</em>.",
-          "Fließtext fällt jetzt auf die Systemschriften zurück, Metadaten auf die System-Monospace. Wer auf dieser Seite landet, lädt <strong>überhaupt keine Webfont für den Text herunter, dessentwegen er gekommen ist</strong>. Das ist kein Kompromiss, zu dem ich mich überreden musste: Systemtext erscheint sofort und sieht aus wie das Betriebssystem, auf dem er läuft — was man von einem Absatz meistens genau will."
+          "Die Fassung vom September sagte, die Website schicke jedem Erstbesucher fünf Schnitte von Lexend und die Schrift Ubuntu, 696.052 Byte. Die Zahl stimmt, aber sie zählt etwas anderes: das, was die Überarbeitung aus dem Repository gelöscht hat. Das Repository enthielt sieben Lexend-Dateien, und das Stylesheet deklarierte nur eine davon, dazu Ubuntu, zusammen 397.628 Byte im TTF-Format. Eine Regel zwang Ubuntu auf jedes Element, und ich habe nicht Seite für Seite geprüft, welche der beiden Schriften der Browser tatsächlich lud.",
+          "Nach der Überarbeitung blieben drei Lexend-Schnitte für die Überschriften, 302.216 Byte, und der Fließtext wechselte zu den Schriften, die auf dem Gerät der Leser schon installiert sind. Seit dem 8. September liegen diese drei Dateien als WOFF2 vor und wiegen zusammen 116.240 Byte.",
+          "Am selben Tag verschwanden zwei Icon-Schriften, die am 7. September noch da waren. Die Website lud sie für achtunddreißig Glyphen, und der Commit, der sie entfernt, schätzt ihr Gewicht auf etwa 470 KB; das ist eine Schätzung, die ich nicht nachgerechnet habe. Die achtunddreißig Icons sind jetzt SVG-Pfade in einer Quelldatei von 29.089 Byte."
         ],
         img: ""
       },
       {
-        title: "animate.css, für vier Übergänge",
+        title: "Achtundneunzig Animationen, zwei davon benutzt",
         paragraphs: [
-          "Der alte Build importierte <em>animate.css</em> vollständig, um ungefähr vier Einblendeffekte zu erzeugen. In <em>quasar.config.js</em> steht jetzt <em>animations: []</em>, und diese Effekte sind eine Handvoll handgeschriebener Keyframes plus ein <em>IntersectionObserver</em> in vierundfünfzig Zeilen.",
-          "Ein Detail darin ist mehr wert als die Bytes, die es gespart hat. Der Ausgangszustand der Einblendung — <em>opacity: 0</em> — steht nicht auf den Elementen. Er hängt an <em>html.has-reveal</em>, einer Klasse, die der Observer beim Start dem Dokument <strong>selbst</strong> hinzufügt. Läuft kein JavaScript, oder existiert <em>IntersectionObserver</em> nicht, wird diese Klasse nie gesetzt und jedes Element bleibt schlicht sichtbar.",
-          "Die naive Fassung dieser Komponente versteckt Ihre Inhalte und wartet darauf, dass ein Skript sie enthüllt. Scheitert das Skript, ist die Seite leer und hat nicht einmal einen Fehler geworfen. Unter <em>prefers-reduced-motion</em> wird der ganze Mechanismus ein zweites Mal neutralisiert: Elemente gelten sofort als angekommen, und es wird nie eine Animation eingeplant."
+          "Die alte Website deklarierte alle Animationen von animate.css, die mit Quasar geliefert werden: 98 Animationen, 29.617 Byte CSS. Benutzt wurden zwei, ein Einblenden von unten im Hauptlayout und ein Pulsieren auf der Projektseite. (Im September hatte ich vier gezählt, zu schnell gelesen.)",
+          "Ersetzt wurden sie durch eine einzige Datei mit 54 Zeilen. Sie bemerkt, wenn ein Element in den Bildschirm kommt, und gibt ihm eine Klasse; ein paar CSS-Keyframes erledigen den Rest. Wenn Sie in Ihrem System reduzierte Bewegung eingestellt haben, bewegt sich nichts.",
+          "Das Wichtige steckt woanders: Elemente werden nur versteckt, wenn das Skript der Seite vorher eine Klasse gegeben hat. Scheitert es oder kommt es nach allem anderen, bleibt alles sichtbar, und kein Inhalt braucht die Animation, um zu erscheinen."
         ],
         img: ""
       },
       {
-        title: "Design als Budget, nicht als Stimmung",
+        title: "Der erste Entwurf hielt zwei Stunden und einundzwanzig Minuten",
         paragraphs: [
-          "Das Redesign hat im Repository einen Namen — <strong>low-carbon editorial</strong> — und es ist eine Beschränkung, bevor es ein Geschmack ist. Die Seite führt ein Argument über Gewicht, also muss sie aussehen wie das, wofür sie plädiert: Tinte auf warmem Papier, Linien von einem Pixel, überdimensionierte Displayschrift gegen Metadaten in Monospace, und ein einziger säuerlicher Akzent.",
-          "Was das ausschließt, ist die teure Hälfte des heutigen Webdesigns. Keine Hero-Fotografie, keine Verläufe, keine dekorativen Bilder, kein Illustrationssatz, keine Animationsbibliothek. Jeder visuelle Effekt auf dieser Seite ist eine Linie, eine Farbe oder eine typografische Größe — die drei Dinge, deren Versand nichts kostet.",
-          "Darunter besteht die gesamte Oberfläche aus Custom Properties, einmal deklariert in <em>src/css/app.sass</em>: Farben, Radien, Schatten und eine fluide Typoskala von <em>--step--1</em> bis <em>--step-6</em>. Der Dunkelmodus definiert diese Variablen neu und sonst nichts, und eine Komponente darf keine Farbe fest verdrahten. Das begann als Wartbarkeitsregel und erwies sich zugleich als Gewichtsregel, denn ein Design mit einer einzigen Quelle der Wahrheit hört auf, jene Einzelstück-Assets anzusammeln, die ein Design ohne sie ansammelt."
+          "Der Commit von 21:38 Uhr gab der Startseite ein großes Banner mit animiertem Farbverlauf. Der von 23:59 Uhr entfernte es wieder, und seine Nachricht, die ich auf Französisch geschrieben habe, sagt warum (hier übersetzt): Die Website „warb für Green Coding im Gewand einer SaaS-Vorlage“, und „die Form sagte nichts über das Anliegen“. An seine Stelle traten dunkle Tinte auf warmem Papier, Linien von einem Pixel, große Lexend-Schrift neben kleinen Angaben in Festbreitenschrift und ein einziger säuregrüner Akzent, der nie als Textfarbe dient.",
+          "Diese Entscheidungen stehen an einer einzigen Stelle, einem Stylesheet, das jede Farbe, jeden Radius, jeden Schatten und jede Schriftgröße einmal festlegt. Das dunkle Thema definiert nur diese Werte neu, und keine Komponente darf eine Farbe von Hand schreiben. Das meinte ich mit einem Designbudget: eine geschlossene Liste von Werten, in der jede Ergänzung im Diff auffällt. Die Schriftskala reichte im September von <em>--step--1</em> bis <em>--step-6</em>; seither ist eine kleinere Stufe dazugekommen, <em>--step--2</em>, und nur diese."
         ],
         img: ""
       },
       {
-        title: "Die Regeln, die den Commit überleben",
+        title: "Nichts wiegt das Ergebnis",
         paragraphs: [
-          "Sechsundzwanzig Megabyte zu löschen ist die Arbeit eines Vormittags. Sie gelöscht zu halten ist das eigentliche Problem, und es ist kein technisches. Dem Build ist es egal: Legen Sie morgen ein drei Megabyte großes PNG in <em>public/screenshots/</em>, und alles läuft durch. Die Seite baut weiterhin. Sie ist bloß schwerer, und <strong>nirgends sagt das jemand</strong>.",
-          "Also steht es stattdessen geschrieben, als fünftes von fünf nicht verhandelbaren Prinzipien in der <em>CLAUDE.md</em> des Repositorys, in der Form, auf die es ankommt: nicht <em>WebP verwenden</em>, sondern <em>ein PNG hier abzulegen macht diese Arbeit zunichte, ohne dass irgendetwas es meldet</em>. Eine Regel, die ihre eigene Konsequenz benennt, übersteht den Kontakt mit der Person in Eile — auch dann, wenn diese Person ich bin, in einem Jahr.",
-          "Es lohnt sich, die Lücke genau zu benennen. Die Testsuite ist echt und sie ist streng: Sie verweigert einen Übersetzungsschlüssel, der in einer Sprache vorhanden und in der anderen abwesend ist, eine leere Zeichenkette, eine Route, die sich nicht auflöst, eine Seite, die mit einem Konsolenfehler mountet, eine Illustration, die referenziert wird und auf der Platte fehlt. <strong>Nichts davon misst ein einziges Byte.</strong> Die Korrektheit hält das Tor. Das Gewicht hält ein Satz in einem Dokument."
-        ],
-        img: ""
-      },
-      {
-        title: "Die Zahl, die ich wiederholt hatte",
-        paragraphs: [
-          "Diesen Artikel zu schreiben hieß, eine Zahl zu prüfen, die ich seit Wochen zitierte. Der Redesign-Commit sagt <em>39 MB → 872 KB</em>. Die README wiederholt es. Es steht in den Arbeitsnotizen des Projekts. Ich wollte es reproduzieren, und ich konnte es nicht.",
-          "Aus den Git-Objekten rekonstruiert, kamen die tatsächlich umgewandelten Bilder auf <strong>27,4 MB</strong> und gingen mit <strong>905 KB</strong> heraus. Es gibt ein 42,6 MB in der Historie — das ist jedes Rasterbild im Repository zu diesem Commit, <em>einschließlich des Ordners mit den archivierten Demos, den niemand angefasst hat</em>. Neununddreißig ist keines von beiden: eine erinnerte Zahl, der Form der Wahrheit nahe genug, um unwidersprochen zu bleiben, so oft wiederholt, bis sie Dokumentation geworden war.",
-          "Die Umwandlung war echt, und das Verhältnis ist weiterhin dreißig zu eins. Aber die Geschichte, die ich darüber erzählte, war zu einem Drittel falsch, und sie war geschrieben, committet und veröffentlicht worden, ohne dass irgendjemand — ich zuerst — die zwei Befehle ausgeführt hätte, die sie geprüft hätten. Runde Zahlen reisen weiter als wahre. Es ist eine merkwürdige Sache, sie in einem Artikel über Messen statt Annehmen zu finden, weshalb sie hier ein Abschnitt ist und keine Fußnote."
-        ],
-        img: ""
-      },
-      {
-        title: "Was nicht erledigt ist",
-        paragraphs: [
-          "Die eigenen Seiten dieser Site sind so leicht, wie ich sie zu machen weiß. Die Domain ist es nicht. <em>public/projects_folder/</em> — die archivierten Schülervorlagen, die von der Projektseite in einem iframe ausgeliefert werden — ist <strong>fünfzehn Megabyte</strong> groß, und eine davon, <em>x1</em>, ist allein zwölf: vier Stockfotos zwischen 2,1 und 3,7 MB, also genau das, worum es in diesem Artikel geht. Sie sind unangetastet und um eine Größenordnung das Schwerste auf der Domain.",
-          "Der ehrliche Grund ist, dass ihre Umwandlung bedeutet, HTML zu bearbeiten, das ich nicht geschrieben habe, in archivierter Arbeit, deren einziger Zweck es ist zu zeigen, was ich 2019 gebaut habe. Das ist ein vertretbarer Handel, und es bleibt ein Handel — deshalb kommt es ins Vorbehaltsregister, statt ein Eindruck zu bleiben, wo die nächste Person, die es liest, ihm widersprechen darf.",
-          "Drei kleinere. Lexend wird weiterhin als TrueType ausgeliefert, drei Dateien, 302 KB; WOFF2 würde das ungefähr halbieren und ist nicht geschehen. Es gibt keine <em>sitemap.xml</em>, Artikel sind also nur über den Blogindex auffindbar. Und es gibt kein Gewichtsbudget in der Pipeline: Die kontinuierliche Integration lintet, führt jeden Test aus, baut und prüft, dass der API-Host wirklich im Bundle gelandet ist — sie wiegt das Ergebnis nicht. Eine Regel, die nur im Gedächtnis lebt, hat eine Halbwertszeit, und ich habe gerade einen Abschnitt damit verbracht, meine vorzuführen.",
-          "Womit die Zusammenfassung mehr oder weniger da wäre. 2023 habe ich einer Branche gesagt, sie solle das tun. 2026 fand die Prüfung heraus, dass der Autor jenes Artikels darunter siebenundzwanzig Megabyte Screenshots auslieferte. Beides ist wahr, und nur das Zweite hat mich etwas gelehrt."
+          "Die Anweisungen des Repositorys sagen, dass ein PNG im Screenshot-Ordner diese Arbeit zunichtemacht, ohne dass irgendetwas es meldet. Am 8. November gilt das immer noch. Die Tests prüfen, dass jeder Projekt-Screenshot und jede Artikelillustration als WebP existiert, und die CI baut die Website, aber nichts misst ihr Gewicht: Ein WebP-Screenshot von drei Megabyte käme ohne ein Wort durch.",
+          "Der Rest des Aufräumens kam nach der ersten Fassung dieses Artikels. Am 8. September schrumpften die Projektdemos, die auf ihren eigenen Seiten in einem Rahmen laufen, von 15.207.015 auf 1.376.401 Byte. Eine einzige Demo wog 11.863.536 Byte, darunter drei Fotos, die nichts mehr anzeigte. Am 16. September verschwand Font Awesome aus den drei Demos, die es noch luden: 500.746 Byte entfernt und 7.311 hinzugefügt, für sieben Glyphen.",
+          "Am selben Tag entfernte ich die zweite Kopie des Titelbilds dieses Artikels, die mir am 8. aufgefallen war: Es wurde doppelt ausgeliefert, 31.540 Byte im Code und noch einmal so viel im öffentlichen Ordner. Außer den Favicons bleibt ein einziges PNG, das Vorschaubild für soziale Netzwerke mit 31.237 Byte. Ob jeder Messenger stattdessen ein WebP annehmen würde, habe ich nicht geprüft.",
+          "Die Demos laden immer noch Bootstrap, jQuery und Schriften von fremden Servern, und ich habe nicht entschieden, ob ich sie neu schreibe oder zum Archiv erkläre. Die CI hat weiterhin kein Gewichtsbudget. Die nächste Zahl dieser Art wird also enden wie die vom 15. August, in einer Commit-Nachricht geschrieben und dann abgeschrieben, bis jemand von Hand nachzählt."
         ],
         img: ""
       }
@@ -879,7 +818,7 @@ export default {
         paragraphs: [
           "Einer meiner Vorschläge war, „die Anzahl der Codezeilen zu reduzieren“. Den ziehe ich zurück. Eine Schleife aus drei Zeilen, die bei jedem Aufruf eine ganze Tabelle neu liest, kostet mehr als eine Funktion aus dreißig Zeilen, die nur liest, was sie braucht, und eine einzige Zeile, die eine ganze Bibliothek importiert, kann schwerer wiegen als der Rest der Datei.",
           "Die anderen Vorschläge halten besser. Zuerst einen Algorithmus so verbessern, dass er weniger Arbeit macht. Und auf dem Handy verhindern, dass eine App das Gerät ohne Grund aufweckt oder Daten nachlädt. Die übertragene Datenmenge lässt sich am leichtesten beobachten: Sie steht im Netzwerk-Tab jedes Browsers, ohne dass man etwas installieren muss.",
-          "Ausprobiert habe ich das an dieser Website, lange nach diesem Artikel. Bei ihrer Neugestaltung im August 2026 schrumpften die Screenshots von 27,4 MB auf 905 KB, in WebP umgewandelt und in denselben Abmessungen, ohne dass eine einzige Zeile Logik dazu beigetragen hätte (in einem anderen Artikel steht, wie diese Zahl selbst neu ermittelt werden musste).",
+          "Ausprobiert habe ich das an dieser Website, lange nach diesem Artikel. Bei ihrer Neugestaltung im August 2026 schrumpften die Bilder von 27,4 MB auf 905 KB, in WebP umgewandelt und auf 1.000 oder 1.200 Pixel Breite verkleinert, ohne dass eine einzige Zeile Logik dazu beigetragen hätte (in einem anderen Artikel steht, wie diese Zahl selbst neu ermittelt werden musste).",
           "Ich schlug auch vor, energieeffizientere Programmiersprachen zu wählen. Das stimmt, Vergleiche gibt es, aber mitten im Projekt wechselt man selten die Sprache. Ich glaube, dass das, was ein Programm unnötig tut, meist schwerer wiegt als die Sprache, in der es das tut, und dort würde ich anfangen."
         ],
         img: "fintech"

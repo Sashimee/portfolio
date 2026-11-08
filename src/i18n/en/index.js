@@ -359,78 +359,35 @@ export default {
   blogPost7: {
     title: "The language belongs in the address",
     title2:
-      "Three languages, one URL each, and what a crawler finally sees — plus <strong>half a megabyte of icons</strong> that were drawing seven glyphs.",
+      "Until 16 September, the French and German pages of this site had no address of their own, and a search engine only ever saw English.",
     sections: [
       {
-        title: "Three languages, one address",
+        title: "A cost noted at the bottom of another job",
         paragraphs: [
-          "This site has been in English, French and German for months. Until mid-September, all three lived at the same address. The language was a preference: stored in the browser, guessed from <em>navigator.language</em>, switched by a menu. <em>/about</em> was <em>/about</em> whatever you were reading.",
-          "For a visitor that works. For anything that is not a visitor, it means the French and German pages do not exist. A search engine fetches <em>/about</em>, gets English, and has no address to ask for anything else. A link shared on LinkedIn by a French reader previews in English. Two thirds of the writing on this site had no way of being found.",
-          "So the language moved into the address. This is what that took, along with two smaller jobs from the same week that I will also be honest about."
+          "On 10 September, I wasn’t working on languages at all. I was splitting the translations file in three: it weighed 63,641 bytes compressed, and every visitor downloaded all of it, whatever language they were reading. An English visit now loads 19,909 bytes, which is 43,732 bytes and 69% less.",
+          "The cost fit on one line at the bottom of that job’s entry in the plan: one more round trip before the text could appear. The server couldn’t announce the right file in advance, because the language appeared nowhere in the address. It was a preference, stored in the browser or guessed from its settings, and <em>/about</em> stayed <em>/about</em> in all three languages.",
+          "French has been on this site since April 2021, German since 8 September 2026. For a visitor, one address was enough, since the menu switched the language in place. For a crawler, one of the robots that walk the web for search engines and link previews, the French and German pages didn’t exist: it asked for <em>/about</em> and got English.",
+          "I had written it down two days earlier, in the list of open issues I keep in the repository’s plan. The multilingual site stayed invisible to crawlers, and the fifteen snapshots the site had just learned to produce, HTML pages prepared at build time for those robots, all carried <em>lang=en</em>. On the 10th, I saw that both problems had the same cause."
         ],
         img: ""
       },
       {
-        title: "Three prefixes, English included",
+        title: "/fr/en/about",
         paragraphs: [
-          "The usual compromise is to leave the default language bare and prefix the others: <em>/about</em> in English, <em>/fr/about</em> in French. I prefixed all three. <em>/en/about</em>, <em>/fr/about</em>, <em>/de/about</em>, and <em>/</em> answers a <strong>301 to /en</strong>.",
-          "It is the most symmetrical form and the simplest one to explain, and its price is that every address that existed before is now a redirect. Those redirects are written out in NGINX as an explicit list (<em>/about</em>, <em>/projects</em>, <em>/blog</em>, <em>/contact</em> and what sits under them) rather than one broad pattern, because a broad pattern would also have redirected <em>/assets/</em> and the project demos.",
-          "The language now comes from the URL, not from the browser. The boot file reads <em>location.pathname</em> before the app mounts, so only one translation bundle is downloaded instead of the remembered one followed by the right one. Your stored choice and your browser language are now consulted only when the address carries no prefix."
+          "On 16 September, the language moved into the address. The usual compromise leaves the default language without a prefix; I prefixed all three, English included, so that every address has the same shape. <em>/</em> now answers with a permanent redirect to <em>/en</em>, and so do the old addresses.",
+          "NGINX, the server that delivers the site, makes those redirects from a hand-written list: <em>/about</em>, <em>/projects</em>, <em>/blog</em>, <em>/contact</em> and whatever sits below them. A broader pattern would have been shorter to write, but it would also have sent the files under <em>/assets/</em> and the project demos to <em>/en</em>.",
+          "A single file builds and takes apart these addresses, <em>locale-paths.js</em>. Its first rule looks like an edge case, yet it runs on every language switch: putting a prefix on an address that already has one replaces it. Without it, switching to French from <em>/en/about</em> leads to <em>/fr/en/about</em>, and a test now checks for it.",
+          "Then the internal links had to change, and they now write <em>$lp('/projects')</em> instead of the bare address. The commit changes 21 of them across eight components (the first version of this article said nineteen; I recounted them in the commit). A bare address would still have worked, caught by the router or by the redirect. But it would have sent a French reader back to English, and no link on the site would have led a robot to a French page.",
+          "On startup, the application now reads the language from <em>location.pathname</em>, before it mounts. The browser downloads a single translations file, the one for the page, and the stored preference only matters for an address without a prefix. Choosing a language has become navigating to another address."
         ],
         img: ""
       },
       {
-        title: "The bug that is the common case",
+        title: "What a robot gets when it asks for /fr/about",
         paragraphs: [
-          "One file, <em>locale-paths.js</em>, composes these addresses and takes them apart, and nothing else is allowed to. Its first rule looks like an edge case and is actually the main path: <strong>putting a prefix on an address that already has one replaces it.</strong> Without that rule, switching to French from <em>/en/about</em> produces <em>/fr/en/about</em>. Every language switch goes through this code, and a test holds it.",
-          "Then there are the internal links. A template now writes <em>$lp(’/projects’)</em> rather than <em>’/projects’</em>, and nineteen links were changed, across the header, the footer, the project cards and the buttons. The bare address would still have worked, because the router catches it and NGINX redirects it. But it would send a French reader back to English, and a crawler following the site’s own links would land on the English redirect every time and never reach a French or German page.",
-          "Choosing a language is now a <strong>navigation</strong>. The page stays the same and the address changes, which is exactly what it should have been doing all along."
-        ],
-        img: ""
-      },
-      {
-        title: "What a crawler receives",
-        paragraphs: [
-          "This site is a single-page app, and a single-page app serves no tags to a crawler. That problem was solved earlier with one pre-rendered <em>index.html</em> per route, written after the build. The language change turns <strong>16 snapshots into 48</strong>, each one in its own language: title, description, Open Graph tags, and <em>&lt;html lang&gt;</em>. That last one is the embarrassing part, because the template had been forcing <em>lang=en</em> on every page, the German ones included.",
-          "Every page now lists all three of its addresses as <em>hreflang</em> alternates, plus an <em>x-default</em> pointing at English. The sitemap repeats those links on each of its 48 entries, and the structured data finally says which language it is written in.",
-          "I checked it in the Docker image rather than only in tests. The nine addresses that matter return 301, 200 or 404 where they should. <em>curl -A facebookexternalhit</em> on <em>/fr/about</em> gets « À propos », and on the German Pic Collage article it gets the German title. In a browser, switching from English to French on <em>/en/projects</em> lands on <em>/fr/projects</em> with one title, one canonical, four <em>hreflang</em> tags and no console error. That is 158 tests, up from 106."
-        ],
-        img: ""
-      },
-      {
-        title: "Half a megabyte for seven glyphs",
-        paragraphs: [
-          "Three of the old project demos (x1, pet4u and cupcake) loaded Font Awesome from a CDN, which means a full icon stylesheet and one or two complete fonts on every page. Across ten elements, they used seven glyphs.",
-          "Those seven glyphs are now inline SVG paths taken from the same icon set, using <em>fill=“currentColor”</em> so each demo keeps its colours, and with a label wherever an icon carries meaning. <strong>500,746 bytes removed, 7,311 added</strong>, and three fewer requests to a third-party CDN on each page. That is as much about consent as it is about weight.",
-          "One defect only showed up on screen. The x1 icons had <em>padding: 2rem</em> under Bootstrap’s <em>border-box</em>, so the SVG was drawn <em>inside</em> the padding and shrank to eight pixels. The measurements said 72 × 72, while the page showed three dots. One <em>box-sizing: content-box</em> rule fixed it, but no test would have caught it."
-        ],
-        img: ""
-      },
-      {
-        title: "A number I published was wrong",
-        paragraphs: [
-          "Every screenshot on this site was retaken from the <strong>published</strong> sites, with Playwright, for fifteen images in total. Until then, several had come from local development servers, which show the version I had on my machine, not the one you can open.",
-          "Doing that turned up a mistake in the previous article. I had written that the Pic Collage app loads in 221,263 compressed bytes. That figure was a <em>gzip -9</em> of my local build. The deployed app actually transfers <strong>337,866 bytes over twenty requests</strong>. The figure is now corrected in all three languages, and the section title went from 221 to 338 kilobytes.",
-          "The same session showed something nobody had noticed: the published app calls an analytics counter, GoatCounter, on a third-party origin when it loads. That is a request leaving the device, in an app whose whole argument is that nothing does. The argument is true of the photos and not of the visit, and that is how it has to be said."
-        ],
-        img: ""
-      },
-      {
-        title: "Two smaller things",
-        paragraphs: [
-          "Blog covers used to be imported through the bundler, which hashed them and served them as <em>immutable</em>. Four of them were byte-for-byte identical to project thumbnails that already existed, so the build shipped both copies. They now point at the thumbnail, which removes <strong>173,268 bytes</strong> and a chunk of pre-render code. The cost is the cache, because a public path is not immutable: covers are cached for one day instead of one year.",
-          "The contact form’s reCAPTCHA threshold went from 0.5 to 0.7. I am writing it down mainly to say what it does not do: the automated browser I tested with in August scored <strong>0.9</strong>, and this threshold would not have stopped it either. The form is really protected by the origin check, the rate limiter and the action check, and the score is a hint."
-        ],
-        img: ""
-      },
-      {
-        title: "What is not done",
-        paragraphs: [
-          "A visitor who returns to <em>/</em> starts in English. Their remembered choice cannot override a server redirect that is fixed on purpose, and that is the price of an <em>x-default</em> that does not lie.",
-          "The old addresses are 301s. Search ranking already earned on them is transferred, not kept as it was, and it will take a while to settle.",
-          "The demos still load Bootstrap, jQuery and Google Fonts. Those are behaviour rather than decoration: one demo is written in jQuery from top to bottom, and another opens its menu with a Bootstrap <em>collapse</em>. Removing them would mean rewriting an archived demo, not swapping an icon, and I have not decided whether that is worth doing.",
-          "The Schoulbus article still shows screenshots from the old design. The app no longer needs an account to try it, but adding a child, the step that unlocks every screen worth showing, did not go through under automation. That step needs a real phone and a real hand.",
-          "And the German on this site, this article included, has not been read by a native speaker yet."
+          "The snapshots, sixteen by then, became forty-eight, one per page and per language, each with the right language on its <em>html</em> tag. Each one lists its three versions and a default through <em>hreflang</em> tags, the sitemap born on 8 September lists them too, and the structured data declares the page’s language. On the 16th, I checked nine addresses in the Docker image: posing as a social network’s preview robot, I asked for <em>/fr/about</em> and got the French title, “À propos”. The test suite went from 106 to 158.",
+          "On 8 November, reworking this article, I ran the check again on the live site. <em>/fr/about</em> answers with <em>lang=fr</em>, the title “À propos” and four <em>hreflang</em> tags, and both the site’s bare address and <em>/about</em> redirect to their English version. The build now produces 60 snapshots, with ten articles on the blog. The round trip that started all this is still there: the <em>/fr/about</em> snapshot doesn’t announce the French translations file in advance, though it now could.",
+          "A French reader who types the site’s bare address therefore lands in English, even if they picked French the day before, because the redirect happens before the browser reads their preference again. A permanent redirect is expected to pass on the ranking of the old addresses, but I haven’t looked at search results or visit numbers. And the German pages are online at their own addresses without anyone whose language it is having read them."
         ],
         img: ""
       }
@@ -615,78 +572,60 @@ export default {
   blogPost4: {
     title: "Twenty-seven megabytes of my own argument",
     title2:
-      "I spent 2023 telling an industry to write lighter code. Then I weighed <strong>my own site</strong>.",
+      "This site argues for leaner code, and it carried twenty-seven megabytes of images. When I fixed that, I even published a wrong figure.",
     sections: [
       {
-        title: "The article that came back to collect",
+        title: "15 August, between 9:07 and 11:59 pm",
         paragraphs: [
-          "The oldest thing on this blog is dated <em>22 July 2023</em>. It is called <strong>The future of Fintech</strong>, and it argues that a large share of an industry's emissions comes out of its own source code — that the fix is structural, unglamorous, and entirely available today. I still agree with all of it.",
-          "The site that served that article was running Quasar's default Material theme, <em>animate.css</em>, Roboto, five self-hosted font weights, and twenty-seven megabytes of screenshots. To read eleven hundred words about writing lighter code, you first downloaded several megabytes of PNG.",
-          "Nobody pointed this out. Nobody had to — the page loaded, the argument read fine, and page weight is the one defect a browser never reports. The rebuild happened in August 2026. This is the audit, with the numbers taken out of the repository rather than out of memory."
+          "On 15 August 2026 at 9:07 pm, I moved this site to the current version of Quasar, the framework it runs on. At 9:38, a second commit redid nearly everything else. At 11:59, a third one undid a good part of the second. I thought I was spending the evening on a technical upgrade.",
+          "The 9:38 message mentions a fix made in passing: the blog’s only article showed nothing but its title. The page read its sections with a function that returns an empty string when given an array, and nothing complained. That July 2023 piece was about the energy cost of code in fintech. I reworked it on 8 November, and it now says that machines are what consume, and code decides how many of them are needed. Its six photos, 13,254,631 bytes on their own, sat in the public folder waiting for an article body that didn’t render (I didn’t check for how long).",
+          "The first version of this article went out on 7 September. Reworking it on 8 November, I recounted every figure from the repository, which is public, and three of the ones I had published were wrong. I correct them where they come up, and whatever changed in between carries its date."
         ],
         img: ""
       },
       {
-        title: "Twenty-three files, twenty-seven megabytes",
+        title: "Thirty-nine megabytes, from memory",
         paragraphs: [
-          "The measurement is reproducible: every raster image the site itself served, at the last commit before the redesign, outside the folder of archived demos. <strong>Twenty-three files, 27,430,278 bytes.</strong> Converted to WebP at the same dimensions and the same crops, the identical set weighs <strong>905,298 bytes</strong> — thirty times less, for pictures nobody could tell apart on the page.",
-          "The distribution is worse than the total. A single project thumbnail, <em>x1.png</em>, was 4.26 MB: a decorative screenshot in a grid, heavier than most of the pages it linked to. <em>liberty.png</em> was 3.48 MB and became 27 KB, a factor of a hundred and twenty-eight. An illustration inside the 2023 article itself, <em>future.jpg</em>, went from 2,794,288 bytes to 17,888 — <strong>a hundred and fifty-six times smaller</strong>.",
-          "None of this required judgement. No image was recomposed, recropped or dropped, and nothing was redesigned to make the number look better. It is the same site, encoded competently. That is the uncomfortable part: the entire saving had been available at any point in the preceding three years, to anyone who thought to look."
+          "The 9:38 commit announced images going from 39 MB to 872 KB. I copied both numbers into the README, then into the repository’s instructions, without recounting. It was when I went to quote them here, in September, that I measured them, and neither held.",
+          "Just before the redesign, the site carried 23 images outside the project demos, 27,430,278 bytes in all. Seventeen were converted to WebP and went from 27,369,166 to 905,298 bytes. The other six, four favicons, the logo and the social preview image, stayed PNG. I don’t know where the 39 came from: counting the demos as well gives 42.6 MB, which doesn’t match either.",
+          "Redoing that count in November, I found an error in the correction itself. I had written that the images kept their dimensions, and they didn’t. The photos from the fintech article, the widest at 6,334 pixels, came down to 1,200, and the screenshots, 1,900 to 2,500 pixels wide, to 1,000. The pixel count fell by a factor of 9.4 and the weight by 30, so the encoding only accounts for a factor of about three. The one image kept at its size confirms it: an 800 × 2,000 infographic that went from 211,220 to 77,698 bytes.",
+          "The fintech article’s opening photo shows the gap well. It was 5,284 × 3,522 pixels and 2,794,288 bytes, for a frame the page caps at 180 pixels high. It is now 1,200 × 800 pixels and 17,888 bytes, 156 times lighter, and still more than the screen shows of it. The README and the instructions have carried the right figure since 8 September."
         ],
         img: ""
       },
       {
-        title: "The fonts I was proud of self-hosting",
+        title: "The fonts, which I had miscounted",
         paragraphs: [
-          "Self-hosting your fonts is good practice, and I had done it: five weights of Lexend plus Ubuntu, as TrueType, <strong>696,052 bytes</strong> shipped to every first-time visitor. Good practice applied without measurement is just a different way of being heavy.",
-          "Four of those five Lexend weights were not referenced by a single rule in the stylesheet. They went, along with Ubuntu, and along with Roboto — which Quasar loads by default and which nothing in the design ever asked for. What remains is three weights, Medium, SemiBold and Bold, used <em>for display text only</em>.",
-          "Body copy now falls back to the system stack, and metadata to the system monospace. A visitor arriving on this page downloads <strong>no webfont at all for the text they came to read</strong>. That is not a compromise I had to argue myself into: system text renders instantly and looks like the operating system it is running on, which is usually what you wanted from a paragraph."
+          "The September version said the site sent five weights of Lexend plus the Ubuntu font to every first-time visitor, 696,052 bytes. The number is right, but it counts something else: what the redesign deleted from the repository. The repository held seven Lexend files, and the stylesheet declared only one of them, along with Ubuntu, 397,628 bytes as TTF. A rule forced Ubuntu onto every element, and I haven’t checked page by page which of the two the browser actually downloaded.",
+          "After the redesign, three Lexend weights remained for headings, 302,216 bytes, and body text moved to the fonts already installed on the reader’s device. Since 8 September, those three files have been WOFF2, 116,240 bytes together.",
+          "Two icon fonts, still there on 7 September, left the same day. The site loaded them for thirty-eight glyphs, and the commit that removes them puts their weight at about 470 KB; that is an estimate, and I haven’t redone it. The thirty-eight icons are now SVG paths, kept in a source file of 29,089 bytes."
         ],
         img: ""
       },
       {
-        title: "animate.css, for four transitions",
+        title: "Ninety-eight animations, two in use",
         paragraphs: [
-          "The old build imported <em>animate.css</em> in full in order to produce roughly four entrance effects. <em>quasar.config.js</em> now reads <em>animations: []</em>, and those effects are a handful of hand-written keyframes plus one <em>IntersectionObserver</em> in fifty-four lines.",
-          "One detail in there is worth more than the bytes it saved. The reveal's starting state — <em>opacity: 0</em> — is not written onto the elements. It is scoped to <em>html.has-reveal</em>, a class the observer adds to the document <strong>itself</strong>, as it starts. If JavaScript does not run, or <em>IntersectionObserver</em> does not exist, that class is never added and every element simply stays visible.",
-          "The naive version of this component hides your content and waits for a script to reveal it. When the script fails, the page is blank and has thrown nothing at all. Under <em>prefers-reduced-motion</em> the whole mechanism is neutralised a second way: elements are marked as arrived and no animation is ever scheduled."
+          "The old site declared every animate.css animation that ships with Quasar: 98 animations, 29,617 bytes of CSS. It used two, an entrance from below on the main layout and a pulse on the projects page. (I counted four in September, reading too fast.)",
+          "They were replaced by a single 54-line file. It watches for an element entering the screen and adds a class to it, and a few CSS keyframes do the rest. When readers have asked their system to reduce motion, nothing moves.",
+          "The detail that matters is elsewhere: elements are hidden only if the script has first put a class on the page. If it fails, or arrives after everything else, everything stays visible, and no content needs the animation in order to appear."
         ],
         img: ""
       },
       {
-        title: "Design as a budget, not a mood",
+        title: "The first design lasted two hours and twenty-one minutes",
         paragraphs: [
-          "The redesign has a name in the repository — <strong>low-carbon editorial</strong> — and it is a constraint before it is a taste. The site makes an argument about weight, so it has to look like the thing it argues for: ink on warm paper, one-pixel rules, oversized display type against monospace metadata, and a single acid accent.",
-          "What that rules out is the expensive half of contemporary web design. No hero photography, no gradients, no decorative imagery, no illustration set, no motion library. Every visual effect on this site is a border, a colour, or a typographic size — the three things that cost nothing to send.",
-          "Underneath, the entire interface is custom properties declared once in <em>src/css/app.sass</em>: colours, radii, shadows, and a fluid type scale from <em>--step--1</em> to <em>--step-6</em>. Dark mode redefines those variables and nothing else, and a component is not allowed to hardcode a colour. That started as a maintainability rule and turned out to be a weight rule as well, because a design with one source of truth stops accumulating the one-off assets that a design without one accumulates."
+          "The 9:38 commit gave the home page a large banner with an animated gradient. The 11:59 one removed it, and its message, which I wrote in French, says why (translated here): the site “argued for green coding dressed as a SaaS template”, and “the form said nothing about the point”. In its place came dark ink on warm paper, one-pixel rules, large Lexend against small monospaced labels, and a single acid green accent, never used as a text colour.",
+          "These choices live in one place, a stylesheet that declares every colour, radius, shadow and type size once. The dark theme only redefines those values, and no component is allowed to write a colour by hand. That is what I meant by a design budget: a closed list of values, where every addition shows up in the diff. The type scale ran from <em>--step--1</em> to <em>--step-6</em> in September; one smaller step, <em>--step--2</em>, has been added since, and only that one."
         ],
         img: ""
       },
       {
-        title: "The rules that outlive the commit",
+        title: "Nothing weighs the result",
         paragraphs: [
-          "Deleting twenty-six megabytes is a morning's work. Keeping them deleted is the real problem, and it is not a technical one. The build does not care: drop a three-megabyte PNG into <em>public/screenshots/</em> tomorrow and everything passes. The site still builds. It is merely heavier, and <strong>nothing anywhere says so</strong>.",
-          "So it is written down instead, as the fifth of five non-negotiable principles in the repository's <em>CLAUDE.md</em>, in the form that matters: not <em>use WebP</em>, but <em>putting a PNG here undoes this work without anything signalling it</em>. A rule that states its own consequence survives contact with the person in a hurry — including when that person is me, a year from now.",
-          "It is worth being precise about the gap. The test suite is real and it is strict: it refuses a translation key present in one language and missing in the other, an empty string, a route that fails to resolve, a page that mounts with a console error, an illustration referenced but absent from disk. <strong>None of it measures a single byte.</strong> Correctness is held by the gate. Weight is held by a sentence in a document."
-        ],
-        img: ""
-      },
-      {
-        title: "The number I had been repeating",
-        paragraphs: [
-          "Writing this article meant checking a figure I had been quoting for weeks. The redesign commit says <em>39 Mo → 872 Ko</em>. The README repeats it. It appears in the project's own working notes. I went to reproduce it, and I could not.",
-          "Reconstructed from the git objects, the images actually converted came to <strong>27.4 MB</strong>, and came out at <strong>905 KB</strong>. There is a 42.6 MB in the history — that is every raster in the repository at that commit, <em>including the folder of archived demos nobody touched</em>. Thirty-nine is neither: a remembered number, close enough to the shape of the truth to go unchallenged, repeated until it had become documentation.",
-          "The conversion was real, and the ratio is still thirty to one. But the story I was telling about it was a third wrong, and it had been written, committed and published without anyone — me first — running the two commands that would have checked it. Round numbers travel further than true ones. It is an odd thing to find in an article about measuring instead of assuming, which is why it is a section here and not a footnote."
-        ],
-        img: ""
-      },
-      {
-        title: "What is not done",
-        paragraphs: [
-          "The site's own pages are as light as I know how to make them. The domain is not. <em>public/projects_folder/</em> — the archived student templates served in an iframe from the projects page — is <strong>fifteen megabytes</strong>, and one of them, <em>x1</em>, is twelve on its own: four stock photographs of between 2.1 and 3.7 MB each, precisely the thing this article is about. They are untouched, and by an order of magnitude they are the heaviest thing on the domain.",
-          "The honest reason is that converting them means editing HTML I did not write, inside archived work whose only purpose is to show what I was building in 2019. That is a defensible trade, and it is still a trade — so it goes in the reserve register rather than staying an impression, where the next person to read it is free to disagree.",
-          "Three smaller ones. Lexend still ships as TrueType, three files, 302 KB; WOFF2 would roughly halve that, and has not been done. There is no <em>sitemap.xml</em>, so articles are discoverable only through the blog index. And there is no page-weight budget in the pipeline: continuous integration lints, runs every test, builds, and checks that the API host really landed in the bundle — it does not weigh the output. A rule kept only in memory has a half-life, and I have just spent a section demonstrating mine.",
-          "Which is the summary, more or less. In 2023 I told an industry to do this. In 2026 the audit found the author of that article shipping twenty-seven megabytes of screenshots underneath it. Both of those are true, and only the second one taught me anything."
+          "The repository’s instructions say that a PNG dropped into the screenshots folder undoes this work without anything flagging it. That is still true on 8 November. Tests check that every project screenshot and every article illustration exists as WebP, and continuous integration builds the site. Nothing measures its weight: a three-megabyte WebP screenshot would go through without a word.",
+          "The rest of the cleanup came after the first version of this article. On 8 September, the project demos, shown in a frame on their own pages, went from 15,207,015 to 1,376,401 bytes. One demo alone weighed 11,863,536 bytes, including three photos that nothing displayed any more. On 16 September, Font Awesome left the three demos that still loaded it: 500,746 bytes removed and 7,311 added, for seven glyphs.",
+          "The same day, I removed the second copy of this article’s cover, spotted on the 8th: it had been shipped twice, 31,540 bytes in the code and as many in the public folder. One PNG remains apart from the favicons, the social preview image, at 31,237 bytes. I haven’t checked whether every messaging app would accept a WebP in its place.",
+          "The demos still load Bootstrap, jQuery and fonts from third-party servers, and I haven’t decided whether to rewrite them or declare them archived. Continuous integration still has no weight budget. The next figure of this kind will end up like the one from 15 August, written in a commit message and then copied, until someone redoes the count by hand."
         ],
         img: ""
       }
@@ -878,7 +817,7 @@ export default {
         paragraphs: [
           "One of the ideas I offered was “reducing the number of lines of code”. I am withdrawing it. A three-line loop that rereads a whole table on every call costs more than a thirty-line function that reads only what it needs, and a single line importing an entire library can weigh more than the rest of the file.",
           "The other ideas hold up better. Optimise an algorithm so it does less work, to start with. And on mobile, stop an app from waking the phone or reloading data for no reason. The amount of data transferred is the easiest thing to watch: it shows up in the network tab of any browser, with nothing to install.",
-          "I tried it on this site, long after this article. During its redesign, in August 2026, its screenshots went from 27.4 MB to 905 KB, converted to WebP at the same dimensions, without a single line of logic having anything to do with it (another article tells how that figure itself had to be redone).",
+          "I tried it on this site, long after this article. During its redesign, in August 2026, its images went from 27.4 MB to 905 KB, converted to WebP and scaled down to 1,000 or 1,200 pixels wide, without a single line of logic having anything to do with it (another article tells how that figure itself had to be redone).",
           "I also suggested picking more energy-efficient programming languages. That is fair, and comparisons exist, but projects rarely switch language halfway through. My view is that what a program does needlessly usually weighs more than the language it does it in, and that is where I would start."
         ],
         img: "fintech"
