@@ -86,7 +86,7 @@ peuvent changer. Les articles cessent de partager le même squelette.
 - [x] `blogPost4` (vingt-sept mégaoctets) et `blogPost7` (la langue dans l'adresse) —
       les deux sur ce site, à faire ensemble pour qu'ils ne se répètent pas.
 - [x] `blogPost2` et `blogPost9` (Schoulbus).
-- [ ] `blogPost3` (Aura).
+- [x] `blogPost3` (Aura).
 - [ ] `blogPost5` (Royaume Foot).
 - [ ] `blogPost6` (Pic Collage Maker).
 - [ ] `blogPost8` (931 commits) — plus un post-scriptum : la boucle est allée jusqu'à
