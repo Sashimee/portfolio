@@ -33,8 +33,9 @@ ne s'y copie.
   avant que `porte` passe.
 - **Une branche par étape** depuis `main` (ce dépôt n'a pas de `dev`), une PR vers
   `main`, fusionnée par la boucle quand la CI est verte (autorisation permanente), puis
-  `verif-production` quelques minutes après. **Exception : l'étape 2 (pilote) attend
-  mon accord avant fusion.**
+  `verif-production` quelques minutes après. L'étape 2 (pilote) devait attendre mon
+  accord ; le 2026-11-08, j'ai tout accepté d'avance : **le pilote se fusionne comme
+  les autres**, et une étape ne se bloque que sur une vraie décision qui m'appartient.
 - **Couvertures** : chaque nouvel article a la sienne ; plus d'une couverture partagée
   par cinq articles (`baskewitsch.lu.webp` l'est aujourd'hui).
 - À la fin de chaque étape : un lot dans `docs/plan.md`, et R19 étendue.
@@ -49,15 +50,15 @@ ne s'y copie.
       son adresse et la commande de rafraîchissement dans `RESUME.md`.
 
 ### 1. Le guide de voix
-- [ ] **Source première : mes publications Facebook depuis 2013**, fournies le
+- [x] **Source première : mes publications Facebook depuis 2013**, fournies le
       2026-11-08 avec des observations déjà tirées, dans `voix-echantillons.md` du
       dossier hors dépôt. Partir de ces observations.
-- [ ] Sources secondaires, pour compléter : mes **courriels envoyés longs, mais pas les
+- [x] Sources secondaires, pour compléter : mes **courriels envoyés longs, mais pas les
       plus récents** (ceux-là sont générés par IA) — viser ceux d'avant 2025, en
       écarter tout ce qui sonne généré, ne pas s'attarder sur les fils juridiques,
       financiers ou familiaux ; on en tire un style, pas un contenu. Puis mes messages
       de chat (transcriptions Claude) et `blogPost1` (2023).
-- [ ] Écrire le guide dans le dossier hors dépôt : longueur et rythme des phrases,
+- [x] Écrire le guide dans le dossier hors dépôt : longueur et rythme des phrases,
       registre, tournures et mots qui reviennent, façon d'ouvrir et de conclure, humour,
       niveau de technicité, et une liste des **tics d'IA à proscrire** (squelette
       commun, chute en aphorisme, « ce n'est pas X, c'est Y », tirets cadratins en
@@ -66,10 +67,10 @@ ne s'y copie.
 
 ### 2. Pilote — `blogPost10` réécrit
 - [ ] Réécrire « Le test passait, et le ballon traversait le gardien » en FR selon le
-      guide, puis EN et DE. PR ouverte, **non fusionnée** : `RESUME.md` et le tableau
-      de bord la marquent **bloquée, en attente d'Alex**. Tant qu'elle l'est, la boucle
-      avance sur l'étape 3, qui n'en dépend pas.
-- [ ] Mes retours intégrés au guide ; fusion.
+      guide, puis EN et DE. PR fusionnée quand la CI est verte (accord donné d'avance
+      le 2026-11-08).
+- [ ] Ce que le pilote a appris intégré au guide ; je n'en relirai rien, la boucle
+      corrige le guide d'elle-même.
 
 ### 3. Fiches de faits (hors dépôt, sans attendre le pilote)
 - [ ] Pour chaque article neuf (4 à 8), compléter la fiche de recherche : chiffres
