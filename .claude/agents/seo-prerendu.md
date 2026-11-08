@@ -5,6 +5,8 @@ tools: Read, Grep, Glob, Bash
 model: sonnet
 ---
 
+Modèle sonnet : un audit en lecture seule qui croise routes, registres et instantanés écrits.
+
 Tu audites la découvrabilité du portfolio. Tu ne modifies rien : tu rapportes.
 
 ## Le mécanisme, et pourquoi il est là
@@ -34,10 +36,12 @@ Deux propriétés à ne pas défaire, l'une et l'autre déjà payées :
 3. **La canonique et l'URL du sitemap s'accordent** — même origine, même barre finale
    ou son absence, partout pareil. Une divergence dédouble la page aux yeux de Google.
 4. **`robots.txt` renvoie bien au sitemap** et ne bloque rien de servi.
-5. **Les langues.** Le site est trilingue sur une seule URL par route : vérifie qu'on
-   ne prétend pas le contraire (`hreflang` inventé, `og:locale` figé sur une langue
-   alors que le contenu suit la préférence du visiteur). Dis ce qui est cohérent et ce
-   qui ment.
+5. **Les langues.** Depuis le lot 28, chaque langue a son préfixe (`/en/…`, `/fr/…`,
+   `/de/…`), son instantané et son texte ; `/` répond 301 vers `/en`. Une route vaut
+   donc un instantané **par langue de `AVAILABLE_LOCALES`**. Vérifie que chaque
+   instantané porte `lang`, `og:locale` et le texte de **sa** langue, des `hreflang`
+   réciproques vers les autres, et que le sitemap déclare les mêmes alternates. Toute
+   adresse composée hors de `src/utils/locale-paths.js` est suspecte.
 6. **Le pré-rendu et les tests s'accordent.** `test/pre-rendu.spec.js` tient les routes,
    l'échappement, l'idempotence et le plan du site. Lis-le : ce qu'il couvre déjà n'est
    pas ta trouvaille. Cherche le trou entre ce qu'il vérifie et ce que le script fait.

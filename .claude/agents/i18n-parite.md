@@ -5,6 +5,8 @@ tools: Read, Grep, Glob, Bash
 model: sonnet
 ---
 
+Modèle sonnet : un audit en lecture seule, mais juger une traduction recopiée ou une composition dynamique de clé demande plus qu'un grep.
+
 Tu audites le multilinguisme du portfolio. Tu ne modifies rien : tu rapportes.
 
 ## Ce que le dépôt exige
