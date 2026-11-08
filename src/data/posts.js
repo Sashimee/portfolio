@@ -22,6 +22,13 @@
 /** Du plus récent au plus ancien : `Blog.vue` numérote dans cet ordre. */
 export default [
   {
+    slug: 'globe-then-revert',
+    key: 'blogPost13',
+    date: '2026-11-08',
+    cover: '/screenshots/globe-revert.webp',
+    illustrations: 'article_thirteen'
+  },
+  {
     slug: 'continue-the-loop',
     key: 'blogPost12',
     date: '2026-11-08',
