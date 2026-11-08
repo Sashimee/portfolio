@@ -166,56 +166,43 @@ export default {
   blogPost10: {
     title: "The test passed, and the ball went through the goalkeeper",
     title2:
-      "A follow-up on the football game for children: three bugs that <strong>only a screen could show</strong>, and one that a test could hold once it was understood.",
+      "A test suite that stayed green, and a verdict no assertion would have returned: <em>“Perfect, except the bird and the snowflake, which don’t look right at all.”</em>",
     sections: [
       {
-        title: "A month after launch",
+        title: "The keeper dives, and the ball goes through anyway",
         paragraphs: [
-          "Royaume Foot, the 3D football game I built for children, has had a month of real play since the last article. In that month there were 35 commits, unit tests went from 144 to 173, the end-to-end suite stayed at 17 out of 17, and the bundle sits at 338 KB gzipped.",
-          "None of those numbers found the bugs that mattered. Children found them, or a tablet did, or I did by watching a replay frame by frame. This article is about the distance between a green suite and a game that looks right."
+          "If you open Royaume Foot today and shoot close to the keeper, you can watch him dive, touch the ball, and then let it carry on through him into the back of the net. The game still counts a save. I fixed this on 17 September, and as I go back over this article on 8 November, the fix is still sitting on the development branch, unreleased.",
+          "This follow-up is for people who test games, or any interface where what you see matters as much as what you compute. The first article on this football game for children was about a test that fails when the game turns mean. This one is about what the first real games found between 8 and 17 September, while the suite stayed green.",
+          "The rules were fine. A shot is judged where the ball crosses the goal line, and that judgement was never wrong. So how does a save that counts end up looking like a goal, and why did no test notice? The keeper stands 0.55 units in front of the line, and the rebound started from the crossing point: behind his hands, already in the goal. The tests were about the verdict, and the verdict was right.",
+          "The fix fits in one function, <em>punchClear()</em>, which sends the ball back from the keeper’s own plane, where his hands really are, upwards and towards the shooter. Five tests come with it. One of them checks that once the ball is flying again, it never heads back into the net."
         ],
         img: ""
       },
       {
-        title: "The ball that teleported",
+        title: "Two shots, one result",
         paragraphs: [
-          "In keeper mode, the ball sometimes jumped. It left the foot, flew for a moment and then appeared somewhere else further along its path.",
-          "The cause was a timer. The ball’s flight was computed from the time elapsed in the current <em>phase</em> of the game, and some phase changes reset that clock in the middle of a shot. The ball did not know a phase had changed. It simply learned that less time had passed than a moment ago, and drew itself where that earlier time put it.",
-          "The fix gives the ball its own clock, which nothing else resets. The test that came with it does not check a position. It checks an <strong>invariant</strong>: whatever happens around it, the ball’s flight time never goes backwards. That test would have caught the bug on the first day, and I only knew to write it once I had seen the jump."
+          "In the other mode the roles swap: the child keeps goal and a creature shoots. There the bug was even easier to see. At the exact moment the shot was judged, the ball jumped back to the shooter’s feet and flew the whole way again, under a verdict already given. Two shots on screen, one on the scoreboard.",
+          "Keeper mode splits each attempt into phases (wind-up, flight, settle), with a timer that restarts from zero at every change. The ball was drawn from that timer. When the verdict moved the game on to the next phase, the elapsed time dropped back to zero, and the ball obediently put itself back at the start of its path.",
+          "The ball now has its own clock, in <em>keeperGame.ts</em>, which phase changes leave alone. The test that guards it checks an invariant: within one attempt, the ball’s flight time never goes backwards. I could have written that test on day one (I only wrote it after watching the ball fly twice). It has been live since 11 September."
         ],
         img: ""
       },
       {
-        title: "Through the goalkeeper",
+        title: "Twenty-two pixels on a phone",
         paragraphs: [
-          "The worst one was a save that looked like a goal. The keeper reached the ball, the game counted a save, and the ball carried on <em>through</em> him into the net before bouncing back out.",
-          "The rules were right. Whether a shot is saved is decided where the ball crosses the goal line, and the keeper stands <strong>0.55 units in front of that line</strong>. The rebound was launched from the crossing point, which is behind his hands and therefore already inside the goal. For a few frames, every save played out a goal.",
-          "The fix is one function, <em>punchClear()</em>, which starts the rebound from the keeper’s own plane, where his hands actually are. Five tests hold it. The original suite was green the whole time, because it tested the verdict, and the verdict was never wrong."
+          "In cup mode, a banner announces each leg of the tournament. It sat a fixed number of pixels above the bottom of the screen, while the ball sits at a fixed point on the pitch, so the bigger the screen, the closer the two get. On a phone 390 pixels wide they missed each other by 22 pixels. On a 768-wide tablet the banner lay right across the ball, and a tablet is exactly what a six-year-old is holding.",
+          "The banner moved into the HUD stack, which the layout keeps off the pitch at every size. Since that day, the repository’s instructions file says to check a tablet and a short landscape window as well, not just the phone."
         ],
         img: ""
       },
       {
-        title: "What a tablet hides",
+        title: "A cow with knives",
         paragraphs: [
-          "In cup mode, a banner announces each leg of the tournament. On a large screen it sat above the action. On a tablet, the screen a child actually uses, it covered the ball.",
-          "The banner moved into the HUD. The lesson is the usual one, and I keep relearning it: a layout checked at one size has been checked at one size. The same week, a second shot could be fired after a save had already counted, and a guard now stops the ball being sent twice."
-        ],
-        img: ""
-      },
-      {
-        title: "“Perfect, except the bird and the snowflake”",
-        paragraphs: [
-          "The game has three new keeper species. After a playtest, the verdict was: <em>“Perfect, except the bird and the snowflake do not resemble at all.”</em> Two of the three, the griffin and the yeti, did not read as what they were meant to be.",
-          "This is the kind of feedback no test produces. A dedicated agent, the creature sculptor, redrew both from primitive shapes with one rule: each creature must be <strong>nameable at the distance it is seen in the game</strong>, not in a close-up.",
-          "Two smaller features came out of the same playtest. Children can now pick one accessory for the princess or the knight. The ball picker now shows the ball you are choosing, not just its name. And the dragon had his wings rebuilt, because, in the words of the commit, he was reading “as a cow with knives”."
-        ],
-        img: ""
-      },
-      {
-        title: "What is not done",
-        paragraphs: [
-          "The goalkeeper fix and the new creatures are merged into the development branch and <strong>not yet released</strong>. The game online still has the ball that goes through the keeper. That will change at the next release, and I would rather say so than have this article describe a version you cannot play yet.",
-          "The creature redesign has not been through a second playtest. Whether the griffin now reads as a griffin is a question for the same small judges, not for me."
+          "The rest was about how the keepers look, and there no test had anything to say. The dragon first: his wings were turned a quarter turn and faced the camera edge-on, so the widest part of him showed up as two thin blades. The commit that rebuilt them on 8 September promises he will stop reading “as a cow with knives”.",
+          "Then came three new species, a unicorn, a griffin and a yeti, and a playtest that found them ugly. It was right about all three. The smile every keeper shares swept an arc upwards, which draws a frown: every species was sulking, and the yeti, who has the widest mouth, mostly looked cross from the penalty spot. The griffin had inherited the dragon’s edge-on wings, and the unicorn’s mane was drawn behind her neck, where the camera never looks.",
+          "Those fixes have been live since 15 September. The next verdict, translated here from the French, was: “Perfect, except the bird and the snowflake, which don’t look right at all.” The bird is the griffin, and Flocon, French for snowflake, is the yeti’s name. On the 17th I had the repository’s creature agent redraw both, with a single rule: you should be able to name the animal at the distance you see it while playing, not only in close-up on the wardrobe turntable.",
+          "Two smaller additions date from the same ten days. Since 10 September the princess or the knight can wear an accessory, just one, which replaces the crown, the plume or the cape (a sixth tab would have been 41 pixels wide on a 320 phone). And the ball picker finally shows the ball you are choosing rather than its name.",
+          "That picker, the redrawn griffin and yeti, and the keeper rebound are waiting together on the development branch. I have no new playtest to report since, so I don’t know whether the griffin finally reads as a griffin. Nor do I have a test that could tell me. If you have found a way to check automatically that a 3D shape is recognisable twenty-five units from the camera, please write to me: I don’t have an idea that holds up yet."
         ],
         img: ""
       }

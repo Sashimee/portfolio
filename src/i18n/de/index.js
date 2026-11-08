@@ -167,56 +167,43 @@ export default {
   blogPost10: {
     title: "Der Test war grün, und der Ball flog durch den Torwart",
     title2:
-      "Fortsetzung zum Fußballspiel für Kinder: drei Fehler, die <strong>nur ein Bildschirm zeigen konnte</strong>, und einer, den ein Test halten konnte, sobald er verstanden war.",
+      "Eine Testsuite, die grün blieb, und ein Urteil, das keine Assertion geliefert hätte: <em>„Perfekt, außer dem Vogel und der Schneeflocke, die sehen überhaupt nicht so aus.“</em>",
     sections: [
       {
-        title: "Ein Monat nach dem Start",
+        title: "Der Torwart springt, und der Ball fliegt trotzdem durch",
         paragraphs: [
-          "Royaume Foot, das 3D-Fußballspiel, das ich für Kinder gebaut habe, hat seit dem letzten Artikel einen Monat echter Spiele hinter sich. In diesem Monat gab es 35 Commits, die Unit-Tests stiegen von 144 auf 173, die End-to-End-Suite blieb bei 17 von 17, und das Bundle liegt bei 338 KB komprimiert.",
-          "Keine dieser Zahlen hat die Fehler gefunden, auf die es ankam. Kinder haben sie gefunden, oder ein Tablet, oder ich, als ich eine Wiederholung Bild für Bild angesehen habe. Dieser Artikel handelt vom Abstand zwischen einer grünen Suite und einem Spiel, das richtig aussieht."
+          "Wenn Sie Royaume Foot heute öffnen und knapp neben den Torwart schießen, sehen Sie ihn springen und den Ball berühren, und dann fliegt der Ball durch ihn hindurch ins Netz. Das Spiel zählt trotzdem eine Parade. Ich habe den Fehler am 17. September behoben, und während ich diesen Artikel am 8. November noch einmal überarbeite, liegt die Korrektur weiterhin unveröffentlicht im Entwicklungszweig.",
+          "Diese Fortsetzung ist für alle, die Spiele testen, oder überhaupt Oberflächen, bei denen das Sichtbare so viel zählt wie das Berechnete. Der erste Artikel über dieses Fußballspiel für Kinder handelte von einem Test, der fehlschlägt, wenn das Spiel gemein wird. Dieser hier erzählt, was die ersten echten Spiele zwischen dem 8. und dem 17. September gefunden haben, während die Suite grün blieb.",
+          "Die Regeln stimmten. Ein Schuss wird dort beurteilt, wo der Ball die Torlinie überquert, und dieses Urteil war nie falsch. Wie kann dann eine korrekt gezählte Parade wie ein Tor aussehen, und warum hat kein Test es bemerkt? Der Torwart steht 0,55 Einheiten vor der Linie, und der Abpraller startete am Kreuzungspunkt, also hinter seinen Händen und schon im Tor. Die Tests prüften das Urteil, und das Urteil war richtig.",
+          "Die Korrektur passt in eine Funktion, <em>punchClear()</em>, die den Ball von der Ebene des Torwarts aus zurückschickt, dort, wo seine Hände wirklich sind, nach oben und in Richtung Schütze. Fünf Tests gehören dazu. Einer davon prüft, dass der Ball, sobald er wieder fliegt, nie mehr Richtung Netz geht."
         ],
         img: ""
       },
       {
-        title: "Der Ball, der sich teleportierte",
+        title: "Zwei Schüsse, ein Ergebnis",
         paragraphs: [
-          "Im Torwartmodus sprang der Ball manchmal. Er verließ den Fuß, flog einen Moment und tauchte dann weiter vorn auf seiner Bahn wieder auf.",
-          "Die Ursache war eine Uhr. Der Flug des Balls wurde aus der Zeit berechnet, die in der aktuellen <em>Phase</em> des Spiels vergangen war, und manche Phasenwechsel setzten diese Uhr mitten im Schuss zurück. Der Ball wusste nicht, dass sich eine Phase geändert hatte. Er erfuhr nur, dass weniger Zeit vergangen war als einen Augenblick zuvor, und zeichnete sich dort, wo ihn diese frühere Zeit hinstellte.",
-          "Die Korrektur gibt dem Ball eine eigene Uhr, die nichts anderes zurücksetzt. Der Test dazu prüft keine Position. Er prüft eine <strong>Invariante</strong>: Was auch immer um ihn herum geschieht, die Flugzeit des Balls läuft nie rückwärts. Dieser Test hätte den Fehler am ersten Tag gefunden, und ich wusste erst, dass ich ihn schreiben musste, als ich den Sprung gesehen hatte."
+          "Im anderen Modus sind die Rollen vertauscht: Das Kind steht im Tor, und eine Kreatur schießt. Dort war der Fehler noch deutlicher zu sehen. Genau in dem Moment, in dem der Schuss beurteilt wurde, sprang der Ball zurück zu den Füßen des Schützen und flog den ganzen Weg noch einmal, unter einem Urteil, das schon gefallen war. Zwei Schüsse auf dem Bildschirm, einer auf der Anzeigetafel.",
+          "Der Torwartmodus teilt jeden Versuch in Phasen (Anlauf, Flug, Ausrollen), mit einem Zeitgeber, der bei jedem Wechsel wieder bei null beginnt. Aus genau diesem Zeitgeber wurde der Ball gezeichnet. Wenn das Urteil die nächste Phase auslöste, fiel die vergangene Zeit auf null, und der Ball setzte sich brav an den Anfang seiner Bahn zurück.",
+          "Der Ball hat jetzt eine eigene Uhr, in <em>keeperGame.ts</em>, die Phasenwechsel nicht mehr anrühren. Der Test, der sie bewacht, prüft eine Invariante: Innerhalb eines Versuchs läuft die Flugzeit des Balls nie rückwärts. Diesen Test hätte ich am ersten Tag schreiben können (geschrieben habe ich ihn erst, nachdem ich den Ball zweimal fliegen sah). Er ist seit dem 11. September online."
         ],
         img: ""
       },
       {
-        title: "Durch den Torwart",
+        title: "Zweiundzwanzig Pixel auf dem Handy",
         paragraphs: [
-          "Am schlimmsten war eine Parade, die wie ein Tor aussah. Der Torwart erreichte den Ball, das Spiel zählte eine Parade, und der Ball flog <em>durch</em> ihn hindurch ins Netz, bevor er wieder herausprallte.",
-          "Die Regeln stimmten. Ob ein Schuss gehalten wird, entscheidet sich daran, wo der Ball die Torlinie kreuzt, und der Torwart steht <strong>0,55 Einheiten vor dieser Linie</strong>. Der Abpraller startete am Kreuzungspunkt, also hinter seinen Händen und damit schon im Tor. Für ein paar Bilder spielte jede Parade ein Tor.",
-          "Die Korrektur ist eine einzige Funktion, <em>punchClear()</em>, die den Abpraller von der Ebene des Torwarts selbst starten lässt, dort, wo seine Hände wirklich sind. Fünf Tests halten sie. Die ursprüngliche Suite blieb die ganze Zeit grün, weil sie das Urteil testete, und das Urteil war nie falsch."
+          "Im Pokalmodus kündigt ein Banner jede Runde des Turniers an. Es saß eine feste Anzahl Pixel über dem unteren Bildschirmrand, der Ball dagegen an einem festen Punkt auf dem Spielfeld: Je größer der Bildschirm, desto näher kommen sich die beiden. Auf einem 390 Pixel breiten Handy verfehlten sie sich um 22 Pixel. Auf einem 768 Pixel breiten Tablet lag das Banner quer über dem Ball, und ein Tablet ist genau das, was ein sechsjähriges Kind in der Hand hält.",
+          "Das Banner ist in den Stapel der Spielanzeige gewandert, den das Layout bei jeder Größe vom Spielfeld fernhält. Seit diesem Tag steht in der Anweisungsdatei des Repositorys, dass man auch ein Tablet und ein niedriges Fenster im Querformat prüft, nicht nur das Handy."
         ],
         img: ""
       },
       {
-        title: "Was ein Tablet verdeckt",
+        title: "Eine Kuh mit Messern",
         paragraphs: [
-          "Im Pokalmodus kündigt ein Banner jede Runde des Turniers an. Auf einem großen Bildschirm schwebte es über dem Geschehen. Auf einem Tablet, dem Bildschirm, den ein Kind tatsächlich benutzt, verdeckte es den Ball.",
-          "Das Banner ist in die Spielanzeige gewandert. Die Lehre ist die übliche, und ich lerne sie immer wieder neu: Ein Layout, das in einer Größe geprüft wurde, wurde in einer Größe geprüft. In derselben Woche konnte ein zweiter Schuss abgehen, nachdem eine Parade schon gezählt war; eine Sperre verhindert jetzt, dass der Ball zweimal getreten wird."
-        ],
-        img: ""
-      },
-      {
-        title: "„Perfekt, außer dem Vogel und der Schneeflocke“",
-        paragraphs: [
-          "Das Spiel hat drei neue Torwartarten. Nach einer Testrunde kam das Urteil: <em>„Perfekt, außer dem Vogel und der Schneeflocke, die überhaupt nicht ähnlich sehen.“</em> Zwei von drei, der Greif und der Yeti, waren nicht als das zu erkennen, was sie sein sollten.",
-          "Das ist die Art Rückmeldung, die kein Test liefert. Ein eigener Agent, der Kreaturenbildhauer, hat beide aus Grundformen neu gebaut, mit einer Regel: Jede Kreatur muss <strong>in der Entfernung benennbar sein, in der man sie im Spiel sieht</strong>, nicht in der Nahaufnahme.",
-          "Zwei kleinere Funktionen kamen aus derselben Runde. Kinder können jetzt ein Accessoire für die Prinzessin oder den Ritter wählen. Die Ballauswahl zeigt jetzt den Ball, den man wählt, und nicht nur seinen Namen. Und der Drache bekam neue Flügel, weil er, in den Worten des Commits, „wie eine Kuh mit Messern“ aussah."
-        ],
-        img: ""
-      },
-      {
-        title: "Was nicht fertig ist",
-        paragraphs: [
-          "Die Torwartkorrektur und die neuen Kreaturen sind in den Entwicklungszweig gemergt und <strong>noch nicht veröffentlicht</strong>. Im Live-Spiel fliegt der Ball weiterhin durch den Torwart. Das ändert sich mit der nächsten Veröffentlichung, und ich sage das lieber, als diesen Artikel eine Version beschreiben zu lassen, die man noch nicht spielen kann.",
-          "Die Überarbeitung der Kreaturen hat noch keine zweite Testrunde gesehen. Ob der Greif jetzt wie ein Greif aussieht, ist eine Frage für dieselben kleinen Richter, nicht für mich."
+          "Der Rest drehte sich um das Aussehen der Torhüter, und dazu hatte kein Test etwas zu sagen. Zuerst der Drache: Seine Flügel waren um eine Vierteldrehung verdreht und zeigten der Kamera nur ihre Kante, sodass sein breitester Teil als zwei dünne Klingen erschien. Der Commit, der sie am 8. September neu gebaut hat, verspricht, dass er nicht mehr „wie eine Kuh mit Messern“ aussieht.",
+          "Dann kamen drei neue Arten, ein Einhorn, ein Greif und ein Yeti, und eine Testrunde, die sie hässlich fand. Das Urteil stimmte bei allen dreien. Das Lächeln, das alle Torhüter teilen, beschrieb einen Bogen nach oben, und das ergibt einen Schmollmund: Sämtliche Arten zogen eine Schnute, und der Yeti mit dem breitesten Mund wirkte vom Elfmeterpunkt aus vor allem verärgert. Der Greif hatte die Kantenflügel des Drachen geerbt, und die Mähne des Einhorns war hinter seinem Hals gezeichnet, wohin die Kamera nie blickt.",
+          "Diese Korrekturen sind seit dem 15. September online. Das nächste Urteil lautete, aus dem Französischen übersetzt: „Perfekt, außer dem Vogel und der Schneeflocke, die sehen überhaupt nicht so aus.“ Der Vogel ist der Greif, und Flocon, französisch für Schneeflocke, ist der Name des Yetis. Am 17. habe ich beide vom Kreaturen-Agenten des Repositorys neu zeichnen lassen, mit einer einzigen Regel: Man muss das Tier aus der Entfernung benennen können, aus der man es beim Spielen sieht, nicht nur in der Nahaufnahme auf dem Drehteller der Garderobe.",
+          "Zwei kleinere Ergänzungen stammen aus denselben zehn Tagen. Seit dem 10. September können Prinzessin oder Ritter ein Accessoire tragen, ein einziges, das Krone, Federbusch oder Umhang ersetzt (ein sechster Reiter wäre auf einem 320 Pixel breiten Handy 41 Pixel breit gewesen). Und die Ballauswahl zeigt endlich den Ball, den man wählt, statt nur seines Namens.",
+          "Diese Ballauswahl, der neu gezeichnete Greif und Yeti und der Abpraller am Torwart warten gemeinsam im Entwicklungszweig. Von einer neuen Testrunde kann ich seitdem nicht berichten, und deshalb weiß ich nicht, ob der Greif inzwischen wie ein Greif aussieht. Einen Test, der mir das sagen könnte, habe ich auch nicht. Wenn Sie einen Weg gefunden haben, automatisch zu prüfen, ob eine 3D-Form fünfundzwanzig Einheiten vor der Kamera erkennbar ist, schreiben Sie mir bitte: Eine Idee, die trägt, habe ich noch nicht."
         ],
         img: ""
       }

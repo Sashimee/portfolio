@@ -169,56 +169,43 @@ export default {
   blogPost10: {
     title: "Le test passait, et le ballon traversait le gardien",
     title2:
-      "Suite du jeu de football pour enfants : trois bugs que <strong>seul un écran pouvait montrer</strong>, et un qu’un test a su tenir une fois compris.",
+      "Une suite de tests restée verte, et un verdict qu’aucune assertion n’aurait rendu : <em>« Parfait, sauf l’oiseau et le flocon qui ne ressemblent pas du tout. »</em>",
     sections: [
       {
-        title: "Un mois après le lancement",
+        title: "Le gardien plonge, et le ballon passe quand même",
         paragraphs: [
-          "Royaume Foot, le jeu de football en 3D que j’ai construit pour les enfants, a connu un mois de vraies parties depuis le dernier article. Dans ce mois : 35 commits, des tests unitaires passés de 144 à 173, une suite de bout en bout restée à 17 sur 17, et un bundle de 338 Ko compressé.",
-          "Aucun de ces chiffres n’a trouvé les bugs qui comptaient. Ce sont les enfants qui les ont trouvés, ou une tablette, ou moi en regardant un ralenti image par image. Cet article parle de la distance entre une suite verte et un jeu qui a l’air juste."
+          "Si vous lancez Royaume Foot aujourd’hui et tirez près du gardien, vous pouvez le voir plonger, toucher le ballon, puis laisser le ballon filer à travers lui jusqu’au fond du filet. Le jeu compte pourtant un arrêt. J’ai corrigé ce défaut le 17 septembre, et au moment où je reprends cet article, le 8 novembre, le correctif attend toujours sur la branche de développement, pas encore publié.",
+          "J’écris cette suite pour ceux qui testent des jeux, ou n’importe quelle interface où ce qu’on voit compte autant que ce qu’on calcule. Le premier article sur ce jeu de foot pour enfants racontait un test qui échoue quand le jeu devient méchant. Celui-ci raconte ce que les premières vraies parties ont trouvé entre le 8 et le 17 septembre, pendant que la suite restait verte.",
+          "Les règles, elles, étaient justes. Un tir est jugé à l’endroit où le ballon franchit la ligne de but, et ce jugement n’a jamais été faux. Alors comment un arrêt bien compté peut-il ressembler à un but, et pourquoi aucun test ne l’a vu ? Le gardien se tient 0,55 unité devant la ligne, et le rebond partait du point de franchissement, donc de derrière ses mains, déjà dans le but. Les tests portaient sur le verdict, et le verdict était bon.",
+          "Le correctif tient dans une fonction, <em>punchClear()</em>, qui fait repartir le ballon depuis le plan du gardien, là où sont vraiment ses mains, vers le haut et vers le tireur. Cinq tests l’accompagnent. L’un d’eux vérifie qu’une fois relancé, le ballon ne repart plus jamais vers le filet."
         ],
         img: ""
       },
       {
-        title: "Le ballon qui se téléportait",
+        title: "Deux tirs, un seul résultat",
         paragraphs: [
-          "En mode gardien, le ballon sautait parfois. Il quittait le pied, volait un instant, puis réapparaissait plus loin sur sa trajectoire.",
-          "La cause était une horloge. Le vol du ballon se calculait depuis le temps écoulé dans la <em>phase</em> de jeu en cours, et certains changements de phase remettaient ce compteur à zéro en plein tir. Le ballon ne savait pas qu’une phase avait changé. Il apprenait seulement que moins de temps s’était écoulé qu’un instant plus tôt, et se dessinait là où ce temps-là le plaçait.",
-          "La correction donne au ballon sa propre horloge, que rien d’autre ne remet à zéro. Le test qui l’accompagne ne vérifie pas une position. Il vérifie un <strong>invariant</strong> : quoi qu’il arrive autour de lui, le temps de vol du ballon ne recule jamais. Ce test aurait attrapé le bug dès le premier jour, et je n’ai su l’écrire qu’après avoir vu le saut."
+          "Dans l’autre mode, les rôles s’inversent : l’enfant garde les cages et une créature tire. Là, le défaut se voyait encore mieux. Au moment précis où le tir était jugé, le ballon revenait aux pieds du tireur et refaisait tout le trajet, sous un verdict déjà donné. À l’écran, deux tirs ; au tableau, un seul.",
+          "Le mode gardien découpe chaque tentative en phases (l’élan, le vol, la retombée), avec une horloge qui repart de zéro à chaque changement. Le ballon était dessiné à partir de cette horloge-là. Quand le jugement faisait passer à la phase suivante, le temps écoulé retombait à zéro, et le ballon se replaçait sagement au début de sa trajectoire.",
+          "Le ballon a maintenant sa propre horloge, dans <em>keeperGame.ts</em>, et les changements de phase n’y touchent plus. Le test qui la garde vérifie un invariant : dans une même tentative, le temps de vol du ballon ne recule jamais. Ce test-là, j’aurais pu l’écrire le premier jour (je ne l’ai écrit qu’après avoir vu le ballon partir deux fois). Il est en ligne depuis le 11 septembre."
         ],
         img: ""
       },
       {
-        title: "À travers le gardien",
+        title: "Vingt-deux pixels sur un téléphone",
         paragraphs: [
-          "Le pire était un arrêt qui ressemblait à un but. Le gardien atteignait le ballon, le jeu comptait un arrêt, et le ballon continuait <em>à travers</em> lui jusque dans le filet avant de rebondir dehors.",
-          "Les règles étaient justes. Un tir est arrêté ou non selon l’endroit où le ballon franchit la ligne de but, et le gardien se tient <strong>0,55 unité devant cette ligne</strong>. Le rebond partait du point de franchissement, qui est derrière ses mains et donc déjà dans le but. Pendant quelques images, chaque arrêt jouait un but.",
-          "La correction tient en une fonction, <em>punchClear()</em>, qui fait partir le rebond du plan du gardien lui-même, là où sont vraiment ses mains. Cinq tests la tiennent. La suite d’origine est restée verte tout du long, parce qu’elle testait le verdict, et que le verdict n’a jamais été faux."
+          "En mode coupe, un bandeau annonce chaque étape du tournoi. Il était placé à un nombre fixe de pixels du bas de l’écran, alors que le ballon est posé à un point fixe du terrain : plus l’écran grandit, plus les deux se rapprochent. Sur un téléphone de 390 pixels de large, ils se manquaient de 22 pixels. Sur une tablette de 768, le bandeau passait en plein sur le ballon, et la tablette est justement l’écran qu’un enfant de six ans a entre les mains.",
+          "Le bandeau a rejoint la pile de l’interface de jeu, que la mise en page tient hors du terrain à toutes les tailles. Depuis ce jour-là, le fichier de consignes du dépôt demande de regarder aussi une tablette et une fenêtre basse en paysage, et plus seulement le téléphone."
         ],
         img: ""
       },
       {
-        title: "Ce qu’une tablette cache",
+        title: "Une vache avec des couteaux",
         paragraphs: [
-          "En mode coupe, un bandeau annonce chaque étape du tournoi. Sur un grand écran, il se tenait au-dessus de l’action. Sur une tablette, l’écran qu’un enfant utilise vraiment, il couvrait le ballon.",
-          "Le bandeau est passé dans l’interface de jeu. La leçon est la même que d’habitude, et je ne cesse de la réapprendre : une mise en page vérifiée à une taille a été vérifiée à une taille. La même semaine, un second tir pouvait partir après qu’un arrêt avait déjà été compté ; une garde empêche désormais le ballon d’être envoyé deux fois."
-        ],
-        img: ""
-      },
-      {
-        title: "« Parfait, sauf l’oiseau et le flocon »",
-        paragraphs: [
-          "Le jeu compte trois nouvelles espèces de gardiens. Après une séance de test, le verdict est tombé : <em>« Parfait, sauf l’oiseau et le flocon qui ne ressemblent pas du tout. »</em> Deux sur trois, le griffon et le yéti, ne se lisaient pas comme ce qu’ils devaient être.",
-          "C’est le genre de retour qu’aucun test ne produit. Un agent dédié, le sculpteur de créatures, a redessiné les deux à partir de formes primitives, avec une seule règle : chaque créature doit être <strong>nommable à la distance où on la voit dans le jeu</strong>, pas en gros plan.",
-          "Deux fonctions plus petites sont sorties de la même séance. Les enfants peuvent désormais choisir un accessoire pour la princesse ou le chevalier. Le sélecteur de ballon montre maintenant le ballon qu’on choisit, et plus seulement son nom. Et le dragon a vu ses ailes refaites, parce que, selon les mots du commit, il se lisait « comme une vache avec des couteaux »."
-        ],
-        img: ""
-      },
-      {
-        title: "Ce qui n’est pas fait",
-        paragraphs: [
-          "La correction du gardien et les nouvelles créatures sont fusionnées dans la branche de développement et <strong>pas encore publiées</strong>. Le jeu en ligne a toujours le ballon qui traverse le gardien. Cela changera à la prochaine publication, et je préfère le dire plutôt que de laisser cet article décrire une version à laquelle on ne peut pas encore jouer.",
-          "La refonte des créatures n’est pas passée par une seconde séance de test. Savoir si le griffon se lit enfin comme un griffon est une question pour les mêmes petits juges, pas pour moi."
+          "Le reste s’est joué sur l’allure des gardiens, et là, aucun test n’avait son mot à dire. Le dragon d’abord : ses ailes étaient tournées d’un quart de tour et faisaient face à la caméra par la tranche, si bien que la partie la plus large de la bête s’affichait comme deux lames fines. Le commit qui les a refaites, le 8 septembre, promet qu’il cessera de se lire « comme une vache avec des couteaux ».",
+          "Puis sont arrivées trois nouvelles espèces, la licorne, le griffon et le yéti, et une séance de test qui les a trouvées laides. Le verdict était juste pour les trois. Le sourire commun à tous les gardiens balayait un arc vers le haut, ce qui dessine une moue : toutes les espèces faisaient la tête, et le yéti, qui a la plus grande bouche, avait surtout l’air fâché vu du point de penalty. Le griffon avait hérité des ailes par la tranche du dragon, et la crinière de la licorne était dessinée derrière son cou, là où la caméra ne regarde jamais.",
+          "Ces corrections sont en ligne depuis le 15 septembre. Le verdict suivant a été : « Parfait, sauf l’oiseau et le flocon qui ne ressemblent pas du tout. » L’oiseau, c’est le griffon, et Flocon est le nom du yéti. Le 17, je les ai fait redessiner par l’agent du dépôt chargé des créatures, avec une seule règle : on doit pouvoir nommer la bête à la distance où on la voit en jouant, et pas seulement en gros plan dans le vestiaire, où elle tourne sur un plateau.",
+          "Deux ajouts plus modestes datent des mêmes dix jours. Depuis le 10 septembre, la princesse ou le chevalier peut porter un accessoire, un seul, qui remplace la couronne, le plumet ou la cape (un sixième onglet aurait fait 41 pixels de large sur un téléphone de 320). Et le sélecteur de ballon montre enfin le ballon qu’on choisit, plutôt que son nom.",
+          "Ce sélecteur, le griffon et le yéti redessinés et le rebond du gardien attendent ensemble sur la branche de développement. Je n’ai pas de nouvelle séance de test à raconter depuis, et je ne sais donc pas si le griffon se lit enfin comme un griffon. Je n’ai pas non plus de test qui saurait me le dire. Si vous avez trouvé une façon de vérifier automatiquement qu’une forme 3D se reconnaît à vingt-cinq unités de la caméra, écrivez-moi : je n’ai pas encore d’idée qui tienne."
         ],
         img: ""
       }
