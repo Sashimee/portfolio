@@ -22,6 +22,13 @@
 /** Du plus récent au plus ancien : `Blog.vue` numérote dans cet ordre. */
 export default [
   {
+    slug: 'continue-the-loop',
+    key: 'blogPost12',
+    date: '2026-11-08',
+    cover: '/screenshots/pic-collage-loop.webp',
+    illustrations: 'article_twelve'
+  },
+  {
     slug: 'never-been-started',
     key: 'blogPost11',
     date: '2026-11-08',

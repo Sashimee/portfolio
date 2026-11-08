@@ -166,6 +166,63 @@ export default {
     cta: "Construisons quelque chose de plus léger",
     top: "Haut de page"
   },
+  blogPost12: {
+    title: "Trente-sept fois amnésique, cent soixante-deux commits",
+    title2:
+      "Trois messages de ma part, vingt-cinq heures de session. Sa mémoire a été remplacée trente-sept fois par un résumé, et rien de son travail n’est en ligne.",
+    sections: [
+      {
+        title: "Trois messages en vingt-cinq heures",
+        paragraphs: [
+          "Voici, en entier, ce que j’ai écrit à la session. Le 7 octobre à 8 h 40 : <em>« continue the loop »</em>. Le 8 octobre à 6 h 30 : <em>« Why stop on usage limit ? »</em>. Le même jour à 9 h 40 : <em>« Réessayer »</em>. Entre le premier commit, à 7 h 53 le 7, et le dernier, à 9 h 41 le 8, le dépôt de <a href=\"https://github.com/Sashimee/Pic-Collage-Maker\" target=\"_blank\" rel=\"noopener\">Pic Collage Maker</a> a reçu 162 commits (109 le premier jour, 53 le second) et 63 <em>pull requests</em> fusionnées dans la branche de développement.",
+          "Pour être honnête, la consigne ne partait pas de rien. La boucle reprenait une session du matin même, qui avait écrit à 7 h 53 une feuille de route de 61 points en neuf phases, <em>docs/pro-roadmap.md</em>, et les quatre premiers commits sont antérieurs à mon message. Cette session-là, je ne l’ai plus : sa transcription n’est plus sur le disque, et ce que j’en sais, c’est ce qu’elle a laissé dans le dépôt et une ligne du fichier de reprise dont je parle plus bas. Il faut aussi compter le planificateur de <em>/loop</em>, qui a renvoyé deux fois « continue the loop » pendant la nuit. Mes mots sont donc arrivés cinq fois, dont trois tapés par moi.",
+          "Ces deux renvois, à 1 h 47 et 2 h 08, sont tombés sur la limite d’usage de la session, levée à 4 h 10 d’après l’avis. Après eux, plus aucun réveil n’était programmé, et il n’y a aucun commit entre 1 h 48 et 6 h 33. Quand j’ai demandé pourquoi, à 6 h 30, l’agent m’a répondu qu’il s’était arrêté parce que l’avis annonçait une marge très courte, et qu’il préférait s’arrêter plutôt que d’être coupé au milieu d’une fusion. L’argument se tient, sauf qu’il ne restait rien pour le réveiller. (Le même matin, à 6 h 29, je venais de relancer une autre boucle, celle de l’article sur les 931 commits : je faisais ma tournée.)",
+          "La seconde limite est tombée à 8 h 31, avec une levée annoncée pour 11 h 10, et plus rien n’est venu entre 8 h 20 et 9 h 41. À 9 h 40, j’ai tapé « Réessayer », et c’est passé. Je ne sais pas pourquoi une heure et demie avant l’heure dite, et je ne l’ai pas cherché. La dernière fusion, la musique de fond du diaporama vidéo (n° 187), date de 9 h 41, et le rapport final de 9 h 42."
+        ],
+        img: ""
+      },
+      {
+        title: "Trente-sept résumés, et un fichier qu’on relisait peu",
+        paragraphs: [
+          "Les chiffres de cette section viennent de la transcription de la session, que je suis seul à avoir. Quand le contexte d’une session Claude Code se remplit, l’outil remplace la conversation par un résumé que le modèle écrit lui-même, et le travail reprend de là. C’est ce qu’on appelle une compaction. Il y en a eu 37, toutes automatiques : 31 le 7 octobre et 6 le 8, à l’heure de Luxembourg. Chacune s’est déclenchée vers 167 000 jetons (entre 166 567 et 172 253) et a ramené le contexte entre 10 842 et 17 590. Les résumés font de 10 191 à 18 074 caractères, 13 631 en médiane, soit quelques pages pour remplacer plusieurs heures.",
+          "J’ai voulu savoir ce qui passait d’un résumé à l’autre. Les 37 citent « continue the loop », et les 37 citent aussi « go ma drilla », qui ne vient pas de cette session-là : c’est la ligne <em>Goal</em> de <em>RESUME.md</em>, une formule à moi tapée dans la session du matin (je ne la défendrai pas). L’objectif a survécu parce qu’il avait été écrit une fois dans un fichier, lu à la première minute, puis recopié de résumé en résumé.",
+          "Les règles ont suivi le même chemin, par accumulation. À 16 h 45 le 7, le fichier de reprise note qu’un sous-agent, <em>perf-budget</em>, chargé de mesurer le poids des imports, a modifié du code et qu’on l’a annulé. À partir de là, chaque résumé emporte la consigne de lui dire de ne rien modifier. Ces sous-agents ont été lancés 175 fois sur la session : 46 fois celui des chaînes de traduction, 39 celui qui garde le canevas, 31 celui des tests de bout en bout, 24 l’auditeur d’accessibilité, 22 <em>perf-budget</em>, 11 celui des captures de régression, plus deux lancements génériques.",
+          "Le fichier de reprise, lui, s’en sort moins bien. Il a été écrit plus d’une centaine de fois, presque toujours par un <em>sed -i</em> sur la même ligne d’état, et sa toute première lecture, à 8 h 40, ouvre la session. Mais après une compaction, il n’a été rouvert dans les huit actions suivantes que 4 fois sur 37 : le reste du temps, l’agent repartait du résumé. Sa liste <em>Done</em> s’arrête au n° 34, à 19 h 52 le 7, alors qu’il restait quatorze heures de travail, et celle des tickets ouverts s’arrête au n° 105. Ces comptes sont les miens, tirés de la transcription avec une méthode grossière : je les donne comme des ordres de grandeur.",
+          "À 9 h 41, l’agent l’a dit lui-même : ses lignes <em>Next</em> et <em>State</em> étaient périmées. Il est allé relire les <em>pull requests</em>, je cite, <em>« so the report is based on actual PR data rather than my notes »</em>. Le rapport s’est donc appuyé sur l’historique de git et la liste des fusions sur GitHub, que personne n’avait à tenir à jour."
+        ],
+        img: ""
+      },
+      {
+        title: "La mise en page magique n’est branchée nulle part",
+        paragraphs: [
+          "Parmi les 63 fusions, un titre m’a fait envie : <em>« magic layout engine packs photos by aspect and faces »</em>, commit eff498c, n° 122, à 17 h 50 le 7. Le fichier qu’il ajoute, <em>src/lib/magicLayout.ts</em>, range les photos en rangées ou en colonnes justifiées d’après leur rapport largeur sur hauteur, et rien d’autre : il ne contient pas une ligne sur les visages. Il n’est importé nulle part, sauf par son test. La <em>pull request</em> le dit (« not imported anywhere yet »), et le ticket n° 121, qui doit le brancher sur le panneau de mise en page, est toujours ouvert. La partie « faces » du titre est une fonction <em>facePan()</em> ajoutée à côté, dans le module de détection.",
+          "Ce qui est branché, c’est le remplissage intelligent (n° 123, b38a633, 18 h 07). Il attribue chaque photo à une case en minimisant la perte au recadrage plus trois fois la part de visage coupée, avec une recherche exacte jusqu’à douze cases et une méthode gloutonne au-delà. C’est soigné.",
+          "Les visages, en revanche, viennent de la vieille heuristique, <em>faceRegionsIn</em> : elle échantillonne les pixels couleur peau dans une bande qui va de 10 à 70 % de la hauteur et de 20 à 80 % de la largeur, en prend le centre de gravité et y pose une boîte large de 0,35 fois le petit côté de l’image, et d’un quart plus haute que large. Une seule, au plus, par photo, et la <em>pull request</em> le reconnaît. Sur une photo de groupe, le remplissage protège donc un rectangle posé au milieu de la peau visible, qui peut tomber entre deux personnes.",
+          "Les 31 modèles en quatre catégories (n° 118, 17 h 17) existent bien, je les ai comptés dans le code. Je le précise parce que la réécriture de « Pic Collage Maker, tout dans l’onglet » avait déjà dû retirer de sa liste un outil de retouche, <em>healTool.ts</em>, que rien n’importait. La détection de visages, elle, est la même sur la branche de développement qu’en ligne : elle a seulement été découpée en deux fonctions pour pouvoir être testée."
+        ],
+        img: ""
+      },
+      {
+        title: "La fuite de GPS était ailleurs",
+        paragraphs: [
+          "Le n° 173 (9f27969, 7 h 34 le 8) retire par défaut les coordonnées GPS des JPEG exportés. Sa propre description reconnaît que les exports partaient déjà sans métadonnées EXIF, parce que le canevas réencode l’image, et que le code qui réinjecte les EXIF ne lisait jamais les photos importées : ce sont des <em>blob:</em>, et il ne lit que les <em>data:image/jpeg</em>. La garantie existait, la <em>pull request</em> l’écrit noir sur blanc et lui ajoute un test, ce qui a sa valeur.",
+          "La vraie fuite est dans le ticket n° 171, ouvert vingt-cinq minutes plus tôt, à 7 h 09, et toujours ouvert : les fichiers de projet <em>.piccollage</em>. Depuis a928599 (n° 141, 21 h 54 le 7), qui corrige le ticket n° 137, ces fichiers emportent les octets d’origine des photos, et donc leurs EXIF avec la position. En réparant une perte, la boucle a ouvert une fuite, et c’est elle qui l’a signalée.",
+          "La version publiée ne fuit pas, pour une raison peu glorieuse : ses fichiers <em>.piccollage</em> n’embarquent aucune photo, comme le dit l’article de septembre. Le jour où la branche de développement partira en production, la correction et la fuite partiront ensemble, sauf si le n° 171 est réglé avant."
+        ],
+        img: ""
+      },
+      {
+        title: "Rien de tout ça n’est en ligne",
+        paragraphs: [
+          "Le 8 novembre vers 16 h 14, <a href=\"https://sashimee.github.io/Pic-Collage-Maker/\" target=\"_blank\" rel=\"noopener\">l’application publiée</a> sert un <em>version.json</em> qui répond <em>{\"build\":\"9ba5bec8\"}</em>, modifié le 12 septembre à 0 h 40. Le déploiement ne part que d’un <em>push</em> sur <em>main</em> ou d’un lancement manuel, et la seule <em>pull request</em> jamais ouverte vers <em>main</em> est la n° 7, fusionnée ce même 12 septembre à 0 h 35. La branche de développement a 64 commits d’avance, et l’écart fait 380 fichiers, +29 407 et −6 715 lignes (le fichier de verrouillage et des PNG compris). Aucun des 162 commits n’est publié.",
+          "Le gestionnaire de tickets en garde une trace étrange. Le dépôt compte 119 tickets, dont 118 ouverts, et 107 de ceux-là ont été ouverts le 7 octobre. Les <em>pull requests</em> disent bien <em>Closes #…</em>, mais GitHub ne ferme un ticket que sur une fusion dans la branche par défaut. L’agent le savait, il l’a noté dans son fichier de reprise et répété dans son rapport : les tickets réglés <em>« will only close themselves when dev is merged into main »</em>. Le travail fait s’affiche donc comme du travail à faire.",
+          "Côté tests, le rapport final annonce 718 tests unitaires sur 718 et 47 tests navigateur sur 47 pour la dernière fusion, avec 209,6 Ko de JavaScript chargé d’emblée pour un budget de 218,9. Un « 81/81 » de bout en bout circule aussi, mais il date de 9 h 24 le 7, bien avant le test hors ligne (n° 161, f9b3e7a, 23 h 30), qui tourne contre la version construite ; sa <em>pull request</em> a vérifié une fois qu’il échoue bien si l’on bloque le service worker. La suite complète, passée dans le n° 169 vers 1 h 38, donnait 182 réussites et 2 échecs, tous deux à l’audit d’accessibilité de l’écran d’accueil : l’étiquette lue par les lecteurs d’écran, « 1 photos », y était écrite en dur, en anglais. Elle est corrigée depuis 6 h 33 (799ba6f) sur la branche de développement, et en ligne, elle dit toujours « 1 photos ». Les fichiers de tests de bout en bout sont passés de 15 à 46, et rien n’a été essayé sur un vrai téléphone.",
+          "Le rapport de 9 h 42 commence par <em>« Nothing has gone to main »</em>. Tous les points de la feuille de route du n° 9 au n° 66 ont une fusion, sauf quatre (38, 42, 47 et 62), et il finit sur onze rubriques de décisions qui m’attendent : le contraste de l’accent en thème sombre, à 3,86:1 (n° 159), l’essai de la vidéo sur un téléphone, et en tête le seuil Lighthouse (n° 133). Le score de performance mobile tourne entre 0,73 et 0,74 pour un minimum de 0,75, et ce seul écart retient la réception de photos partagées depuis d’autres applications (n° 136) et la sauvegarde (n° 152). Ce seuil, c’est mon dépôt qui l’a relevé à 0,75, le 11 septembre à 14 h 20 (1f8d123). Je baisse la barre que j’ai posée moi-même il y a deux mois, ou je relance une boucle de vingt-cinq heures pour gagner un centième ?"
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost11: {
     title: "L’agent m’a dit que le projet n’avait jamais commencé",
     title2:

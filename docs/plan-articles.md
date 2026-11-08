@@ -97,7 +97,7 @@ peuvent changer. Les articles cessent de partager le même squelette.
 - [x] **Dawa's Rise** — le jeu d'étudiants de 2020 relancé, l'agent qui affirmait que le
       projet n'avait jamais existé, et l'endpoint qui acceptait n'importe quel score.
       Couverture : `dawa.webp` existe, en faire une neuve si besoin.
-- [ ] **Pic Collage Maker, deuxième partie** — 162 commits sur une seule consigne,
+- [x] **Pic Collage Maker, deuxième partie** — 162 commits sur une seule consigne,
       « continue the loop », et 37 compactions de contexte.
 - [ ] **Le site d'une photographe** — deux jours sur un globe, puis un `revert` ; des
       règles qu'un agent ne doit pas enfreindre ; les budgets de performance en CI.

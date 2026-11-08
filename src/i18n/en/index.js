@@ -163,6 +163,63 @@ export default {
     cta: "Let's build something lighter",
     top: "Back to top"
   },
+  blogPost12: {
+    title: "Thirty-seven blackouts, a hundred and sixty-two commits",
+    title2:
+      "Three messages from me to a twenty-five-hour session. Its memory was swapped for a summary thirty-seven times, and none of its work is live.",
+    sections: [
+      {
+        title: "Three messages in twenty-five hours",
+        paragraphs: [
+          "Here is everything I wrote to the session, in full. On 7 October at 08:40: <em>“continue the loop”</em>. On 8 October at 06:30: <em>“Why stop on usage limit ?”</em>. Later that day, at 09:40: <em>“Réessayer”</em>, French for “retry”. Between the first commit, at 07:53 on the 7th, and the last one, at 09:41 on the 8th, the <a href=\"https://github.com/Sashimee/Pic-Collage-Maker\" target=\"_blank\" rel=\"noopener\">Pic Collage Maker</a> repository got 162 commits (109 on the first day, 53 on the second) and 63 pull requests merged into the development branch.",
+          "To be fair, the instruction didn’t come out of nowhere. The loop was picking up a session from that same morning, which at 07:53 had written <em>docs/pro-roadmap.md</em>, a 61-item roadmap in nine phases, and the first four commits predate my message. I no longer have that session: its transcript is gone from the disk, and all I know of it is what it left in the repository, plus one line of the <em>RESUME.md</em> handoff file I’ll get to below. The <em>/loop</em> scheduler also counts, since it sent “continue the loop” twice more during the night. So my words arrived five times, and I typed three of them.",
+          "Those two re-sends, at 01:47 and 02:08, ran into the session’s usage limit, due to lift at 04:10 according to the notice. After them, no wakeup was scheduled, and there isn’t a single commit between 01:48 and 06:33. When I asked why, at 06:30, the agent said it had stopped because the notice warned of a very short allowance, and it would rather stop than be cut off in the middle of a merge. Fair enough, except nothing was left to wake it up. (That same morning, at 06:29, I had just restarted another loop, the one from the article about 931 commits: I was doing my rounds.)",
+          "The second limit hit at 08:31, with the reset announced for 11:10, and nothing came between 08:20 and 09:41. At 09:40 I typed “Réessayer”, and it went through. I don’t know why it worked an hour and a half early, and I didn’t look into it. The last merge, background music for the slideshow video (#187), is from 09:41, and the final report from 09:42."
+        ],
+        img: ""
+      },
+      {
+        title: "Thirty-seven summaries, and a file seldom reread",
+        paragraphs: [
+          "The figures in this section come from the session’s transcript, which only I have. When a Claude Code session fills its context, the tool replaces the conversation with a summary the model writes itself, and work resumes from there. That’s called compaction. There were 37, all automatic: 31 on 7 October and 6 on the 8th, Luxembourg time. Each one fired at around 167,000 tokens (between 166,567 and 172,253) and brought the context back down to between 10,842 and 17,590. The summaries run from 10,191 to 18,074 characters, 13,631 at the median: a few pages standing in for several hours.",
+          "I wanted to know what made it from one summary to the next. All 37 quote “continue the loop”, and all 37 also quote “go ma drilla”, which doesn’t come from that session at all: it’s the <em>Goal</em> line of <em>RESUME.md</em>, a phrase of mine typed in the morning session (I won’t try to defend it). The goal survived because it had been written down once in a file, read in the first minute, then copied from summary to summary.",
+          "The rules travelled the same way, by piling up. At 16:45 on the 7th, the handoff file notes that a subagent, <em>perf-budget</em>, whose job is to measure the weight of imports, had edited code and had its changes reverted. From then on, every summary carries the instruction to tell it not to edit anything. Those subagents were launched 175 times over the session: 46 times the translation-strings one, 39 the canvas guard, 31 the end-to-end runner, 24 the accessibility auditor, 22 <em>perf-budget</em>, 11 the visual-regression one, plus two generic launches.",
+          "The handoff file itself fares worse. It was written over a hundred times, nearly always by a <em>sed -i</em> on the same status line, and reading it was the very first thing the session did at 08:40. But after a compaction, it was reopened within the next eight actions only 4 times out of 37: the rest of the time, the agent carried on from the summary. Its <em>Done</em> list stops at #34, at 19:52 on the 7th, with fourteen hours of work still to come, and its list of filed issues stops at #105. These counts are mine, pulled from the transcript with a rough method: take them as orders of magnitude.",
+          "At 09:41 the agent said so itself: its <em>Next</em> and <em>State</em> lines were stale. It went back to the pull requests <em>“so the report is based on actual PR data rather than my notes”</em>. So the report rested on the git history and the list of merges on GitHub, which nobody had to keep up to date."
+        ],
+        img: ""
+      },
+      {
+        title: "The magic layout isn’t wired to anything",
+        paragraphs: [
+          "Among the 63 merges, one title caught my eye: <em>“magic layout engine packs photos by aspect and faces”</em>, commit eff498c, #122, at 17:50 on the 7th. The file it adds, <em>src/lib/magicLayout.ts</em>, arranges photos into justified rows or columns from their aspect ratio, and nothing else: there isn’t one line about faces in it. Nothing imports it except its own test. The pull request says as much (“not imported anywhere yet”), and issue #121, which is meant to wire it into the Layout panel, is still open. The “faces” in the title are a <em>facePan()</em> function added next door, in the detection module.",
+          "What is wired in is smart fill (#123, b38a633, 18:07). It assigns each photo to a cell by minimising crop loss plus three times the share of face cut off, with an exact search up to twelve cells and a greedy pass beyond. That part is careful work.",
+          "The faces, though, come from the old heuristic, <em>faceRegionsIn</em>: it samples skin-coloured pixels in a band from 10 to 70% of the height and 20 to 80% of the width, takes their centre of mass and drops a box there, 0.35 times the image’s shorter side in width and a quarter taller than it is wide. One box at most per photo, and the pull request admits it. On a group photo, smart fill therefore protects a rectangle sitting in the middle of the visible skin, which can land between two people.",
+          "The 31 templates in four categories (#118, 17:17) are real; I counted them in the code. I mention it because the rewrite of “Pic Collage Maker, all in one tab” already had to take a retouching tool, <em>healTool.ts</em>, off its list, since nothing imported it. Face detection, for its part, is the same on the development branch as online: it was only split into two functions so it could be tested."
+        ],
+        img: ""
+      },
+      {
+        title: "The GPS leak was somewhere else",
+        paragraphs: [
+          "Pull request #173 (9f27969, 07:34 on the 8th) strips GPS coordinates from exported JPEGs by default. Its own description admits that exports already left without EXIF metadata, because the canvas re-encodes the image, and the code that injects EXIF back never read imported photos: they are <em>blob:</em> URLs, and it only reads <em>data:image/jpeg</em> sources. The guarantee was already there; the pull request writes it down and adds a test for it, which is worth something.",
+          "The real leak is in issue #171, opened twenty-five minutes earlier, at 07:09, and still open: the <em>.piccollage</em> project files. Since a928599 (#141, 21:54 on the 7th), which fixes issue #137, those files carry the photos’ original bytes, and so their EXIF, location included. In fixing one loss, the loop opened a leak, and reported it itself.",
+          "The published version doesn’t leak, for a rather unglamorous reason: its <em>.piccollage</em> files contain no photos at all, as the September article says. The day the development branch goes to production, the fix and the leak will ship together, unless #171 is dealt with first."
+        ],
+        img: ""
+      },
+      {
+        title: "None of it is live",
+        paragraphs: [
+          "On 8 November at around 16:14, <a href=\"https://sashimee.github.io/Pic-Collage-Maker/\" target=\"_blank\" rel=\"noopener\">the published app</a> serves a <em>version.json</em> that reads <em>{\"build\":\"9ba5bec8\"}</em>, last modified on 12 September at 00:40. Deployment only runs on a push to <em>main</em> or a manual trigger, and the only pull request ever opened against <em>main</em> is #7, merged that same 12 September at 00:35. The development branch is 64 commits ahead, and the gap comes to 380 files, +29,407 and −6,715 lines (lockfile and some PNGs included). Not one of the 162 commits is published.",
+          "The issue tracker keeps an odd record of it. The repository has 119 issues, 118 of them open, and 107 of those were opened on 7 October. The pull requests do say <em>Closes #…</em>, but GitHub only closes an issue on a merge into the default branch. The agent knew: it wrote it in its handoff file and repeated it in its report: the fixed issues <em>“will only close themselves when dev is merged into main”</em>. So work that’s done shows up as work to do.",
+          "On tests, the final report gives 718 out of 718 unit tests and 47 out of 47 browser tests for the last merge, with 209.6 kB of JavaScript loaded up front against a 218.9 kB budget. An end-to-end “81/81” also gets quoted, but it dates from 09:24 on the 7th, well before the offline test (#161, f9b3e7a, 23:30), which runs against the production build; its pull request checked once that it does fail when the service worker is blocked. The full suite, run in #169 around 01:38, gave 182 passes and 2 failures, both from the accessibility audit of the start screen: the screen-reader label, “1 photos”, was hard-coded there, in English. It has been fixed on the development branch since 06:33 (799ba6f), and online it still says “1 photos”. End-to-end spec files went from 15 to 46, and nothing was tried on a real phone.",
+          "The 09:42 report opens with <em>“Nothing has gone to main”</em>. Every roadmap item from #9 to #66 has a merge except four (38, 42, 47 and 62), and it ends on eleven sections of decisions waiting on me: the accent contrast in dark mode, at 3.86:1 (#159), trying the video on a phone, and at the top the Lighthouse gate (#133). Mobile performance hovers between 0.73 and 0.74 against a minimum of 0.75, and that gap alone is holding back two features: receiving photos shared from other apps (#136) and backup (#152). My own repository raised that gate to 0.75, on 11 September at 14:20 (1f8d123). Do I lower the bar I set myself two months ago, or start another twenty-five-hour loop to win back a hundredth?"
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost11: {
     title: "The agent told me the project had never been started",
     title2:
