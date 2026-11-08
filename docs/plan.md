@@ -1288,3 +1288,20 @@ tableau des ouvertures et des fins déjà prises.
 
 *Réserve ouverte : **R40**. Réserve étendue : **R19** (quatre sections allemandes
 réécrites, relues par personne).*
+
+### Lot 34 — Les fiches de faits des articles neufs · fait le 2026-11-08
+
+**Étape 3 de `docs/plan-articles.md`.** Cinq fiches, une par article neuf, ajoutées à la
+recherche **hors dépôt** : chiffres revérifiés le jour même dans chaque dépôt (`git
+rev-list`, `git log`, `gh`), chronologie, quatre ou cinq moments, angle, titre
+provisoire, images possibles et ce qui en est exclu en plus de la règle générale.
+
+Les chiffres de la recherche tiennent, à une exception près : une expression comptée
+dans les transcriptions d'un projet passe de 487 à 490 occurrences, et la fiche dit
+pourquoi ce compte ne doit pas être présenté comme un nombre de revues. L'état de
+CoinPosh est noté tel qu'il était à 11 h 27 : sept vagues journalisées, travail actif ;
+il sera revérifié au moment d'écrire l'article qui en parle, placé en dernier pour ça.
+
+**Porte** : rejouée sur la branche avant la PR ; le lot ne touche que du Markdown.
+
+*R19 inchangée : aucun texte allemand dans ce lot. Aucune réserve ouverte.*

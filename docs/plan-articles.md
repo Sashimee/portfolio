@@ -73,7 +73,7 @@ ne s'y copie.
       corrige le guide d'elle-même.
 
 ### 3. Fiches de faits (hors dépôt, sans attendre le pilote)
-- [ ] Pour chaque article neuf (4 à 8), compléter la fiche de recherche : chiffres
+- [x] Pour chaque article neuf (4 à 8), compléter la fiche de recherche : chiffres
       revérifiés, chronologie, trois à cinq moments, angle et titre provisoire, images
       possibles, et ce qui est exclu. Vérifier l'état actuel de CoinPosh (en cours le
       2026-11-08).
