@@ -1234,3 +1234,22 @@ pour la marquer en rouge.
 **Porte** : rejouée sur la branche avant la PR, bien que le lot ne touche que du Markdown.
 
 *R19 inchangée : aucun texte allemand dans ce lot. Aucune réserve ouverte.*
+
+### Lot 32 — Le guide de voix · fait le 2026-11-08
+
+**Étape 1 de `docs/plan-articles.md`.** Un guide de voix, **hors dépôt** à côté de la
+recherche, dit comment les articles doivent sonner : registre, longueur et rythme des
+phrases, tournures, façons d'ouvrir et de conclure (à varier d'un article à l'autre),
+humour, niveau technique, et une liste de quinze tics d'IA à proscrire — squelette
+commun, chute en aphorisme, « ce n'est pas X, c'est Y », tirets cadratins en série, gras
+semé, français calqué sur l'anglais, connecteurs de dissertation, triades, mots de
+plaquette. Il s'appuie d'abord sur des publications de l'auteur, ensuite sur des
+courriels anciens (le style seulement, aucune phrase recopiée), des messages de chat et
+`blogPost1`, qui sert autant de contre-exemple que de modèle.
+
+Le plan change sur un point : le pilote (étape 2) n'attend plus d'accord, tout a été
+accepté d'avance ; une étape ne se bloque que sur une vraie décision.
+
+**Porte** : rejouée sur la branche avant la PR ; le lot ne touche que du Markdown.
+
+*R19 inchangée : aucun texte allemand dans ce lot. Aucune réserve ouverte.*
