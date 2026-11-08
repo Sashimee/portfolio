@@ -83,7 +83,7 @@ Réécriture libre : slugs, dates, faits et images gardés ; titres, plan et lon
 peuvent changer. Les articles cessent de partager le même squelette.
 - [x] `blogPost1` (2023, Fintech) — le plus proche de ma voix : le garder reconnaissable,
       le dater honnêtement, corriger ce qui a vieilli.
-- [ ] `blogPost4` (vingt-sept mégaoctets) et `blogPost7` (la langue dans l'adresse) —
+- [x] `blogPost4` (vingt-sept mégaoctets) et `blogPost7` (la langue dans l'adresse) —
       les deux sur ce site, à faire ensemble pour qu'ils ne se répètent pas.
 - [ ] `blogPost2` et `blogPost9` (Schoulbus).
 - [ ] `blogPost3` (Aura).

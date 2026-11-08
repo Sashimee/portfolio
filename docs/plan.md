@@ -22,9 +22,9 @@ réserve perdue : elle réapparaît en panne trois mois plus tard.
 | **R12** | **Rétrécie au lot 27** : `aura.webp`, `lien.webp` et `vie-privee.webp` sont repris de `mood.bas.lu` le 2026-09-16. Restent `page.webp` et `carte.webp`. Les illustrations de l'article sont des captures de `mood.bas.lu` prises le **2026-08-28**. L'humeur en ligne était alors une humeur de test (« D Test ») et la carte partagée la montre. | Une vraie humeur posée sur le compte, et les captures reprises. |
 | **R13** | Le dépôt `aura` annonce encore « *Nothing is deployed* » dans son `README.md` et son journal de réserves, alors que `mood.bas.lu` sert bien l'application. Le portfolio publie désormais le projet en `live` — les deux sources se contredisent. | Le `README.md` et le journal de réserves d'`aura` mis à jour après le déploiement du 2026-08-28. |
 | **R15** | **reCAPTCHA v3 n'a pas arrêté un navigateur automatisé.** L'envoi de vérification du 2026-08-28 a été fait par Playwright — un Chromium piloté, sans interaction humaine — et a obtenu **0.9**, très au-dessus du seuil de 0.5. reCAPTCHA v3 ne bloque pas : il *note*, et la note s'est trompée. La protection réelle du formulaire repose donc sur le contrôle d'origine, le limiteur de débit et la vérification d'action, pas sur le score. **Le seuil est passé à 0.7 au lot 24** — ce qui n'aurait pas arrêté ce navigateur-là, noté 0.9 : la réserve se rétrécit, elle ne se referme pas. | Rien ne « referme » ceci — c'est une propriété du produit. Reste la seconde moitié : alimenter l'**API d'annotations** d'Enterprise pour que le modèle apprenne, et voir un envoi réel passer le seuil relevé (R27). |
-| **R16** | Les chiffres de l'article (27,4 Mo → 905 Ko, 42,6 Mo, 696 052 octets de polices) sont reconstitués depuis les **objets git**, pas depuis ce qu'un navigateur télécharge. Le lot 16 a mesuré la production, mais **par fichier** (`curl` sur neuf ressources : 1 128 514 octets, aucune compressée), pas en chargement de page complet. | Un chargement à froid de l'accueil et d'un article mesuré dans un navigateur — octets reçus, images et document compris — **après** le déploiement du lot 16. |
-| **R17** | Premier article **sans aucune illustration de section** : les huit portent `img: ""`. Les trois articles précédents en ont tous au moins une, donc le rythme d'`article.vue` sans images n'a jamais été vu. Le dossier `article_four` est déclaré dans le registre mais n'existe pas sur le disque — inoffensif tant qu'aucune section ne le désigne. | L'article publié, lu sur téléphone en portrait, dans les deux thèmes — la vérification qui a refermé R14. |
-| **R19** | **L'allemand n'a été relu par personne dont c'est la langue.** Les 133 clés — dont quatre articles longs, à la syntaxe travaillée — ont été traduites ici. C'est exactement la réserve que l'article `blogPost2` pose lui-même à propos du luxembourgeois de Schoulbus, et elle vaut maintenant pour ce site. | Une relecture par un locuteur natif, au moins sur le chrome (`layout`, `home`, `contact`, `consent`, `footer`) et les titres d'articles. **Le lot 15 y a ajouté un cinquième article complet**, neuf sections de plus, écrites ici comme les autres. **Le lot 23 y ajoute un sixième**, huit sections, plus le texte d'un projet. **Le lot 29 y ajoute un septième**, huit sections. **Le lot 30 en ajoute trois** (huitième à dixième), vingt-deux sections. **Le lot 33 réécrit le dixième**, quatre sections. **Le lot 35 réécrit le premier**, cinq sections. |
+| **R16** | Les chiffres de l'article (27,4 Mo → 905 Ko, 42,6 Mo, 397 628 octets de polices déclarées avant la refonte — **le lot 36** a corrigé les 696 052, qui étaient ce que la refonte a retiré du dépôt) sont reconstitués depuis les **objets git**, pas depuis ce qu'un navigateur télécharge. Le lot 16 a mesuré la production, mais **par fichier** (`curl` sur neuf ressources : 1 128 514 octets, aucune compressée), pas en chargement de page complet. | Un chargement à froid de l'accueil et d'un article mesuré dans un navigateur — octets reçus, images et document compris — **après** le déploiement du lot 16. |
+| **R17** | Premier article **sans aucune illustration de section** : ses sections portent toutes `img: ""` (huit à l'origine, six depuis le lot 36). Les trois articles précédents en ont tous au moins une, donc le rythme d'`article.vue` sans images n'a jamais été vu. Le dossier `article_four` est déclaré dans le registre mais n'existe pas sur le disque — inoffensif tant qu'aucune section ne le désigne. | L'article publié, lu sur téléphone en portrait, dans les deux thèmes — la vérification qui a refermé R14. |
+| **R19** | **L'allemand n'a été relu par personne dont c'est la langue.** Les 133 clés — dont quatre articles longs, à la syntaxe travaillée — ont été traduites ici. C'est exactement la réserve que l'article `blogPost2` pose lui-même à propos du luxembourgeois de Schoulbus, et elle vaut maintenant pour ce site. | Une relecture par un locuteur natif, au moins sur le chrome (`layout`, `home`, `contact`, `consent`, `footer`) et les titres d'articles. **Le lot 15 y a ajouté un cinquième article complet**, neuf sections de plus, écrites ici comme les autres. **Le lot 23 y ajoute un sixième**, huit sections, plus le texte d'un projet. **Le lot 29 y ajoute un septième**, huit sections. **Le lot 30 en ajoute trois** (huitième à dixième), vingt-deux sections. **Le lot 33 réécrit le dixième**, quatre sections. **Le lot 35 réécrit le premier**, cinq sections. **Le lot 36 réécrit le quatrième et le septième**, neuf sections (six et trois). |
 | **R20** | La liste de langues n'a été vue que **montée dans jsdom**. Le rendu réel n'a pas été regardé : dépassement du panneau ouvert vers le haut dans le menu plein écran, contraste des états `:hover` et `.is-active` en thème sombre, et navigation au clavier seule (la liste ne piège pas le focus et ne le déplace pas sur la première option). | Ouvrir l'en-tête sur la production, bureau et téléphone, dans les deux thèmes, et parcourir la liste à la tabulation. |
 | **R21** | **Rétrécie au lot 27** : les sept images viennent maintenant de `foot.bas.lu`, le site publié — mais toujours du Chromium sans GPU de cette machine, donc la réserve de typographie tient. Les six captures de **Royaume Foot** (vignette du projet, couverture et cinq illustrations) ont été prises ici, sur un serveur de développement local, dans un Chromium **sans GPU** (`--use-gl=swiftshader`) et **sans les polices du système** — c'est DejaVu Sans et Noto Color Emoji qui rendent le texte et les émojis, pas la pile que le jeu obtient sur un vrai appareil. Le rendu 3D est le vrai ; la typographie du HUD ne l'est pas forcément. | Une capture de `foot.bas.lu` prise dans un navigateur ordinaire, sur un téléphone, et les images reprises depuis celle-là. |
 | **R22** | Les chiffres de l'article Royaume Foot — 333 Ko compressés dont 185 pour three.js, 9 388 octets d'images en cinq fichiers, 667 tirs balayés, 144 tests — ont été mesurés le **2026-09-08** sur le dépôt `royaume-foot`, en local, et **revérifiés au commit `694ca42`** après qu'une autre session y a livré sa phase 5 pendant la rédaction — inchangés. Ils décrivent ce dépôt-là ce jour-là, pas ce qu'un navigateur télécharge depuis `foot.bas.lu`. | Rien — mais le jour où l'article est remis en avant, les relire, comme R5. |
@@ -1140,7 +1140,7 @@ mémorisé puis celui de l'URL — et un garde de routeur bascule à chaque navi
 choix mémorisé et la langue du navigateur ne servent plus qu'à une adresse sans préfixe.
 
 **Les liens internes portent la langue.** Un greffon donne `$lp('/projects')` aux
-gabarits ; dix-neuf liens y passent, en-tête, pied de page, cartes de projet et boutons
+gabarits ; dix-neuf liens y passent (vingt et un, recomptés au lot 36), en-tête, pied de page, cartes de projet et boutons
 compris. Sans eux, un moissonneur suivant les liens du site n'aurait jamais trouvé les
 pages FR et DE : il serait retombé à chaque fois sur la redirection anglaise. Choisir une
 langue est désormais **une navigation** — la page reste la même, l'adresse change.
@@ -1342,3 +1342,37 @@ un `article.modified` que `posts.js` ne fournit pas. Laissé pour la clôture
 **Porte** : rejouée sur la branche avant la PR.
 
 *Réserve étendue : **R19** (cinq sections allemandes réécrites, relues par personne).*
+
+### Lot 36 — `blogPost4` et `blogPost7` réécrits ensemble · fait le 2026-11-08
+
+**Étape 4 de `docs/plan-articles.md`, deuxième et troisième articles.** Les deux textes
+qui parlent de ce site, réécrits ensemble pour ne plus se répéter : ils partageaient le
+même squelette (huit sections de trois paragraphes), chacun une section sur un chiffre
+publié faux et chacun une section « Ce qui n'est pas fait ». `blogPost4` garde le poids
+(images, polices, animations, design comme budget) et la section sur le chiffre refait,
+à laquelle `blogPost1` et `CLAUDE.md` renvoient ; il passe à six sections. `blogPost7`
+garde la langue dans l'adresse et ce qu'un moissonneur reçoit ; il passe à trois. Plus
+aucune section « Ce qui n'est pas fait » : ce qui a été fait depuis est daté dans le
+fil, ce qui reste ouvert y est dit. Slugs, dates, couvertures et titres gardés.
+
+Chaque chiffre a été recompté dans les objets git. Quatre étaient faux, et le texte le
+dit :
+
+- **Les images n'ont pas gardé leurs dimensions** : photos jusqu'à 6 334 px ramenées à
+  1 200, captures à 1 000. Le nombre de pixels est divisé par 9,4, le poids par 30 :
+  l'encodage n'explique qu'un facteur trois environ. `blogPost1`, réécrit au lot 35,
+  disait aussi « aux mêmes dimensions » ; corrigé dans le même lot.
+- **Les polices** : 696 052 octets est ce que la refonte a retiré du dépôt ; la feuille
+  de style n'en déclarait que 397 628 (Lexend Regular et Ubuntu). D'où R16 ajustée.
+- **animate.css** : deux effets utilisés, pas quatre ; `animations: 'all'` charge
+  98 animations (29 617 octets), pas les 103 entrées du dossier.
+- **Les liens internes** changés par le lot 28 sont 21, pas 19 (4df7395).
+
+`blogPost7` cite l'état de la production vérifié le 8 novembre : l'instantané de
+`/fr/about` n'annonce pas d'avance le fichier de traductions français, et `/` mène à
+l'anglais même pour un lecteur qui avait choisi le français. À mettre à jour si l'un ou
+l'autre change. R17 ajustée (six sections sans image au lieu de huit).
+
+**Porte** : rejouée sur la branche avant la PR.
+
+*Réserve étendue : **R19** (neuf sections allemandes réécrites, relues par personne).*
