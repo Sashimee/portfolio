@@ -38,11 +38,13 @@ ne s'y copie.
 - **Couvertures** : chaque nouvel article a la sienne ; plus d'une couverture partagée
   par cinq articles (`baskewitsch.lu.webp` l'est aujourd'hui).
 - À la fin de chaque étape : un lot dans `docs/plan.md`, et R19 étendue.
+- Une case qui attend Alex finit par `*(bloquée : <ce qu'elle attend>)*` : le script du
+  tableau de bord lit cette marque pour la montrer en rouge.
 
 ## Étapes
 
 ### 0. Tableau de bord et reprise
-- [ ] Créer le tableau de bord de progression (artefact) selon le `CLAUDE.md` global,
+- [x] Créer le tableau de bord de progression (artefact) selon le `CLAUDE.md` global,
       alimenté par un script hors dépôt qui lit ce fichier, `git log` et `gh` ; noter
       son adresse et la commande de rafraîchissement dans `RESUME.md`.
 

@@ -1217,3 +1217,20 @@ préparation) a été écartée.
 *Réserve étendue : **R19** (trois articles allemands de plus, relus par personne).
 Les corrections de Royaume Foot que raconte `blogPost10` ne sont pas encore publiées
 dans le jeu : l'article décrit le correctif, pas une version en ligne. Aucune ouverte.*
+
+### Lot 31 — Le tableau de bord du plan des articles · fait le 2026-11-08
+
+**Étape 0 de `docs/plan-articles.md`.** Un tableau de bord privé suit la boucle qui
+écrit les articles : phase, étape en cours, compteurs, avancement par jalon, frise des
+PR, fusions, commits et tours, et une fin projetée au rythme mesuré. Il est alimenté
+par un script **hors dépôt**, à côté de la recherche, qui lit les cases de ce plan,
+les blocages de `RESUME.md`, `git log` et `gh`. Rien du dépôt ne change, sauf la case
+cochée.
+
+Une convention en découle pour les tours suivants : une étape qui attend Alex porte, à
+la fin de sa ligne, `*(bloquée : <ce qu'elle attend>)*` — c'est ce que le script lit
+pour la marquer en rouge.
+
+**Porte** : rejouée sur la branche avant la PR, bien que le lot ne touche que du Markdown.
+
+*R19 inchangée : aucun texte allemand dans ce lot. Aucune réserve ouverte.*
