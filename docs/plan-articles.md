@@ -69,7 +69,7 @@ ne s'y copie.
 - [x] Réécrire « Le test passait, et le ballon traversait le gardien » en FR selon le
       guide, puis EN et DE. PR fusionnée quand la CI est verte (accord donné d'avance
       le 2026-11-08).
-- [ ] Ce que le pilote a appris intégré au guide ; je n'en relirai rien, la boucle
+- [x] Ce que le pilote a appris intégré au guide ; je n'en relirai rien, la boucle
       corrige le guide d'elle-même.
 
 ### 3. Fiches de faits (hors dépôt, sans attendre le pilote)

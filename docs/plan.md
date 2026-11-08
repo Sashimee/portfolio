@@ -1278,5 +1278,13 @@ d'origine n'existent plus, elle n'a pas pu être revérifiée.
 
 **Porte** : rejouée sur la branche avant la PR.
 
+Ce que le pilote a appris est versé au guide, hors dépôt : une section sur la réécriture
+d'un article déjà publié (la date garde la première publication, l'état présent se dit
+daté ; les faits de l'ancienne version se revérifient ; ce qui n'est pas publié se dit
+par sa branche et ouvre une réserve ; le sous-titre, qui sert de description sociale,
+tient en 160 caractères), la frontière entre un contraste de fait et la figure
+« ce n'est pas X, c'est Y », les vraies listes de trois, les citations traduites, et un
+tableau des ouvertures et des fins déjà prises.
+
 *Réserve ouverte : **R40**. Réserve étendue : **R19** (quatre sections allemandes
 réécrites, relues par personne).*
