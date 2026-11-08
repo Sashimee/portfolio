@@ -103,7 +103,7 @@ peuvent changer. Les articles cessent de partager le même squelette.
       règles qu'un agent ne doit pas enfreindre ; les budgets de performance en CI.
       Anonyme, sans lien ni capture : couverture abstraite ou graphique des scores
       Lighthouse.
-- [ ] **Aquarium** — 1 644 commits en trois semaines, un orchestrateur qui n'écrit pas de
+- [x] **Aquarium** — 1 644 commits en trois semaines, un orchestrateur qui n'écrit pas de
       code, vingt et un agents à la fois puis six, et des poissons qui faisaient une
       crise cardiaque. Pas encore en production : le dire.
 - [ ] **LetzBuy, puis CoinPosh** — 402 commits en quatre jours, des relecteurs qui disent

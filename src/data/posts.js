@@ -22,6 +22,13 @@
 /** Du plus récent au plus ancien : `Blog.vue` numérote dans cet ordre. */
 export default [
   {
+    slug: 'twenty-one-agents-then-six',
+    key: 'blogPost14',
+    date: '2026-11-08',
+    cover: '/screenshots/aquarium-agents.webp',
+    illustrations: 'article_fourteen'
+  },
+  {
     slug: 'globe-then-revert',
     key: 'blogPost13',
     date: '2026-11-08',

@@ -163,6 +163,73 @@ export default {
     cta: "Let's build something lighter",
     top: "Back to top"
   },
+  blogPost14: {
+    title: "Twenty-one agents, then six",
+    title2:
+      "1,644 commits in three weeks, an orchestrator that doesn’t write code, and a production branch that still holds a single commit: the one from the first evening.",
+    sections: [
+      {
+        title: "One commit on main",
+        paragraphs: [
+          "The Aquarium repository has 1,644 commits, and its <em>main</em> branch has exactly one: “chore: bootstrap pnpm monorepo skeleton”, on 12 October at 22:39. Everything else is waiting on <em>dev</em>, which holds 777, or on the branches of the 776 merged pull requests, since each merge squashes a branch’s commits into one. So Aquarium is not in production. On 8 November, the address set aside for it returns a 502 error, and what does run is a staging copy I’m not linking to.",
+          "Aquarium is a 3D aquarium in the browser: freshwater and reef tanks, fish that swim like fish, and that die if you neglect them. It’s a pnpm monorepo in TypeScript, with three.js and its WebGPU renderer for the graphics (WebGL2 as a fallback), React for the interface, and Fastify and Postgres behind it. At the last commit on <em>dev</em>, on 3 November, that comes to 242,290 lines of TypeScript, tests included, across 1,019 files, 487 of them tests.",
+          "The commits run from 12 October to 3 November. That’s three weeks on the calendar, but only eleven working days: nothing on 17 and 18 October, two commits on the 20th, then nothing at all from 24 October to 2 November. The busiest day, 15 October, saw 386. I’m writing for people who run coding agents on their own machine and wonder how many to start at once. On 19 October, my answer changed three times."
+        ],
+        img: ""
+      },
+      {
+        title: "The orchestrator doesn’t write code",
+        paragraphs: [
+          "The rule is there from the very first commit, in the repository’s instructions file, <em>CLAUDE.md</em>: the main session is the orchestrator, it doesn’t write feature code itself, and it hands the work to the agents in <em>.claude/agents/</em>. There are eleven, each with its own area (rendering, fish behaviour, the server, the 3D model pipeline, tests…), one of them a reviewer, <em>code-reviewer</em>, without whose approval nothing merges. Each agent works in its own copy of the repository, a git <em>worktree</em>, and opens a pull request into <em>dev</em>. The orchestrator merges it once the checks are green and the review says yes.",
+          "What I asked for fits in one command, <em>/loop</em>, followed the first time by a sentence that starts <em>“Continue building the aquarium: follow the ‘Orchestration loop’ in CLAUDE.md exactly”</em>. The rest is player feedback and answers to the orchestrator’s questions. In the transcripts from those three weeks, which only I have, I count a little under a hundred messages typed by me, eighteen of them asking whether the progress page was up to date, in assorted spellings (on 15 October I asked at 06:23, 06:48 and 08:14).",
+          "The rule held, with two caveats. The only commit on <em>main</em>, the project skeleton, landed a minute after the loop started, with 38 files and 2,604 lines; the instructions allowed the orchestrator to lay it down itself, and I think it had been prepared by the planning session that same evening, though I haven’t checked. And while it doesn’t code, it does merge, and a merge can break things. On 19 October at 19:34, listing what was slowing the project down, it put <em>“My own slip”</em> fourth: its merge of #741, which had made one shard of the end-to-end tests fail on <em>dev</em>.",
+          "The commits say, roughly, who wrote what. Of the 1,644, 1,391 carry a co-author line for a Claude model: 801 name Opus, 626 Sonnet, and 36 both. The other 253 carry none: 190 are merge commits, 52 are merges done on GitHub whose message didn’t keep the line, and 11 are ordinary commits (screenshots, “wip”). I don’t remember making a single commit by hand, and git can neither confirm nor deny it, since all 1,644 are signed with my name."
+        ],
+        img: ""
+      },
+      {
+        title: "Fourteen minutes without a cap",
+        paragraphs: [
+          "Until 19 October, the instructions set six agents at a time by default, reviewers included, and more when the tasks were independent, which I had allowed on the 14th. That morning at 09:28, in a session I had opened to take stock, I wrote: <em>“remove the maximum agents limit”</em>. I gave no reason, and I can’t find one in the transcript. The pull request that removes the cap from the instructions, #689, was merged at 09:39.",
+          "Meanwhile, at 09:30, a new session had picked up the loop. It found a machine where no agent was running any more, and thirteen worktrees where the previous session’s agents had left unpushed work. At 09:36 it announced: <em>“The loop is running again with 21 background agents”</em>. That figure of twenty-one is its own; I didn’t recount it.",
+          "At 09:42 I wrote <em>“pl limit the agents to 6 again this is a bit too much”</em>. A few seconds later the orchestrator checked the machine, and its output is still in the transcript: a load average of 110.07 over the last minute (67.23 over five minutes, 30.61 over fifteen), 30 GB of memory used out of 31, and 1 GB available. A load of 110 means, roughly, a hundred and ten processes running or waiting for a CPU or for the disk.",
+          "I no longer know what made me write that message, whether the machine was crawling or it was just the number twenty-one. The reading came after my request, not before. By 09:45 the load was back down to 22.85, with 13 GB available, and the six-agent rule was back in the instructions at 09:49 (#693), this time with no exception. From my first message to my second, the cap was off for fourteen minutes.",
+          "The orchestrator left itself a note in the project’s memory, with the cause as it understands it: each agent runs pnpm, vitest, Playwright and Postgres in its own worktree, and twenty or so at once starve a machine that also serves other projects. I didn’t measure how much each one took."
+        ],
+        img: ""
+      },
+      {
+        title: "What the agents share",
+        paragraphs: [
+          "RAM wasn’t the only thing they shared. On 13 October around 03:20, the disk had already hit 100%, and the orchestrator wrote the cause down in its RESUME.md handover file, which isn’t in the repository: sixty anonymous Postgres volumes, created that same day by the agents’ tests and never removed. It deleted them, which freed 5.6 GB, and told the agents to start their throwaway databases with <em>docker run --rm</em>, data kept in memory. On the evening of the 19th the disk was full again, this time with 107 worktrees weighing 9.7 GB on their own, according to the session summary.",
+          "On the same day, 19 October, a reviewer ran <em>rm -rf</em> on the <em>.md</em> and <em>.log</em> files at the top of the scratch folder that a session’s agents share, and wiped the other agents’ logs, along with their draft reviews and pull request descriptions. The same day, another agent ran <em>pkill -f</em> against the Playwright tests, which could kill its neighbours’ runs. At 17:16 I asked, with less tact than usual: <em>“Why in the world would that dumbass do this ?”</em>",
+          "To be fair to it, nothing in the agent definitions said that folder was shared, and issue #750, opened at 17:19, says as much. The fix, #751, merged at 18:13, adds a “Shared machine” section to all eleven definitions: each agent keeps its temporary files in its own subfolder, deletes only the exact paths it created, and stops only the processes it started, by their ID, never by pattern. The global instructions I use across all my projects now carry rules very close to these."
+        ],
+        img: ""
+      },
+      {
+        title: "Eight agents, and Playwright once at the end",
+        paragraphs: [
+          "On the evening of the 19th, at 19:34, the orchestrator explained why everything was slow, starting with the heaviest cause: the end-to-end tests run under Playwright on GitHub’s free machines, which have no graphics card and render every scene in software. It counted 30 to 50 minutes per run, and a single green run out of the last eight on <em>dev</em>.",
+          "It offered four remedies, and at 19:36 I answered: <em>“Do 1, 3 and 4”</em>. The first quarantined a photo test that was blocking five approved pull requests, the third grouped the end-to-end tests into batches, and the fourth raised the cap to eight agents, provided they left Playwright to CI. The second, faster CI machines, would have cost money. Eight is what the instructions still say today.",
+          "At 21:23 I went further: build everything first, and run Playwright once at the end, <em>“since playwright is what takes the most time”</em>. Pull request #794, merged at 22:24, made those tests run on demand only. Every pull request still got the type check, lint, unit tests and the Docker image build.",
+          "On 22 October at 06:57, I opened the staging site and wrote: <em>“the site looks broken, no loading screen and no menu”</em>. A dialog, <em>TrimDialog</em>, threw an error on load when no game was loaded yet, and the error took down the whole interface. The checks were green, because none of them opened the page. The issue was opened at 06:59 (#1002), the fix merged at 07:11 (#1003), and at 07:41 a smoke test joined CI (#1015): a headless Chromium loads the app without an account, then with a throwaway one, and fails on the first error in the console. The issue that asked for it (#1005) aimed for about thirty seconds after the build, two minutes at most; on 3 November that step took 1 minute 48 seconds. I don’t know whether the end-to-end tests would have caught the crash, since they were no longer running.",
+          "Those on-demand tests were started twelve times. The first eleven runs failed, nine in a row on 23 October, all on the same branch, and the twelfth, on 3 November from 05:22 to 05:47, saw all 29 of its shards go green."
+        ],
+        img: ""
+      },
+      {
+        title: "Fish having a heart attack",
+        paragraphs: [
+          "On 16 October at 01:31, I asked for the plan’s extras to be built and, in the same sentence, for the fish to stop bobbing up and down as they swam: <em>“they look like they have a heartattack man”</em>. The orchestrator opened the issue a minute later (#604), borrowing my comparison for its title: “looks like a heart attack”. It required a measurement before any fix, a regression test, and a before-and-after frame sequence.",
+          "The fish behaviour agent opened its pull request, #670, at 02:23, and it was merged at 02:56. It started by measuring, over four simulation seeds and thirty seconds of swimming: the neon tetras bobbed by 6.2% of their body length (root mean square), with peaks at 44%, about once a second, in step with their tail beats. It found three causes, all in the simulation: pitch, the fish’s nose-up or nose-down tilt, used the turning gains, so every tail beat snapped it towards its target. That target came from an <em>atan2</em> that flipped to ±30° whenever the horizontal part of the intended motion cancelled out, against the glass for example. And within a school, neighbours pushed each other apart as hard vertically as horizontally.",
+          "The fix gives pitch its own controller, capped at 60° per second, and flattens the fish’s personal space vertically, citing a 2025 study on how schools stack. Neon tetras go from 6.23 to 2.86% of their length, clownfish from 2.49 to 1.03%, and the tetras’ peak pitch rate drops from 101 to 45° per second. The new test fails on <em>dev</em> without the fix and passes with it. The frame sequence the issue asked for is missing: the machine’s headless Chromium had no WebGPU, and the load was at 33. The agent says so itself, just as it explains why it gave up on reworking school alignment, which broke the schools into small groups.",
+          "I have no record of looking at the tetras afterwards, or of saying it was fixed. The changelog for the second release candidate was merged on 3 November at 06:21 (#1635), and at 06:58 the loop stopped by itself, as the instructions require, to wait for my go-ahead on merging <em>dev</em> into <em>main</em>. I haven’t given it yet. If I had to keep one agent pull request from those three weeks, it would be #670: its before-and-after table, and the paragraph where it sets aside its own first idea. Thank you for reading this far."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost13: {
     title: "Two days on a globe, then a revert",
     title2:

@@ -164,6 +164,73 @@ export default {
     cta: "Bauen wir etwas Leichteres",
     top: "Nach oben"
   },
+  blogPost14: {
+    title: "Einundzwanzig Agenten, dann sechs",
+    title2:
+      "1.644 Commits in drei Wochen, ein Orchestrator, der keinen Code schreibt, und ein Produktionszweig, der immer noch nur einen Commit hat: den vom ersten Abend.",
+    sections: [
+      {
+        title: "Ein einziger Commit auf main",
+        paragraphs: [
+          "Das Repository von Aquarium hat 1.644 Commits, und sein Zweig <em>main</em> hat genau einen: „chore: bootstrap pnpm monorepo skeleton“, am 12. Oktober um 22:39 Uhr. Alles andere wartet auf <em>dev</em>, der 777 enthält, oder auf den Zweigen der 776 gemergten Pull Requests, denn jeder Merge fasst die Commits eines Zweigs zu einem einzigen zusammen. Aquarium ist also nicht in Produktion. Am 8. November antwortet die dafür vorgesehene Adresse mit einem 502-Fehler, und was läuft, ist eine Staging-Umgebung, die ich nicht verlinke.",
+          "Aquarium ist ein 3D-Aquarium im Browser: Süßwasser- und Riffbecken, Fische, die wie Fische schwimmen und sterben, wenn man sie vernachlässigt. Technisch ist es ein pnpm-Monorepo in TypeScript, mit three.js und seinem WebGPU-Renderer für die Grafik (WebGL2 als Fallback), React für die Oberfläche, dahinter Fastify und Postgres. Beim letzten Commit auf <em>dev</em>, am 3. November, sind das 242.290 Zeilen TypeScript, Tests eingeschlossen, in 1.019 Dateien, davon 487 Testdateien.",
+          "Die Commits reichen vom 12. Oktober bis zum 3. November. Das sind drei Wochen im Kalender, aber nur elf Arbeitstage: nichts am 17. und 18. Oktober, zwei Commits am 20., dann gar nichts vom 24. Oktober bis zum 2. November. Am meisten war am 15. Oktober los: 386 Commits. Ich schreibe für alle, die Coding-Agenten auf dem eigenen Rechner laufen lassen und sich fragen, wie viele sie gleichzeitig starten sollen. Am 19. Oktober hat sich meine Antwort dreimal geändert."
+        ],
+        img: ""
+      },
+      {
+        title: "Der Orchestrator schreibt keinen Code",
+        paragraphs: [
+          "Die Regel steht schon im allerersten Commit, in der Anweisungsdatei des Repositorys, <em>CLAUDE.md</em>: Die Hauptsitzung ist der Orchestrator, sie schreibt den Code der Funktionen nicht selbst und übergibt die Arbeit den Agenten in <em>.claude/agents/</em>. Es sind elf, jeder mit seinem Bereich (Rendering, Verhalten der Fische, Server, die 3D-Modell-Pipeline, Tests…), darunter ein Reviewer, <em>code-reviewer</em>, ohne dessen Zustimmung nichts gemergt wird. Jeder Agent arbeitet in seiner eigenen Kopie des Repositorys, einem Git-<em>Worktree</em>, und öffnet einen Pull Request nach <em>dev</em>. Der Orchestrator merget ihn, sobald die Prüfungen grün sind und das Review zustimmt.",
+          "Was ich verlangt habe, passt in einen Befehl, <em>/loop</em>, beim ersten Mal gefolgt von einem Satz, der mit <em>„Continue building the aquarium: follow the ‚Orchestration loop‘ in CLAUDE.md exactly“</em> beginnt. Der Rest sind Rückmeldungen als Spieler und Antworten auf die Fragen des Orchestrators. In den Protokollen dieser drei Wochen, die nur ich habe, zähle ich knapp hundert Nachrichten, die ich selbst getippt habe, davon achtzehn mit der Frage, ob die Fortschrittsseite aktuell sei, in wechselnder Schreibweise (am 15. Oktober um 6:23, 6:48 und 8:14 Uhr).",
+          "Die Regel hat gehalten, mit zwei Einschränkungen. Der einzige Commit auf <em>main</em>, das Gerüst des Projekts, kam eine Minute nach dem Start der Schleife, mit 38 Dateien und 2.604 Zeilen; die Anweisungen erlaubten dem Orchestrator, es selbst anzulegen, und ich vermute, dass die Planungssitzung desselben Abends es vorbereitet hatte, geprüft habe ich das nicht. Außerdem schreibt er zwar keinen Code, aber er merget, und ein Merge kann etwas kaputt machen. Am 19. Oktober um 19:34 Uhr setzte er in seiner Liste dessen, was das Projekt bremste, an vierte Stelle <em>„My own slip“</em>: seinen Merge von Nr. 741, der einen Shard der End-to-End-Tests auf <em>dev</em> scheitern ließ.",
+          "Die Commits sagen ungefähr, wer was geschrieben hat. Von den 1.644 tragen 1.391 den Vermerk eines Claude-Modells als Mitautor: 801 nennen Opus, 626 Sonnet und 36 beide. Die übrigen 253 tragen keinen: 190 sind Merge-Commits, 52 Merges auf GitHub, deren Nachricht den Vermerk nicht übernommen hat, und 11 gewöhnliche Commits (Screenshots, „wip“). Ich kann mich an keinen Commit erinnern, den ich von Hand gemacht hätte, und git kann das weder bestätigen noch widerlegen, denn alle 1.644 tragen meinen Namen."
+        ],
+        img: ""
+      },
+      {
+        title: "Vierzehn Minuten ohne Obergrenze",
+        paragraphs: [
+          "Bis zum 19. Oktober sahen die Anweisungen standardmäßig sechs Agenten gleichzeitig vor, Reviewer eingeschlossen, und mehr, wenn die Aufgaben unabhängig waren, was ich am 14. erlaubt hatte. An jenem Morgen um 9:28 Uhr schrieb ich in einer Sitzung, die ich für eine Bestandsaufnahme geöffnet hatte: <em>„remove the maximum agents limit“</em>. Einen Grund habe ich nicht genannt, und im Protokoll finde ich keinen. Der Pull Request, der die Obergrenze aus den Anweisungen streicht, Nr. 689, wurde um 9:39 Uhr gemergt.",
+          "In der Zwischenzeit hatte eine neue Sitzung die Schleife übernommen, um 9:30 Uhr. Sie fand einen Rechner vor, auf dem kein Agent mehr lief, und dreizehn Worktrees, in denen die Agenten der vorigen Sitzung ungepushte Arbeit hinterlassen hatten. Um 9:36 Uhr meldete sie: <em>„The loop is running again with 21 background agents“</em>. Die Zahl einundzwanzig stammt von ihr, nachgezählt habe ich nicht.",
+          "Um 9:42 Uhr schrieb ich <em>„pl limit the agents to 6 again this is a bit too much“</em>. Wenige Sekunden später las der Orchestrator den Zustand des Rechners ab, und die Ausgabe steht noch im Protokoll: eine mittlere Last von 110,07 über die letzte Minute (67,23 über fünf, 30,61 über fünfzehn Minuten), 30 GB Arbeitsspeicher belegt von 31, und 1 GB verfügbar. Eine Last von 110 heißt grob, dass hundertzehn Prozesse laufen oder auf einen Prozessor oder auf die Platte warten.",
+          "Ich weiß nicht mehr, was mich zu dieser Nachricht gebracht hat, ob der Rechner stockte oder ob es nur die Zahl einundzwanzig war. Die Messung kam nach meiner Bitte, nicht davor. Um 9:45 Uhr war die Last auf 22,85 gefallen, bei 13 GB verfügbarem Speicher, und um 9:49 Uhr stand die Regel der sechs Agenten wieder in den Anweisungen (Nr. 693), diesmal ohne Ausnahme. Von meiner ersten Nachricht bis zur zweiten war die Obergrenze vierzehn Minuten lang aufgehoben.",
+          "Der Orchestrator hat sich eine Notiz im Gedächtnis des Projekts hinterlassen, mit der Ursache, wie er sie versteht: Jeder Agent lässt pnpm, vitest, Playwright und Postgres in seinem eigenen Worktree laufen, und etwa zwanzig auf einmal hungern einen Rechner aus, der auch anderen Projekten dient. Den Anteil jedes Einzelnen habe ich nicht gemessen."
+        ],
+        img: ""
+      },
+      {
+        title: "Was die Agenten sich teilen",
+        paragraphs: [
+          "Der Arbeitsspeicher war nicht das Einzige, was sie teilten. Am 13. Oktober gegen 3:20 Uhr war die Platte schon einmal zu 100 % voll, und der Orchestrator hat die Ursache in seiner Übergabedatei RESUME.md notiert, die nicht im Repository liegt: sechzig anonyme Postgres-Volumes, am selben Tag von den Tests der Agenten angelegt und nie gelöscht. Er hat sie entfernt, was 5,6 GB freigab, und die Agenten angewiesen, ihre Wegwerf-Datenbanken mit <em>docker run --rm</em> und Daten im Arbeitsspeicher zu starten. Am Abend des 19. war die Platte wieder voll, diesmal mit 107 Worktrees, die allein 9,7 GB belegten, laut der Zusammenfassung der Sitzung.",
+          "Am selben 19. Oktober führte ein Reviewer <em>rm -rf</em> auf die <em>.md</em>- und <em>.log</em>-Dateien im obersten Verzeichnis des Notizordners aus, den sich die Agenten einer Sitzung teilen, und löschte damit die Protokolle der anderen, samt ihren Entwürfen für Reviews und Pull Requests. Ein anderer Agent startete am selben Tag ein <em>pkill -f</em> auf die Playwright-Tests, das auch die Läufe seiner Nachbarn hätte beenden können. Um 17:16 Uhr fragte ich, mit weniger Takt als sonst: <em>„Why in the world would that dumbass do this ?“</em>",
+          "Um gerecht zu bleiben: Nichts in den Definitionen der Agenten sagte, dass dieser Ordner geteilt war, und das Ticket Nr. 750, um 17:19 Uhr eröffnet, stellt genau das fest. Die Korrektur, Nr. 751, um 18:13 Uhr gemergt, ergänzt alle elf Definitionen um einen Abschnitt „Shared machine“: Jeder Agent legt seine temporären Dateien in einem eigenen Unterordner ab, löscht nur die genauen Pfade, die er selbst angelegt hat, und beendet nur die Prozesse, die er gestartet hat, über ihre Nummer, nie über ein Muster. Die gemeinsamen Anweisungen für alle meine Projekte enthalten heute sehr ähnliche Regeln."
+        ],
+        img: ""
+      },
+      {
+        title: "Acht Agenten, und Playwright einmal am Ende",
+        paragraphs: [
+          "Am Abend des 19. um 19:34 Uhr erklärte mir der Orchestrator, warum alles so langsam ging, beginnend mit der schwersten Ursache: Die End-to-End-Tests laufen unter Playwright auf den kostenlosen GitHub-Runnern, die keine Grafikkarte haben und jede Szene in Software rendern. Er zählte 30 bis 50 Minuten pro Lauf und nur einen grünen Lauf unter den letzten acht auf <em>dev</em>.",
+          "Er schlug vier Abhilfen vor, und ich antwortete um 19:36 Uhr: <em>„Do 1, 3 and 4“</em>. Die erste stellte einen Fototest unter Quarantäne, der fünf genehmigte Pull Requests blockierte, die dritte bündelte die End-to-End-Tests, und die vierte hob die Obergrenze auf acht Agenten an, sofern sie Playwright der CI überlassen. Die zweite, schnellere CI-Maschinen, hätte Geld gekostet. Acht steht bis heute in den Anweisungen.",
+          "Um 21:23 Uhr ging ich weiter: erst alles entwickeln und Playwright nur einmal am Ende laufen lassen, <em>„since playwright is what takes the most time“</em>. Der Pull Request Nr. 794, um 22:24 Uhr gemergt, startet diese Tests nur noch auf Anfrage. Für jeden Pull Request liefen weiterhin Typprüfung, Lint, Unit-Tests und der Build des Docker-Images.",
+          "Am 22. Oktober um 6:57 Uhr öffnete ich die Staging-Umgebung und schrieb: <em>„the site looks broken, no loading screen and no menu“</em>. Ein Dialog, <em>TrimDialog</em>, warf beim Laden einen Fehler, solange noch kein Spielstand geladen war, und dieser Fehler riss die ganze Oberfläche mit. Die Prüfungen waren grün, weil keine von ihnen die Seite öffnete. Das Ticket entstand um 6:59 Uhr (Nr. 1002), die Korrektur wurde um 7:11 Uhr gemergt (Nr. 1003), und um 7:41 Uhr kam ein Smoke-Test in die CI (Nr. 1015): Ein Headless-Chromium lädt die Anwendung ohne Konto, dann mit einem Wegwerfkonto, und schlägt beim ersten Fehler in der Konsole fehl. Das Ticket, das ihn verlangt hatte (Nr. 1005), peilte rund dreißig Sekunden nach dem Build an, höchstens zwei Minuten; am 3. November dauerte dieser Schritt 1 Minute und 48 Sekunden. Ob die End-to-End-Tests den Absturz gefunden hätten, weiß ich nicht, denn sie liefen nicht mehr.",
+          "Diese Tests auf Anfrage wurden zwölfmal gestartet. Die ersten elf Läufe schlugen fehl, davon neun hintereinander am 23. Oktober, alle auf demselben Branch, und beim zwölften, am 3. November von 5:22 bis 5:47 Uhr, wurden alle 29 Shards grün."
+        ],
+        img: ""
+      },
+      {
+        title: "Fische mit Herzinfarkt",
+        paragraphs: [
+          "Am 16. Oktober um 1:31 Uhr bat ich darum, die Extras aus dem Plan zu bauen, und im selben Satz darum, dass die Fische beim Schwimmen nicht mehr auf und ab wippen: <em>„they look like they have a heartattack man“</em>. Der Orchestrator legte eine Minute später das Ticket an (Nr. 604), mit der Diagnose im Titel: „looks like a heart attack“. Er verlangte eine Messung vor jeder Korrektur, einen Regressionstest und eine Bildfolge vorher und nachher.",
+          "Der Agent für das Verhalten der Fische öffnete seinen Pull Request, Nr. 670, um 2:23 Uhr, gemergt um 2:56 Uhr. Er hat zuerst gemessen, über vier Simulations-Seeds und dreißig Sekunden Schwimmen: Die Neonsalmler wippten um 6,2 % ihrer Körperlänge im quadratischen Mittel, mit Spitzen bei 44 %, etwa einmal pro Sekunde, im Takt ihrer Schwanzschläge. Er fand drei Ursachen, alle in der Simulation: Die Neigung des Fischs nach oben oder unten folgte derselben Regelung wie die Kurven, sodass jeder Schwanzschlag sie auf ihr Ziel riss. Dieses Ziel kam aus einem <em>atan2</em>, das auf ±30° kippte, sobald der waagrechte Anteil der gewollten Bewegung null wurde, etwa an einer Scheibe. Und im Schwarm stießen sich Nachbarn senkrecht genauso stark ab wie waagrecht.",
+          "Die Korrektur gibt der Neigung einen eigenen Regler, begrenzt auf 60° pro Sekunde, und macht den persönlichen Raum der Fische in der Senkrechten flacher, gestützt auf eine Studie von 2025 darüber, wie sich Schwärme übereinander staffeln. Die Neonsalmler gehen von 6,23 auf 2,86 % ihrer Länge zurück, die Clownfische von 2,49 auf 1,03 %, und die höchste Neigungsgeschwindigkeit der Neonsalmler fällt von 101 auf 45° pro Sekunde. Der neue Test schlägt auf <em>dev</em> ohne die Korrektur fehl und besteht mit ihr. Es fehlt die Bildfolge, die das Ticket verlangte: Das Headless-Chromium auf dem Rechner hatte kein WebGPU, und die Last stand bei 33. Der Agent schreibt das selbst, so wie er erklärt, warum er darauf verzichtet hat, die Ausrichtung im Schwarm umzubauen, die die Schwärme in kleine Gruppen zerfallen ließ.",
+          "Nirgends ist festgehalten, dass ich mir die Neonsalmler danach angesehen oder das Problem für behoben erklärt hätte. Das Änderungsprotokoll des zweiten Release-Kandidaten wurde am 3. November um 6:21 Uhr gemergt (Nr. 1635), und um 6:58 Uhr hielt die Schleife von selbst an, wie es die Anweisungen verlangen, um auf mein Okay für den Merge von <em>dev</em> in <em>main</em> zu warten. Ich habe es noch nicht gegeben. Müsste ich aus diesen drei Wochen einen einzigen Pull Request eines Agenten behalten, wäre es Nr. 670, wegen seiner Vorher-nachher-Tabelle und des Absatzes, in dem er seine eigene erste Idee verwirft. Danke, dass Sie bis hierher gelesen haben."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost13: {
     title: "Zwei Tage an einem Globus, dann ein Revert",
     title2:
