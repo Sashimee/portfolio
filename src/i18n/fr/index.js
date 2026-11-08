@@ -166,6 +166,70 @@ export default {
     cta: "Construisons quelque chose de plus léger",
     top: "Haut de page"
   },
+  blogPost11: {
+    title: "L’agent m’a dit que le projet n’avait jamais commencé",
+    title2:
+      "Un jeu d’étudiants refait de zéro en une nuit, puis 259 commits de 2020 retrouvés derrière une pull request que j’avais ouverte et jamais fusionnée.",
+    sections: [
+      {
+        title: "Quatre étudiants qui se seraient arrêtés",
+        paragraphs: [
+          "D’après le README écrit dans la nuit du 1<sup>er</sup> au 2 septembre 2026, quatre étudiants ont rédigé en 2020 un cahier des charges, dessiné deux écrans sur papier, ouvert l’éditeur de cartes Tiled, dessiné une carte, puis se sont arrêtés là. J’étais l’un des quatre, et j’ai fait ce jeu en binôme avec GoStephano, qui en a écrit le JavaScript : les scènes et les objets du jeu sous Phaser. Sur la branche <em>dev</em> du même dépôt, 259 commits de l’équipe, signés par quatre auteurs et datés du 23 avril au 12 mai 2020, racontent une autre histoire.",
+          "Le jeu s’appelle Dawa’s Rise. C’est un tower defense, où l’on pose des tours pour arrêter des vagues de monstres, avec un héros qu’on promène soi-même sur la carte et un classement des joueurs ; on peut y jouer sur dawa.bas.lu. Je l’ai repris en septembre avec des agents de code, en 60 commits entre le 1<sup>er</sup> septembre à 23 h 01 et le 12 septembre à 0 h 44, et cet article raconte surtout la première nuit. Je l’écris pour ceux qui confient à un agent un vieux dépôt, branches comprises."
+        ],
+        img: ""
+      },
+      {
+        title: "Six commits avant deux heures du matin",
+        paragraphs: [
+          "Ce que l’agent a construit cette nuit-là mérite qu’on commence par lui. Le premier commit, à 23 h 01, pose une application Laravel 13 et Phaser 4 autour d’une seule règle : c’est le serveur qui décide du score. Le navigateur reçoit une graine, renvoie la liste de ce que le joueur a fait, et le serveur rejoue la partie. À 23 h 29, un simulateur en JavaScript et un autre en PHP refont à l’identique une partie gagnante de dix vagues, longue de 21 538 pas de simulation. À 1 h 20 arrivent quarante tests, dont un qui lance six processus sur la même annonce du marché pour vérifier qu’un seul acheteur l’emporte et que l’or ne se crée pas tout seul.",
+          "À 1 h 45, la fusion sur <em>master</em> apporte 186 fichiers et 23 399 lignes. Le message du tout premier commit expliquait pourquoi partir de rien : le dépôt ne contenait qu’un cahier des charges de 2020 et aucun code, soit un fichier .docx, deux croquis au stylo, une capture de Tiled et un lien mort vers un tableau de tâches.",
+          "Sur <em>master</em>, c’était exact. Le dernier commit de 2020 sur cette branche date du 25 avril et ajoute une image, le premier dessin de la carte. Le code était sur <em>dev</em>, derrière la pull request n° 2, intitulée « Dev », que j’avais ouverte depuis mon compte le 28 avril 2020 et que personne n’avait fusionnée. Elle attendait dans la liste des pull requests du dépôt depuis plus de six ans.",
+          "Il ne reste sur ma machine aucune transcription de cette session, seulement les commits, et ceux de la nuit sont signés de mon nom, sans la mention de l’agent que portent ceux du matin. Je ne sais donc pas ce que l’agent a regardé avant de conclure, seulement ce qu’il en a écrit, et dans quel ordre."
+        ],
+        img: ""
+      },
+      {
+        title: "L’aveu, à la même minute que la fusion",
+        paragraphs: [
+          "Le dernier commit de la reconstruction, à 1 h 45, s’intitule « docs: record that the 2020 game exists, and why this is a rebuild ». Il s’ouvre sur deux phrases que je cite telles quelles, en anglais : <em>« I reported that this project had never been started. That was wrong. »</em> (j’ai signalé que ce projet n’avait jamais été commencé, et c’était faux). Il décrit ensuite le jeu d’origine assez fidèlement : Phaser, une authentification par jeton JWT, des améliorations de tours, un panneau d’administration, un bandeau de cookies. Le commit de fusion, naturellement, porte la même minute.",
+          "Il compte « environ deux cents » commits. J’en trouve 259 sur <em>dev</em>, du 23 avril à 13 h 07 au 12 mai à 2 h 36, et le dernier s’appelle « bugfixin’ » (le README d’aujourd’hui écrit toujours « around 200 » ; je n’ai pas cherché d’où vient l’arrondi).",
+          "Surtout, l’aveu ne change pas la décision. Le commit garde la reconstruction pour deux raisons écrites noir sur blanc. La première tient à la pile : PHP 7.2 et Laravel 7 n’ont plus de correctifs de sécurité, chaque paquet tiers serait en fin de vie, et il faudrait remonter sept versions majeures sans un seul test pour voir ce qui casse. La seconde tient à une méthode du jeu de 2020, <em>addGame</em>, qui enregistrait le score tel que la requête l’envoyait ; selon le commit, aucun correctif ponctuel n’y suffirait.",
+          "Le matin même, à 11 h 28, la fusion est annulée par un revert, et à 11 h 30 un commit ramène le jeu de 2020 sur <em>master</em>, tandis que la reconstruction reste conservée sur sa propre branche. La pull request n° 2 est marquée fusionnée à 11 h 33, un peu plus de six ans et quatre mois après son ouverture.",
+          "La première raison n’a pas tenu jusqu’au déjeuner. À 12 h 18, le portage vers PHP 8.4 et Laravel 13.30 est fusionné, et son message constate que les cinq paquets choisis par l’équipe en 2020 existent tous encore pour Laravel 13 : aucun n’a été remplacé. De Laravel 7.8 à 13, il y avait d’ailleurs six versions majeures à franchir, là où le commit de la nuit en comptait sept. La seconde raison était fondée, et elle mérite sa propre section."
+        ],
+        img: ""
+      },
+      {
+        title: "Le compte à créditer venait de la requête",
+        paragraphs: [
+          "En 2020, la méthode tenait en trois lignes. Elle créait une partie avec l’identifiant d’utilisateur, le niveau et le score lus dans le corps de la requête, puis retrouvait ce même utilisateur, toujours d’après le corps de la requête, et lui ajoutait en or le score divisé par cent. La route n’exigeait qu’un compte à l’adresse vérifiée. N’importe quel joueur inscrit pouvait donc envoyer le score de son choix sur le compte de son choix, et y faire apparaître de l’or.",
+          "Le correctif date de 10 h 54, avant même le revert, et il ajoute 19 lignes pour en retirer 4. L’identité vient désormais de la session, le corps de la requête est validé, et l’or se calcule par division entière. Le message dit comment le défaut a été vérifié : en local, depuis un compte ordinaire, en écrivant 999 999 999 points et 10 000 000 pièces d’or sur le compte administrateur. Ces dix millions sont l’arrondi par MySQL de 9 999 999,99, et la division entière fait désormais créditer le nombre exact que l’écran de fin de partie montre au joueur.",
+          "Le même message reconnaît ce qu’il ne règle pas : le score lui-même vient toujours du navigateur. Un joueur ne pouvait plus créditer le compte d’un autre, mais il pouvait encore s’attribuer le score qu’il voulait. Sur ce point, l’agent de la nuit voyait juste, et il fallait changer le protocole."
+        ],
+        img: ""
+      },
+      {
+        title: "La partie rejouée, défauts de 2020 compris",
+        paragraphs: [
+          "Ce changement est arrivé six jours plus tard, en deux temps. Le 7 septembre à 22 h 36, la logique de combat quitte les scènes Phaser pour un petit noyau qui n’en dépend plus, <em>src/sim</em>, et qui avance par pas fixes de 50 millisecondes au lieu de suivre la cadence d’affichage. Les défauts de jeu de 2020 y sont repris à l’identique, et le commit les énumère, du décalage d’un cran dans le choix de l’ennemi visé au rayon d’éclaboussure de la tour de feu qui ne vaut qu’au niveau 1. Je trouve ce choix juste : la partie rejouée doit être celle que le joueur a vue, défauts compris.",
+          "Le 8 septembre à 0 h 28, le navigateur envoie avec chaque partie la liste horodatée de ses commandes (poser une tour, l’améliorer), et le serveur la rejoue dans une copie PHP du simulateur, écrite ligne pour ligne. Il enregistre son propre score. Si celui du navigateur diffère, l’écart part dans le journal et seul le score recalculé est gardé ; un journal de commandes impossible est refusé. Au 8 novembre, la copie PHP est la plus grosse des deux, avec 19 fichiers et 1 935 lignes, contre 13 fichiers et 1 215 lignes pour le simulateur JavaScript, tests et données de test exclus.",
+          "Pour que les deux langages tombent sur les mêmes nombres, il a fallu renoncer à quelques fonctions. La norme des nombres flottants ne garantit un arrondi identique d’un langage à l’autre que pour les quatre opérations et la racine carrée, et <em>atan2</em>, <em>sin</em>, <em>cos</em> ou <em>pow</em> n’en font pas partie. Le guidage des projectiles passe donc par une racine carrée, et les tables de points de vie des monstres par des multiplications répétées.",
+          "C’était, à peu de chose près, l’idée centrale de la reconstruction de la première nuit, posée cette fois sur le code des quatre étudiants. Onze points d’un plan qui en comptait treize ont ensuite été fusionnés le 12 septembre entre 0 h 37 et 0 h 44, en cinq pull requests, avec entre autres des limites de débit, un jeton JWT devant les routes, une liste publique des parties allégée, des succès à débloquer, et le héros que le cahier des charges de 2020 promettait. Les deux points restants ne touchent pas au jeu.",
+          "J’ai vérifié aujourd’hui, le 8 novembre vers 16 h, ce qu’on en voit de l’extérieur. La liste publique des parties répond en JSON, sans identifiant d’utilisateur ni journal de commandes, avec un plafond de 30 requêtes annoncé dans ses en-têtes, et une route protégée appelée sans jeton répond 401. Cette liste compte deux parties. Si vous voulez lui en donner une troisième, le jeu est sur dawa.bas.lu, et votre score sera celui que le serveur aura recalculé."
+        ],
+        img: ""
+      },
+      {
+        title: "La ligne 35",
+        paragraphs: [
+          "L’aveu de 1 h 45 ajoutait aussi une règle au fichier de consignes du dépôt, <em>CLAUDE.md</em> : lire le vieux code avant de proposer une fonction, puisque le marché, le classement et les améliorations de tours avaient d’abord été leurs idées. Le revert du matin l’a emportée avec le reste de la reconstruction, et elle ne vit plus que sur la branche de celle-ci. À 16 h 20, une réécriture du fichier décrit à la place ce que le dépôt contient vraiment, et nomme les trois références à ne jamais supprimer : l’étiquette qui fige le jeu de 2020, la branche <em>dev</em> et la branche de la reconstruction.",
+          "En relisant ce fichier pour cet article, j’y ai trouvé l’erreur de la première nuit, à l’envers. À la ligne 35, il affirme toujours que le simulateur rejoué côté serveur et ses tests de parité appartiennent à la reconstruction et n’existent pas dans ce dépôt. C’était vrai le 2 septembre, quand la phrase a été écrite et qu’elle visait le simulateur de la reconstruction ; c’est faux depuis le 8 septembre à 0 h 28, quand le jeu de 2020 a reçu le sien. À la ligne 96, une section intitulée « The score is server-replayed, not client-supplied » explique comment ils fonctionnent, et le dossier <em>DAWA/app/Sim</em> compte ses dix-neuf fichiers. Au 8 novembre, les deux passages se trouvent toujours dans le même fichier, sur la même branche, à soixante et une lignes l’un de l’autre."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost10: {
     title: "Le test passait, et le ballon traversait le gardien",
     title2:

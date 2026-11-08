@@ -22,6 +22,13 @@
 /** Du plus récent au plus ancien : `Blog.vue` numérote dans cet ordre. */
 export default [
   {
+    slug: 'never-been-started',
+    key: 'blogPost11',
+    date: '2026-11-08',
+    cover: '/screenshots/dawa-rise.webp',
+    illustrations: 'article_eleven'
+  },
+  {
     slug: 'ball-through-the-goalkeeper',
     key: 'blogPost10',
     date: '2026-10-07',

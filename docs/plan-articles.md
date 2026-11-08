@@ -94,7 +94,7 @@ peuvent changer. Les articles cessent de partager le même squelette.
       Toujours sans nommer la marque.
 
 ### 5. Articles neufs (dans cet ordre)
-- [ ] **Dawa's Rise** — le jeu d'étudiants de 2020 relancé, l'agent qui affirmait que le
+- [x] **Dawa's Rise** — le jeu d'étudiants de 2020 relancé, l'agent qui affirmait que le
       projet n'avait jamais existé, et l'endpoint qui acceptait n'importe quel score.
       Couverture : `dawa.webp` existe, en faire une neuve si besoin.
 - [ ] **Pic Collage Maker, deuxième partie** — 162 commits sur une seule consigne,

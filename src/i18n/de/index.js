@@ -164,6 +164,70 @@ export default {
     cta: "Bauen wir etwas Leichteres",
     top: "Nach oben"
   },
+  blogPost11: {
+    title: "Der Agent sagte mir, das Projekt sei nie begonnen worden",
+    title2:
+      "Ein Studentenspiel, in einer Nacht von Grund auf neu gebaut, dann 259 Commits von 2020 hinter einem Pull Request, den ich geöffnet und nie gemergt hatte.",
+    sections: [
+      {
+        title: "Vier Studenten, die angeblich aufgehört hatten",
+        paragraphs: [
+          "Laut dem README, das in der Nacht vom 1. auf den 2. September 2026 entstand, schrieben vier Studenten 2020 ein Lastenheft, zeichneten zwei Bildschirme auf Papier, öffneten den Karteneditor Tiled, zeichneten eine Karte und hörten dann auf. Ich war einer der vier, und ich habe dieses Spiel zu zweit mit GoStephano gemacht, der sein JavaScript geschrieben hat: die Phaser-Szenen und -Objekte des Spiels. Auf dem Branch <em>dev</em> desselben Repositorys erzählen 259 Commits des Teams, von vier Autoren signiert und vom 23. April bis zum 12. Mai 2020 datiert, eine andere Geschichte.",
+          "Das Spiel heißt Dawa’s Rise. Es ist ein Tower-Defense-Spiel, bei dem man Türme aufstellt, um Wellen von Monstern aufzuhalten, mit einem Helden, den man selbst über die Karte steuert, und einer Rangliste der Spieler; spielen kann man es auf dawa.bas.lu. Im September habe ich es mit Coding-Agenten wieder aufgenommen, in 60 Commits zwischen dem 1. September um 23:01 Uhr und dem 12. September um 0:44 Uhr, und dieser Artikel handelt vor allem von der ersten Nacht. Ich schreibe ihn für alle, die einem Agenten ein altes Repository anvertrauen, mitsamt seinen Branches."
+        ],
+        img: ""
+      },
+      {
+        title: "Sechs Commits vor zwei Uhr morgens",
+        paragraphs: [
+          "Zuerst sollte man dem gerecht werden, was der Agent in dieser Nacht gebaut hat. Der erste Commit um 23:01 Uhr legt eine Anwendung mit Laravel 13 und Phaser 4 an, um eine einzige Regel herum: Der Server entscheidet über den Punktestand. Der Browser erhält einen Seed, schickt die Liste dessen zurück, was der Spieler getan hat, und der Server spielt die Partie nach. Um 23:29 Uhr spielen ein Simulator in JavaScript und einer in PHP dieselbe gewonnene Partie über zehn Wellen exakt gleich nach, 21.538 Simulationsschritte lang. Um 1:20 Uhr kommen vierzig Tests hinzu, darunter einer, der sechs Prozesse auf dasselbe Marktangebot loslässt, um zu prüfen, dass nur ein Käufer gewinnt und kein Gold aus dem Nichts entsteht.",
+          "Um 1:45 Uhr bringt der Merge auf <em>master</em> 186 Dateien und 23.399 Zeilen. Die Nachricht des allerersten Commits erklärte, warum bei null begonnen wurde: Das Repository enthalte nur ein Lastenheft von 2020 und keinen Code, nämlich eine .docx-Datei, zwei Kugelschreiberskizzen, einen Screenshot aus Tiled und einen toten Link auf ein Aufgabenboard.",
+          "Für <em>master</em> stimmte das. Der letzte Commit von 2020 auf diesem Branch stammt vom 25. April und fügt ein Bild hinzu, die erste Zeichnung der Karte. Der Code lag auf <em>dev</em>, hinter Pull Request Nr. 2 mit dem Titel „Dev“, den ich am 28. April 2020 von meinem eigenen Konto aus geöffnet hatte und den niemand gemergt hatte. Er stand seit mehr als sechs Jahren in der Pull-Request-Liste.",
+          "Von dieser Sitzung ist auf meinem Rechner kein Protokoll mehr übrig, nur die Commits, und die der Nacht tragen meinen Namen, ohne den Hinweis auf den Agenten, den die vom Morgen tragen. Ich weiß also nicht, was der Agent sich angesehen hat, bevor er zu seinem Schluss kam, sondern nur, was er darüber geschrieben hat, und in welcher Reihenfolge."
+        ],
+        img: ""
+      },
+      {
+        title: "Das Eingeständnis, in derselben Minute wie der Merge",
+        paragraphs: [
+          "Der letzte Commit des Neubaus um 1:45 Uhr heißt „docs: record that the 2020 game exists, and why this is a rebuild“. Er beginnt mit zwei Sätzen, die ich unverändert auf Englisch zitiere: <em>„I reported that this project had never been started. That was wrong.“</em> (Ich hatte gemeldet, dieses Projekt sei nie begonnen worden; das war falsch.) Danach beschreibt er das ursprüngliche Spiel recht genau: Phaser, Anmeldung per JWT, Turm-Upgrades, ein Admin-Bereich, ein Cookie-Banner. Der Merge-Commit trägt natürlich dieselbe Minute.",
+          "Er spricht von „etwa zweihundert“ Commits. Ich finde 259 auf <em>dev</em>, vom 23. April um 13:07 Uhr bis zum 12. Mai um 2:36 Uhr, und der letzte heißt „bugfixin’“ (das heutige README schreibt immer noch „around 200“; woher die Rundung kommt, habe ich nicht nachgeforscht).",
+          "Vor allem ändert das Eingeständnis nichts an der Entscheidung. Der Commit behält den Neubau aus zwei Gründen, die ausdrücklich dastehen. Der erste betrifft den Stack: PHP 7.2 und Laravel 7 bekommen keine Sicherheitsupdates mehr, jedes Fremdpaket sei am Ende seiner Lebensdauer, und der Weg nach vorn wären sieben Hauptversionen ohne einen einzigen Test, der zeigt, was bricht. Der zweite betrifft eine Methode des Spiels von 2020, <em>addGame</em>, die den Punktestand so speicherte, wie die Anfrage ihn schickte; laut Commit würde keine punktuelle Korrektur genügen.",
+          "Am selben Vormittag um 11:28 Uhr wird der Merge per Revert zurückgenommen, und um 11:30 Uhr holt ein Commit das Spiel von 2020 auf <em>master</em> zurück, wobei der Neubau auf seinem eigenen Branch erhalten bleibt. Pull Request Nr. 2 gilt um 11:33 Uhr als gemergt, etwas mehr als sechs Jahre und vier Monate, nachdem er geöffnet worden war.",
+          "Der erste Grund hielt nicht bis zum Mittagessen. Um 12:18 Uhr wird die Portierung auf PHP 8.4 und Laravel 13.30 gemergt, und ihre Nachricht stellt fest, dass die fünf Pakete, die das Team 2020 gewählt hatte, alle noch für Laravel 13 existieren: Keines wurde ersetzt. Im Übrigen waren es von Laravel 7.8 bis 13 nur sechs Hauptversionen, nicht sieben, wie der Commit der Nacht gezählt hatte. Der zweite Grund war berechtigt, und er bekommt einen eigenen Abschnitt."
+        ],
+        img: ""
+      },
+      {
+        title: "Das gutzuschreibende Konto stand in der Anfrage",
+        paragraphs: [
+          "2020 bestand die Methode aus drei Zeilen. Sie legte eine Partie mit der Benutzer-ID, dem Level und dem Punktestand aus dem Anfragekörper an, suchte dann denselben Benutzer, wieder anhand des Anfragekörpers, und schrieb ihm den Punktestand geteilt durch hundert als Gold gut. Die Route verlangte nur ein Konto mit bestätigter Adresse. Jeder angemeldete Spieler konnte also einen beliebigen Punktestand auf ein beliebiges Konto schicken und dort Gold entstehen lassen.",
+          "Die Korrektur stammt von 10:54 Uhr, noch vor dem Revert, und sie fügt 19 Zeilen hinzu und entfernt 4. Die Identität kommt jetzt aus der Sitzung, der Anfragekörper wird validiert, und das Gold wird per Ganzzahldivision berechnet. Die Nachricht sagt, wie der Fehler bestätigt wurde: lokal, von einem gewöhnlichen Konto aus, indem 999.999.999 Punkte und 10.000.000 Gold auf das Admin-Konto geschrieben wurden. Diese zehn Millionen sind MySQLs Rundung von 9.999.999,99, und die Ganzzahldivision schreibt jetzt genau die Zahl gut, die der Bildschirm am Ende der Partie dem Spieler zeigt.",
+          "Dieselbe Nachricht räumt ein, was sie nicht löst: Der Punktestand selbst kommt weiterhin vom Browser. Ein Spieler konnte nicht mehr dem Konto eines anderen etwas gutschreiben, sich selbst aber immer noch jeden beliebigen Punktestand geben. In diesem Punkt hatte der Agent der Nacht richtig gelegen, und das Protokoll musste sich ändern."
+        ],
+        img: ""
+      },
+      {
+        title: "Die nachgespielte Partie, mit den Fehlern von 2020",
+        paragraphs: [
+          "Diese Änderung kam sechs Tage später, in zwei Schritten. Am 7. September um 22:36 Uhr wandert die Kampflogik aus den Phaser-Szenen in einen kleinen Kern, der nicht mehr von Phaser abhängt, <em>src/sim</em>, und der in festen Schritten von 50 Millisekunden vorangeht, statt der Bildrate zu folgen. Die Spielfehler von 2020 werden unverändert übernommen, und der Commit zählt sie auf, von einem Fehler um eins bei der Wahl des anvisierten Gegners bis zum Flächenschaden des Feuerturms, der nur auf Stufe 1 gilt. Ich halte das für richtig: Die nachgespielte Partie muss die sein, die der Spieler gesehen hat, mitsamt ihren Fehlern.",
+          "Am 8. September um 0:28 Uhr schickt der Browser mit jeder Partie die mit Zeitstempeln versehene Liste seiner Befehle (einen Turm setzen, ihn aufwerten), und der Server spielt sie in einer PHP-Kopie des Simulators nach, Zeile für Zeile geschrieben. Er speichert seinen eigenen Punktestand. Weicht der des Browsers ab, wird die Abweichung protokolliert und nur der nachgerechnete Wert bleibt; ein unmögliches Befehlsprotokoll wird abgelehnt. Am 8. November ist die PHP-Kopie die größere der beiden, mit 19 Dateien und 1.935 Zeilen, gegenüber 13 Dateien und 1.215 Zeilen für den JavaScript-Simulator, Tests und Testdaten nicht mitgezählt.",
+          "Damit beide Sprachen auf dieselben Zahlen kommen, musste auf einige Funktionen verzichtet werden. Der Gleitkommastandard garantiert eine sprachübergreifend identische Rundung nur für die vier Grundrechenarten und die Quadratwurzel, und <em>atan2</em>, <em>sin</em>, <em>cos</em> oder <em>pow</em> gehören nicht dazu. Die Zielsuche der Geschosse läuft deshalb über eine Quadratwurzel, und die Lebenspunkte-Tabellen der Monster über wiederholte Multiplikation.",
+          "Das war, mehr oder weniger, die zentrale Idee des Neubaus aus der ersten Nacht, diesmal auf dem Code der vier Studenten umgesetzt. Elf von dreizehn Punkten eines Plans wurden danach am 12. September zwischen 0:37 und 0:44 Uhr gemergt, in fünf Pull Requests, unter anderem mit Ratenbegrenzungen, einem JWT vor den Routen, einer verschlankten öffentlichen Liste der Partien, freischaltbaren Erfolgen und dem Helden, den das Lastenheft von 2020 versprach. Die zwei übrigen Punkte betreffen das Spiel nicht.",
+          "Heute, am 8. November gegen 16 Uhr, habe ich geprüft, was man von außen sieht. Die öffentliche Liste der Partien antwortet in JSON, ohne Benutzer-ID und ohne Befehlsprotokoll, mit einer in den Headern angekündigten Grenze von 30 Anfragen, und eine geschützte Route ohne Token antwortet mit 401. Diese Liste enthält zwei Partien. Wenn Sie ihr eine dritte geben möchten: Das Spiel ist auf dawa.bas.lu, und Ihr Punktestand wird der sein, den der Server nachgerechnet hat."
+        ],
+        img: ""
+      },
+      {
+        title: "Zeile 35",
+        paragraphs: [
+          "Das Eingeständnis von 1:45 Uhr fügte der Anweisungsdatei des Repositorys, <em>CLAUDE.md</em>, auch eine Regel hinzu: den alten Code lesen, bevor man eine Funktion vorschlägt, weil der Markt, die Rangliste und die Turm-Upgrades zuerst ihre Ideen gewesen waren. Der Revert am Morgen hat sie mit dem Rest des Neubaus mitgenommen, und sie lebt nur noch auf dessen Branch. Um 16:20 Uhr beschreibt eine Neufassung der Datei stattdessen, was das Repository wirklich enthält, und nennt die drei Referenzen, die nie gelöscht werden dürfen: den Git-Tag, der das Spiel von 2020 festhält, den Branch <em>dev</em> und den Branch des Neubaus.",
+          "Beim erneuten Lesen dieser Datei für diesen Artikel habe ich den Fehler der ersten Nacht wiedergefunden, nur umgekehrt. In Zeile 35 steht immer noch, der serverseitige Nachspiel-Simulator und seine Paritätstests gehörten zum Neubau und existierten in diesem Repository nicht. Das stimmte am 2. September, als der Satz geschrieben wurde und den Simulator des Neubaus meinte; falsch ist er seit dem 8. September um 0:28 Uhr, als das Spiel von 2020 seinen eigenen bekam. In Zeile 96 erklärt ein Abschnitt mit dem Titel „The score is server-replayed, not client-supplied“, wie sie funktionieren, und der Ordner <em>DAWA/app/Sim</em> enthält die neunzehn Dateien. Am 8. November stehen beide Stellen noch in derselben Datei, auf demselben Branch, einundsechzig Zeilen voneinander entfernt."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost10: {
     title: "Der Test war grün, und der Ball flog durch den Torwart",
     title2:
