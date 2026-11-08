@@ -172,7 +172,7 @@ export default {
         title: "The keeper dives, and the ball goes through anyway",
         paragraphs: [
           "If you open Royaume Foot today and shoot close to the keeper, you can watch him dive, touch the ball, and then let it carry on through him into the back of the net. The game still counts a save. I fixed this on 17 September, and as I go back over this article on 8 November, the fix is still sitting on the development branch, unreleased.",
-          "This follow-up is for people who test games, or any interface where what you see matters as much as what you compute. The first article on this football game for children was about a test that fails when the game turns mean. This one is about what the first real games found between 8 and 17 September, while the suite stayed green.",
+          "This follow-up is for people who test games, or any interface where what you see matters as much as what you compute. The first article on this football game for children was about the nudge that bends a near miss back into the goal, and the test that guards it. This one is about what the games played between 8 and 17 September found, while the suite stayed green.",
           "The rules were fine. A shot is judged where the ball crosses the goal line, and that judgement was never wrong. So how does a save that counts end up looking like a goal, and why did no test notice? The keeper stands 0.55 units in front of the line, and the rebound started from the crossing point: behind his hands, already in the goal. The tests were about the verdict, and the verdict was right.",
           "The fix fits in one function, <em>punchClear()</em>, which sends the ball back from the keeper’s own plane, where his hands really are, upwards and towards the shooter. Five tests come with it. One of them checks that once the ball is flying again, it never heads back into the net."
         ],
@@ -452,93 +452,70 @@ export default {
     ]
   },
   blogPost5: {
-    title: "The test that fails when the game gets mean",
+    title: "1.6 units of kindness",
     title2:
-      "A 3D football game for six-year-olds, and the continuous integration that defends <strong>fun</strong>.",
+      "In Royaume Foot, a shot that just misses the post is quietly bent back into the goal. A test guards that. It saw nothing of the cup nobody could win.",
     sections: [
       {
-        title: "A game with one player, aged six",
+        title: "A shot caught 1.6 units past the post",
         paragraphs: [
-          "<strong>Royaume Foot</strong> is a 3D football game that runs entirely in the browser. No account, no backend, nothing uploaded \u2014 static files behind a web server, at <em>foot.bas.lu</em>. It installs to a home screen and plays on a plane. Six princesses, four knights, a friendly dragon in goal, and a castle behind him.",
-          "It was built for a six-year-old, and that is not a footnote \u2014 it is the architecture. Every constraint in the repository comes out of one fact: the person holding the tablet cannot reliably read, cannot hold two controls at once, and will put the thing down for good if it ever makes them feel bad.",
-          "What follows is what that costs in code. Some of it is what you would guess. The part I did not expect is that <em>kind to a six-year-old</em> turned out to be a property I could assert in continuous integration \u2014 and that asserting it caught a real defect I had already shipped."
-        ],
-        img: ""
-      },
-      {
-        title: "One gesture, and the two axes underneath it",
-        paragraphs: [
-          "The whole game is one gesture. Press anywhere, drag towards the goal, let go. No button to hold, no timing window, nothing that has to be learned a second time in a different mini-game.",
-          "The non-obvious part is what the drag <em>means</em>. The obvious implementation reads the angle of the swipe, so direction and power come out of a single vector, the way a slingshot works. It plays badly at six, because it makes a hard shot an inaccurate shot: swipe with enthusiasm and the ball leaves sideways. That is exactly backwards for this player. So the axes are decoupled \u2014 <strong>horizontal drag steers, vertical drag powers</strong> \u2014 and a child who swipes as hard as they possibly can gets a fast shot that still goes where they pointed.",
-          "The other half is a nudge they never see. A shot predicted to cross the goal line within <strong>1.6 units outside a post</strong> is bent back inside. The comment in <em>constants.ts</em> calls it the single most important kindness in the game: it turns \u201cso close!\u201d into \u201cGOAL!\u201d without the child ever noticing a nudge. And the widest angle a flick can produce is deliberately narrower than the goal mouth, so even a full sideways swipe lands inside that rescue band. The ball is never lost sideways. The only thing standing between the child and a goal is the keeper."
+          "In Royaume Foot’s <em>constants.ts</em> there is one value that sums the game up better than its home screen does: <em>outerBand: 1.6</em>. A shot predicted to cross the line less than 1.6 units outside a post is bent back in, aimed at 78% of the goal’s half-width. A pitch unit is roughly a metre, according to the same file. The comment above it calls this the most important kindness in the game, the one that turns a near miss into a goal without the child ever feeling the nudge.",
+          "Royaume Foot is a 3D football game for six- and seven-year-olds that runs entirely in the browser. I started it with Claude Code on a Sunday, 26 July: twelve commits in a little under six hours, and that evening a child was playing it. The first version of this article went out on 8 September, fifty-one minutes after the commit that gave the game its own address. Going back over it on 8 November, I checked every figure against the source again. Two sentences were wrong, and two more can no longer be backed up.",
+          "The whole game is one gesture. Put a finger down, slide towards the goal, let go. The first version said a child understood this gesture in four seconds; I can find that figure nowhere, so it goes. The obvious way to read a swipe is by its angle, like a slingshot, which makes a hard shot a crooked one as well, and six-year-olds swipe with enthusiasm. So the game reads the two axes separately: horizontal aims, vertical sets the power, and the upward lift is capped so that even the angriest shot passes under the 3.2-unit crossbar.",
+          "The first wrong sentence is here. I wrote that the widest angle a swipe can produce was narrower than the goal. It is the other way round. The ball starts 15.6 units from the line, and from there each post sits 15.1° off centre; a fully sideways swipe leaves at 0.3 radians, which is 17.2°, so wide. It lands in the rescue band, whose edge is around 20.4°, and the band brings it back. (The code comment says “~20.6°” for those 0.3 radians, which describes the edge of the band rather than the swipe; I did not catch that in September.) For the child, nothing changes: the ball is never lost off to the side."
         ],
         img: "geste"
       },
       {
-        title: "The test that fails when the game gets mean",
+        title: "667 shots in eight milliseconds",
         paragraphs: [
-          "The rules live in <em>src/game/</em>, and that folder never imports three.js. It started as tidiness and became the most useful decision in the project, because it means the entire simulation \u2014 physics, aim, keeper, scoring \u2014 runs in a test with no canvas, no GPU and no browser.",
-          "What sits on top of it is <em>balance.test.ts</em>, and it is not a unit test. It sweeps the whole space of flicks a child could plausibly produce \u2014 twenty-nine horizontal drags by twenty-three vertical ones, <strong>667 shots</strong> \u2014 plays every one of them to the goal line through the real physics and the real keeper, and then asserts things about the distribution. No shot is ever lost wide or over the bar. Every flick reaches the goal line, however feebly it was thrown. Between <strong>60 % and 95 %</strong> go in. The keeper still saves at least one in twenty, so he is worth aiming around. And a perfect five-shot round stays somewhere between a one-in-ten and a three-in-five event \u2014 a treat, not a formality.",
-          "None of those are correctness assertions. Nothing there is a bug in any ordinary sense. They are a statement about how the game should <em>feel</em>, written as numbers so that a build server can hold me to it. Retune a constant into a punishing game and CI goes red, and the thing to fix is the tuning rather than the test.",
-          "It has already earned the space. The widest flick angle used to be 0.55 radians. At that value <strong>two thirds of every shot flew outside the posts</strong> \u2014 which is a game a six-year-old abandons without ever explaining why. It is 0.30 now. No amount of playing it myself had found that; a sweep across 667 shots found it in under a second."
+          "What holds these settings in place is called <em>balance.test.ts</em>. It pretends to be a 390 × 844 phone and sweeps every swipe a child might plausibly make: from 140 pixels left to 140 right in steps of 10, from 60 to 500 pixels up in steps of 20. That is 29 × 23, or 667 shots, each played to the goal line with the real physics and the real keeper, who is somewhere different every time.",
+          "The assertions are about the distribution, never about a single shot. None goes wide or over, all of them reach the line, between 60 and 95% end up in the net, and the keeper stops more than one in twenty, so he is still worth aiming around. A perfect five-goal round has to stay between a one-in-ten and a six-in-ten chance. The crowns hanging in the net, which pay a bonus, must be hit by 10 to 70% of shots.",
+          "Those are bounds, and they do not say where the game actually sits. On 8 November I ran the sweep again outside the repository, on the code from <em>main</em>: 543 goals and 124 saves out of 667, which is 81%, no shot wide, 271 crowns hit. A perfect round comes up a little more than one time in three (35.8%). The whole run takes eight milliseconds.",
+          "Then I put the maximum angle back to 0.55 radians, the value <em>constants.ts</em> describes as the biggest difficulty bug the game ever had. On the same 667 shots, 414 go wide and only 205 goals are left. The perfect round drops to 0.27%, about one in 365. Three of the seven tests turn red.",
+          "How that bug was found, I can’t tell you. It is already fixed in the very first commit, and the history starts after that. The first version of this article also said a sweep had caught it in under a second where my own games had noticed nothing. That is plausible, but I can find no trace of it, so I have taken it out."
         ],
         img: ""
       },
       {
-        title: "Nothing that looks like a punishment",
+        title: "The keeping mode has its own simulated child",
         paragraphs: [
-          "<em>starsFor()</em> cannot return zero. Five shots, no goals at all, and the round still ends on confetti, a keeper waving, and a star.",
-          "The rule reaches further down than the scoreboard. A missed shot bounces back into play instead of vanishing. The sound for a save is two soft sine tones that <em>rise</em> at the end, not the descending buzz that every instinct reaches for. The keeper's face is shared code across all four species precisely so that nobody can quietly draw a meaner one later \u2014 those eyes are what make him read as a friend rather than an obstacle, and the whole no-failure rule leans on them.",
-          "The obvious objection is that a game you cannot lose is not a game. It is a fair objection, and the answer is that the tension has to move somewhere else. That somewhere is the next section."
-        ],
-        img: "encore"
-      },
-      {
-        title: "The wardrobe is the reward, not the score",
-        paragraphs: [
-          "There are thirty-two things to unlock: six princesses, four knights, ten balls, four pitches, four mascots and four keepers. Stars are <em>thresholds</em> and never a currency \u2014 nothing is ever spent. \u201cSave up or buy now?\u201d is a genuinely interesting decision at eleven and a chore at six.",
-          "Two rules in there are held by tests rather than by good intentions. At least one character of <em>each kind</em> is free from the very first launch, because locking every knight behind stars tells a child who wants a knight that the game is not for them yet. And the roster is a discriminated union rather than one bag of optional fields: a princess has hair and a dress, a knight has armour and a plume, and the type system is what stops a princess ever being handed a plume.",
-          "The knight's helmet is an open cap rather than a closed visor. The visor is more accurate and completely wrong here \u2014 a blank slit has no expression, and this entire design runs on faces."
-        ],
-        img: "garde-robe"
-      },
-      {
-        title: "Telegraphed, because reacting is not reflex",
-        paragraphs: [
-          "In the second mini-game the child stands in goal and the dragon shoots. That mode is only fair at this age because it tells the truth in advance: a target ring appears on the goal line <strong>a full second before the kick</strong>, and the ball then takes 0.85 seconds to arrive.",
-          "For that promise to hold, the flight is analytic rather than simulated. <em>ballPosAt()</em> solves for the launch velocity that puts the ball exactly on the advertised spot at exactly the advertised moment, and interpolates. The shooting mode integrates a real ball with drag and bounce; this one deliberately cannot, because a few centimetres of drift would mean the ring had lied \u2014 and a game that lies to a six-year-old about where the ball is going is not a difficulty setting, it is a betrayal.",
-          "Reacting to a ball already in flight is a reflex test. This is not that."
+          "This test was already blocking publication on the first day. On 26 July the game was deployed from continuous integration, which ran <em>npm test</em> before publishing, and a red test stopped everything. On 8 September deployment moved out of CI, and the guard moved with it into the image: it is built with <em>npm run lint &amp;&amp; npm test &amp;&amp; npm run build</em> in a single <em>Dockerfile</em> instruction, so a tuning change that made the game mean produces no image and leaves nothing to deploy. The commit that made the move adds that, of all the tests, the difficulty harness is the one that matters.",
+          "The second wrong sentence is about the other mini-games. I wrote that none of them had a difficulty sweep; two of them did, and had since 26 July. In the keeping mode the child goes in goal and has to stop a creature’s shots. The test there simulates a child who stands still for a moment, then heads for the target at full speed, over 200 shots: with a quarter of a second to react, the simulated child has to stop more than 90%, with 1.2 seconds more than half, and with 1.7 seconds it has to let more than one in ten through. The star run has the same kind of test. As of 8 November, only the tower game, added on 8 September, settled for checking that three stars were reachable within a round.",
+          "This mode only works because it gives warning. A ring appears on the goal line a full second before the kick, and the ball then takes 0.85 seconds to arrive. Its flight is not simulated: <em>ballPosAt()</em> works out in advance the path that lands it exactly on the ring at the announced moment, and a test with a blunt name, <em>the ring must not lie</em>, checks it."
         ],
         img: "gardienne"
       },
       {
-        title: "Nine kilobytes of images",
+        title: "On the evening of 26 July, the wardrobe gave way",
         paragraphs: [
-          "The previous article on this blog was an audit that found twenty-seven megabytes of screenshots sitting underneath an argument for lighter code. So it seems fair to state what a 3D game costs.",
-          "Every image in the repository: <strong>five files, 9,388 bytes.</strong> A favicon and four PWA icons \u2014 and those icons are drawn by a script with no dependencies whatsoever, which encodes the PNGs by hand out of <em>node:zlib</em>, because the mark is five flat shapes and a rasteriser for that is shorter than the argument for adding a library. There are no model files at all. Princesses, knights, keepers and the castle are assembled from cones, spheres and capsules; grass, netting and ball skins are painted onto a 2D canvas at startup; every sound is synthesised with Web Audio.",
-          "The honest part is that none of this makes it a light page. The build is <strong>333 KB gzipped</strong>, and 185 KB of that \u2014 <strong>fifty-five per cent</strong> \u2014 is three.js. That is simply the deal: a 3D engine is the weight and everything else is rounding error. What it does buy is that the weight is a single fixed cost, precached by the service worker, paid once and never again \u2014 rather than a content pipeline that grows every time somebody adds a character.",
-          "One dependency was refused on the same grounds. A real physics engine would have been roughly a megabyte of WebAssembly to do sphere-against-plane, and an arcade ball that forgives is better for a six-year-old than an accurate one anyway. The budget written down at the start of the project was 700 KB gzipped. It came in at under half."
+          "The eleventh commit of that first Sunday adds no code at all. It records in the plan that a child has played the game and loves it, and that this is the first evidence the tuning is right, since everything up to then rested on harnesses that only simulate a child. The plan even leaves itself a note for next time: knowing it works is a good signal, knowing where the child got stuck would be a better one.",
+          "The game itself held up. What gave way was the wardrobe, the screen where you dress your character in whatever the stars have unlocked. It was one long column that gave no sign it carried on further down, so everything below the edge of the screen might as well not have existed. Princesses and knights, mixed in one grid, read as a single pile.",
+          "The next commit lands eight minutes later. It brings tabs, a section per kind of character, a list that fades its bottom edge and floats an arrow while there is more to see, and ten balls redrawn at 512 pixels instead of 256, with their patterns kept to the middle band because a sphere stretches anything near its poles. It also adds a way to start over, since rediscovering the unlocks is part of the fun. The confirmation takes the whole screen, with the big green button as the safe choice: six-year-olds press everything, and the first version, sitting inline on the page, ended up below the edge with its buttons cut off.",
+          "When the article first went out, the wardrobe held 32 things to unlock: six princesses, four knights, ten balls, four pitches, four mascots and four keepers. Stars work as thresholds, never as a currency, because deciding whether to save or spend is a chore at that age. The comment in <em>roster.test.ts</em> gives the reason for the next rule: locking every knight behind stars would tell a child who wants one that the game is not for them yet. So the test requires one character of each kind, one pitch, one mascot and one keeper to be free from the first launch."
+        ],
+        img: "garde-robe"
+      },
+      {
+        title: "The cup nobody could win",
+        paragraphs: [
+          "The Kingdom Cup chains the four mini-games, in the order shooting, keeping, running and towers, and pays a bonus for getting to the end. It arrived with the tower game, in a commit on 8 September at 1:02. At 7:52 the same day, six hours after the commit of the first version of this article, another commit announced that it could not be won. The two are six hours and fifty minutes apart; how long the broken version stayed online I cannot say, because I do not have the time the fix went into production.",
+          "So as not to award a round’s stars twice, the play screen keeps a flag that is re-armed whenever the shot counter goes back to zero. But the run has no shots; it ends on a clock, and its counter stays at zero from start to finish. Moving from the run to the towers, the counter had not changed, the flag was never re-armed, and the last round could not finish: no stars, no result, no trophy. Two runs in a row never ended either, and that had been true since 26 July without anyone running into it.",
+          "The second bug would have been enough on its own. In <em>App.tsx</em> the screens were picked by a chain of <em>&amp;&amp;</em> conditions, and the trophy screen was not among them: even a completed cup unmounted everything and left the child on a blank page at the exact moment of winning. Since that commit it has been an exhaustive <em>switch</em> whose default case is typed <em>never</em>, so a forgotten screen becomes a compile error. The same commit straightens the rebuilt towers, which came back leaning because their tilt was added up from one game to the next.",
+          "The 667 shots saw none of this, since they judge shots and never the end of a round. The commit says as much in one sentence: both bugs were found by playing, which was the only way either was going to surface. The test added that day plays all four legs to the trophy in a real browser. It is slow, since both bugs only show up after three full rounds."
         ],
         img: "tours"
       },
       {
-        title: "What a playtest changed",
+        title: "Not a single sound file",
         paragraphs: [
-          "A child has played this at length and loves it. The game itself held: the tuning was right, the single gesture was learned in about four seconds, and nobody needed the words.",
-          "What broke was the wardrobe. A long scrolling column gave no sign at all that anything existed below the fold, so the items down there may as well not have been built. Princesses and knights in one grid read as a single undifferentiated pile. Both are fixed now \u2014 a scroll container that fades its bottom edge and floats a nudge arrow while there is more to see, and tabs with a section each.",
-          "There is a pattern in that worth keeping. The part I had defended in CI was the part that was already right. The part that failed was the part I had never thought to test, and it failed for a reason no test I can imagine writing would have caught: <em>a six-year-old does not know that a list continues.</em>"
+          "A lost round still ends on the stars screen. <em>starsFor()</em> gives one for no goals, two from three goals, three for five goals, or as soon as goals and crowns add up to six, and never returns zero. A save by the keeper comes with a sound I like reading in the code: two sine waves, the first falling from 420 to 300 hertz, the second rising from 330 to 400, so that the save ends on a rising note.",
+          "That sound is not a file, and neither is any other. Everything is synthesised on the fly with Web Audio; the grass, the net and the ball patterns are painted on a canvas at start-up, and the characters are put together from cones, spheres and capsules. The repository holds no 3D model at all. Its only images are five icons, 9,388 bytes in total: a hand-written <em>favicon.svg</em>, and four PNGs that a dependency-free script derives from its coordinates, assembling the files itself with Node’s <em>zlib</em>.",
+          "None of that makes the page light. On 8 November, <em>foot.bas.lu</em> transferred 333,305 compressed bytes of HTML, CSS and JavaScript, not counting the service worker, 181,703 of which are three.js, or 55%. I rebuilt <em>main</em> alongside to compare, and the JavaScript being served was the same, byte for byte. The plan aimed for under 700 KB; it had turned down a physics engine, Rapier, because about a megabyte of WebAssembly to bounce a sphere off a plane was a high price.",
+          "The game installs on a home screen and starts without a network, since its service worker precaches everything, three.js included. As of 8 November, the server, on the other hand, told the browser to revalidate the service worker file itself on every visit, or a child would stay stuck on whatever version was installed on day one, whatever was published after.",
+          "What I will not find out is how people play it. The game has no accounts, its code contains no analytics, and progress stays in the browser. What I know comes down to two sessions written down in the plan, on 26 July and 10 September, and a few more that the commits mention, such as the one a commit of 15 September cites. As of 8 November, three commits from 17 September were waiting on the development branch, not yet published, and the next article tells their story. If someone in your house ever presses “Start over”, I will never know."
         ],
-        img: ""
-      },
-      {
-        title: "What is not tested",
-        paragraphs: [
-          "The difficulty harness covers the shooting mode. The other three \u2014 keeper, runner, towers \u2014 have unit tests for their rules and no sweep over their difficulty at all. If one of them is quietly mean, nothing will tell me.",
-          "The playtest is one child, one tablet, one language. The game ships in six. English and French I can vouch for; the German, Spanish, Italian and Portuguese have not been read by anyone who speaks them. That is precisely the reserve this site already carries about its own German, and writing it down is not the same as closing it.",
-          "144 tests pass, and not one of them weighs a byte \u2014 the same gap I described a week ago about a different repository. A rule kept in a document has a half-life. I have not yet found the version of it that goes in a pipeline.",
-          "The game is at <em>foot.bas.lu</em>. It is free, there is nothing to install unless you want to, and it does not know who you are."
-        ],
-        img: ""
+        img: "encore"
       }
     ]
   },
