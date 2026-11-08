@@ -66,7 +66,7 @@ ne s'y copie.
       est recopiée.**
 
 ### 2. Pilote — `blogPost10` réécrit
-- [ ] Réécrire « Le test passait, et le ballon traversait le gardien » en FR selon le
+- [x] Réécrire « Le test passait, et le ballon traversait le gardien » en FR selon le
       guide, puis EN et DE. PR fusionnée quand la CI est verte (accord donné d'avance
       le 2026-11-08).
 - [ ] Ce que le pilote a appris intégré au guide ; je n'en relirai rien, la boucle
