@@ -853,59 +853,55 @@ export default {
   },
   blogPost1: {
     title: "Die Zukunft der Fintech",
-    title2: "Wie <strong>Green Coding</strong> die Branche umwälzen kann",
+    title2:
+      "Geschrieben im Juli 2023, überarbeitet im November 2026: was die Fintech ihrem Code verdankt, und was ich damals vorschnell behauptet habe, Bitcoin inklusive.",
     sections: [
       {
-        title: "Einleitung",
+        title: "Jede Zahlung hält irgendwo eine Maschine am Laufen",
         paragraphs: [
-          "Fintechs, also Unternehmen im Bereich der Finanztechnologien, sind wie viele andere Akteure unserer modernen Welt grundlegend von ihrer IT-Struktur abhängig. Innerhalb dieser Struktur findet sich der Programmcode, der für ihre Tätigkeit unerlässlich ist. Genau dieser Code erzeugt direkt einen großen Teil der Treibhausgasemissionen dieser Branche",
-          "<strong>Green Coding</strong> ist ein anderer, effizienter Ansatz der IT-Entwicklung, der auf Nachhaltigkeit zielt. Diese Methode verlangt, Algorithmen zu schreiben, die ein Minimum an Energie verbrauchen. Mit der stetig wachsenden Digitalisierung und allen IT-Bedürfnissen wird auch die Nutzung von Rechenzentren zunehmen."
+          "Ich schreibe für Leute, die Finanzdienste bauen oder solche Projekte leiten, und die das Wort „Energie“ noch nie in einem Ticket gesehen haben. Eine Fintech ist in erster Linie Software. Eine Überweisung, oder der Kontostand, den man im Bus nachschaut, läuft über Code auf Servern und auf dem Handy der Kundschaft.",
+          "Dieser Code kostet Strom, und wie viel, hängt zum Teil davon ab, wie er geschrieben ist. <em>Green Coding</em> nennt man seit einigen Jahren die Gewohnheit, das zu berücksichtigen: Software so zu schreiben und zu betreiben, dass sie für dieselbe Leistung weniger verbraucht. 2023 dachte ich, die Fintech habe allen Grund, früh damit anzufangen, weil sie schnell wächst und ganz von ihrer IT abhängt. Das denke ich immer noch.",
+          "Die erste Fassung dieses Textes stammt vom 22. Juli 2023. Ich habe sie am 8. November 2026 wieder aufgenommen, die These behalten und korrigiert, was sie ungeprüft behauptet hatte. Wo ich korrigiere, sage ich es, und was ich mit dem Blick von heute ergänze, ist datiert. (Die alte Fassung hatte auch Abschnitte namens „Einleitung“ und „Fazit“. Die habe ich nicht behalten.)"
         ],
         img: "future"
       },
       {
-        title: "Was genau ist <strong>Green Coding</strong>?",
+        title: "Code stößt von sich aus nichts aus",
         paragraphs: [
-          "<strong>Green Coding</strong> ist ein junger Begriff, den verschiedene Organisationen als Ausdruck ihrer Absicht popularisiert haben, die Umwelt zu schonen. Er erlaubt Programmiererinnen, Entwicklern und Ingenieuren, die Algorithmen, die sie schaffen, ökologischer zu betrachten. Dafür müssen sie zwei wesentliche Faktoren berücksichtigen:",
-          "- Strukturelle Aspekte: Sie hängen direkt mit den Codeblöcken und der sie umgebenden Infrastruktur zusammen",
-          "- Verhaltensbezogene Aspekte: Sie hängen am Nutzungsszenario, etwa dem Durchsehen des LinkedIn-Feeds, dem Versand einer E-Mail und so weiter.",
-          "Wer Code entwirft, muss daher bestehende Praktiken überprüfen, Vorhandenes verbessern und neue Methoden entwickeln, die Funktionalität und Energieverbrauch ins Gleichgewicht bringen."
+          "2023 schrieb ich, der Code einer Fintech verursache direkt einen großen Teil der Emissionen der Branche. Hinter diesem Satz stand keine Messung, und er ist schief formuliert. Ein Programm stößt selbst nichts aus: Die Maschinen, die es ausführen, verbrauchen Strom, und ihre Herstellung hat schon etwas gekostet, bevor jemand sie einschaltet.",
+          "Was der Code entscheidet, ist, wie viele dieser Maschinen nötig sind und wie lange sie arbeiten müssen. Der Zusammenhang ist indirekt, aber er wiegt, und genau diesen Teil hat ein Entwickler in der Hand.",
+          "Ich unterschied zwei Arten von Fragen, und dabei bleibe ich. Fragen der Struktur betreffen den Code und die Infrastruktur drumherum, also was ein Prozess tut und wo er läuft. Fragen der Nutzung betreffen das, was Menschen tatsächlich mit dem Dienst machen: wie oft am Tag sie die App öffnen, um ihren Kontostand zu sehen, und was dabei jedes Mal neu geladen wird. Eine Onlinebank kann sauberen Code haben und trotzdem einen Startbildschirm, der bei jedem Besuch alles neu herunterlädt."
         ],
         img: "search"
       },
       {
-        title: "<strong>Green Coding</strong> und Fintech",
+        title: "Weniger Zeilen heißt nicht weniger Energie",
         paragraphs: [
-          "Die Fintech-Branche ist sehr schnell und ununterbrochen gewachsen. Sie hat verändert, wie wir Finanzgeschäfte abwickeln, ob bei Zahlungen, Krediten, Geldanlagen oder auch Versicherungen. Doch wie jede Technologie hat Fintech eine Umweltwirkung. Die Server, die diese Dienste betreiben, verbrauchen große Mengen Energie, woraus Treibhausgasemissionen entstehen",
-          "Und genau hier kommt <strong>Green Coding</strong> ins Spiel. Indem wir den Code optimieren, der diese Finanzdienste antreibt, können wir die Energiemenge senken, die für ihren Betrieb nötig ist. Das geht auf mehrere Arten, etwa durch weniger Codezeilen, durch Algorithmen, die schneller laufen, und durch den Einsatz energieeffizienterer Programmiersprachen."
+          "Einer meiner Vorschläge war, „die Anzahl der Codezeilen zu reduzieren“. Den ziehe ich zurück. Eine Schleife aus drei Zeilen, die bei jedem Aufruf eine ganze Tabelle neu liest, kostet mehr als eine Funktion aus dreißig Zeilen, die nur liest, was sie braucht, und eine einzige Zeile, die eine ganze Bibliothek importiert, kann schwerer wiegen als der Rest der Datei.",
+          "Die anderen Vorschläge halten besser. Zuerst einen Algorithmus so verbessern, dass er weniger Arbeit macht. Und auf dem Handy verhindern, dass eine App das Gerät ohne Grund aufweckt oder Daten nachlädt. Die übertragene Datenmenge lässt sich am leichtesten beobachten: Sie steht im Netzwerk-Tab jedes Browsers, ohne dass man etwas installieren muss.",
+          "Ausprobiert habe ich das an dieser Website, lange nach diesem Artikel. Bei ihrer Neugestaltung im August 2026 schrumpften die Screenshots von 27,4 MB auf 905 KB, in WebP umgewandelt und in denselben Abmessungen, ohne dass eine einzige Zeile Logik dazu beigetragen hätte (in einem anderen Artikel steht, wie diese Zahl selbst neu ermittelt werden musste).",
+          "Ich schlug auch vor, energieeffizientere Programmiersprachen zu wählen. Das stimmt, Vergleiche gibt es, aber mitten im Projekt wechselt man selten die Sprache. Ich glaube, dass das, was ein Programm unnötig tut, meist schwerer wiegt als die Sprache, in der es das tut, und dort würde ich anfangen."
         ],
         img: "fintech"
       },
       {
-        title: "Anwendungen von <strong>Green Coding</strong> in der Fintech",
+        title: "Bitcoin war schon damals nicht die ganze Blockchain",
         paragraphs: [
-          "Die Anwendung dieser Prinzipien in der Fintech kann mehrere Formen annehmen. Unternehmen können etwa ihre Anwendungen so optimieren, dass sie auf mobilen Geräten weniger Energie verbrauchen. Das kann bedeuten, die Anwendung reaktionsschneller zu machen, ihr Datenvolumen zu senken oder sicherzustellen, dass sie die Ressourcen des Geräts nicht unnötig beansprucht",
-          "Darüber hinaus können Unternehmen auch versuchen, ihre Rechenzentren grüner zu machen. Durch den Einsatz energieeffizienterer Server, durch eine bessere Auslastung der Server zur Vermeidung von Energieverschwendung oder auch durch erneuerbare Energien für den Betrieb der Rechenzentren.",
-          "Schließlich kann <strong>Green Coding</strong> auch den Einsatz grünerer Blockchain-Technologien umfassen. Die Blockchain ist eine Schlüsseltechnologie vieler Fintech-Dienste, aber sie ist auch für ihren hohen Energieverbrauch berüchtigt. Es gibt jedoch grünere Alternativen: Technologien, die weit weniger Energie verbrauchen als die von Blockchains wie Bitcoin genutzten."
+          "Die Blockchain steckt in einem Teil der Fintech-Dienste, und ich beschrieb sie als bekannt für ihren Verbrauch, mit Bitcoin als Beispiel und dem vagen Versprechen „umweltfreundlicherer Alternativen“. Bitcoin läuft weiterhin mit Proof of Work: Maschinen rechnen um die Wette, um jeden Block zu bestätigen, und diese Rechenarbeit verbraucht den Strom. Die Alternative hatte damals aber schon einen Namen, und ich habe ihn nicht hingeschrieben. Ethereum ist am 15. September 2022 auf Proof of Stake umgestiegen, zehn Monate vor meinem Artikel; dort sperren die Validatoren Ether als Einsatz, statt um die Wette zu rechnen.",
+          "Die Website ethereum.org zitiert eine Schätzung des CCRI (Crypto Carbon Ratings Institute), nach der dieser Umstieg, „the Merge“ genannt, den jährlichen Stromverbrauch des Netzwerks um mehr als 99,988 % gesenkt hat. Das ist eine Schätzung, und ich habe sie nicht nachgerechnet. Natürlich war das Beispiel, das ich 2023 wählte, um zu zeigen, dass eine Blockchain zu viel verbraucht, genau das, über das ohnehin alle sprachen, und ausgerechnet die anschaulichste Änderung, die meinen nächsten Satz belegt hätte, ließ ich weg."
         ],
         img: "apps"
       },
       {
-        title: "Herausforderungen des <strong>Green Coding</strong> in der Fintech",
+        title: "Messen konnte man schon",
         paragraphs: [
-          "Obwohl <strong>Green Coding</strong> viele Vorteile bietet, bringt es auch Herausforderungen mit sich. Zunächst kann es schwierig sein, die Energieeffizienz eines Codes zu messen. Denn Energieeffizienz kann von vielen Faktoren abhängen: von der Hardware, auf der der Code läuft, von der Art, wie er geschrieben ist, und sogar davon, wie Nutzerinnen und Nutzer mit der Anwendung umgehen.",
-          "Außerdem kann es schwierig sein, Unternehmen davon zu überzeugen, in <strong>Green Coding</strong> zu investieren. Zwar kann es langfristig Kosten senken, indem es den Energieverbrauch verringert, doch es kann eine Anfangsinvestition erfordern, um bestehenden Code neu zu schreiben oder zu optimieren.",
-          "Schließlich kann es auch schwierig sein, Entwicklerinnen und Entwickler mit den nötigen Fähigkeiten zu finden. <strong>Green Coding</strong> ist eine verhältnismäßig neue Kompetenz, und es ist nicht leicht, Menschen zu finden, die sowohl Fintech-Erfahrung als auch Kenntnisse im <strong>Green Coding</strong> mitbringen."
+          "Am liebsten korrigiere ich die Stelle, an der stand, die Energieeffizienz von Code sei schwer zu messen, weil sie von der Hardware, von der Schreibweise und von der Nutzung abhängt. Das stimmt alles, und es hält niemanden vom Messen ab. Die Green Software Foundation veröffentlicht eine Methode dafür, die SCI-Spezifikation (<em>Software Carbon Intensity</em>), an der seit Juni 2021 öffentlich gearbeitet wurde. Am 1. November 2022 ersetzte eine verabschiedete Fassung, die der Arbeitszweig des Repositorys 1.0 nannte, im Hauptzweig die Alpha-Version. Sie existierte also, als ich schrieb, und ich kannte sie nicht. Heute ergänzt: Seit 2024 ist sie auch eine Norm, ISO/IEC 21031:2024.",
+          "Ihr Prinzip passt in eine Zeile: SCI = (O + M) pro R. O steht für den Betrieb, die verbrauchte Energie multipliziert mit der CO2-Intensität des Stroms; M ist der Anteil der Herstellung der Hardware; R ist die Einheit, auf die man alles bezieht, damit es etwas aussagt, etwa ein Nutzer oder ein API-Aufruf. Für eine Fintech würde ich die Zahlung nehmen. Der Wert bezieht sich auf diese Einheit, und nur eine echte Senkung der Emissionen drückt ihn: Kompensation zählt nicht.",
+          "Nebenbei präzisiert sie einen weiteren meiner Vorschläge von 2023, Rechenzentren mit erneuerbarer Energie zu betreiben. Wer tatsächlich weniger CO2-intensiven Strom verbraucht, senkt den Wert durchaus, etwa indem ein Prozess dort läuft, wo das Netz sauberer ist, oder zu der Zeit, in der es das ist. Für die CO2-Intensität nimmt die Spezifikation allerdings das Stromnetz, an dem die Maschine tatsächlich hängt, und schließt Marktinstrumente aus, etwa separat gekaufte Ökostrom-Zertifikate: Ein grüner Vertrag ändert den Wert nicht.",
+          "Blieb das Argument mit dem Geld. Ich schrieb, dass das Umschreiben von Code am Anfang eine Investition verlangt, dass die eingesparte Energie sie später zurückzahlt, und dass Dienste, deren Betrieb weniger kostet, für die Kundschaft billiger werden könnten. Das glaube ich noch, aber ich habe keine Zahl, die es zeigt, weder 2023 noch heute. Ich schrieb auch, es fehle an Entwicklern, die darin ausgebildet sind; das kann ich nicht überprüfen, also ziehe ich es zurück.",
+          "Wenn Sie in einer Fintech arbeiten, wissen Sie besser als ich, welche Einheit bei Ihnen zählt: die Zahlung, oder das Öffnen der App, um den Kontostand zu sehen. Messen Sie sie einmal mit dieser Methode, und entscheiden Sie dann, ob etwas umgeschrieben werden sollte. Das kann ich nicht für Sie entscheiden, und im Juli 2023 hatte ich nicht einmal diese Zahl, um Sie zu überzeugen."
         ],
         img: "challenges"
-      },
-      {
-        title: "Fazit",
-        paragraphs: [
-          "Trotz dieser Herausforderungen hat <strong>Green Coding</strong> ein enormes Potenzial, die Fintech-Branche zu verändern. Indem wir den Energieverbrauch von Finanzdiensten senken, verringern wir nicht nur unsere Umweltwirkung, sondern machen diese Dienste auch zugänglicher. Denn weniger Energie bedeutet geringere Kosten, was niedrigere Gebühren für die Nutzenden bedeuten kann.",
-          "<strong>Green Coding</strong> ist noch eine junge Praxis, doch mit Zeit und Investitionen hat es das Zeug dazu, in der Fintech-Branche zur Norm zu werden. Wer jetzt in <strong>Green Coding</strong> investiert, verringert nicht nur seine Umweltwirkung, sondern positioniert sich auch als Vorreiter in einer Branche, die sich ihrer ökologischen Wirkung immer stärker bewusst wird."
-        ],
-        img: ""
       }
     ]
   },
