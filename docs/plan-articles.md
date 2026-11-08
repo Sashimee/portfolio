@@ -47,11 +47,14 @@ ne s'y copie.
       son adresse et la commande de rafraîchissement dans `RESUME.md`.
 
 ### 1. Le guide de voix
-- [ ] Lire mes **courriels envoyés longs, mais pas les plus récents** (ceux-là sont
-      générés par IA) : viser ceux d'avant 2025, en écarter tout ce qui sonne généré,
-      et ne pas s'attarder sur les fils juridiques, financiers ou familiaux — on en
-      tire un style, pas un contenu. Y ajouter mes messages de chat (transcriptions
-      Claude) et `blogPost1` (2023, le seul long texte de ma main sur ce site).
+- [ ] **Source première : mes publications Facebook depuis 2013**, fournies le
+      2026-11-08 avec des observations déjà tirées, dans `voix-echantillons.md` du
+      dossier hors dépôt. Partir de ces observations.
+- [ ] Sources secondaires, pour compléter : mes **courriels envoyés longs, mais pas les
+      plus récents** (ceux-là sont générés par IA) — viser ceux d'avant 2025, en
+      écarter tout ce qui sonne généré, ne pas s'attarder sur les fils juridiques,
+      financiers ou familiaux ; on en tire un style, pas un contenu. Puis mes messages
+      de chat (transcriptions Claude) et `blogPost1` (2023).
 - [ ] Écrire le guide dans le dossier hors dépôt : longueur et rythme des phrases,
       registre, tournures et mots qui reviennent, façon d'ouvrir et de conclure, humour,
       niveau de technicité, et une liste des **tics d'IA à proscrire** (squelette
