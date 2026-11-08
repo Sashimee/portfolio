@@ -605,80 +605,64 @@ export default {
     ]
   },
   blogPost3: {
-    title: "A link that keeps telling the truth",
+    title: "My mood has said “Test” since 28 August",
     title2:
-      "Building <strong>Aura</strong>, and the one part of a chat preview nobody can fix.",
+      "<strong>Aura</strong> promises a chat preview that is always current. The first version of this article also promised a key erased after three days. It wasn’t.",
     sections: [
       {
-        title: "The link is permanent. What it says is not.",
+        title: "Ten weeks on the same card",
         paragraphs: [
-          "<strong>Aura</strong> is one address — <em>mood.bas.lu/you</em> — that you send once, into a WhatsApp chat, a Signal bio, a Slack status. It never changes. What it <em>says</em> is yours to change whenever you like: available to talk, heads-down until six, asleep, chaotic evil today, with a GIF if you want one.",
-          "Described that way it sounds like an afternoon's work: a row in a table, a page that reads it. It is not, and the reason has nothing to do with the page. When somebody drops that link into a conversation, the chat app does not show them your page. It shows a <strong>preview card it scraped earlier and cached</strong>.",
-          "If that card still says <em>asleep</em> three hours after you woke up, the product has failed at the only thing it does. Everything interesting about this project is the fight against that one sentence."
-        ],
-        img: "lien"
-      },
-      {
-        title: "The page is never cached",
-        paragraphs: [
-          "The mood page is <em>force-dynamic</em> and answers with <em>Cache-Control: no-store, max-age=0, must-revalidate</em>. The function that builds its meta tags reads the current mood straight from PostgreSQL on every single request — no build step, no incremental regeneration, no revalidation window.",
-          "Any scraper that fetches the page, at any moment, from anywhere, gets the mood as it is right now. This is written into the project's <strong>CLAUDE.md</strong> as the first of two rules that override convenience, in the form that matters: a future change that introduces caching here is not an optimisation, <em>it is the bug</em>.",
-          "That kind of rule is easy to write and easy to erode. Six weeks later someone sees an uncached route, assumes it is an oversight, and fixes it. Writing down <em>why</em> the slow thing is the correct thing is the only defence, and it belongs in the repository rather than in someone's memory."
+          "On 8 November I asked Aura for my own page while pretending to be WhatsApp. The answer fits in 1,011 bytes, and the preview image it points to is called <em>ec85c5dd7795cabd.png</em>. That is exactly the address quoted by the first version of this article, published on 28 August: in ten weeks my public mood has not changed once. It says “Test”.",
+          "For those who missed it, Aura is a permanent address, <em>mood.bas.lu/&lt;handle&gt;</em>, that you send once in a chat or put in a bio, and behind which you change whatever you feel like saying: free to talk, heads-down until 18:00, asleep, with a GIF if you want one. All the work is in the preview. The card that unfolds in the chat has to show the mood of the moment, not the one from the day the link was pasted. I built Aura with Claude Code, and it took less than a day to go from the plan to the first deployment.",
+          "The repository, which is private, holds 83 commits between 26 August and 12 September. When I published the first version, on 28 August at 23:12, it had 23. The other 60 came afterwards, and several of them touch sentences I had published. Picking the article up again on 8 November, I checked them one by one against the repository and the live site: four were already wrong on the day of publication, and I correct them where they come up."
         ],
         img: "page"
       },
       {
-        title: "The card's address is a hash of the card",
+        title: "The address typed from memory returned a 404",
         paragraphs: [
-          "The preview image never points at a stable path like <em>/og/alex.png</em>. It points at <em>/api/og/&lt;handle&gt;/&lt;hash&gt;.png</em>, where the hash is a short digest over everything the card draws: the emoji, the text, the accent colour, the GIF still, the mood version.",
-          "This pulls in two directions on purpose. The image is <strong>immutable</strong>, so it ships a one-year cache header and every CDN and proxy in the chain may keep it forever — it is a 1200×630 render and doing that work twice is waste. And changing your mood produces <strong>an address no platform has ever requested</strong>. There is no cache entry to go stale, because the old card still lives at the old URL and nothing points there any more.",
-          "The card is drawn without a headless browser in the container — satori for layout, resvg for rasterisation. On the live site today, the page for <em>alex</em> advertises <em>/api/og/alex/ec85c5dd7795cabd.png</em>, and that file is 1200 by 630. Change the mood and the sixteen characters in the middle change with it."
+          "The plan is dated 26 August at 03:29. The first successful deployment came the following night, around 02:00, and the first production fix carries the same minute. The site only answered over HTTPS: the certificate had been issued, full addresses worked, and that is precisely why nothing looked broken. An address typed without <em>https://</em> in front fell through to the router’s default page, with a 404. Yet this is a link people type from memory, and a 404 looks like a site that is down.",
+          "The page itself must never be cached; that is the first of the two rules in the repository’s instruction file. Next.js nearly got round it without a sound. A <em>force-dynamic</em> route answers <em>no-cache, must-revalidate</em>, which still lets an intermediary store the page, so <em>no-store</em> had to be set by hand. The test checking it passed against the development server, which rewrites that header on every response (so it checked nothing); the end-to-end suite has run against the production server ever since. On 8 November my page still answers <em>no-store, max-age=0, must-revalidate</em>."
+        ],
+        img: "lien"
+      },
+      {
+        title: "Sixteen hexadecimal characters",
+        paragraphs: [
+          "The preview image has no fixed address. It lives under <em>/api/og/&lt;handle&gt;/&lt;hash&gt;.png</em>, where the hash is a digest of everything the card draws. A new mood yields an address no platform has ever asked for: there is no old copy to expire, and the image can go out with a one-year cache. Mine weighs 32,507 bytes, measures 1,200 × 630 pixels and is indeed served as <em>public, max-age=31536000, immutable</em>.",
+          "The 26 August commit that set this up has a detail I am fond of. The digest puts each field’s length in front of it instead of joining the fields with a separator. A separator can perfectly well turn up in the text of a mood, and with nothing between the fields, “ab” followed by “c” and “a” followed by “bc” make the same string. Either way, two different moods would have shared a card, which is exactly the stale preview the whole system exists to prevent. The commit tests it, including a mood that contains the delimiter.",
+          "The first version also told the story of the emoji. The engine that lays out the card, satori, fetched it from a CDN during the render with no timeout, and a slow CDN used up the time a preview bot gives the page. On 27 August the fetch moved ahead of the render with a deadline of one and a half seconds, and I concluded that the engine no longer requested anything itself. That was wrong. The GIF’s still frame was still loaded during the render, without any limit, and a card that had lost it went out with the immutable header, frozen for a year at an address that would never change again. Agents set to audit the repository found it on 8 September, and the fix is from the same day. On the 11th it turned out the one-and-a-half-second deadline bounded how long the read took, not how much arrived: the emoji CDN’s response is now cut off at 256 KiB.",
+          "I had also written that rendering such a card twice would be a waste. On 10 September a commit noted that anyone could have it rendered again and again. The route is not authenticated, and any string of sixteen hexadecimal characters on an existing handle triggered a full render. A superseded hash is served without a cache, deliberately, so nothing downstream absorbed the repetition.",
+          "The fix is lopsided on purpose. The current card is never rate-limited, because a counter a stranger can exhaust would stop someone else’s real preview from being drawn; it is kept in a process cache, filed under its hash. A superseded hash is limited to 60 renders per hour per profile. I tried it on 8 November with sixteen zeros: the site returns my current card, identical byte for byte, but uncached."
         ],
         img: "carte"
       },
       {
-        title: "The emoji that could hold a crawler open",
+        title: "WhatsApp keeps its copy",
         paragraphs: [
-          "Emoji cannot be bundled into that renderer, and the reason is a small stack of dead ends: satori draws from font outlines, the colour emoji font is a bitmap format it refuses outright, and the monochrome one would make every card grey.",
-          "So the default behaviour is to fetch the glyph <em>inside</em> the render — with no timeout, no cache of failures and no fallback. Read that again from the other end of the wire: an unreachable CDN becomes a crawler holding an open connection until its own short timeout fires, and the person who shared the link sees <strong>no preview at all</strong>. A missing emoji had been quietly upgraded into a missing card.",
-          "The fetch now happens before the render, with a 1.5-second deadline and a process cache, and the artwork is handed to the layout engine inline so it requests nothing itself. A glyph that cannot be fetched costs the card its emoji instead of costing the crawler its timeout — and that particular card is served <em>no-store</em> rather than immutably, so one bad minute of CDN weather is not frozen into every platform's cache forever."
+          "All of this settles the image cache, and leaves the other one alone. Platforms keep the result of the preview, filed under the page’s address. According to the documentation the repository gathered, WhatsApp keeps it for three to seven days, X for about a week, Discord for anything from a few hours to a few days, Slack for half an hour. No server-side technique reaches a message that has already been sent.",
+          "What can be done is on the dashboard. Its main button copies a fresh link: the same address followed by <em>?v=</em> and the mood’s version number. To Aura it is the same page with the same canonical address; to a platform it is an address it has never seen, so it has to go and read it. The other route, asking Meta to re-read the page, is written and has never been used. It needs an app token, and in the repository’s last state, on 12 September, there was none.",
+          "Preview bots have their own door. A list recognises their user-agent string, about twenty named platforms plus a net for anything that calls itself a bot, and the order matters: Telegram introduces itself as <em>TelegramBot (like TwitterBot)</em>, and was being taken for Twitter. They get a document stripped down to its tags, 1,011 bytes for WhatsApp’s agent against 17,849 for a browser, uncompressed. I had written that all of this spoke twenty-two languages. The pages did, but that document said “alex on Aura” to everyone, inside an <em>html lang=en</em> tag, until a fix dated 11 September; on 8 November, a bot that asks for French gets “alex sur Aura”.",
+          "These visits do not count as views. They are logged separately, so the dashboard can say “WhatsApp fetched your card 4 minutes ago”. An empty user-agent passed for a bot, and the route that receives them could be reached directly, so a loop wrote one row per request into that log. With a fix dated 10 September, the recording step redoes the classification itself and keeps a single row per profile, per platform and per minute."
         ],
         img: ""
       },
       {
-        title: "Crawlers get their own door",
+        title: "The key nobody deleted",
         paragraphs: [
-          "The unfurl bots are recognised from their real user-agent strings — <em>facebookexternalhit</em>, <em>WhatsApp</em>, <em>Twitterbot</em>, <em>Discordbot</em>, <em>TelegramBot</em>, <em>Slackbot</em>, <em>LinkedInBot</em>, <em>Applebot</em> and a dozen more — under test, with the actual strings as fixtures, including near-misses that must <strong>not</strong> match.",
-          "They receive a meta-only document: the tags, no client JavaScript, a few kilobytes. That is not premature optimisation. Several crawlers enforce byte ceilings and short timeouts, and a card that fails to render because the page was too heavy is indistinguishable from a card that is wrong. Asking the live site the same question twice makes the gap concrete: the address <em>mood.bas.lu/alex</em> returns about <strong>17 kilobytes</strong> to a browser and about <strong>one</strong> to a WhatsApp user-agent.",
-          "Those hits are also excluded from view counts — a preview fetch is not a person looking at you — and logged separately, so the dashboard can say <em>WhatsApp fetched your card four minutes ago</em>. That line is worth more than it looks: it turns an invisible mechanism into something the owner can watch working, instead of something they have to trust."
-        ],
-        img: ""
-      },
-      {
-        title: "What no server can fix",
-        paragraphs: [
-          "Here is the part most write-ups would skip. Platforms cache the <strong>unfurl result keyed by the page URL</strong>, not by the image URL. The content-addressed trick defeats image caching completely and does <em>nothing at all</em> to this. WhatsApp holds a preview for something like three to seven days, X for about a week, Discord for hours to days, LinkedIn for a long time, iMessage per device.",
-          "So a link already sitting in an old chat message may show an older card for a few days, and no server-side technique reaches into a message that was already sent. Anyone claiming otherwise is selling something.",
-          "What can be done is done. Facebook and Instagram are refreshable through Meta's Graph API, and because WhatsApp shares that crawler infrastructure the same call frequently reaches it — frequently, not reliably, so the queue records the outcome rather than assuming one. The token is optional: unset, the feature does not fail, <em>it does not exist</em>, and nothing else changes. And the dashboard's primary button is <strong>Copy fresh link</strong>, which appends the mood version to the address. The application ignores it and canonicalises it away, but to a platform it is a URL never unfurled — so it has no cache entry, must scrape, and the preview is current by construction.",
-          "Next to those controls, in plain language: chat apps keep a copy of the preview for a few days; a fresh link always shows your current mood, an older message may catch up later. Managing that expectation is part of the feature. A product that over-promises here loses trust the first time a friend sees the wrong mood — and the friend never reports it."
-        ],
-        img: ""
-      },
-      {
-        title: "Counting visits without recognising anyone",
-        paragraphs: [
-          "The second rule that overrides convenience: <strong>a visitor is never identified</strong>. A view is stored as a truncated digest of the address, the user-agent, the profile being viewed, and a key of 32 random bytes generated fresh each day — random, not derived from a secret, which is the whole point.",
-          "That key is <strong>deleted after three days</strong>. Once it is gone, nobody — me included — can recompute a past day's digests, so there is no way to tell that yesterday's visitor is today's. No IP address, no cookie, no cross-day identifier is written down. Raw records are dropped after thirty days and only daily totals survive.",
-          "This is what keeps the whole thing out of consent-banner territory, and it is a genuine trade: better analytics are one schema change away at all times. Writing the reasoning next to the code, rather than the conclusion, is what makes it survive the day the prettier dashboard looks tempting."
+          "The repository’s second rule says a visitor is never identified. A view is stored as a truncated digest of the visitor’s IP address, their browser’s user-agent, the profile being viewed and a key of 32 random bytes, drawn afresh every day. Once the key is erased, nobody, me included, can recompute that day’s digests. That is what keeps Aura clear of consent banners.",
+          "On 28 August I wrote that this key was destroyed after three days. Nothing was scheduled to destroy it, and the cut-off written in the code would have kept it a day too long anyway. The nightly job that does it existed, but the deployment had never created a schedule for it, and nothing said so. An audit on 6 September found it; the job was scheduled on the 7th and run once by hand to clear the backlog. For eleven days, then, every day’s views stayed recomputable from an address and a user-agent, which is what the rule must prevent.",
+          "There were smaller gaps as well. That cut-off was written with a strict “less than”, so a day’s key survived until the fourth day; a fix dated 11 September brings it back to three. The privacy page also claimed that no cookie was set, while the language switcher, added in the night before publication, writes one for a year. I had repeated that sentence. On 8 November the page says this is the only cookie and that it holds nothing but a language code, and it still reads “Last updated 2026-08-27”.",
+          "A fix dated 11 September teaches the nightly job to say it has stopped: with the <em>--check</em> option it verifies that no key has outlived its age, and exits with an error if one has. Someone still has to run it. Picking this article up again, I did not check that the schedule is still running."
         ],
         img: "vie-privee"
       },
       {
-        title: "What is not proven",
+        title: "The missing test",
         paragraphs: [
-          "Aura is live at <strong>mood.bas.lu</strong>, in twenty-two languages negotiated from the browser. The container builds, migrates and serves; the page really does answer <em>no-store</em>, and the card URL really is content-addressed. Those I checked from outside the machine that built them, which is the only check that counts.",
-          "The rest is a list of things I have <em>not</em> verified, kept in the repository rather than in my head. <strong>No link has been pasted into a real chat app and watched to update.</strong> Everything in the section above about platform behaviour is documentation and reasoning, not observation — and it is the largest gap in the product. The end-to-end suite has met one browser engine. No assistive technology has been used: the skip link, the language attribute and the live regions are asserted to be present and correctly shaped, and nobody has heard any of them. The legal pages have had no legal review, and the twenty-two languages were translated here, not by translators.",
-          "A machine writes quickly, and more correctly than people expect. It will not tell you that a preview looked wrong in a friend's chat window, because the friend never mentions it. That is the difference between what is built and what is proven, and only the second one is worth writing down."
+          "The biggest gap has not moved since August. As of 8 November, nobody had pasted an Aura link into a real messaging app, changed the mood, then pasted the fresh link to see the second card differ from the first. The repository’s plan files it under what is left to do, and says so plainly: everything about the platforms’ caches remains reasoning until that has been done once. As of 12 September no email had left the application either, and I do not know whether a sign-up confirmation arrives.",
+          "In the repository’s last state, the legal pages, translated into twenty-two languages by a model, had been read neither by a lawyer nor by anyone whose language it is. And the “Test” on my page has stayed put since August, which says enough about how often I change my mood in public.",
+          "If you have a messaging app open, paste <em>mood.bas.lu/alex</em> into a chat with yourself. The card should say “Test”. The day it shows something else, I will finally have changed my mood: paste the link again, and write to tell me whether the preview followed. It would be the first observation I have of this system, so thank you in advance."
         ],
         img: ""
       }
