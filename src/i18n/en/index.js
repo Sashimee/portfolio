@@ -211,81 +211,54 @@ export default {
   blogPost9: {
     title: "Merged is not deployed",
     title2:
-      "Three weeks on Schoulbus: a showcase and an app that must look like the same product, screenshots of a design that no longer existed, and <strong>a merge that published nothing</strong>.",
+      "Eleven days of September on Schoulbus: a check dismissed as a false alarm when it was right, and an optimisation that is still not live.",
     sections: [
       {
-        title: "Two repositories, one product",
+        title: "Twelve days without a commit",
         paragraphs: [
-          "Schoulbus is two things. <em>schoulbus.lu</em> is the showcase, a static site in five languages. <em>app.schoulbus.lu</em> is the app itself, which families use to follow the school bus. Each has its own repository, its own build and its own deployment, but for the person using them they are one product, and they have to look like it.",
-          "Most of the work between 7 and 26 September went into that seam. This is an account of what broke there, and of the cases where the thing that broke was my own assumption."
+          "Between the night of 25 to 26 August and 7 September, neither of Schoulbus’s two repositories received a single commit. I had published the story of the first nineteen days here, and then nothing for twelve days. I picked it up again on 7 September, eight days before school started.",
+          "Schoulbus is two sites. <em>schoulbus.lu</em> is the showcase, static and in five languages, which explains the service to families. <em>app.schoulbus.lu</em> is the app they open in the morning. From 7 to 17 September the two repositories received 114 commits, not counting merges. The first version of this article spoke of three weeks, “between 7 and 26 September”; I recounted, and it was eleven days.",
+          "Just before I stopped, I had left on a branch the work that was meant to give both sites the same visual identity. It was never merged, and the identity was redone on 14 September."
         ],
         img: ""
       },
       {
-        title: "One palette, copied by a script",
+        title: "Ten minutes watching a page that did not change",
         paragraphs: [
-          "The app has a design charter: colours, radii, type scale, all declared as tokens. The showcase used to have its own copy, written by hand and already drifting.",
-          "Now a script copies the tokens from the app into the showcase (<em>jetons:reprendre</em>), and a second mode checks that they still match (<em>jetons:verifier</em>). The check is part of the showcase’s verify command, so a palette change in the app that has not reached the showcase stops the build.",
-          "One day the check reported that the tokens had diverged when they had not. My local copy of the app’s <em>main</em> branch was stale, so I was comparing against an old palette. The check is right only if it compares against <strong>origin/main</strong>, the published state, and it now does."
+          "On the evening of 16 September, a merge into the showcase’s main branch had gone through, CI was green, and the site was still serving the old version. The repository’s instructions file keeps the cost on record: “ten minutes spent watching” a page that would not move (the project writes in French; I translate the quotes here). Automatic deployment was switched off on the hosting platform for that service.",
+          "Yet the repository’s documentation said that merging into <em>main</em> “is the release”. I had repeated it in the first version of the August article on Schoulbus. The flag was turned back on after a deployment launched by hand. Yet a small probe had been showing its state and the date of the last deployment since the day before; what the repository added on the 16th was the instruction to read it, and the rule that goes with it: a release is confirmed on the site, never on the branch.",
+          "It was not the first time. On 21 August the app had already stopped publishing for two days, because <em>npm audit</em> blocked the build on a flaw in <em>nanoid</em>, a development dependency that never even reached visitors. The live site dated from 10 August, and the commit says it plainly: nothing reported it anywhere except the Actions tab. On 7 September another security advisory blocked the pipeline, and then a redeployment served the image that was already cached.",
+          "To be fair to that gate: on 14 September CI refused the production release in 32 seconds, and it was right. <em>nodemailer</em> up to version 9.1.0 allowed the recipient domain check to be bypassed, and it is the package that sends password reset links. The next day it was the showcase’s mail relay that answered “sent” for messages the provider rejected after accepting them. It now refuses to start if the sender address does not belong to the authenticated domain."
         ],
         img: ""
       },
       {
-        title: "Screenshots of an app that no longer existed",
+        title: "The command was right",
         paragraphs: [
-          "The showcase illustrates each feature with a screenshot of the app, one per feature. They were generated automatically, which sounded reliable. They were in fact taken from a version of the app from <strong>before the design charter</strong>. Every image was sharp, correctly framed and out of date.",
-          "Regenerating them exposed a second problem: two runs did not produce the same image. Four of the ten weekly views came out different each time. The map places its tiles and pins with CSS transforms, which no DOM observer sees, so the page looked settled before the map was.",
-          "What has to be stable is the image, not the DOM. The rule now is that an image is kept only if <strong>two takes are identical</strong>. The simulated clock is frozen on a fixed Tuesday morning, and map tiles come from local fixtures. An image that changes between two runs is not a screenshot; it is a sample."
+          "The showcase takes the app’s style tokens, the named values of its colours and radii, through a script. <em>jetons:reprendre</em> copies them, <em>jetons:verifier</em> checks that they still match, and that check is part of <em>npm run verifier</em>, which the showcase runs before every pull request.",
+          "On 9 September it raised a genuine false alarm. The app’s repository was checked out on a work branch, and the drift it reported did not exist in what was published. The script learned to target whichever repository it is pointed at.",
+          "On the 16th it reported a drift again, and it was dismissed as the same false alarm. To make sure, the comparison was rerun against the local copy of <em>main</em>, which had not been updated and answered that everything matched. The first version of this article told the opposite story, an imaginary divergence caused by a stale copy. It was the stale copy that was wrong, and the repository does not say whether the agent or I filed the alert away.",
+          "The next day, 17 September at 08:22, a commit found what the check had been announcing. The showcase’s screenshots were photographing a version of the app 33 commits behind, not counting merges, with the former navy identity: the site showed a product that no longer existed. Since then the instructions file has carried a line in capitals saying that the control clone is taken from <em>origin/main</em>, after a <em>git fetch</em>.",
+          "While regenerating those screenshots, four of the ten week views came out different from one run to the next. At 08:28 a first fix required two identical captures before keeping an image. At 08:51, twenty-three minutes later, the real culprit was found: the scroll caused by the click shifted the map’s origin by a few pixels. The click is now given from the top of the document, and three runs in a row produce the same forty files; the two-capture rule stayed, as a safety net."
         ],
         img: ""
       },
       {
-        title: "Five languages, reviewed by agents",
+        title: "Sechzéng",
         paragraphs: [
-          "The showcase is in Luxembourgish, French, German, Portuguese and English, which matches the families who actually ride the bus. I am fluent in some of those languages and not in others.",
-          "Each language was reviewed by an agent instructed to read as a native speaker and to cite a source for every correction. That produced <strong>33 sourced corrections</strong> in Luxembourgish, Portuguese, English and German. The decision I recorded is that this review counts as a review. What it does not replace is also written down: a parent reading the page on their phone and telling me what sounds wrong."
+          "The showcase speaks Luxembourgish, French, German, Portuguese and English, the languages of the families who take the bus. On 14 September, two reviews run by agents worked in parallel, one on the structure of all five languages, the other reading as a native speaker of Luxembourgish, Portuguese and English, backed by the official Luxembourgish dictionary and spellchecker. They produced 33 sourced corrections: seventeen in Luxembourgish, eleven in Portuguese and English, five in German. Nineteen remarks about taste were not applied.",
+          "The heaviest ones were about words that do not exist. <em>Sechzéng</em> was written in large type in the page’s final call to action, when sixteen is <em>siechzéng</em> and <em>sechzeg</em> means sixty. When the two reports contradicted each other on how to spell a verb, the dispute was settled by asking the spellchecker, which accepted both, and the word the app already used won.",
+          "On 16 September I decided that this review counted as a review, and the repository writes down what it does not replace: “a source says what is wrong, not what a parent from Biekerech would write”. As of 8 November, I have no review by a parent to report."
         ],
         img: ""
       },
       {
-        title: "Fifty kilobytes for one hydration",
+        title: "Not even merged",
         paragraphs: [
-          "The showcase is mostly static. It still shipped React to hydrate its few interactive pieces.",
-          "Replacing React with <em>preact/compat</em> took the JavaScript from <strong>70.8 KB to 20.6 KB</strong>. The risk with that kind of swap is a page that renders and then quietly stops responding, so a Playwright check now confirms that hydration actually happens, by clicking something and seeing it answer. The same week an animation library went too, because the one gesture it powered fits in a few lines of CSS."
-        ],
-        img: ""
-      },
-      {
-        title: "Merged is not deployed",
-        paragraphs: [
-          "Pull requests were merged into <em>main</em>, CI was green, and the containers kept serving the previous build.",
-          "It was a setting. Automatic deployment was <strong>off</strong> on the hosting platform for that application. A merge was a merge and nothing more. The repository’s documentation said otherwise, and it was wrong.",
-          "The fix took one click. The lesson is now written in the repository: <em>merged</em> and <em>deployed</em> are two different claims, and only one of them can be checked by looking at the site. A release is confirmed by looking at the live page, not at the CI status."
-        ],
-        img: ""
-      },
-      {
-        title: "The noindex was mine",
-        paragraphs: [
-          "Search Console reported <em>app.schoulbus.lu</em> as excluded from search, with a <em>noindex</em>. Nothing outside the app was at fault: it had simply never been opened to search engines, and it had no <em>robots.txt</em> or sitemap.",
-          "A small Vite plugin now writes both at build time, and the app is open to search engines."
-        ],
-        img: ""
-      },
-      {
-        title: "What also happened",
-        paragraphs: [
-          "The contact form’s mail relay refused to send because the sender address did not match the domain the relay is allowed to send for. The service now sends from the authenticated domain, keeps the visitor’s address as <em>Reply-To</em>, and refuses to start if the two are misaligned, so the mistake cannot ship quietly a second time.",
-          "Google Calendar sync went to production. It uses OAuth with PKCE in the browser and the narrowest scope that does the job, <em>calendar.app.created</em>: the app can only see the calendar it creates, never the rest of a parent’s diary.",
-          "A release was blocked by CI over dependency alerts, which is exactly what that gate is for. And thirty remote branches came down to two."
-        ],
-        img: ""
-      },
-      {
-        title: "What is not done",
-        paragraphs: [
-          "The language review is by agents. It is sourced and careful, but it is not a parent, and I will only know whether the Luxembourgish sounds natural when one tells me.",
-          "And the noindex fix is recent. Search Console takes its time, and I will not claim the app is indexed until it says so."
+          "On 16 September the showcase lost its animation library: its last three effects fitted in CSS, with an <em>IntersectionObserver</em> to know when to start them. The JavaScript for the first screen went from 98.0 to 70.8 KiB compressed, and that change is live. The next day at 16:44, pull request no. 60 replaced React with <em>preact/compat</em> and brought it down to 20.6 KiB. It came at a cost, a hook rewritten by hand for lack of a function Preact does not provide, and a Playwright check that verifies hydration in all five languages.",
+          "The first version of this article presented that swap as done. As of 8 November the pull request is still open, for fifty-two days now. Today I downloaded the script that <em>www.schoulbus.lu</em> serves: it contains the address of React’s error messages and no trace of Preact, and the first screen’s JavaScript weighs 72,387 bytes compressed, or 70.7 KiB: the weight from before the swap.",
+          "The same article said the app “had simply never been opened” to search engines. The <em>noindex</em> had been deliberate since 7 August, with a comment saying the app was not meant to compete with the commune’s official page. I changed my mind on 16 September, and both <em>robots.txt</em> and the sitemap answer today. I have not checked whether Google has bothered to come back.",
+          "Which leaves that pull request. Fifty KiB less for every parent who opens the page on a phone, against a home-made hook that nothing has yet tested in production. Would you merge it? It is public, on the <em>Sashimee/schoulbus</em> repository, and I will count the votes in the conversation."
         ],
         img: ""
       }
@@ -714,76 +687,69 @@ export default {
   blogPost2: {
     title: "Nineteen days for a school bus",
     title2:
-      "What <strong>Claude Code</strong> changes when you ship alone — and what it does not.",
+      "A five-page PDF, an empty repository on 7 August, and an agent that had stated <em>from memory</em> that the hosting would cost nothing.",
     sections: [
       {
-        title: "The problem fitted in a PDF",
+        title: "A five-page PDF on an August afternoon",
         paragraphs: [
-          "The school bus plan for the commune of Beckerich is a five-page official document: seven lines, seventeen stops, eight villages, five school sites, and rules that shift with the child's cycle and the day of the week. Everything is in there. Nothing in it answers the only question a parent actually asks in the morning: what time do we need to leave the house?",
-          "The repository is empty on 7 August 2026. The application answers on <strong>app.schoulbus.lu</strong> on 24 August. Between the two, a hundred and forty-three commits — and a way of working I could not have sustained on my own."
+          "What I had to work with on 7 August fitted in one file: the school bus plan of the commune of Beckerich, an official five-page PDF. Seven lines, seventeen stops, eight villages and five school sites, with times that change with the child’s school cycle and the day of the week. Everything is in there except the answer to the question a parent asks at a quarter to seven: what time do we have to leave the house?",
+          "I also had Claude Code, and a little over five weeks before school started again on 15 September. The first commit landed at 15:11, with the plan’s data and the engine that works out the journeys. Twenty-one minutes later, a second one added the interface, installation on the phone’s home screen and automatic publishing to GitHub Pages.",
+          "The title counts the days between that first commit and the publication of this article on 26 August. There were nineteen of them, and 143 commits across all branches. As I revise this text on 8 November, the main branch holds 207, and the app changed colours on 14 September: the screenshots here show the August version."
         ],
         img: "aujourdhui"
       },
       {
-        title: "What the application computes",
+        title: "The nearest stop, going the right way",
         paragraphs: [
-          "The stop it shows is not the nearest one. It is the nearest one <strong>served in the right direction</strong>, towards the school of that child's cycle, on that day. The distinction looks like a detail until the morning it makes someone miss a bus.",
-          "Address search is entirely offline. The commune's 1,162 addresses and their 59 streets fit into 44 KB shipped with the app, tolerant of accents and of word order. That is not an optimisation, it is the guarantee: no keystroke leaves the device, and a household's configuration is shared through the URL fragment — the part a server never receives.",
-          "Around that, what you expect from something you open at 7 a.m.: the week on a printable sheet, calendar export, disruptions re-read on every launch, reminders by notification. And five languages — French, German, Luxembourgish, Portuguese, English — which a test forbids from drifting apart by so much as one key."
-        ],
-        img: "assistant"
-      },
-      {
-        title: "Leaving the free tier",
-        paragraphs: [
-          "The server started life as a Cloudflare Worker backed by a key-value store. Free, and convenient — until you read the code again. Three constraints of the free tier were written into it in plain sight: notification sending cut into batches of ten, an execution window from four to fifteen hours UTC for five genuinely useful slots, and a deferred consistency that made the five-attempt rate limit approximate.",
-          "Those three lines did not describe the school bus problem. They described a subscription. The server became a Node and <strong>Hono</strong> service backed by PostgreSQL, containerised, on a rented machine. The commit that records it reports eighty test cases becoming a hundred and nine.",
-          "The same move brought analytics back in-house: a third party was receiving the page being viewed, and that was the single place where the project departed from its own first principle. It now counts at home — no IP address, no cookie, no timestamp finer than the day."
-        ],
-        img: "plan"
-      },
-      {
-        title: "The file that holds the rules",
-        paragraphs: [
-          "Every one of my repositories carries a <strong>CLAUDE.md</strong>. It is not a README; it is the terms of engagement. It states what is not negotiable — code written in French, no visible string hardcoded, no raw value outside the style tokens, touch targets of at least 44 px, contrast of at least 4.5:1.",
-          "But a rule that is only written down wears out. It holds for ten exchanges, then a shortcut slips through, then another, and three days later half the file contradicts it. What actually holds it is the tests: one refuses a colour written outside the tokens and an inline style in a component, another measures every ink/background pair in both themes, a third refuses a key missing from any of the five languages.",
-          "That is the real contribution of the method, and there is nothing spectacular about it: not asking the assistant to remember, but making forgetting impossible."
+          "The stop the app suggests is the nearest one served in the right direction, towards the school of that child’s cycle, on that day. A stop two hundred metres away where the bus only runs the other way is no use at ten to eight, and it is exactly the one a map would show first.",
+          "Finding it needs the home address, and the search runs without a network. The commit of 7 August shipped 1,162 addresses in the commune and their 59 streets in a file of 42,240 bytes, or 41 KiB, and it still weighed exactly that on the day this article came out. The first version of this text said 44 KB, and I could not find that figure anywhere. Since 8 September there are 1,159 addresses, because three were listed twice.",
+          "A household’s setup is shared through a link that carries the data in its fragment, the part of the address after the <em>#</em>, which the browser never sends to the server. The address and first names are stored only on the phone, and the app says so on a page called “Limites” (limits). Since 14 September that page adds a nuance this article left out: if you connect Google Calendar, the app writes the child’s first name to Google, and the calendar it creates carries it too.",
+          "In the first version I called that “the guarantee”, and that page believed it too. On 8 September a commit found what contradicted them both: the walking map loaded every time a child’s sheet was opened and zoomed to the home at level 18. The tiles requested from OpenStreetMap therefore pointed at the block of houses. The map now waits until someone asks for it (the screenshot below predates the fix, and shows it loaded on its own)."
         ],
         img: "semaine"
       },
       {
-        title: "One branch per subject, one gate",
+        title: "Stated from memory",
         paragraphs: [
-          "One branch per subject, cut from <em>dev</em>; merged into <em>dev</em> when everything passes; <em>dev</em> merged into <em>main</em> when <em>dev</em> is healthy — and <em>main</em> is what goes live. A one-line fix takes the same road as a whole batch, because it is precisely the one-line fix that takes a site down: nobody looked at it.",
-          "Before anything is proposed, a single command — types, lint, tests, contrast, style-token drift. It passes, or nothing ships. It is also what continuous integration replays, and what the container runs before it will build: a check you can walk around is not a check.",
-          "This frame costs a few minutes per subject. Above all it makes the speed bearable. When code arrives faster than you can read it, the bottleneck moves: it is no longer in the writing, it is in the verification."
+          "On the evening of the first day, at 20:15, a commit written by the agent opens with an admission. Checking the pricing of Cloudflare Workers, “which I had stated from memory” (its commits are in French; I translate the quotes in this article), it had found that the free tier allows 10 ms of CPU per invocation. Every push notification has to be encrypted and signed for its recipient, so the loop over subscribers would have stopped after a few dozen parents, and the rest would have received nothing without anyone knowing.",
+          "The fix split sending into batches of ten, and the code itself called that number a “cautious estimate, NOT MEASURED”, which I am rather fond of. Other limits of the same tier had crept into the code, such as a run window from four to fifteen hours UTC that woke the server 44 times a day for five useful slots.",
+          "On 22 August the server code moved to Hono and PostgreSQL, to run on a rented machine. The two files that send notifications and reminders were copied without changing a line, and their 28 tests, including the test vector from appendix A of RFC 8291, passed under Node on the first try. Route tests now run against a real database, and the very first run found a CORS preflight that would have made the browser refuse every request from the commune’s staff area, with no error on the server side. The commit takes the suite from 80 test cases to 109.",
+          "On the morning of 24 August, the app answered on its own domain, <em>app.schoulbus.lu</em>, for the first time. The same day, a third-party visit counter was replaced by a measurement running on the project’s own server: the landing page only, with no IP address, no cookie and no timestamp finer than the day."
+        ],
+        img: "plan"
+      },
+      {
+        title: "Two days of blaming Google",
+        paragraphs: [
+          "The app also writes the week’s journeys into Google Calendar. It connects through OAuth with PKCE from the browser, only the token exchange goes through the server, and it asks for the narrowest scope that does the job, <em>calendar.app.created</em>: it only sees the calendar it created.",
+          "That scope has a limit that proved expensive. <em>calendarList.list</em> never accepts it, and the call answered “403 insufficient authentication scopes” although the scope had been granted. The Google project’s configuration took the blame for two days. Behind that first refusal, a PUT returned 404 on an event that did not exist yet, and the screen reported “0 appointments written” as a success.",
+          "The fix is dated 10 August, 02:26, with eleven tests against a simulated <em>fetch</em> and one honest sentence: nothing had yet been checked against the real Google. I did it the same day, connecting my account and watching the appointments arrive. One reservation is still open: a calendar can be duplicated if the browser forgets it created it. The first version of another article on this blog dated this sync to September, which was wrong; it is from August."
         ],
         img: ""
       },
       {
-        title: "Writing down what you did not verify",
+        title: "The rules were written down, the tests were elsewhere",
         paragraphs: [
-          "The project's roadmap runs to 2,743 lines, and its most useful part is not the list of what is done. It is the register of <strong>open reserves</strong>, R1 to R50: each one names what a batch could not prove, and the exact criterion that will allow it to be struck out.",
-          "\"No real reminder has been sent on an actual school morning.\" That is not a bug, and no test will find it: it is something the code cannot demonstrate by itself. Commit messages say the same thing — what was verified <em>and</em> what was not. The most recent one strikes out one reserve, and only half of another.",
-          "A reserve spoken aloud and never written is a reserve lost: it comes back as a breakage three months later. That is the price of assisted work, and it is paid in writing."
+          "Each of my repositories has a <em>CLAUDE.md</em> file that the agent reads before touching the code. Schoulbus’s sets what is not up for discussion: code written in French, no visible text hard-coded in a component, no colour outside the style tokens, touch targets of at least 44 px and contrast of at least 4.5:1.",
+          "The first version of this article claimed that tests held those rules, one for colours outside the tokens, the other for the contrast of every ink and background pair. On 26 August that was true on a branch. Both tests were born in the night of 25 to 26 August, on a work branch that was never merged, and the article did not say so.",
+          "On the main branch, the contrast test arrived on 8 September at 23:39, and its commit title says what had been missed: the “Supprimer” (delete) button became unreadable on hover, pink on pink, at 3.16:1. On a phone, hover sticks after a tap, so a parent who has just tapped it is looking at a destructive action below the threshold. That evening, on the palette of the time, the worst pair measured held 4.54:1. The other test, the one for colours outside the tokens, still does not exist on the main branch as of 8 November, and a commit the next day found more values copied by hand outside the token sheet."
+        ],
+        img: "assistant"
+      },
+      {
+        title: "A register of what is not proven",
+        paragraphs: [
+          "Alongside the list of batches, the project’s plan keeps a register of reservations: each one names what a batch could not prove, and the exact test that will let it be struck out. I had written that it ran to 2,743 lines, from R1 to R50. Those figures came from the same unmerged branch; on 25 August the main branch stood at 2,648 lines and R47. On 8 November it runs to 3,248 lines, goes up to R80 and keeps 27 open.",
+          "Commit messages follow the same rule and state what was checked next to what was not. The one for the first real deployment lifts one reservation, lifts half of another (the site and the server talk to each other, installation on a real phone remains to be seen) and notes that the images were built on the machine rather than pulled from the image registry, a path still to be tested.",
+          "The project’s <em>CLAUDE.md</em> sums up why the register exists: “A reservation spoken aloud and not written down is a lost reservation.” With an agent that writes fast, the sentence spoken aloud is often mine, in the conversation, and it vanishes with the next session."
         ],
         img: ""
       },
       {
-        title: "What ten weeks add up to",
+        title: "06:45 on a real school morning",
         paragraphs: [
-          "Over the last ten weeks, seventeen repositories took close to five hundred commits, of which roughly two hundred and forty carry Claude's co-signature. Schoulbus accounts for a hundred and forty-three of them, its showcase site for thirty-five.",
-          "Elsewhere: a collage editor in the browser, two hundred and thirty-six commits — including an entire phase devoted to <strong>deleting</strong>, an animation subsystem pulled out and thousands of orphaned lines erased. That may be the best use I have put it to. And this very portfolio, moved from Vue 2 to Vue 3, redesigned twice, its screenshots brought down from 39 MB to under a megabyte.",
-          "The number should not be misread: it is not a measure of productivity, it is a measure of volume. What genuinely changed is the cost of trying — and therefore the cost of throwing away."
-        ],
-        img: ""
-      },
-      {
-        title: "What it does not do",
-        paragraphs: [
-          "The showcase site speaks five languages. The <strong>Luxembourgish has not been read by anyone who speaks it natively</strong>. It is the language of the home across a good part of the commune, the site is published, and no command closes that particular reserve.",
-          "A machine writes fast, and it writes correctly more often than people expect. It will not tell you that a word rings false to a local ear, that a parent got lost in the wizard, that a screen is unreadable in the sun, held at arm's length, on a September morning. Those stay open reserves until a person looks at them.",
-          "The speed, the consistency, the patience to pick a file up a fifteenth time: that is what I delegated. What I kept is the list of what is not proven."
+          "Reservation R7 has been open since August: “No real reminder has been sent on a real school morning.” The chain is tested end to end with a simulated send, and a delivery log keeps a trace of every reminder, but nothing has run against real phones at 06:45. The register has not moved since 16 September, and I did not open that log for this article, so I do not know whether a reminder has gone out since school started.",
+          "The test for striking it out is written in black and white. Publish a test alert the evening before a school day, read the log the next morning, then remove the alert. 8 November, the day I revised this text, was the last day of the autumn holidays, and school started again the next morning: all it took was an alarm set before the bus came by. How many more first days of school will it take before that seems simpler to me than writing an article about it?"
         ],
         img: ""
       }

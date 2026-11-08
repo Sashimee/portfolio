@@ -212,81 +212,54 @@ export default {
   blogPost9: {
     title: "Gemergt ist nicht deployt",
     title2:
-      "Drei Wochen an Schoulbus: eine Website und eine App, die wie dasselbe Produkt aussehen müssen, Screenshots eines Designs, das es nicht mehr gab, und <strong>ein Merge, der nichts veröffentlicht hat</strong>.",
+      "Elf Septembertage an Schoulbus: eine Prüfung, die als Fehlalarm abgetan wurde, obwohl sie recht hatte, und eine Optimierung, die noch immer nicht online ist.",
     sections: [
       {
-        title: "Zwei Repositorys, ein Produkt",
+        title: "Zwölf Tage ohne Commit",
         paragraphs: [
-          "Schoulbus besteht aus zwei Dingen. <em>schoulbus.lu</em> ist die Website, eine statische Seite in fünf Sprachen. <em>app.schoulbus.lu</em> ist die App selbst, mit der Familien den Schulbus verfolgen. Beide haben ihr eigenes Repository, ihren eigenen Build und ihr eigenes Deployment, aber für die Nutzer ist es ein Produkt, und so muss es auch aussehen.",
-          "Die meiste Arbeit zwischen dem 7. und dem 26. September fand an dieser Naht statt. Hier ist, was dort kaputtging, und die Fälle, in denen das Kaputte meine eigene Annahme war."
+          "Zwischen der Nacht vom 25. auf den 26. August und dem 7. September haben die beiden Repositories von Schoulbus keinen einzigen Commit bekommen. Ich hatte hier die Geschichte der ersten neunzehn Tage veröffentlicht, danach zwölf Tage lang nichts. Am 7. September habe ich wieder angefangen, acht Tage vor Schulbeginn.",
+          "Schoulbus besteht aus zwei Websites. <em>schoulbus.lu</em> ist die Schaufensterseite, statisch und in fünf Sprachen, die den Familien den Dienst erklärt. <em>app.schoulbus.lu</em> ist die App, die sie morgens öffnen. Vom 7. bis zum 17. September bekamen die beiden Repositories 114 Commits, Merges nicht mitgezählt. Die erste Fassung dieses Artikels sprach von drei Wochen, „zwischen dem 7. und dem 26. September“; ich habe nachgezählt, es waren elf Tage.",
+          "Kurz bevor ich aufhörte, hatte ich auf einem Branch die Arbeit liegen lassen, die den beiden Websites dasselbe Erscheinungsbild geben sollte. Sie wurde nie gemergt, und das Erscheinungsbild wurde am 14. September neu gemacht."
         ],
         img: ""
       },
       {
-        title: "Eine Palette, von einem Skript kopiert",
+        title: "Zehn Minuten vor einer Seite, die sich nicht änderte",
         paragraphs: [
-          "Die App hat ein Designsystem: Farben, Radien, eine Typografieskala, alles als Tokens deklariert. Die Website hatte ihre eigene Kopie, von Hand geschrieben und schon am Auseinanderdriften.",
-          "Jetzt kopiert ein Skript die Tokens der App in die Website (<em>jetons:reprendre</em>), und ein zweiter Modus prüft, dass sie noch übereinstimmen (<em>jetons:verifier</em>). Die Prüfung gehört zum Prüfbefehl der Website: Eine Paletten-Änderung in der App, die die Website nicht erreicht hat, stoppt den Build.",
-          "Einmal meldete die Prüfung, die Tokens wichen ab, obwohl sie es nicht taten. Meine lokale Kopie des <em>main</em>-Zweigs der App war veraltet, und ich verglich mit einer alten Palette. Die Prüfung hat nur recht, wenn sie mit <strong>origin/main</strong> vergleicht, dem veröffentlichten Stand, und genau das tut sie jetzt."
+          "Am Abend des 16. September war ein Merge in den Hauptbranch der Schaufensterseite durch, die CI war grün, und die Website lieferte weiter die alte Version aus. Die Anweisungsdatei des Repositorys hält den Preis fest: „zehn Minuten des Lauerns“ auf eine Seite, die sich nicht rührte (das Projekt schreibt auf Französisch; ich übersetze die Zitate hier). Das automatische Deployment war auf der Hosting-Plattform für diesen Dienst abgeschaltet.",
+          "Dabei stand in der Dokumentation des Repositorys, der Merge in <em>main</em> sei „die Veröffentlichung“. Ich hatte das in der ersten Fassung des August-Artikels über Schoulbus wiederholt. Der Schalter wurde nach einem von Hand gestarteten Deployment wieder umgelegt. Dabei zeigte eine kleine Sonde seinen Zustand und das Datum des letzten Deployments schon seit dem Vortag; am 16. kam im Repository nur die Anweisung hinzu, sie zu lesen, und die Regel dazu: Eine Veröffentlichung stellt man auf der Website fest, nie auf dem Branch.",
+          "Es war nicht das erste Mal. Schon am 21. August war die App seit zwei Tagen nicht mehr veröffentlicht worden, weil <em>npm audit</em> den Build wegen einer Lücke in <em>nanoid</em> stoppte, einer Entwicklungsabhängigkeit, die bei den Besuchern gar nicht ankam. Die Website im Netz stammte vom 10. August, und der Commit sagt es ohne Umschweife: Nirgends außer im Actions-Tab war davon etwas zu sehen. Am 7. September blockierte ein weiterer Sicherheitshinweis die Kette, und danach lieferte ein erneutes Deployment das bereits zwischengespeicherte Image aus.",
+          "Man muss dieser Schranke gerecht werden. Am 14. September verweigerte die CI die Freigabe für die Produktion nach 32 Sekunden, und sie hatte recht: <em>nodemailer</em> bis Version 9.1.0 ließ sich an der Prüfung der Empfängerdomain vorbeischleusen, und genau dieses Paket verschickt die Links zum Zurücksetzen des Passworts. Am Tag darauf antwortete das Mail-Relay der Schaufensterseite mit „gesendet“ auf Nachrichten, die der Anbieter nach der Annahme abwies. Es startet jetzt gar nicht erst, wenn die Absenderadresse nicht zur authentifizierten Domain gehört."
         ],
         img: ""
       },
       {
-        title: "Screenshots einer App, die es nicht mehr gab",
+        title: "Der Befehl hatte recht",
         paragraphs: [
-          "Die Website illustriert jede Funktion mit einem Screenshot der App, einer pro Funktion. Sie wurden automatisch erzeugt, was verlässlich wirkte. Tatsächlich stammten sie aus einer Version der App <strong>vor dem Designsystem</strong>. Jedes Bild war scharf, gut zugeschnitten und veraltet.",
-          "Beim Neuerzeugen zeigte sich ein zweites Problem: Zwei Durchläufe ergaben nicht dasselbe Bild. Vier der zehn Wochenansichten kamen jedes Mal anders heraus. Die Karte platziert ihre Kacheln und Markierungen mit CSS-Transformationen, die kein DOM-Beobachter sieht, also wirkte die Seite stabil, bevor die Karte es war.",
-          "Stabil sein muss das Bild, nicht das DOM. Die Regel lautet jetzt, dass ein Bild nur behalten wird, wenn <strong>zwei Aufnahmen identisch sind</strong>. Die simulierte Uhr steht fest auf einem bestimmten Dienstagmorgen, und die Kartenkacheln kommen aus lokalen Fixtures. Ein Bild, das sich zwischen zwei Durchläufen ändert, ist kein Screenshot; es ist eine Stichprobe."
+          "Die Schaufensterseite übernimmt per Skript die Design-Tokens der App, die benannten Werte ihrer Farben und Radien. <em>jetons:reprendre</em> kopiert sie, <em>jetons:verifier</em> prüft, ob sie noch übereinstimmen, und diese Prüfung gehört zu <em>npm run verifier</em>, das vor jedem Pull Request läuft.",
+          "Am 9. September gab sie einen echten Fehlalarm. Das Repository der App stand auf einem Arbeitsbranch, und die gemeldete Abweichung gab es in der veröffentlichten Fassung nicht. Das Skript hat gelernt, auf das Repository zu zielen, das man ihm nennt.",
+          "Am 16. meldete es erneut eine Abweichung, und sie wurde als derselbe Fehlalarm abgetan. Zur Sicherheit wurde der Vergleich gegen die lokale Kopie von <em>main</em> wiederholt, die nicht aktualisiert war und alles für übereinstimmend erklärte. Die erste Fassung dieses Artikels erzählte das Gegenteil, eine eingebildete Abweichung wegen einer veralteten Kopie. Falsch lag die veraltete Kopie, und das Repository sagt nicht, ob der Agent die Meldung beiseitegelegt hat oder ich.",
+          "Am nächsten Tag, dem 17. September um 8:22 Uhr, fand ein Commit, was die Prüfung angekündigt hatte. Die Screenshots der Schaufensterseite fotografierten eine Version der App, die 33 Commits zurücklag, Merges nicht mitgezählt, noch im früheren Nachtblau: Die Website zeigte ein Produkt, das es nicht mehr gab. Seitdem steht in der Anweisungsdatei eine Zeile in Großbuchstaben, nach der der Kontroll-Klon von <em>origin/main</em> genommen wird, nach einem <em>git fetch</em>.",
+          "Beim Neuerzeugen dieser Screenshots kamen vier der zehn Wochenansichten von Lauf zu Lauf anders heraus. Um 8:28 Uhr verlangte eine erste Korrektur zwei identische Aufnahmen, bevor ein Bild behalten wird. Um 8:51 Uhr, dreiundzwanzig Minuten später, war der wahre Grund gefunden: Das durch den Klick ausgelöste Scrollen verschob den Ursprung der Karte um ein paar Pixel. Der Klick erfolgt jetzt vom Anfang des Dokuments aus, und drei Läufe hintereinander liefern dieselben vierzig Dateien; die Regel der zwei Aufnahmen ist als Absicherung geblieben."
         ],
         img: ""
       },
       {
-        title: "Fünf Sprachen, von Agenten geprüft",
+        title: "Sechzéng",
         paragraphs: [
-          "Die Website gibt es auf Luxemburgisch, Französisch, Deutsch, Portugiesisch und Englisch, passend zu den Familien, die den Bus wirklich nutzen. Einige dieser Sprachen spreche ich fließend, andere nicht.",
-          "Jede Sprache wurde von einem Agenten geprüft, der als Muttersprachler lesen und für jede Korrektur eine Quelle nennen sollte. Daraus kamen <strong>33 belegte Korrekturen</strong> auf Luxemburgisch, Portugiesisch, Englisch und Deutsch. Die Entscheidung, die ich festgehalten habe, ist, dass diese Prüfung als Prüfung zählt. Was sie nicht ersetzt, steht ebenfalls dort: ein Elternteil, das die Seite auf dem Handy liest und mir sagt, was falsch klingt."
+          "Die Schaufensterseite spricht Luxemburgisch, Französisch, Deutsch, Portugiesisch und Englisch, die Sprachen der Familien, die den Bus nehmen. Am 14. September liefen zwei Durchsichten durch Agenten parallel, eine zur Struktur aller fünf Sprachen, die andere als muttersprachliche Lektüre des Luxemburgischen, Portugiesischen und Englischen, gestützt auf das amtliche luxemburgische Wörterbuch und dessen Rechtschreibprüfung. Heraus kamen 33 belegte Korrekturen: siebzehn im Luxemburgischen, elf im Portugiesischen und Englischen, fünf im Deutschen. Neunzehn Geschmacksfragen wurden nicht übernommen.",
+          "Am schwersten wogen Wörter, die es nicht gibt. <em>Sechzéng</em> stand in großer Schrift im Schlussaufruf der Seite, dabei heißt sechzehn <em>siechzéng</em>, und <em>sechzeg</em> bedeutet sechzig. Als sich die beiden Berichte bei der Schreibung eines Verbs widersprachen, entschied die Rechtschreibprüfung, die beide Formen gelten ließ, und es gewann das Wort, das die App schon verwendete.",
+          "Am 16. September habe ich entschieden, dass diese Durchsicht als Korrektur gilt, und das Repository schreibt auf, was sie nicht ersetzt: „Eine Quelle sagt, was falsch ist, nicht, was Eltern aus Biekerech schreiben würden.“ Am 8. November habe ich von keiner Durchsicht durch Eltern zu berichten."
         ],
         img: ""
       },
       {
-        title: "Fünfzig Kilobyte für eine Hydration",
+        title: "Nicht einmal gemergt",
         paragraphs: [
-          "Die Website ist fast vollständig statisch. Trotzdem lieferte sie React aus, um ihre wenigen interaktiven Elemente zu hydratisieren.",
-          "React durch <em>preact/compat</em> zu ersetzen, brachte das JavaScript von <strong>70,8 KB auf 20,6 KB</strong>. Das Risiko eines solchen Tauschs ist eine Seite, die erscheint und dann still nicht mehr reagiert; eine Playwright-Prüfung bestätigt deshalb, dass die Hydration wirklich stattfindet, indem sie etwas anklickt und es reagieren sieht. In derselben Woche flog auch eine Animationsbibliothek raus, weil die einzige Bewegung, die sie animierte, in ein paar Zeilen CSS passt."
-        ],
-        img: ""
-      },
-      {
-        title: "Gemergt ist nicht deployt",
-        paragraphs: [
-          "Pull Requests wurden in <em>main</em> gemergt, die CI war grün, und die Container lieferten weiter den vorherigen Build aus.",
-          "Es war eine Einstellung. Automatisches Deployment war auf der Hosting-Plattform für diese App <strong>ausgeschaltet</strong>. Ein Merge war ein Merge und nicht mehr. Die Dokumentation des Repositorys sagte das Gegenteil, und sie lag falsch.",
-          "Die Korrektur war ein Klick. Die Lehre steht jetzt im Repository: <em>gemergt</em> und <em>deployt</em> sind zwei verschiedene Aussagen, und nur eine lässt sich durch einen Blick auf die Seite prüfen. Eine Veröffentlichung wird auf der Live-Seite bestätigt, nicht im CI-Status."
-        ],
-        img: ""
-      },
-      {
-        title: "Das noindex kam von mir",
-        paragraphs: [
-          "Die Search Console meldete <em>app.schoulbus.lu</em> als von der Suche ausgeschlossen, mit einem <em>noindex</em>. Nichts außerhalb der App war schuld: Sie war schlicht nie für Suchmaschinen geöffnet worden und hatte weder <em>robots.txt</em> noch Sitemap.",
-          "Ein kleines Vite-Plugin schreibt jetzt beide beim Build, und die App ist für Suchmaschinen geöffnet."
-        ],
-        img: ""
-      },
-      {
-        title: "Was sonst noch geschah",
-        paragraphs: [
-          "Das Mail-Relay des Kontaktformulars weigerte sich zu senden, weil die Absenderadresse nicht zu der Domain passte, für die das Relay senden darf. Der Dienst sendet jetzt von der authentifizierten Domain, behält die Adresse des Besuchers als <em>Reply-To</em> und startet nicht, wenn die beiden nicht zusammenpassen, damit der Fehler nicht ein zweites Mal still durchrutscht.",
-          "Die Google-Kalender-Synchronisation ist live gegangen. Sie nutzt OAuth mit PKCE im Browser und den engsten Scope, der funktioniert, <em>calendar.app.created</em>: Die App sieht nur den Kalender, den sie selbst anlegt, nie den übrigen Kalender eines Elternteils.",
-          "Ein Release wurde von der CI wegen Abhängigkeitswarnungen blockiert, was genau die Aufgabe dieses Tors ist. Und dreißig Remote-Zweige sind auf zwei geschrumpft."
-        ],
-        img: ""
-      },
-      {
-        title: "Was nicht fertig ist",
-        paragraphs: [
-          "Die Sprachprüfung stammt von Agenten. Sie ist belegt und sorgfältig, aber sie ist kein Elternteil, und ob das Luxemburgisch natürlich klingt, weiß ich erst, wenn ein Elternteil es mir sagt.",
-          "Und die noindex-Korrektur ist neu. Die Search Console lässt sich Zeit, und ich werde nicht behaupten, dass die App indexiert ist, bevor sie es sagt."
+          "Am 16. September verlor die Schaufensterseite ihre Animationsbibliothek: Die letzten drei Effekte passten in CSS, mit einem <em>IntersectionObserver</em>, der sagt, wann sie starten. Das JavaScript des ersten Bildschirms sank komprimiert von 98,0 auf 70,8 KiB, und diese Änderung ist online. Am nächsten Tag um 16:44 Uhr ersetzte Pull Request Nr. 60 React durch <em>preact/compat</em> und drückte es auf 20,6 KiB. Das hatte seinen Preis, einen von Hand umgeschriebenen Hook, weil Preact eine Funktion nicht mitbringt, und eine Playwright-Prüfung, die die Hydration in allen fünf Sprachen kontrolliert.",
+          "Die erste Fassung dieses Artikels stellte diesen Tausch als erledigt dar. Am 8. November ist der Pull Request noch immer offen, seit zweiundfünfzig Tagen. Heute habe ich das Skript heruntergeladen, das <em>www.schoulbus.lu</em> ausliefert: Es enthält die Adresse der Fehlermeldungen von React und keine Spur von Preact, und das JavaScript des ersten Bildschirms wiegt komprimiert 72.387 Byte, also 70,7 KiB: das Gewicht von vor dem Tausch.",
+          "Derselbe Artikel behauptete, die App sei für Suchmaschinen „einfach nie geöffnet worden“. Das <em>noindex</em> war seit dem 7. August gewollt, mit einem Kommentar, nach dem die App nicht mit der offiziellen Seite der Gemeinde konkurrieren sollte. Am 16. September habe ich es mir anders überlegt, und <em>robots.txt</em> wie auch die Sitemap antworten heute. Ob Google sich die Mühe gemacht hat, wiederzukommen, habe ich nicht nachgesehen.",
+          "Bleibt dieser Pull Request. Fünfzig KiB weniger für alle Eltern, die die Seite auf dem Telefon öffnen, gegen einen selbst geschriebenen Hook, den in der Produktion noch nichts erprobt hat. Würden Sie ihn mergen? Er ist öffentlich, im Repository <em>Sashimee/schoulbus</em>, und ich zähle die Stimmen in der Diskussion."
         ],
         img: ""
       }
@@ -715,76 +688,69 @@ export default {
   blogPost2: {
     title: "Neunzehn Tage für einen Schulbus",
     title2:
-      "Was <strong>Claude Code</strong> ändert, wenn man allein ausliefert — und was nicht.",
+      "Ein PDF mit fünf Seiten, ein leeres Repository am 7. August und ein Agent, der <em>aus dem Gedächtnis</em> versichert hatte, das Hosting koste nichts.",
     sections: [
       {
-        title: "Das Problem passte in ein PDF",
+        title: "Ein PDF mit fünf Seiten an einem Augustnachmittag",
         paragraphs: [
-          "Der Schulbusplan der Gemeinde Beckerich ist ein amtliches Dokument über fünf Seiten: sieben Linien, siebzehn Haltestellen, acht Dörfer, fünf Schulstandorte und Regeln, die sich mit dem Zyklus des Kindes und dem Wochentag verschieben. Alles steht darin. Nichts darin beantwortet die einzige Frage, die ein Elternteil morgens wirklich stellt: Wann müssen wir aus dem Haus?",
-          "Am 7. August 2026 ist das Repository leer. Am 24. August antwortet die Anwendung unter <strong>app.schoulbus.lu</strong>. Dazwischen liegen hundertdreiundvierzig Commits — und eine Arbeitsweise, die ich allein nicht hätte durchhalten können."
+          "Was ich am 7. August in der Hand hatte, passte in eine Datei: den Schulbusplan der Gemeinde Beckerich, ein amtliches PDF mit fünf Seiten. Sieben Linien, siebzehn Haltestellen, acht Dörfer und fünf Schulstandorte, dazu Zeiten, die sich nach dem Zyklus des Kindes und dem Wochentag richten. Alles steht darin, nur nicht die Antwort auf die Frage, die sich Eltern um Viertel vor sieben stellen: Wann müssen wir aus dem Haus?",
+          "Ich hatte außerdem Claude Code und etwas mehr als fünf Wochen bis zum Schulbeginn am 15. September. Der erste Commit kam um 15:11 Uhr, mit den Daten des Plans und dem Rechenkern für die Fahrten. Einundzwanzig Minuten später brachte ein zweiter die Oberfläche, die Installation auf dem Startbildschirm des Telefons und eine automatische Veröffentlichung auf GitHub Pages.",
+          "Der Titel zählt die Tage zwischen diesem ersten Commit und der Veröffentlichung dieses Artikels am 26. August. Es waren neunzehn, mit 143 Commits über alle Branches. Während ich den Text am 8. November überarbeite, zählt der Hauptbranch 207, und die App hat am 14. September ihre Farben gewechselt: Die Screenshots hier zeigen den Stand vom August."
         ],
         img: "aujourdhui"
       },
       {
-        title: "Was die Anwendung berechnet",
+        title: "Die nächste Haltestelle, in der richtigen Richtung",
         paragraphs: [
-          "Die Haltestelle, die sie zeigt, ist nicht die nächstgelegene. Es ist die nächstgelegene, die <strong>in der richtigen Richtung bedient wird</strong>, zur Schule des jeweiligen Zyklus, an diesem Tag. Der Unterschied sieht nach einem Detail aus, bis zu dem Morgen, an dem er jemanden den Bus verpassen lässt.",
-          "Die Adresssuche läuft vollständig lokal. Die 1.162 Adressen der Gemeinde und ihre 59 Straßen passen in 44 KB, die mit der App ausgeliefert werden, tolerant gegenüber Akzenten und Wortstellung. Das ist keine Optimierung, es ist die Garantie: Kein Tastendruck verlässt das Gerät, und die Konfiguration eines Haushalts wird über das URL-Fragment geteilt — den Teil, den ein Server nie erhält.",
-          "Darum herum, was man von etwas erwartet, das man um sieben Uhr morgens öffnet: die Woche auf einem druckbaren Blatt, Kalenderexport, Störungen bei jedem Start neu gelesen, Erinnerungen per Benachrichtigung. Und fünf Sprachen — Französisch, Deutsch, Luxemburgisch, Portugiesisch, Englisch —, denen ein Test verbietet, auch nur um einen einzigen Schlüssel auseinanderzudriften."
-        ],
-        img: "assistant"
-      },
-      {
-        title: "Den kostenlosen Tarif verlassen",
-        paragraphs: [
-          "Der Server begann als Cloudflare Worker mit einem Key-Value-Store. Kostenlos und bequem — bis man den Code noch einmal liest. Drei Beschränkungen des kostenlosen Tarifs waren offen sichtbar hineingeschrieben: Benachrichtigungsversand in Stapel zu zehn zerlegt, ein Ausführungsfenster von vier bis fünfzehn Uhr UTC für fünf wirklich brauchbare Zeitfenster, und eine verzögerte Konsistenz, die das Limit von fünf Versuchen nur ungefähr machte.",
-          "Diese drei Zeilen beschrieben nicht das Schulbusproblem. Sie beschrieben ein Abonnement. Aus dem Server wurde ein Node- und <strong>Hono</strong>-Dienst mit PostgreSQL, containerisiert, auf einer gemieteten Maschine. Der Commit, der das festhält, meldet achtzig Testfälle, die zu hundertneun werden.",
-          "Derselbe Schritt holte die Reichweitenmessung zurück ins Haus: Ein Dritter erhielt die gerade betrachtete Seite, und das war die einzige Stelle, an der das Projekt von seinem eigenen ersten Prinzip abwich. Jetzt wird zu Hause gezählt — keine IP-Adresse, kein Cookie, kein Zeitstempel feiner als der Tag."
-        ],
-        img: "plan"
-      },
-      {
-        title: "Die Datei, welche die Regeln hält",
-        paragraphs: [
-          "Jedes meiner Repositories trägt eine <strong>CLAUDE.md</strong>. Sie ist kein README; sie ist die Geschäftsgrundlage. Sie benennt, was nicht verhandelbar ist — Code auf Französisch geschrieben, keine sichtbare Zeichenkette fest verdrahtet, kein roher Wert außerhalb der Style-Tokens, Berührungsflächen von mindestens 44 px, Kontrast von mindestens 4,5:1.",
-          "Aber eine Regel, die nur aufgeschrieben ist, nutzt sich ab. Sie hält zehn Austausche lang, dann rutscht eine Abkürzung durch, dann noch eine, und drei Tage später widerspricht ihr die halbe Datei. Was sie tatsächlich hält, sind die Tests: Einer verweigert eine Farbe, die außerhalb der Tokens geschrieben ist, und ein Inline-Style in einer Komponente, ein anderer misst jedes Paar aus Tinte und Hintergrund in beiden Themes, ein dritter verweigert einen Schlüssel, der in einer der fünf Sprachen fehlt.",
-          "Das ist der eigentliche Beitrag der Methode, und daran ist nichts Spektakuläres: nicht die Assistenz zu bitten, sich zu erinnern, sondern das Vergessen unmöglich zu machen."
+          "Die App schlägt die nächste Haltestelle vor, die in der richtigen Richtung bedient wird, zur Schule des Zyklus genau dieses Kindes und an genau diesem Tag. Eine Haltestelle zweihundert Meter weiter, an der der Bus nur in die Gegenrichtung fährt, nützt um zehn vor acht nichts, und genau diese würde eine Karte zuerst zeigen.",
+          "Dafür braucht es die Wohnadresse, und die Suche läuft ohne Netz. Der Commit vom 7. August brachte 1.162 Adressen der Gemeinde und ihre 59 Straßen in einer Datei von 42.240 Byte mit, also 41 KiB, und am Tag dieses Artikels wog sie noch genau so viel. Die erste Fassung dieses Textes nannte 44 KB, und ich habe diese Zahl nirgends wiedergefunden. Seit dem 8. September sind es 1.159 Adressen, weil drei doppelt vorkamen.",
+          "Die Einstellungen eines Haushalts lassen sich über einen Link teilen, der die Daten im Fragment trägt, dem Teil der Adresse nach dem <em>#</em>, den der Browser nie an den Server schickt. Adresse und Vornamen werden nur auf dem Telefon gespeichert, und die App sagt das auf einer Seite namens „Limites“ (Grenzen). Seit dem 14. September ergänzt diese Seite eine Einschränkung, die dieser Artikel wegließ: Wer Google Kalender verbindet, lässt die App den Vornamen des Kindes zu Google schreiben, und auch der angelegte Kalender trägt ihn.",
+          "In der ersten Fassung nannte ich das „die Garantie“, und diese Seite glaubte es auch. Am 8. September fand ein Commit, was beidem widersprach: Die Karte für den Fußweg lud bei jedem Öffnen eines Kinderblatts und zoomte auf Stufe 18 an die Wohnung heran. Die bei OpenStreetMap angefragten Kacheln bezeichneten damit den Häuserblock. Die Karte wartet jetzt, bis man sie anfordert (der Screenshot unten stammt von vorher, man sieht sie dort von selbst geladen)."
         ],
         img: "semaine"
       },
       {
-        title: "Ein Branch pro Thema, ein Tor",
+        title: "Aus dem Gedächtnis",
         paragraphs: [
-          "Ein Branch pro Thema, abgezweigt von <em>dev</em>; nach <em>dev</em> gemerged, wenn alles durchläuft; <em>dev</em> nach <em>main</em> gemerged, wenn <em>dev</em> gesund ist — und <em>main</em> ist das, was live geht. Eine einzeilige Korrektur nimmt denselben Weg wie ein ganzes Paket, denn es ist genau die einzeilige Korrektur, die eine Seite umlegt: Niemand hat sie angesehen.",
-          "Bevor irgendetwas vorgeschlagen wird, ein einziger Befehl — Typen, Lint, Tests, Kontrast, Abweichung von den Style-Tokens. Er läuft durch, oder es geht nichts raus. Es ist auch das, was die kontinuierliche Integration wiederholt und was der Container ausführt, bevor er baut: Eine Prüfung, die man umgehen kann, ist keine Prüfung.",
-          "Dieser Rahmen kostet ein paar Minuten pro Thema. Vor allem macht er die Geschwindigkeit erträglich. Wenn Code schneller ankommt, als man ihn lesen kann, verschiebt sich der Engpass: Er liegt nicht mehr im Schreiben, er liegt in der Überprüfung."
+          "Am Abend des ersten Tages, um 20:15 Uhr, beginnt ein Commit des Agenten mit einem Eingeständnis. Beim Prüfen der Preise von Cloudflare Workers, „die ich aus dem Gedächtnis angegeben hatte“ (die Commits sind auf Französisch; ich übersetze die Zitate in diesem Artikel), hatte er festgestellt, dass der kostenlose Tarif 10 ms Rechenzeit pro Aufruf gewährt. Jede Push-Benachrichtigung muss aber für ihren Empfänger verschlüsselt und signiert werden: Die Schleife über die Abonnenten wäre nach einigen Dutzend Eltern abgebrochen, und die übrigen hätten nichts bekommen, ohne dass es jemand merkt.",
+          "Die Korrektur teilte den Versand in Pakete zu zehn, und der Code selbst nannte diese Zahl eine „vorsichtige Schätzung, NICHT GEMESSEN“, was mir ausgesprochen gefällt. Weitere Grenzen desselben Tarifs hatten sich in den Code geschlichen, etwa ein Ausführungsfenster von vier bis fünfzehn Uhr UTC, das den Server 44-mal am Tag für fünf nützliche Zeitfenster weckte.",
+          "Am 22. August zog der Servercode auf Hono und PostgreSQL um, für eine gemietete Maschine. Die beiden Dateien, die Benachrichtigungen und Erinnerungen verschicken, wurden ohne eine geänderte Zeile übernommen, und ihre 28 Tests, darunter der Testvektor aus Anhang A von RFC 8291, liefen unter Node auf Anhieb durch. Die Routentests laufen seitdem gegen eine echte Datenbank, und schon der erste Lauf fand einen CORS-Preflight, der den Browser jede Anfrage aus dem Bereich der Gemeinde hätte verweigern lassen, ohne jeden Fehler auf dem Server. Der Commit bringt die Suite von 80 auf 109 Testfälle.",
+          "Am Morgen des 24. August antwortete die App zum ersten Mal unter ihrer eigenen Domain, <em>app.schoulbus.lu</em>. Am selben Tag wurde der Besucherzähler eines Drittdienstes durch eine Messung auf dem Server des Projekts ersetzt: nur die Einstiegsseite, ohne IP-Adresse, ohne Cookie und ohne Zeitstempel, der genauer wäre als der Tag."
+        ],
+        img: "plan"
+      },
+      {
+        title: "Zwei Tage Verdacht gegen Google",
+        paragraphs: [
+          "Die App trägt die Fahrten der Woche auch in Google Kalender ein. Sie verbindet sich per OAuth mit PKCE aus dem Browser, nur der Tausch des Tokens läuft über den Server, und sie verlangt den engsten Geltungsbereich, der genügt, <em>calendar.app.created</em>: Sie sieht nur den Kalender, den sie selbst angelegt hat.",
+          "Dieser Geltungsbereich hat eine Grenze, die teuer wurde. <em>calendarList.list</em> akzeptiert ihn nie, und der Aufruf antwortete mit „403 insufficient authentication scopes“, obwohl der Geltungsbereich gewährt war. Zwei Tage lang stand die Konfiguration des Google-Projekts unter Verdacht. Hinter dieser ersten Ablehnung lief ein PUT auf einen Termin, den es noch nicht gab, mit 404 ins Leere, und der Bildschirm meldete „0 Termine geschrieben“ als Erfolg.",
+          "Die Korrektur trägt das Datum 10. August, 2:26 Uhr, mit elf Tests gegen ein simuliertes <em>fetch</em> und einem ehrlichen Satz: Gegen das echte Google war noch nichts geprüft. Ich habe es am selben Tag getan, mein Konto verbunden und zugesehen, wie die Termine ankamen. Ein Vorbehalt ist noch offen: Ein Kalender kann doppelt angelegt werden, wenn der Browser vergisst, dass er ihn erstellt hat. Die erste Fassung eines anderen Artikels in diesem Blog datierte diese Synchronisation auf September, zu Unrecht; sie stammt aus dem August."
         ],
         img: ""
       },
       {
-        title: "Aufschreiben, was man nicht überprüft hat",
+        title: "Die Regeln standen geschrieben, die Tests lagen woanders",
         paragraphs: [
-          "Die Roadmap des Projekts umfasst 2.743 Zeilen, und ihr nützlichster Teil ist nicht die Liste des Erledigten. Es ist das Register der <strong>offenen Vorbehalte</strong>, R1 bis R50: Jeder benennt, was ein Paket nicht beweisen konnte, und das genaue Kriterium, das ihn streichen wird.",
-          "„Keine echte Erinnerung wurde an einem tatsächlichen Schulmorgen verschickt.“ Das ist kein Fehler, und kein Test wird ihn finden: Es ist etwas, das der Code von sich aus nicht zeigen kann. Commit-Nachrichten sagen dasselbe — was überprüft wurde <em>und</em> was nicht. Die jüngste streicht einen Vorbehalt, und von einem zweiten nur die Hälfte.",
-          "Ein Vorbehalt, der ausgesprochen und nie aufgeschrieben wird, ist ein verlorener Vorbehalt: Er kommt drei Monate später als Panne zurück. Das ist der Preis assistierter Arbeit, und er wird schriftlich bezahlt."
+          "Jedes meiner Repositories hat eine Datei <em>CLAUDE.md</em>, die der Agent liest, bevor er den Code anfasst. Die von Schoulbus legt fest, was nicht verhandelbar ist: Code auf Französisch, kein sichtbarer Text fest in einer Komponente, keine Farbe außerhalb der Design-Tokens, Touch-Ziele von mindestens 44 px und ein Kontrast von mindestens 4,5:1.",
+          "Die erste Fassung dieses Artikels behauptete, Tests würden diese Regeln halten, einer für Farben außerhalb der Tokens, ein anderer für den Kontrast jedes Paares aus Schrift und Hintergrund. Am 26. August stimmte das auf einem Branch. Beide Tests entstanden in der Nacht vom 25. auf den 26. August auf einem Arbeitsbranch, der nie gemergt wurde, und der Artikel sagte das nicht.",
+          "Auf dem Hauptbranch kam der Kontrasttest am 8. September um 23:39 Uhr, und der Titel seines Commits sagt, was übersehen worden war: Der Knopf „Supprimer“ (Löschen) wurde beim Überfahren unlesbar, Rosa auf Rosa, bei 3,16:1. Auf dem Telefon bleibt der Hover-Zustand nach dem Tippen hängen, Eltern, die gerade darauf getippt haben, sehen also eine zerstörende Aktion unter der Schwelle. An jenem Abend lag das schlechteste gemessene Paar mit der damaligen Palette bei 4,54:1. Den anderen Test, den für Farben außerhalb der Tokens, gibt es auf dem Hauptbranch am 8. November noch immer nicht, und ein Commit am Tag danach fand weitere Werte, die von Hand außerhalb der Token-Datei abgeschrieben waren."
+        ],
+        img: "assistant"
+      },
+      {
+        title: "Ein Register dessen, was nicht bewiesen ist",
+        paragraphs: [
+          "Neben der Liste der Arbeitspakete führt der Plan des Projekts ein Register der Vorbehalte: Jeder nennt, was ein Paket nicht beweisen konnte, und das genaue Kriterium, nach dem er gestrichen werden darf. Ich hatte geschrieben, der Plan umfasse 2.743 Zeilen, von R1 bis R50. Diese Zahlen kamen vom selben nie gemergten Branch; der Hauptbranch stand am 25. August bei 2.648 Zeilen und R47. Am 8. November sind es 3.248 Zeilen, bis R80, davon 27 offen.",
+          "Die Commit-Nachrichten folgen derselben Regel und nennen neben dem Geprüften auch das Ungeprüfte. Die des ersten echten Deployments hebt einen Vorbehalt auf, einen weiteren zur Hälfte (Website und Server sprechen miteinander, die Installation auf einem echten Telefon steht noch aus) und vermerkt, dass die Images auf der Maschine gebaut und nicht aus der Image-Registry gezogen wurden, ein Weg, der noch zu erproben war.",
+          "Die <em>CLAUDE.md</em> des Projekts fasst zusammen, wozu das Register da ist: „Ein Vorbehalt, der nur ausgesprochen und nicht aufgeschrieben wird, ist ein verlorener Vorbehalt.“ Mit einem Agenten, der schnell schreibt, ist der nur ausgesprochene Satz oft meiner, im Gespräch, und er verschwindet mit der nächsten Sitzung."
         ],
         img: ""
       },
       {
-        title: "Was zehn Wochen ergeben",
+        title: "06:45 Uhr an einem echten Schulmorgen",
         paragraphs: [
-          "In den letzten zehn Wochen kamen siebzehn Repositories auf knapp fünfhundert Commits, von denen rund zweihundertvierzig Claudes Mitunterschrift tragen. Auf Schoulbus entfallen hundertdreiundvierzig davon, auf seine Schaufensterseite fünfunddreißig.",
-          "Anderswo: ein Collage-Editor im Browser, zweihundertsechsunddreißig Commits — darunter eine ganze Phase, die dem <strong>Löschen</strong> gewidmet war, ein herausgezogenes Animationssubsystem und Tausende verwaister Zeilen getilgt. Das ist vielleicht der beste Gebrauch, den ich davon gemacht habe. Und dieses Portfolio selbst, von Vue 2 auf Vue 3 umgezogen, zweimal neu gestaltet, seine Screenshots von 39 MB auf unter ein Megabyte gebracht.",
-          "Die Zahl sollte nicht falsch gelesen werden: Sie misst keine Produktivität, sie misst Volumen. Was sich wirklich geändert hat, sind die Kosten des Versuchens — und damit die Kosten des Wegwerfens."
-        ],
-        img: ""
-      },
-      {
-        title: "Was es nicht leistet",
-        paragraphs: [
-          "Die Schaufensterseite spricht fünf Sprachen. Das <strong>Luxemburgische hat niemand gelesen, der es als Muttersprache spricht</strong>. Es ist die Sprache des Zuhauses in einem guten Teil der Gemeinde, die Seite ist veröffentlicht, und kein Befehl schließt diesen Vorbehalt.",
-          "Eine Maschine schreibt schnell, und sie schreibt öfter richtig, als man denkt. Sie wird Ihnen nicht sagen, dass ein Wort in einem einheimischen Ohr falsch klingt, dass ein Elternteil sich im Assistenten verloren hat, dass ein Bildschirm in der Sonne unlesbar ist, mit ausgestrecktem Arm, an einem Septembermorgen. Solche Dinge bleiben offene Vorbehalte, bis ein Mensch sie ansieht.",
-          "Die Geschwindigkeit, die Beständigkeit, die Geduld, eine Datei ein fünfzehntes Mal aufzunehmen: Das ist es, was ich delegiert habe. Was ich behalten habe, ist die Liste dessen, was nicht bewiesen ist."
+          "Der Vorbehalt R7 ist seit August offen: „Noch nie wurde an einem echten Schulmorgen eine echte Erinnerung verschickt.“ Die Kette ist mit einem simulierten Versand von Anfang bis Ende getestet, und ein Zustellprotokoll hält jede Erinnerung fest, aber nichts ist um 06:45 Uhr gegen echte Telefone gelaufen. Das Register hat sich seit dem 16. September nicht bewegt, und ich habe dieses Protokoll für den Artikel nicht geöffnet: Ob seit Schulbeginn eine Erinnerung hinausgegangen ist, weiß ich also nicht.",
+          "Das Kriterium zum Streichen steht schwarz auf weiß da. Am Vorabend eines Schultags eine Testmeldung veröffentlichen, am nächsten Morgen das Protokoll lesen, dann die Meldung wieder entfernen. Der 8. November, an dem ich diesen Text überarbeite, war der letzte Tag der Herbstferien, am Morgen darauf begann wieder die Schule: Es hätte gereicht, einen Wecker vor der Durchfahrt des Busses zu stellen. Wie viele Schulanfänge brauche ich noch, bis mir das einfacher vorkommt, als einen Artikel darüber zu schreiben?"
         ],
         img: ""
       }
