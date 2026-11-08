@@ -85,7 +85,7 @@ peuvent changer. Les articles cessent de partager le même squelette.
       le dater honnêtement, corriger ce qui a vieilli.
 - [x] `blogPost4` (vingt-sept mégaoctets) et `blogPost7` (la langue dans l'adresse) —
       les deux sur ce site, à faire ensemble pour qu'ils ne se répètent pas.
-- [ ] `blogPost2` et `blogPost9` (Schoulbus).
+- [x] `blogPost2` et `blogPost9` (Schoulbus).
 - [ ] `blogPost3` (Aura).
 - [ ] `blogPost5` (Royaume Foot).
 - [ ] `blogPost6` (Pic Collage Maker).

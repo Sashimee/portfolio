@@ -214,81 +214,54 @@ export default {
   blogPost9: {
     title: "Fusionné n’est pas déployé",
     title2:
-      "Trois semaines sur Schoulbus : une vitrine et une application qui doivent ressembler au même produit, des captures d’un design qui n’existait plus, et <strong>une fusion qui n’a rien publié</strong>.",
+      "Onze jours de septembre sur Schoulbus : une vérification écartée comme fausse alerte alors qu’elle avait raison, et une optimisation toujours pas en ligne.",
     sections: [
       {
-        title: "Deux dépôts, un produit",
+        title: "Douze jours sans un commit",
         paragraphs: [
-          "Schoulbus, ce sont deux choses. <em>schoulbus.lu</em> est la vitrine, un site statique en cinq langues. <em>app.schoulbus.lu</em> est l’application elle-même, avec laquelle les familles suivent le bus scolaire. Chacun a son dépôt, sa construction et son déploiement, mais pour qui s’en sert, c’est un seul produit, et il doit en avoir l’air.",
-          "L’essentiel du travail entre le 7 et le 26 septembre s’est fait sur cette couture. Voici ce qui y a cassé, et les cas où ce qui a cassé, c’était ma propre hypothèse."
+          "Entre la nuit du 25 au 26 août et le 7 septembre, les deux dépôts de Schoulbus n’ont pas reçu un seul commit. J’avais publié ici le récit des dix-neuf premiers jours, puis plus rien pendant douze jours. J’ai repris le 7 septembre, à huit jours de la rentrée.",
+          "Schoulbus, ce sont deux sites. <em>schoulbus.lu</em> est la vitrine, statique et en cinq langues, qui explique le service aux familles. <em>app.schoulbus.lu</em> est l’application qu’elles ouvrent le matin. Du 7 au 17 septembre, les deux dépôts ont reçu 114 commits, fusions non comprises. La première version de cet article parlait de trois semaines, « entre le 7 et le 26 septembre » ; j’ai recompté, c’était onze jours.",
+          "Juste avant de m’arrêter, j’avais laissé sur une branche le travail qui devait rendre aux deux sites la même charte graphique. Elle n’a jamais été fusionnée, et la charte a été refaite le 14 septembre."
         ],
         img: ""
       },
       {
-        title: "Une palette, recopiée par un script",
+        title: "Dix minutes devant une page qui ne changeait pas",
         paragraphs: [
-          "L’application a une charte graphique : couleurs, rayons, échelle typographique, tous déclarés en jetons. La vitrine avait sa propre copie, écrite à la main et qui dérivait déjà.",
-          "Désormais, un script recopie les jetons de l’application vers la vitrine (<em>jetons:reprendre</em>), et un second mode vérifie qu’ils correspondent toujours (<em>jetons:verifier</em>). La vérification fait partie de la commande de contrôle de la vitrine : un changement de palette dans l’application qui n’a pas atteint la vitrine arrête la construction.",
-          "Un jour, la vérification a signalé que les jetons divergeaient alors que ce n’était pas le cas. Ma copie locale de la branche <em>main</em> de l’application était périmée : je comparais avec une ancienne palette. La vérification n’a raison que si elle compare avec <strong>origin/main</strong>, l’état publié, et c’est ce qu’elle fait maintenant."
+          "Le 16 septembre au soir, une fusion dans la branche principale de la vitrine était passée, la CI était verte, et le site servait toujours l’ancienne version. Le fichier de consignes du dépôt garde le prix de l’affaire : « dix minutes à guetter » une page qui ne bougeait pas. Le déploiement automatique était désactivé sur la plateforme d’hébergement pour ce service.",
+          "La documentation du dépôt disait pourtant que la fusion dans <em>main</em>, « c’est la mise en ligne ». Je l’avais répétée dans la première version de l’article d’août sur Schoulbus. Le drapeau a été remis après un déploiement lancé à la main. Une petite sonde affichait pourtant son état et la date du dernier déploiement depuis la veille ; ce que le dépôt a ajouté le 16, c’est la consigne de la lire, et la règle qui va avec : une publication se constate sur le site, jamais sur la branche.",
+          "Ce n’était pas la première fois. Le 21 août déjà, l’application ne se publiait plus depuis deux jours, parce que <em>npm audit</em> bloquait la construction sur une faille de <em>nanoid</em>, une dépendance de développement qui ne partait même pas chez les visiteurs. Le site en ligne datait du 10 août, et le commit le dit sans détour : rien ne le signalait ailleurs que dans l’onglet Actions. Le 7 septembre, un autre avis de sécurité a bloqué la chaîne, puis un redéploiement a resservi l’image déjà en cache.",
+          "Il faut être juste avec cette porte. Le 14 septembre, la CI a refusé la mise en production en 32 secondes, et elle avait raison : <em>nodemailer</em> jusqu’à la version 9.1.0 laissait contourner la validation du domaine destinataire, et c’est lui qui envoie les liens de réinitialisation de mot de passe. Le lendemain, c’est le relais de courriel de la vitrine qui répondait « envoyé » pour des messages que le fournisseur rejetait après les avoir acceptés. Il refuse désormais de démarrer si l’adresse d’expédition n’appartient pas au domaine authentifié."
         ],
         img: ""
       },
       {
-        title: "Des captures d’une application qui n’existait plus",
+        title: "La commande avait raison",
         paragraphs: [
-          "La vitrine illustre chaque fonction par une capture de l’application, une par fonction. Elles étaient générées automatiquement, ce qui paraissait fiable. Elles venaient en réalité d’une version de l’application <strong>antérieure à la charte graphique</strong>. Chaque image était nette, bien cadrée, et périmée.",
-          "Les régénérer a révélé un second problème : deux passes ne donnaient pas la même image. Quatre des dix vues de la semaine sortaient différentes à chaque fois. La carte place ses tuiles et ses repères par des transformations CSS, qu’aucun observateur du DOM ne voit : la page semblait stable avant que la carte le soit.",
-          "Ce qui doit être stable, c’est l’image, pas le DOM. La règle est désormais qu’une image n’est gardée que si <strong>deux prises sont identiques</strong>. L’horloge simulée est figée sur un mardi matin fixe, et les tuiles de la carte viennent de fixtures locales. Une image qui change entre deux passes n’est pas une capture ; c’est un échantillon."
+          "La vitrine reprend par un script les jetons de style de l’application, les valeurs nommées de ses couleurs et de ses rayons. <em>jetons:reprendre</em> les recopie, <em>jetons:verifier</em> contrôle qu’ils correspondent encore, et ce contrôle fait partie de <em>npm run verifier</em>, que la vitrine exécute avant chaque pull request.",
+          "Le 9 septembre, il a donné une vraie fausse alerte. Le dépôt de l’application était ouvert sur une branche de travail, et la dérive signalée n’existait pas dans ce qui était publié. Le script a appris à viser le dépôt qu’on lui désigne.",
+          "Le 16, il a de nouveau signalé une dérive, et on l’a écartée comme la même fausse alerte. Pour s’en assurer, la comparaison a été refaite sur la copie locale de <em>main</em>, qui n’avait pas été mise à jour et a répondu que tout était conforme. La première version de cet article racontait l’inverse, une divergence imaginaire due à une copie périmée. C’était la copie périmée qui se trompait, et le dépôt ne dit pas qui, de l’agent ou de moi, a classé l’alerte.",
+          "Le lendemain, 17 septembre à 8 h 22, un commit a trouvé ce que la vérification annonçait. Les captures de la vitrine photographiaient une version de l’application en retard de 33 commits, fusions non comprises, avec l’ancienne charte bleu nuit : le site montrait un produit qui n’existait plus. Le fichier de consignes porte depuis une ligne en capitales, qui demande de prendre le clone de contrôle sur <em>origin/main</em>, après un <em>git fetch</em>.",
+          "En régénérant ces captures, quatre des dix vues de la semaine sortaient différentes d’une exécution à l’autre. À 8 h 28, un premier correctif a exigé deux prises identiques avant de garder une image. À 8 h 51, vingt-trois minutes plus tard, le vrai coupable était trouvé : le défilement causé par le clic décalait de quelques pixels l’origine de la carte. Le clic est donné depuis le haut du document, et trois exécutions de suite rendent les quarante mêmes fichiers ; la règle des deux prises est restée, comme garde-fou."
         ],
         img: ""
       },
       {
-        title: "Cinq langues, relues par des agents",
+        title: "Sechzéng",
         paragraphs: [
-          "La vitrine est en luxembourgeois, en français, en allemand, en portugais et en anglais, ce qui correspond aux familles qui prennent vraiment le bus. Je parle couramment certaines de ces langues, pas les autres.",
-          "Chaque langue a été relue par un agent chargé de lire en locuteur natif et de citer une source pour chaque correction. Il en est sorti <strong>33 corrections sourcées</strong>, en luxembourgeois, en portugais, en anglais et en allemand. La décision que j’ai consignée est que cette relecture compte comme une relecture. Ce qu’elle ne remplace pas est écrit aussi : un parent qui lit la page sur son téléphone et me dit ce qui sonne faux."
+          "La vitrine parle luxembourgeois, français, allemand, portugais et anglais, les langues des familles qui prennent le bus. Le 14 septembre, deux relectures menées par des agents ont tourné en parallèle, l’une sur la structure des cinq langues, l’autre en lecteur natif du luxembourgeois, du portugais et de l’anglais, appuyée sur le dictionnaire et le correcteur officiels du luxembourgeois. Elles ont produit 33 corrections sourcées : dix-sept en luxembourgeois, onze en portugais et en anglais, cinq en allemand. Dix-neuf remarques de goût n’ont pas été appliquées.",
+          "Les plus lourdes portaient sur des mots qui n’existent pas. <em>Sechzéng</em> était écrit en gros caractères dans l’appel final de la page, alors que seize se dit <em>siechzéng</em> et que <em>sechzeg</em> veut dire soixante. Quand les deux rapports se sont contredits sur l’orthographe d’un verbe, le désaccord s’est réglé en interrogeant le correcteur, qui acceptait les deux, et c’est le mot qu’employait déjà l’application qui l’a emporté.",
+          "Le 16 septembre, j’ai décidé que cette relecture comptait comme une relecture, et le dépôt écrit ce qu’elle ne remplace pas : « une source dit ce qui est fautif, pas ce qu’un parent de Biekerech écrirait ». Au 8 novembre, je n’ai aucune relecture de parent à raconter."
         ],
         img: ""
       },
       {
-        title: "Cinquante kilo-octets pour une hydratation",
+        title: "Pas même fusionné",
         paragraphs: [
-          "La vitrine est presque entièrement statique. Elle embarquait pourtant React pour hydrater ses quelques éléments interactifs.",
-          "Remplacer React par <em>preact/compat</em> a fait passer le JavaScript de <strong>70,8 Ko à 20,6 Ko</strong>. Le risque d’un tel échange est une page qui s’affiche puis cesse discrètement de répondre ; une vérification Playwright confirme donc que l’hydratation a bien lieu, en cliquant sur quelque chose et en le voyant répondre. La même semaine, une bibliothèque d’animation est partie aussi, parce que le seul geste qu’elle animait tient en quelques lignes de CSS."
-        ],
-        img: ""
-      },
-      {
-        title: "Fusionné n’est pas déployé",
-        paragraphs: [
-          "Des pull requests étaient fusionnées dans <em>main</em>, la CI était verte, et les conteneurs continuaient de servir la construction précédente.",
-          "C’était un réglage. Le déploiement automatique était <strong>désactivé</strong> sur la plateforme d’hébergement pour cette application. Une fusion était une fusion, rien de plus. La documentation du dépôt disait le contraire, et elle avait tort.",
-          "La correction a tenu en un clic. La leçon est désormais écrite dans le dépôt : <em>fusionné</em> et <em>déployé</em> sont deux affirmations différentes, et une seule se vérifie en regardant le site. Une publication se confirme en regardant la page en ligne, pas l’état de la CI."
-        ],
-        img: ""
-      },
-      {
-        title: "Le noindex venait de moi",
-        paragraphs: [
-          "La Search Console signalait <em>app.schoulbus.lu</em> comme exclue de la recherche, avec un <em>noindex</em>. Rien d’extérieur à l’application n’était en cause : elle n’avait simplement jamais été ouverte aux moteurs de recherche, et n’avait ni <em>robots.txt</em> ni plan du site.",
-          "Un petit greffon Vite écrit désormais les deux à la construction, et l’application est ouverte aux moteurs."
-        ],
-        img: ""
-      },
-      {
-        title: "Ce qui s’est passé aussi",
-        paragraphs: [
-          "Le relais de courriel du formulaire de contact refusait d’envoyer, parce que l’adresse d’expédition ne correspondait pas au domaine pour lequel le relais a le droit d’émettre. Le service envoie désormais depuis le domaine authentifié, garde l’adresse du visiteur en <em>Reply-To</em>, et refuse de démarrer si les deux ne sont pas alignés : l’erreur ne peut plus repartir en silence une seconde fois.",
-          "La synchronisation avec Google Agenda est passée en production. Elle utilise OAuth avec PKCE dans le navigateur, et la portée la plus étroite qui fasse l’affaire, <em>calendar.app.created</em> : l’application ne voit que l’agenda qu’elle crée, jamais le reste de l’agenda d’un parent.",
-          "Une publication a été bloquée par la CI à cause d’alertes sur des dépendances, ce qui est exactement le rôle de cette porte. Et trente branches distantes sont tombées à deux."
-        ],
-        img: ""
-      },
-      {
-        title: "Ce qui n’est pas fait",
-        paragraphs: [
-          "La relecture des langues est faite par des agents. Elle est sourcée et soignée, mais ce n’est pas un parent, et je ne saurai si le luxembourgeois sonne naturel que lorsqu’un parent me le dira.",
-          "Et la correction du noindex est récente. La Search Console prend son temps, et je n’affirmerai pas que l’application est indexée avant qu’elle le dise."
+          "Le 16 septembre, la vitrine a perdu sa bibliothèque d’animation : ses trois derniers effets tenaient en CSS, avec un <em>IntersectionObserver</em> pour savoir quand les lancer. Le JavaScript du premier écran est passé de 98,0 à 70,8 Kio compressés, et celui-là est en ligne. Le lendemain à 16 h 44, la pull request n° 60 remplaçait React par <em>preact/compat</em> et le faisait tomber à 20,6 Kio. Elle avait un coût, un crochet réécrit à la main faute d’une fonction que Preact ne fournit pas, et une vérification Playwright qui contrôle l’hydratation dans les cinq langues.",
+          "La première version de cet article donnait cet échange pour fait. Au 8 novembre, la pull request est toujours ouverte, depuis cinquante-deux jours. J’ai téléchargé aujourd’hui le script que sert <em>www.schoulbus.lu</em> : il contient l’adresse des messages d’erreur de React et aucune trace de Preact, et le JavaScript du premier écran pèse 72 387 octets compressés, soit 70,7 Kio : le poids d’avant l’échange.",
+          "Le même article disait que l’application « n’avait simplement jamais été ouverte » aux moteurs de recherche. Le <em>noindex</em> était voulu depuis le 7 août, avec un commentaire qui disait que l’application ne devait pas concurrencer la page officielle de la commune. J’ai changé d’avis le 16 septembre, et <em>robots.txt</em> comme le plan du site répondent aujourd’hui. Je n’ai pas regardé si Google a pris la peine de revenir.",
+          "Reste cette pull request. Cinquante Kio de moins pour chaque parent qui ouvre la page sur un téléphone, contre un crochet maison que rien n’a encore éprouvé en production. Vous la fusionneriez, vous ? Elle est publique, sur le dépôt <em>Sashimee/schoulbus</em>, et je compterai les voix dans la conversation."
         ],
         img: ""
       }
@@ -717,76 +690,69 @@ export default {
   blogPost2: {
     title: "Dix-neuf jours pour un bus scolaire",
     title2:
-      "Ce que <strong>Claude Code</strong> change quand on livre seul — et ce qu'il ne change pas.",
+      "Un PDF de cinq pages, un dépôt vide le 7 août, et un agent qui avait annoncé <em>de mémoire</em> que l’hébergement ne coûterait rien.",
     sections: [
       {
-        title: "Le problème tenait dans un PDF",
+        title: "Un PDF de cinq pages, un après-midi d’août",
         paragraphs: [
-          "Le plan du bus scolaire de la commune de Beckerich est un document officiel de cinq pages : sept lignes, dix-sept arrêts, huit villages, cinq sites scolaires, et des règles qui changent selon le cycle de l'enfant et le jour de la semaine. Tout y est. Rien n'y répond à la seule question qu'un parent se pose vraiment le matin : à quelle heure faut-il sortir de chez soi ?",
-          "Le dépôt est vide le 7 août 2026. L'application répond sur <strong>app.schoulbus.lu</strong> le 24 août. Entre les deux, cent quarante-trois commits — et une manière de travailler que je n'aurais pas tenue seul."
+          "Ce que j’avais sous la main, le 7 août, tenait en un fichier : le plan du bus scolaire de la commune de Beckerich, un PDF officiel de cinq pages. Sept lignes, dix-sept arrêts, huit villages et cinq sites scolaires, avec des horaires qui changent selon le cycle de l’enfant et le jour de la semaine. Tout y est, sauf la réponse à la question qu’un parent se pose à sept heures moins le quart : à quelle heure faut-il sortir de la maison ?",
+          "J’avais aussi Claude Code, et un peu plus de cinq semaines avant la rentrée du 15 septembre. Le premier commit tombe à 15 h 11, avec les données du plan et le moteur qui calcule les trajets. Vingt et une minutes plus tard, un deuxième ajoute l’interface, l’installation sur l’écran d’accueil du téléphone et une publication automatique sur GitHub Pages.",
+          "Le titre compte les jours entre ce premier commit et la publication de cet article, le 26 août. Il y en a dix-neuf, et 143 commits sur l’ensemble des branches. Au moment où je reprends ce texte, le 8 novembre, la branche principale en compte 207, et l’application a changé de couleurs le 14 septembre : les captures qui l’illustrent montrent celle du mois d’août."
         ],
         img: "aujourdhui"
       },
       {
-        title: "Ce que l'application calcule",
+        title: "Le plus proche, dans la bonne direction",
         paragraphs: [
-          "L'arrêt affiché n'est pas le plus proche : c'est le plus proche <strong>desservi dans la bonne direction</strong>, vers l'école du cycle de cet enfant-là, ce jour-là. La nuance a l'air d'un détail jusqu'au matin où elle fait rater un bus.",
-          "La recherche d'adresse est entièrement hors-ligne. Les 1 162 adresses de la commune et leurs 59 rues tiennent dans 44 Ko embarqués, tolérants aux accents et à l'ordre des mots. Ce n'est pas une optimisation : c'est la garantie. Aucune frappe ne part sur un réseau, et la configuration d'un foyer se partage par le fragment de l'URL — la part que le serveur ne reçoit jamais.",
-          "Autour, ce qu'on attend d'un outil qu'on ouvre à 7 h : la semaine sur une fiche imprimable, l'export vers l'agenda, les perturbations relues à chaque ouverture, les rappels par notification. Et cinq langues — français, allemand, luxembourgeois, portugais, anglais — dont un test refuse qu'elles divergent d'une seule clé."
-        ],
-        img: "assistant"
-      },
-      {
-        title: "Sortir du palier gratuit",
-        paragraphs: [
-          "Le serveur a d'abord été un Worker Cloudflare adossé à un magasin clé-valeur. Gratuit, et commode — jusqu'à ce qu'on relise le code. Trois contraintes du palier gratuit y étaient écrites noir sur blanc : l'envoi des notifications découpé en lots de dix, une fenêtre d'exécution de quatre à quinze heures UTC pour cinq créneaux réellement utiles, et une cohérence différée qui rendait approximative la limitation à cinq tentatives.",
-          "Ces trois lignes ne décrivaient pas le problème du bus scolaire. Elles décrivaient un abonnement. Le serveur est devenu un service Node et <strong>Hono</strong> adossé à PostgreSQL, conteneurisé, sur une machine louée. Le commit qui l'acte annonce quatre-vingts cas de test devenus cent neuf.",
-          "Le même mouvement a rapatrié la mesure d'audience : un service tiers recevait la page consultée, et c'était le seul endroit où le projet dérogeait à son premier principe. Il compte désormais chez lui, sans adresse IP, sans cookie, sans horodatage plus fin que le jour."
-        ],
-        img: "plan"
-      },
-      {
-        title: "Le fichier qui tient les règles",
-        paragraphs: [
-          "Chacun de mes dépôts porte un <strong>CLAUDE.md</strong>. Ce n'est pas un README : c'est le contrat de travail. Il énonce ce qui ne se négocie pas — le code écrit en français, aucune chaîne visible en dur, aucune valeur brute hors des jetons de style, des cibles tactiles d'au moins 44 px, un contraste d'au moins 4,5:1.",
-          "Mais une règle seulement écrite s'use. Elle tient dix échanges, puis un raccourci passe, puis un autre, et trois jours plus tard la moitié du fichier la contredit. Ce qui la tient vraiment, ce sont les tests : l'un refuse une couleur écrite hors des jetons et un style en ligne dans un composant, un autre mesure chaque couple encre/fond des deux thèmes, un troisième refuse une clé manquante dans l'une des cinq langues.",
-          "C'est le véritable apport de la méthode, et il n'a rien de spectaculaire : ne pas demander à l'assistant de se souvenir, mais rendre l'oubli impossible."
+          "L’arrêt que l’application propose est le plus proche qui soit desservi dans la bonne direction, vers l’école du cycle de cet enfant-là et ce jour-là. Un arrêt à deux cents mètres où le bus ne passe que dans l’autre sens ne sert à rien à huit heures moins dix, et c’est justement celui qu’une carte montrerait en premier.",
+          "Pour le trouver, il faut l’adresse du domicile, et la recherche se fait sans réseau. Le commit du 7 août embarquait 1 162 adresses de la commune et leurs 59 rues dans un fichier de 42 240 octets, soit 41 Kio, et il pesait toujours exactement autant le jour de cet article. La première version de ce texte disait 44 Ko, et je n’ai retrouvé ce chiffre nulle part. Depuis le 8 septembre, il reste 1 159 adresses : trois figuraient en double.",
+          "La configuration d’un foyer se partage par un lien qui porte les données dans son fragment, la partie de l’adresse après le <em>#</em>, que le navigateur n’envoie jamais au serveur. L’adresse et les prénoms ne sont enregistrés que sur le téléphone, et l’application le dit sur une page intitulée « Limites ». Depuis le 14 septembre, cette page ajoute une nuance que cet article omettait : si l’on connecte Google Agenda, l’application écrit chez Google le prénom de l’enfant, et l’agenda qu’elle crée le porte aussi.",
+          "J’appelais ça « la garantie » dans la première version, et la page « Limites » le croyait aussi. Le 8 septembre, un commit a trouvé ce qui les contredisait toutes les deux : la carte du trajet à pied se chargeait à chaque ouverture d’une fiche enfant et cadrait le domicile au zoom 18. Les tuiles demandées à OpenStreetMap désignaient donc le pâté de maisons. La carte attend désormais qu’on la demande (la capture ci-dessous date d’avant, on l’y voit chargée d’elle-même)."
         ],
         img: "semaine"
       },
       {
-        title: "Une branche par sujet, une seule porte",
+        title: "Annoncé de mémoire",
         paragraphs: [
-          "Une branche par sujet, partant de <em>dev</em> ; fusion dans <em>dev</em> quand tout passe ; fusion de <em>dev</em> dans <em>main</em> quand <em>dev</em> est sain — et <em>main</em>, c'est la mise en ligne. Un correctif d'une ligne suit le même chemin qu'un lot entier, parce que c'est précisément le correctif d'une ligne qui met un site en panne : personne ne l'a regardé.",
-          "Avant toute proposition, une seule commande — types, lint, tests, contrastes, dérive des jetons de style. Elle passe, ou rien ne sort. C'est aussi ce que rejoue l'intégration continue, et ce que lance le conteneur avant de se construire : une vérification qu'on peut contourner n'est pas une vérification.",
-          "Ce cadre coûte quelques minutes par sujet. Il rend surtout la vitesse supportable. Quand le code arrive plus vite qu'on ne le relit, le goulot d'étranglement change de place : il n'est plus dans l'écriture, il est dans la vérification."
+          "Le soir du premier jour, à 20 h 15, un commit écrit par l’agent commence par un aveu. En vérifiant la tarification de Cloudflare Workers, « que j’avais annoncée de mémoire », il avait trouvé que le palier gratuit accorde 10 ms de processeur par invocation. Or chaque notification push doit être chiffrée et signée pour son destinataire : la boucle sur les abonnés se serait arrêtée après quelques dizaines de parents, et les suivants n’auraient rien reçu, sans que personne le sache.",
+          "La correction découpait l’envoi en lots de dix, et le code qualifiait lui-même ce chiffre d’« estimation prudente NON MESURÉE », ce que j’aime beaucoup. D’autres contraintes du même palier s’étaient glissées dans le code, comme une fenêtre d’exécution de quatre à quinze heures UTC qui réveillait le serveur 44 fois par jour pour cinq créneaux utiles.",
+          "Le 22 août, le code du serveur est passé sur Hono et PostgreSQL, pour tourner sur une machine louée. Les deux fichiers qui envoient les notifications et les rappels ont été copiés sans changer une ligne, et leurs 28 tests, dont le vecteur de l’annexe A de la RFC 8291, sont passés sous Node du premier coup. Les tests de routes tournent depuis contre une vraie base, et le premier essai a trouvé un préflight CORS qui aurait fait refuser par le navigateur chaque requête de l’espace réservé à la commune, sans aucune erreur côté serveur. Le commit passe de 80 cas de test à 109.",
+          "Le 24 août au matin, l’application a répondu pour la première fois sur son propre domaine, <em>app.schoulbus.lu</em>. Le même jour, le compteur de visites d’un service tiers a été remplacé par une mesure qui tourne sur le serveur du projet : la page d’arrivée, sans adresse IP, sans cookie, sans horodatage plus fin que le jour."
+        ],
+        img: "plan"
+      },
+      {
+        title: "Deux jours à accuser Google",
+        paragraphs: [
+          "L’application écrit aussi les trajets de la semaine dans Google Agenda. Elle se connecte par OAuth avec PKCE depuis le navigateur, seul l’échange du jeton passe par le serveur, et elle demande la portée la plus étroite qui fasse l’affaire, <em>calendar.app.created</em> : elle ne voit que l’agenda qu’elle a créé.",
+          "Cette portée a une limite qui a coûté cher. <em>calendarList.list</em> ne l’accepte jamais, et l’appel répondait « 403 insufficient authentication scopes » alors que la portée était bel et bien accordée. La configuration du projet chez Google a été accusée pendant deux jours. Derrière ce premier refus, une écriture par PUT tombait en 404 sur un événement qui n’existait pas encore, et l’écran annonçait « 0 rendez-vous écrits » comme une réussite.",
+          "Le correctif est daté du 10 août, 2 h 26, avec onze tests sur un <em>fetch</em> simulé et une phrase honnête : rien n’avait encore été vérifié contre le vrai Google. Je l’ai fait le jour même, en connectant mon compte et en regardant les rendez-vous arriver. Une réserve reste ouverte, un agenda peut se dupliquer si le navigateur oublie qu’il l’a créé. La première version d’un autre article de ce blog datait cette synchronisation de septembre, à tort : elle est du mois d’août."
         ],
         img: ""
       },
       {
-        title: "Écrire ce qu'on n'a pas vérifié",
+        title: "Les règles étaient écrites, les tests étaient ailleurs",
         paragraphs: [
-          "La feuille de route du projet fait 2 743 lignes, et sa partie la plus utile n'est pas la liste de ce qui est fait. C'est le registre des <strong>réserves ouvertes</strong>, R1 à R50 : chacune nomme ce qu'un lot n'a pas pu prouver, et le critère exact qui permettra de la rayer.",
-          "« Aucun rappel réel n'a été envoyé un vrai matin d'école. » Ce n'est pas un bug, et aucun test ne le trouvera : c'est une chose que le code ne peut pas démontrer tout seul. Les messages de commit disent de même ce qui a été vérifié <em>et</em> ce qui ne l'a pas été — le dernier en date raye une réserve, et n'en raye qu'une moitié d'une autre.",
-          "Une réserve dite de vive voix et non écrite est une réserve perdue : elle réapparaît en panne trois mois plus tard. C'est la contrepartie du travail assisté, et elle se paie en écriture."
+          "Chacun de mes dépôts porte un fichier <em>CLAUDE.md</em> que l’agent lit avant de toucher au code. Celui de Schoulbus fixe ce qui ne se discute pas : le code écrit en français, aucun texte visible en dur dans un composant, aucune couleur hors des jetons de style, des cibles tactiles d’au moins 44 px et un contraste d’au moins 4,5:1.",
+          "La première version de cet article affirmait que des tests tenaient ces règles, l’un pour les couleurs hors des jetons, l’autre pour le contraste de chaque couple encre et fond. Le 26 août, c’était vrai sur une branche. Ces deux tests sont nés dans la nuit du 25 au 26, sur une branche de travail qui n’a jamais été fusionnée, et l’article ne le disait pas.",
+          "Sur la branche principale, le test de contraste est arrivé le 8 septembre à 23 h 39, et le titre de son commit dit ce qu’il avait manqué : le bouton « Supprimer » devenait illisible au survol, rose sur rose, à 3,16:1. Sur un téléphone, le survol reste collé après un appui, donc un parent qui vient de toucher « Supprimer » regarde une action destructrice sous le seuil. Ce soir-là, sur la palette d’alors, le pire couple mesuré tenait 4,54:1. L’autre test, celui des couleurs hors des jetons, n’existe toujours pas sur la branche principale au 8 novembre, et un commit du lendemain a encore trouvé des valeurs recopiées à la main hors de la feuille des jetons."
+        ],
+        img: "assistant"
+      },
+      {
+        title: "Un registre de ce qui n’est pas prouvé",
+        paragraphs: [
+          "Le plan du projet tient, à côté de la liste des lots, un registre de réserves : chacune nomme ce qu’un lot n’a pas pu prouver, et le critère exact qui permettra de la rayer. J’avais écrit qu’il faisait 2 743 lignes et allait de R1 à R50. Ces chiffres venaient de la même branche non fusionnée ; la branche principale, le 25 août, en était à 2 648 lignes et à R47. Le 8 novembre, il fait 3 248 lignes, va jusqu’à R80 et en garde 27 ouvertes.",
+          "Les messages de commit suivent la même règle et disent ce qui a été vérifié à côté de ce qui ne l’a pas été. Celui du premier déploiement réel lève une réserve, en lève une autre à moitié (le site et le serveur se parlent, l’installation sur un vrai téléphone reste à voir) et précise que les images ont été construites sur la machine plutôt que tirées du registre d’images, un chemin qui restait à éprouver.",
+          "Le fichier <em>CLAUDE.md</em> du projet résume la raison d’être de ce registre : « Une réserve dite de vive voix et non écrite est une réserve perdue. » Avec un agent qui écrit vite, la phrase dite de vive voix est souvent la mienne, dans la conversation, et elle disparaît à la session suivante."
         ],
         img: ""
       },
       {
-        title: "Ce que dix semaines donnent",
+        title: "06:45, un vrai matin d’école",
         paragraphs: [
-          "Sur les dix dernières semaines, dix-sept dépôts ont reçu près de cinq cents commits, dont environ deux cent quarante portent la co-signature de Claude. Schoulbus en compte cent quarante-trois, sa vitrine trente-cinq.",
-          "Ailleurs : un éditeur de collages dans le navigateur, deux cent trente-six commits — dont une phase entière consacrée à <strong>supprimer</strong>, un sous-système d'animation retiré et des milliers de lignes orphelines effacées. C'est peut-être le meilleur usage que j'en aie fait. Et ce portfolio même, passé de Vue 2 à Vue 3, redessiné deux fois, ses captures ramenées de 39 Mo à moins d'un mégaoctet.",
-          "Le chiffre est à ne pas lire de travers : ce n'est pas une mesure de productivité, c'est une mesure de volume. Ce qui a réellement changé, c'est le coût d'essayer — et donc le coût de jeter."
-        ],
-        img: ""
-      },
-      {
-        title: "Ce que cela ne fait pas",
-        paragraphs: [
-          "La vitrine parle cinq langues. Le <strong>luxembourgeois n'a été relu par personne dont c'est la langue maternelle</strong>. C'est la langue du foyer dans une bonne part de la commune, le site est publié, et aucune commande ne referme cette réserve-là.",
-          "Une machine écrit vite, et elle écrit juste plus souvent qu'on ne le croit. Elle ne dira pas qu'un mot sonne faux à une oreille locale, qu'un parent s'est perdu dans l'assistant, qu'un écran est illisible au soleil, à bout de bras, un matin de septembre. Ces choses-là restent des réserves ouvertes jusqu'à ce qu'une personne les regarde.",
-          "La vitesse, la constance, la patience de reprendre un fichier une quinzième fois : c'est ce que j'ai délégué. Ce que j'ai gardé, c'est la liste de ce qui n'est pas prouvé."
+          "La réserve R7 est ouverte depuis le mois d’août : « Aucun rappel réel n’a été envoyé un vrai matin d’école. » La chaîne est testée de bout en bout avec un envoi simulé, un journal de livraison garde la trace de chaque rappel, mais rien n’a tourné contre de vrais téléphones à 06:45. Le registre n’a pas bougé depuis le 16 septembre, et je n’ai pas ouvert ce journal pour cet article : je ne sais donc pas si un rappel est parti depuis la rentrée.",
+          "Le critère pour la rayer est écrit noir sur blanc. Publier une alerte de test la veille d’un jour d’école, regarder le journal le lendemain matin, puis retirer l’alerte. Le 8 novembre, jour où je reprends ce texte, était le dernier des vacances de la Toussaint, et l’école reprenait le lendemain : il me suffisait de mettre un réveil avant le passage du bus. Combien de rentrées faudra-t-il encore pour que ça me paraisse plus simple que d’écrire un article à ce sujet ?"
         ],
         img: ""
       }
