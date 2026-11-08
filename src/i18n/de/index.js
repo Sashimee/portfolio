@@ -164,6 +164,62 @@ export default {
     cta: "Bauen wir etwas Leichteres",
     top: "Nach oben"
   },
+  blogPost13: {
+    title: "Zwei Tage an einem Globus, dann ein Revert",
+    title2:
+      "Hundertzweiunddreißig Commits für eine Erde in three.js, eine Demo, die gut ankam, dann ein Commit, der alles zurücknimmt, ohne die Historie umzuschreiben.",
+    sections: [
+      {
+        title: "Ein Branch, den Sie nicht sehen werden",
+        paragraphs: [
+          "Dieser Artikel hat weder Link noch Screenshot. Die Website, um die es geht, gehört einer Fotografin, und ich nenne sie nicht, mit Absicht. Der Stack ist gewöhnlich: Astro für eine statische Website, ein selbst gehostetes Directus, damit sie ihre Inhalte selbst pflegt, und Docker-Container drumherum. Zwischen dem 1. September und dem 9. Oktober 2026 bekam das Repository 252 Commits und 42 Pull Requests, davon 40 gemergt.",
+          "Von diesen 252 Commits gehören 133 zum Globus, und sie liegen heute auf dem Branch <em>feat/globe</em>. Sie erzählen von einer Erdkugel in three.js, in zwanzig Stunden von Agenten gebaut, gezeigt, gemocht und dann mit einem einzigen Commit von der Website genommen, ohne dass eine Zeile aus der Historie verschwand. Ich schreibe für alle, die einen Agenten mit einer Idee weit laufen lassen und vielleicht zurückwollen: was man von einer verworfenen Arbeit behält, und was die vorher geschriebenen Regeln wert waren."
+        ],
+        img: ""
+      },
+      {
+        title: "Zwanzig Stunden auf der Uhr",
+        paragraphs: [
+          "Am 6. Oktober um 21:57 Uhr legt ein erster Commit den Plan an, um den ich gebeten hatte: ein Globus statt der Startseite, in Wellen aufgeteilt, anfangs W0 bis W6. Die erste Welle beginnt weniger als drei Minuten später. Jeder Agent arbeitet in seiner eigenen Kopie des Repositorys, und ihre Branches kommen gebündelt zurück; um 22:26 Uhr landen fünf Merges der Welle W2 in derselben Minute. Um 22:40 Uhr löscht ein Commit die seit dem 18. September bestehende Startseite samt ihren Routen, um dem Globus Platz zu machen.",
+          "Am nächsten Morgen startet die Welle W8 um 6:37 Uhr unter einem bescheidenen Titel, „a nicer globe“ (ein hübscherer Globus). W9, um 7:46 Uhr geplant, fügt um 8:16 Uhr eine fotorealistische Erde mit Relief hinzu, deren Texturen beim Build aus NASA-Bildern abgeleitet werden. Um 9:23 Uhr kommen acht weitere Themes, und ein Commit vom Nachmittag zählt zwölf, mit der Erde als Standard. Der letzte Commit des Zyklus stammt vom 7. Oktober, 17:48 Uhr: 132 Commits an zwei Kalendertagen, und weniger als zwanzig Stunden zwischen dem ersten und dem letzten.",
+          "Die Arbeit war sorgfältig, das will ich vorab sagen. Der Ordner des Globus umfasst 26 Dateien und 5 897 Zeilen, darunter neun Testdateien. Was ich per Nachricht verlangte, kam schnell: Der Zoom mit dem Mausrad, um 8:33 Uhr erbeten, war um 8:38 Uhr gemergt, und die Neigung, die vor den Polen anhält, um 9:03 Uhr erbeten, um 9:13 Uhr. Jede Welle endet mit einem Commit, der festhält, was noch offen ist.",
+          "Am 8. Oktober um 11:25 Uhr schrieb ich dem Agenten, die Demo sei gut angekommen, und bat ihn um einen Plan, um weiterzugehen. Er committete ihn um 11:35 Uhr auf <em>feat/globe</em>. Die Demo lief in der Vorschauumgebung, und der Globus hat <em>main</em>, den Branch für die Produktion, nie erreicht."
+        ],
+        img: ""
+      },
+      {
+        title: "Die Regel änderte sich zuerst",
+        paragraphs: [
+          "Das Repository hatte eine Regel gegen genau diesen Globus. Ein erster WebGL-Modus war am 23. September entfernt worden, und seitdem sagte die Anweisungsdatei des Repositorys, <em>CLAUDE.md</em>, „no WebGL at all“, gar kein WebGL. Sie verlangte, keinen zweiten Modus zurückzuholen, um Platz zu gewinnen: Was nicht ins Budget passt, ist nicht fertig. Das Budget-Skript wiederum hatte bis zum 25. September jedes Byte three.js auf den gewöhnlichen Seiten abgelehnt. Diese Prüfung verschwand mit dem WebGL-Modus, und übrig blieb eine Obergrenze von 80 KB komprimiertem JavaScript pro Seite, während die schwerste Seite am 25. September 3,9 KB wog.",
+          "Der erste Arbeits-Commit des Zyklus, W0, um 22:00 Uhr, fügt keine Funktion hinzu. Er schreibt die Regel so um, dass sie den Globus zulässt, um den ich gerade gebeten hatte: WebGL auf der Startseite erlaubt und sonst nirgends, three.js bei Bedarf geladen, und die Obergrenze von 80 auf 250 KB angehoben. Seine Nachricht sagt, das Gesetz bewege sich zuerst, und zwar schriftlich. So würde ich es mir von einem Kollegen wünschen, der Bescheid sagt, statt still drumherum zu arbeiten.",
+          "Es zeigt aber auch, was die Regel gegen meine eigene Bitte wert war. Eine Anweisungsdatei ist ein Text, den der Agent ändert, sobald man ihn um das bittet, was sie verbietet, und die Budgetgrenze ist eine einzige Zeile, <em>const INDEX_BUDGET = 80 * KB</em>, die derselbe Commit ändert. Das Skript hatte nichts mehr abzulehnen, weil Messung und Grenze sich gemeinsam bewegt hatten. Was ist eine Regel wert, die im Commit umgeschrieben wird, der sie gleich überschreiten wird? Eine lesbare Commit-Nachricht, immerhin, aber sie hält nichts auf.",
+          "Andere Regeln derselben Datei haben sich in diesen zwanzig Stunden nicht bewegt. Vier davon tragen ein Schloss und gehen allem anderen vor, und alle vier schützen die Privatsphäre der Fotografin: ihre Kontaktdaten und den Zugang zum CMS. Am 1. September hatte ein Bootstrap-Skript für Directus die Aufgabe, zu prüfen, dass diese Regeln hielten, und beim ersten Abweichen mit einem Fehler abzubrechen. Gegen die echte Instanz scheiterte es zuerst an meinem eigenen Administratorkonto, das ich mit einer Adresse eines öffentlichen Maildienstes außerhalb der erwarteten Domain angelegt hatte. Der Commit von 21:21 Uhr behält das Konto, macht die Domainliste konfigurierbar und stützt die Prüfung auf die genaue Zahl der Konten. Seine Nachricht sagt es in einer Zeile: „a second one is a finding whatever it is called“, ein Konto zu viel ist ein Befund, egal wie es heißt.",
+          "Die letzte Absicherung ist bescheidener. Der kostenlose GitHub-Tarif bietet keinen Branch-Schutz für private Repositorys, also verweigert seit dem allerersten Commit ein lokaler <em>pre-push</em>-Hook das Pushen auf <em>main</em>. Die Anweisungsdatei gibt es zu: Ein frischer Klon ist erst nach <em>git config core.hooksPath .githooks</em> geschützt, und der Hook ist nur eine Erinnerung, verlässlich allein auf diesem Rechner. Ich habe keinen Hinweis darauf gefunden, dass er je etwas abgelehnt hat."
+        ],
+        img: ""
+      },
+      {
+        title: "Zwei Minuten und vierzehn Sekunden",
+        paragraphs: [
+          "Am 8. Oktober um 18:28 Uhr, sieben Stunden nachdem ich mehr Globus verlangt hatte, verlangte ich das Gegenteil. Ich wollte die Website so zurückhaben, wie sie war, bevor ich den Globus angestoßen hatte, den Plan eingeschlossen, die neue Arbeit auf einem eigenen Branch behalten und einen Loop-Befehl bekommen, um die Website bis in die Produktion zu bringen. Meine Nachricht nennt keinen Grund. Der Revert-Commit ist auf 18:30:22 Uhr datiert.",
+          "Es ist ein einziger Revert-Commit. Er setzt den Baum des Repositorys in einem Zug exakt auf den Stand eines Commits vom 25. September, und <em>git diff</em> zwischen beiden liefert nichts. Er berührt 122 Dateien, fügt 3 299 Zeilen hinzu und entfernt 37 577. Sein Eltern-Commit ist der letzte Globus-Merge, sodass die Historie von <em>dev</em> alles behält, in der richtigen Reihenfolge, mit dem Revert obendrauf.",
+          "Den eigenen Branch habe ich verlangt. Die Methode stammt vom Agenten, und er hat sie in seinem Bericht von 18:34 Uhr festgehalten: ein Revert-Commit statt eines Force-Push, damit die Historie intakt bleibt. Das Repository verbot ohnehin, einen Branch umzuschreiben, den jemand anderes gepullt haben könnte, und <em>dev</em> wurde automatisch in die Vorschau ausgerollt. Der Agent berichtet, den wiederhergestellten Baum geprüft zu haben, bevor er etwas hinzufügte.",
+          "Um 18:33 Uhr kommt ein Abschnitt „Production“ zum Redesign-Plan hinzu: Schritte von P1 bis P11, jeder so bemessen, dass ein frischer Opus-5-Agent ihn in etwa 40 000 Token Kontext bewältigt. Der Loop lief alle fünf Minuten, dreißigmal zwischen 19:59 und 23:12 Uhr. Er wusste auch, wann er anhalten musste: Schritt P4, eine Content Security Policy, meldete sich als blockiert, weil er eine bewusste Entscheidung zunichtegemacht hätte, die in die Seite geschriebenen Styles, und ich habe ihn auf nach dem Launch verschoben. Der Pull Request nach <em>main</em> wurde um 23:54 Uhr gemergt, mit 3,9 KB JavaScript auf der schwersten Seite, und die Metadaten zum Teilen folgten um 2:14 Uhr."
+        ],
+        img: ""
+      },
+      {
+        title: "Was der Revert durchgelassen hat",
+        paragraphs: [
+          "Eines kam vom Globus zurück. Am 7. Oktober um 17:34 Uhr stellt ein Commit fest, dass in einem Headless Chrome, wo WebGL mit Software-Rendering läuft (SwiftShader), jeder Frame die Seite 70 bis 100 Millisekunden lang blockierte. Lighthouse fand dort keinen ruhigen Moment und lieferte keine Performance-Bewertung. Der Fix behandelt einen Software-Renderer wie fehlendes WebGL und lässt die Liste der Arbeiten als Seite stehen. Dreizehn Minuten später erklärt ein zweiter Commit, warum die Continuous Integration nichts gesehen hatte: <em>lhci</em> bildet seinen Median nur über die Durchläufe, die eine Bewertung geliefert haben, und die Startseite hatte die Schranke mit einem von sieben Durchläufen passiert.",
+          "Dieser zweite Commit ist der einzige, der übernommen wurde. Schritt P2 des Loops holte ihn am 8. Oktober um 20:40 Uhr zurück und listete die anderen Globus-Commits auf, die eine Übernahme verdienten, darunter eine lesbare Fehlerseite in der Vorschau, als stärkster Kandidat bezeichnet, und eine zweite Funktion. Bis zum letzten Commit des Repositorys, am 9. Oktober um 11:25 Uhr, ist keiner davon gefolgt. Die Ablehnung des Software-Renderings blieb auf dem Branch, weil es auf <em>dev</em> kein WebGL mehr zu schützen gibt (ich schreibe es hier auf, damit ich es nicht suchen muss, falls je ein Globus zurückkommt).",
+          "Der Ordner <em>.lighthouseci</em> meiner lokalen Kopie, außerhalb von git, bewahrt 110 JSON-Berichte auf, davon 21 exakte Duplikate, also 89 Durchläufe: 12 am 18. September und 77 am Abend des 8. Oktober. Alle erreichen 100 bei der Barrierefreiheit und 96 bei den Best Practices, 76 erreichen 100 bei der Performance und die übrigen 13 erreichen 99. SEO bleibt bei höchstens 66, weil die Website damals für Suchmaschinen gesperrt war, mit Absicht, und die 96 kommen von einem Konsolenfehler, dem ich nicht nachgegangen bin. Es sind lokale Messungen, im mobilen Profil, gegen <em>localhost</em>: Über die ausgelieferte Website sagen sie nichts, und die habe ich für diesen Artikel nicht neu gemessen.",
+          "Bleibt die Regel. „No WebGL at all“ ist mit allem anderen zurückgekommen, Wort für Wort, und nach dem Revert wurde nirgends festgehalten, weder in der Anweisungsdatei noch im Protokoll der Abweichungen, dass es einen Globus gab und warum er wieder verschwand. Der nächste Agent, der dieses Repository öffnet, liest die Regel, ohne zu wissen, dass ein Globus, um den ich gebeten hatte, sie weniger als drei Minuten nach dem ersten Commit des Plans umschreiben ließ. Auf <em>feat/globe</em> ist der letzte Commit noch immer der Plan, um weiterzugehen, datiert auf den 8. Oktober, 11:35 Uhr, und keiner seiner Schritte wurde begonnen."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost12: {
     title: "Siebenunddreißigmal vergessen, hundertzweiundsechzig Commits",
     title2:

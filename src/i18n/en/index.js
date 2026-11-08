@@ -163,6 +163,62 @@ export default {
     cta: "Let's build something lighter",
     top: "Back to top"
   },
+  blogPost13: {
+    title: "Two days on a globe, then a revert",
+    title2:
+      "A hundred and thirty-two commits to spin a three.js Earth, a demo that went down well, then one commit that undid it all without rewriting history.",
+    sections: [
+      {
+        title: "A branch you will not see",
+        paragraphs: [
+          "This article has no link and no screenshot. The site it is about belongs to a photographer, and I am not naming her, on purpose. The stack is ordinary: Astro for a static site, a self-hosted Directus so she can run her own content, and Docker containers around both. Between 1 September and 9 October 2026, the repository saw 252 commits and 42 pull requests, 40 of them merged.",
+          "Of those 252 commits, 133 belong to the globe, and today they live on the <em>feat/globe</em> branch. They tell the story of a three.js Earth, built in twenty hours by agents, shown, liked, then taken off the site in a single commit, without one line leaving the history. I am writing for anyone who lets an agent run far with an idea and may want to come back: what you keep from work you cancel, and what the rules written beforehand were worth."
+        ],
+        img: ""
+      },
+      {
+        title: "Twenty hours on the clock",
+        paragraphs: [
+          "On 6 October at 21:57, a first commit lays out the plan I had asked for: a globe in place of the home page, cut into waves, W0 to W6 to begin with. The first wave starts less than three minutes later. Each agent works in its own copy of the repository, and their branches come back in batches; at 22:26, five W2 merges land in the same minute. At 22:40, a commit deletes the home page in place since 18 September, routes included, to make room for the globe.",
+          "The next morning, wave W8 starts at 06:37 under a modest title, “a nicer globe”. W9, planned at 07:46, adds a photorealistic Earth with relief at 08:16, its textures derived from NASA imagery at build time. Eight more themes arrive at 09:23, and an afternoon commit counts twelve, with the Earth as the default. The last commit of the cycle is dated 7 October at 17:48: 132 commits over two calendar days, and less than twenty hours between the first and the last.",
+          "The work was careful, and that needs saying before the rest. The globe folder holds 26 files, nine of them tests, and 5,897 lines. What I asked for by message came back fast: wheel zoom, asked for at 08:33, was merged at 08:38, and a tilt that stops short of the poles, asked for at 09:03, at 09:13. Every wave closes with a commit that records what is left.",
+          "On 8 October at 11:25, I told the agent the demo had gone down well, and asked it for a plan to go further. It committed one at 11:35, on <em>feat/globe</em>. The demo ran on the preview environment, and the globe never reached <em>main</em>, the branch that goes to production."
+        ],
+        img: ""
+      },
+      {
+        title: "The rule changed first",
+        paragraphs: [
+          "The repository had a rule against exactly this globe. A first WebGL mode had been removed on 23 September, and from then on the repository’s instructions file, <em>CLAUDE.md</em>, said “no WebGL at all”. It asked that no second mode be brought back to buy room: if something does not fit the budget, it is not ready. The budget script, for its part, had refused any byte of three.js on the ordinary pages until 25 September. That guard went with the WebGL mode, leaving only a cap of 80 KB of compressed JavaScript per page, when the heaviest page weighed 3.9 KB on 25 September.",
+          "The first working commit of the cycle, W0, at 22:00, adds no feature. It rewrites the rule so that it admits the globe I had just asked for: WebGL allowed on the home page and nowhere else, three.js loaded on demand, and the cap raised from 80 to 250 KB. Its message says the law moves first, and in writing. It is what I would want from a colleague: say so up front rather than quietly work around it.",
+          "It also shows what the rule was worth against my own request. An instructions file is a text the agent edits as soon as it is asked for what the file forbids, and the budget threshold is one line, <em>const INDEX_BUDGET = 80 * KB</em>, which the same commit changes. The script had nothing left to refuse, since the measure and the limit had moved together. What is a rule worth when it is rewritten in the commit about to cross it? A readable commit message, which is something, but it stops nothing.",
+          "Other rules in the same file did not move in those twenty hours. Four of them carry a padlock and override everything else, and all four protect the photographer’s privacy: her contact details and access to the CMS. On 1 September, a Directus bootstrap script had the job of checking that these rules held and exiting with an error at the first mismatch. Against the real instance, it first failed on my own admin account, opened with a consumer webmail address outside the expected domain. The 21:21 commit keeps the account, makes the domain list configurable, and bases the check on the exact number of accounts. Its message puts it in one line: “a second one is a finding whatever it is called”.",
+          "The last guard is a humbler one. GitHub’s free plan offers no branch protection on a private repository, so since the very first commit a local <em>pre-push</em> hook has refused pushes to <em>main</em>. The instructions file admits it: a fresh clone is only protected after <em>git config core.hooksPath .githooks</em>, and the hook is just a reminder, reliable on this machine only. I found no trace of it ever refusing anything."
+        ],
+        img: ""
+      },
+      {
+        title: "Two minutes and fourteen seconds",
+        paragraphs: [
+          "On 8 October at 18:28, seven hours after asking for more globe, I asked for the opposite. I wanted the site as it stood before I started the globe, plan included, the new work kept on a separate branch, and a loop command to take the site to production. My message gives no reason. The revert commit is stamped 18:30:22.",
+          "It is a single revert commit. In one move, it puts the repository tree back exactly as it was at a commit from 25 September, and <em>git diff</em> between the two returns nothing. It touches 122 files, adds 3,299 lines and removes 37,577. Its parent is the last globe merge, so the history of <em>dev</em> keeps everything, in order, with the revert laid on top.",
+          "The separate branch was my request. The method was the agent’s, and it wrote it down in its 18:34 report: a revert commit rather than a force-push, so the history stays intact. In any case, the repository forbade rewriting a branch someone else could have pulled, and <em>dev</em> deployed automatically to the preview. The agent reports checking the restored tree before adding anything to it.",
+          "At 18:33, a “Production” section joins the redesign plan: steps numbered P1 to P11, each sized so that a fresh Opus 5 agent can hold it in about 40,000 tokens of context. The loop ran every five minutes, thirty times between 19:59 and 23:12. It also knew when to stop: step P4, a content security policy, declared itself blocked because it undid a deliberate choice, styles written into the page, and I put it off until after launch. The pull request into <em>main</em> was merged at 23:54, with 3.9 KB of JavaScript on the heaviest page, and the sharing metadata followed at 02:14."
+        ],
+        img: ""
+      },
+      {
+        title: "What the revert let through",
+        paragraphs: [
+          "One thing came back from the globe. On 7 October at 17:34, a commit finds that in headless Chrome, where WebGL runs on a software renderer (SwiftShader), every frame blocked the page for 70 to 100 milliseconds. Lighthouse found no quiet moment there and returned no performance score. The fix treats a software renderer as no WebGL, and lets the work list stand in for the page. Thirteen minutes later, a second commit explains why continuous integration had seen nothing: <em>lhci</em> takes its median over only the runs that produced a score, and the home page had passed the gate on one run out of seven.",
+          "That second commit is the only one that was ported. Step P2 of the loop brought it back on 8 October at 20:40, and listed the other globe commits worth porting, among them a readable error page on the preview, called the strongest candidate, and a second feature. As of the repository’s last commit, on 9 October at 11:25, none of them has followed. The software-renderer refusal stayed on the branch, there being no WebGL left to protect on <em>dev</em> (I am writing it down here so I do not have to look for it the day a globe comes back).",
+          "The <em>.lighthouseci</em> folder in my local copy, outside git, keeps 110 JSON reports, 21 of them exact duplicates, so 89 runs: 12 on 18 September and 77 on the evening of 8 October. All of them score 100 for accessibility and 96 for best practices; 76 score 100 for performance and the other 13 score 99. SEO tops out at 66 because the site was closed to search engines at the time, on purpose, and the 96 comes from a console error I did not chase. These are local measurements, mobile profile, against <em>localhost</em>: they say nothing about the site as it is served, which I have not measured again for this article.",
+          "That leaves the rule. “No WebGL at all” came back with everything else, word for word, and nothing was written after the revert, either in the instructions file or in the log of deviations, to say that a globe had existed and why it was removed. The next agent to open this repository will read the rule without knowing that a globe I had asked for got it rewritten less than three minutes after the plan’s first commit. On <em>feat/globe</em>, the last commit is still the plan to go further, dated 8 October at 11:35, and none of its steps has been started."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost12: {
     title: "Thirty-seven blackouts, a hundred and sixty-two commits",
     title2:

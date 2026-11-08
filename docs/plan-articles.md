@@ -99,7 +99,7 @@ peuvent changer. Les articles cessent de partager le même squelette.
       Couverture : `dawa.webp` existe, en faire une neuve si besoin.
 - [x] **Pic Collage Maker, deuxième partie** — 162 commits sur une seule consigne,
       « continue the loop », et 37 compactions de contexte.
-- [ ] **Le site d'une photographe** — deux jours sur un globe, puis un `revert` ; des
+- [x] **Le site d'une photographe** — deux jours sur un globe, puis un `revert` ; des
       règles qu'un agent ne doit pas enfreindre ; les budgets de performance en CI.
       Anonyme, sans lien ni capture : couverture abstraite ou graphique des scores
       Lighthouse.

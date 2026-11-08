@@ -166,6 +166,62 @@ export default {
     cta: "Construisons quelque chose de plus léger",
     top: "Haut de page"
   },
+  blogPost13: {
+    title: "Deux jours sur un globe, puis un revert",
+    title2:
+      "Cent trente-deux commits pour faire tourner une Terre en three.js, une démo qui a plu, puis un seul commit qui défait tout sans réécrire l’historique.",
+    sections: [
+      {
+        title: "Une branche que vous ne verrez pas",
+        paragraphs: [
+          "Cet article n’a ni lien ni capture. Le site dont il parle appartient à une photographe, et je ne la nomme pas, exprès. Sa pile est banale : Astro pour un site statique, Directus auto-hébergé pour qu’elle tienne elle-même ses contenus, et des conteneurs Docker autour. Entre le 1<sup>er</sup> septembre et le 9 octobre 2026, le dépôt a reçu 252 commits et 42 pull requests, dont 40 fusionnées.",
+          "Parmi ces 252 commits, 133 sont ceux du globe, et ils vivent aujourd’hui sur la branche <em>feat/globe</em>. Ils racontent un globe terrestre en three.js, construit en vingt heures par des agents, montré, apprécié, puis retiré du site en un seul commit, sans qu’une ligne disparaisse de l’historique. J’écris pour ceux qui laissent un agent partir loin sur une envie et qui voudront peut-être revenir : ce qu’on garde d’un travail qu’on annule, et ce que valaient les règles écrites avant."
+        ],
+        img: ""
+      },
+      {
+        title: "Vingt heures d’horloge",
+        paragraphs: [
+          "Le 6 octobre à 21 h 57, un premier commit pose le plan que j’avais demandé : un globe à la place de la page d’accueil, découpé en vagues, de W0 à W6 au départ. La première commence moins de trois minutes plus tard. Les agents travaillent chacun dans sa propre copie du dépôt, et leurs branches reviennent par paquets ; à 22 h 26, cinq fusions de la vague W2 tombent dans la même minute. À 22 h 40, un commit supprime la page d’accueil en place depuis le 18 septembre, routes comprises, pour faire place au globe.",
+          "Le lendemain, la vague W8 démarre à 6 h 37 sous un titre modeste, « a nicer globe » (un globe plus joli). La W9, planifiée à 7 h 46, ajoute à 8 h 16 une Terre photoréaliste en relief, dont les textures sont tirées d’images de la NASA au moment du build. Huit thèmes de plus arrivent à 9 h 23, et un commit de l’après-midi en compte douze, la Terre par défaut. Le dernier commit du cycle date du 7 octobre à 17 h 48 : 132 commits sur deux jours de calendrier, et moins de vingt heures entre le premier et le dernier.",
+          "Le travail était soigné, et il faut le dire avant la suite. Le dossier du globe compte 26 fichiers et 5 897 lignes, dont neuf fichiers de tests. Ce que je demandais par message arrivait vite : le zoom à la molette, demandé à 8 h 33, est fusionné à 8 h 38, et l’inclinaison qui s’arrête avant les pôles, demandée à 9 h 03, l’est à 9 h 13. Chaque vague se referme par un commit qui note ce qui reste.",
+          "Le 8 octobre à 11 h 25, j’ai écrit à l’agent que la démo avait plu, et je lui ai demandé un plan pour aller plus loin. Il l’a commité à 11 h 35, sur <em>feat/globe</em>. La démo tournait sur l’environnement de préversion, et le globe n’a jamais atteint <em>main</em>, la branche qui part en production."
+        ],
+        img: ""
+      },
+      {
+        title: "La règle a changé la première",
+        paragraphs: [
+          "Le dépôt avait une règle contre exactement ce globe. Un premier mode en WebGL avait été retiré le 23 septembre, et le fichier de consignes du dépôt, <em>CLAUDE.md</em>, disait depuis « no WebGL at all », pas de WebGL du tout. Il demandait de ne pas réintroduire de second mode pour gagner de la place : ce qui ne tient pas dans le budget n’est pas prêt. Le script de budget, lui, avait refusé jusqu’au 25 septembre le moindre octet de three.js sur les pages ordinaires. Ce garde-là est parti avec le mode WebGL, et il ne restait qu’un plafond de 80 Ko de JavaScript compressé par page, quand la plus lourde en pesait 3,9 le 25 septembre.",
+          "Le premier commit de travail du cycle, W0, à 22 h 00, ne touche à aucune fonctionnalité. Il réécrit la règle pour qu’elle admette le globe que je venais de demander : WebGL permis sur la page d’accueil et nulle part ailleurs, three.js chargé à la demande, et le plafond passé de 80 à 250 Ko. Son message dit que la loi bouge d’abord, et par écrit. C’est la conduite que je demanderais à un collègue : le dire d’emblée plutôt que contourner en silence.",
+          "Elle montre aussi ce que valait la règle face à ma propre demande. Un fichier de consignes est un texte que l’agent modifie dès qu’on lui demande ce qu’il interdit, et le seuil du budget tient en une ligne, <em>const INDEX_BUDGET = 80 * KB</em>, que le même commit change. Le script n’avait plus rien à refuser, puisque la mesure et la limite avaient bougé ensemble. Que vaut une règle qu’on réécrit dans le commit qui s’apprête à la franchir ? Elle vaut un message de commit lisible, et c’est déjà quelque chose, mais elle n’arrête rien.",
+          "D’autres règles du même fichier n’ont pas bougé pendant ces vingt heures. Quatre d’entre elles portent un cadenas et passent avant tout le reste, et toutes protègent la vie privée de la photographe : ses coordonnées et l’accès au CMS. Le 1<sup>er</sup> septembre, un script d’amorçage de Directus avait la charge de vérifier que ces règles tenaient et de sortir en erreur au premier écart. Contre l’instance réelle, il a d’abord échoué sur mon propre compte d’administrateur, ouvert avec une adresse de messagerie grand public hors du domaine attendu. Le commit de 21 h 21 garde le compte, rend la liste des domaines réglable, et fait reposer la vérification sur le nombre exact de comptes. Son message le dit en une ligne : « a second one is a finding whatever it is called », un compte de plus est un constat, quel que soit son nom.",
+          "La dernière garde est plus modeste. L’offre gratuite de GitHub ne permet pas de protéger une branche sur un dépôt privé, alors un hook <em>pre-push</em> local refuse depuis le tout premier commit de pousser sur <em>main</em>. Le fichier de consignes le reconnaît : un clone neuf n’est protégé qu’après <em>git config core.hooksPath .githooks</em>, et le hook n’est qu’un rappel, fiable sur cette machine seulement. Je n’ai trouvé aucune trace qu’il ait jamais refusé quoi que ce soit."
+        ],
+        img: ""
+      },
+      {
+        title: "Deux minutes et quatorze secondes",
+        paragraphs: [
+          "Le 8 octobre à 18 h 28, sept heures après avoir demandé la suite du globe, j’ai demandé le contraire. Je voulais revenir au site tel qu’il était avant que je lance le globe, plan compris, garder le neuf sur une branche à part, et recevoir une commande de boucle pour mener le site jusqu’à la production. Mon message ne donne aucune raison. Le commit de retour porte l’heure de 18 h 30 et 22 secondes.",
+          "C’est un seul commit de retour. Il remet d’un coup l’arbre du dépôt dans l’état exact d’un commit du 25 septembre, et <em>git diff</em> entre les deux ne renvoie rien. Il touche 122 fichiers, ajoute 3 299 lignes et en retire 37 577. Son parent est la dernière fusion du globe, si bien que l’historique de <em>dev</em> garde tout, dans l’ordre, avec le retour posé par-dessus.",
+          "La branche à part, c’est moi qui l’ai demandée. La manière vient de l’agent, et il l’a écrite dans son compte rendu de 18 h 34 : un commit de retour plutôt qu’un force-push, pour que l’historique reste intact. Le dépôt interdisait de toute façon de réécrire une branche que quelqu’un d’autre a pu tirer, et <em>dev</em> se déployait d’elle-même sur la préversion. L’agent rapporte avoir vérifié l’arbre restauré avant d’y ajouter quoi que ce soit.",
+          "À 18 h 33, une section « Production » s’ajoute au plan de refonte : des étapes numérotées de P1 à P11, chacune taillée pour qu’un agent Opus 5 neuf la tienne dans environ 40 000 jetons de contexte. La boucle a tourné toutes les cinq minutes, trente fois entre 19 h 59 et 23 h 12. Elle a aussi su s’arrêter : l’étape P4, une politique de sécurité du contenu, s’est déclarée bloquée parce qu’elle défaisait un choix délibéré, les styles écrits dans la page, et je l’ai reportée après la mise en ligne. La pull request vers <em>main</em> a été fusionnée à 23 h 54, avec 3,9 Ko de JavaScript pour la page la plus lourde, et les métadonnées de partage ont suivi à 2 h 14."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce que le revert a laissé passer",
+        paragraphs: [
+          "Une chose est revenue du globe. Le 7 octobre à 17 h 34, un commit constate que dans un Chrome sans écran, où le WebGL tourne en rendu logiciel (SwiftShader), chaque image bloquait la page de 70 à 100 millisecondes. Lighthouse n’y trouvait aucun instant de calme et ne rendait aucun score de performance. Le correctif traite un rendu logiciel comme une absence de WebGL et laisse la liste des travaux tenir lieu de page. Treize minutes plus tard, un second commit explique pourquoi l’intégration continue n’avait rien vu : <em>lhci</em> calcule sa médiane sur les seules exécutions qui ont produit un score, et la page d’accueil avait passé la barrière sur une exécution sur sept.",
+          "Ce second commit est le seul à avoir été porté. L’étape P2 de la boucle l’a ramené le 8 octobre à 20 h 40, et elle a dressé la liste des autres commits du globe qui méritaient de l’être, dont une page d’erreur lisible sur la préversion, qualifiée de candidat le plus solide, et une seconde fonction. Au dernier commit du dépôt, le 9 octobre à 11 h 25, aucun d’eux n’a suivi. Le refus du rendu logiciel est resté sur la branche, faute de WebGL à protéger sur <em>dev</em> (je l’écris ici pour ne pas avoir à le chercher le jour où un globe reviendrait).",
+          "Le dossier <em>.lighthouseci</em> de ma copie locale, hors git, garde 110 rapports JSON, dont 21 doublons exacts, soit 89 exécutions : 12 le 18 septembre et 77 le soir du 8 octobre. Toutes donnent 100 en accessibilité et 96 en bonnes pratiques, 76 donnent 100 en performance et les 13 autres 99. Le référencement plafonne à 66 parce que le site était alors fermé aux moteurs de recherche, exprès, et le 96 vient d’une erreur dans la console que je n’ai pas cherchée. Ces mesures sont locales, en profil mobile, contre <em>localhost</em> : elles ne disent rien du site tel qu’il est servi, que je n’ai pas remesuré pour cet article.",
+          "Reste la règle. « No WebGL at all » est revenue avec le reste, mot pour mot, et rien n’a été écrit après le retour, ni dans le fichier de consignes ni dans le journal des écarts, pour dire qu’un globe avait existé et pourquoi il était parti. Le prochain agent qui ouvrira ce dépôt lira la règle sans savoir qu’un globe que j’avais demandé l’a fait réécrire moins de trois minutes après le premier commit du plan. Sur <em>feat/globe</em>, le dernier commit est toujours le plan pour aller plus loin, daté du 8 octobre à 11 h 35, et aucune de ses étapes n’a été commencée."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost12: {
     title: "Trente-sept fois amnésique, cent soixante-deux commits",
     title2:
