@@ -33,6 +33,10 @@ cd service/mail && npm install && npm test   # le relais de courriel, sa propre 
 rejoue `lint`, `test`, `build` et `verify:api-url` sur `main` et sur chaque *pull request*,
 et fait tourner la suite du service de courriel dans un second travail.
 
+**Ce dépôt n'a pas de branche `dev`** : une branche de travail part de `main` et sa
+*pull request* vise `main`. Une fusion dans `main` est une mise en production — Dokploy
+déploie hors de la CI —, donc elle ne se fait que sur demande.
+
 Le lint de la racine couvre **aussi** `service/` : son glob l'inclut, le service n'a pas de
 configuration ESLint à lui.
 
@@ -153,7 +157,8 @@ Quatre endroits, dans cet ordre :
 1. `src/data/projects.js` — `{ name, category, link, img, tags, target, infoKey }`.
    `target: 'external'` veut une URL complète ; `'internal'` veut le nom du dossier sous
    `public/projects_folder/`.
-2. `projects.texts.<infoKey>` dans `src/i18n/en/index.js` **et** `src/i18n/fr/index.js`.
+2. `projects.texts.<infoKey>` dans `src/i18n/en/index.js`, `src/i18n/fr/index.js` **et**
+   `src/i18n/de/index.js` — chaque langue d'`AVAILABLE_LOCALES`, `test/i18n.spec.js` l'exige.
 3. `public/screenshots/<img>.webp` — cadrage large. Les trois consommateurs recadrent en
    4/3, 16/9 et 16/11, tous **depuis le haut et le centre** : c'est là que doit se trouver
    ce qui compte.
@@ -238,8 +243,10 @@ pas seulement le sous-domaine). Trois choses à en retenir avant d'y toucher :
 Le service ne persiste rien : un message qui échoue au SMTP est perdu, le visiteur voit
 l'erreur. C'est assumé pour le formulaire d'un portfolio, et écrit dans son `README.md`.
 
-**Aucun envoi n'a encore été reçu depuis la production** : c'est la réserve R1 de
-`docs/plan.md`, et elle ne se referme pas depuis ce dépôt.
+La chaîne complète a été vérifiée le 2026-08-28 — un message envoyé depuis le formulaire
+publié est arrivé (R1, refermée). Elle ne l'a **plus** été depuis le passage à
+`recaptcha-v3` chargé à la demande : c'est la réserve **R27** de `docs/plan.md`, et elle
+ne se referme pas depuis ce dépôt.
 
 ## Documentation
 

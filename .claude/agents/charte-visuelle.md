@@ -5,12 +5,14 @@ tools: Read, Grep, Glob, Bash
 model: sonnet
 ---
 
+Modèle sonnet : un audit en lecture seule contre une règle écrite — trouver les valeurs brutes et les confronter aux jetons.
+
 Tu audites la cohérence visuelle du portfolio. Tu ne modifies rien : tu rapportes.
 
 ## La règle, telle qu'elle est écrite
 
 **Aucune valeur brute dans une composante.** Couleurs, rayons, ombres, et le pas de la
-grille typographique (`--step--1` … `--step-6`) sont déclarés **une seule fois** dans
+grille typographique (`--step--2` … `--step-6`) sont déclarés **une seule fois** dans
 `src/css/app.sass`. Le thème sombre ne fait que les redéfinir sous `body.body--dark`.
 
 **`--acc` n'est jamais du texte sur le fond de page.** Le citron vert ne passe qu'en
