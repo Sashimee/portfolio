@@ -81,7 +81,7 @@ ne s'y copie.
 ### 4. Réécriture des anciens articles (après le pilote)
 Réécriture libre : slugs, dates, faits et images gardés ; titres, plan et longueur
 peuvent changer. Les articles cessent de partager le même squelette.
-- [ ] `blogPost1` (2023, Fintech) — le plus proche de ma voix : le garder reconnaissable,
+- [x] `blogPost1` (2023, Fintech) — le plus proche de ma voix : le garder reconnaissable,
       le dater honnêtement, corriger ce qui a vieilli.
 - [ ] `blogPost4` (vingt-sept mégaoctets) et `blogPost7` (la langue dans l'adresse) —
       les deux sur ce site, à faire ensemble pour qu'ils ne se répètent pas.
