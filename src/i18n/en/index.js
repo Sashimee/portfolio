@@ -267,63 +267,68 @@ export default {
   blogPost8: {
     title: "One prompt, 931 commits",
     title2:
-      "Three weeks of building a marketplace with a loop of agents that <strong>trusts nothing it wrote itself</strong> — including the day the loop chose the wrong priority.",
+      "A marketplace for photographers, and a loop of agents that stopped by itself on 8 October, believing everything left was waiting on a human.",
     sections: [
       {
-        title: "What this is",
+        title: "Two quote requests and a duplicate screen",
         paragraphs: [
-          "Since mid-September I have been building a marketplace for photographers. It is not launched, and I am not naming it here. It is a monorepo with a Next.js website, an Expo mobile app, a NestJS API, Prisma on PostgreSQL with PostGIS, and Stripe Connect for payments.",
-          "The figures for three weeks: <strong>931 commits</strong>, 266 pull requests, 315 issues, about 245,000 lines added, over 19 working sessions. I did not type most of those lines. This article is about the loop that did, and above all about what keeps it honest."
+          "The first version of this article, published on the morning of 7 October, listed among the reviewers’ findings a double tap on a quote button that “could create two bookings”. I reread the commit for this rewrite. It adds an <em>inFlight</em> flag, set before the call and cleared after it, so that a double tap does not send two quote requests: nobody was booking anything at that point. The “duplicate profile” mentioned right after was a duplicate screen. After signing in, the app pushed a second copy of the photographer’s page onto the stack instead of going back to the first one.",
+          "The project itself has not changed. It is a marketplace for photographers, started on 16 September, which I am not naming because it has not launched: a monorepo with a Next.js website, an Expo app, a NestJS API, Prisma on PostgreSQL with PostGIS, and Stripe Connect for payments. I did not type most of its code. This article is about the loop of agents that did, and about what stops it from taking its own word for it.",
+          "So I recounted the rest, across all branches, with the commits sorted by date. I cannot reproduce the exact number in the title: the repository passes the 931 mark at around 7 am, and it has 944 at 8:11 am, the time of the article’s own commit. The 266 pull requests match exactly, the issues are off by one (316 rather than 315). The “about 245,000 lines added” hold if you leave out the dependency lockfile, 243,313 without it and 269,231 with it. The 19 working sessions I can no longer recount: as of 8 November, only one transcript is left on disk, covering 6 to 12 October."
         ],
         img: ""
       },
       {
-        title: "The loop",
+        title: "About 240 words, reread on every pass",
         paragraphs: [
-          "Each session starts from the same short prompt. It does not describe a feature. It describes a procedure: read the resume file, check it against the repository, and pick the next thing to do in a fixed order. A <strong>red CI comes first</strong>, then an open pull request, then the next feature in the plan.",
-          "The resume file is treated as <em>a claim, not truth</em>. A session that was cut off mid-write leaves it stale, so every new session reconciles it against the git log, the branch state and the open pull requests before trusting a word of it. That single rule is what lets the work survive crashes, context resets and usage limits without me rebuilding the state by hand.",
-          "Each feature then goes through a fixed chain of agents. The implementer writes it. A test-writer covers it. A check-runner runs lint, types, tests and coverage, and reports the actual output. Then a code reviewer and a security reviewer each read the diff. There are fourteen agents in total, each with one narrow job, and none of them is a catch-all helper."
+          "In the session whose transcript I still have, from 6 to 12 October, every pass of the loop starts from the same text, about 240 words, re-run by Claude Code’s <em>/loop</em> command with no fixed interval, so the loop sets its own pace. I do not know whether earlier sessions started from the same text. This one describes no feature. It sets an order of priority: a red CI on the development branch comes before everything else, then an open pull request to finish, and only after that the next step in the plan, skipping issues labelled <em>phase-2</em>.",
+          "Its first instruction is not to believe the resume file, <em>RESUME.md</em>, until it has been checked against <em>git status</em>, the last ten commits on the development branch, the open pull requests and the CI. A session cut off mid-write leaves that file stale, and this rule is why the work came through crashes, context compactions and usage limits without me rebuilding the state by hand. The same file keeps a list of traps not to learn twice. The fourth says that the primary working copy drifts far behind the remote branch (88 commits behind on 22 September), and that you fetch before you believe a local tool.",
+          "The last instruction says when to stop: if nothing is unblocked, write down why in the resume file and stop the loop. I put it there as a precaution, without expecting it to be used. It was used on 8 October; I will come back to that at the end."
         ],
         img: ""
       },
       {
-        title: "Reviewers that found real things",
+        title: "Fourteen agents, and signatures that prove nothing",
         paragraphs: [
-          "The rule for reviews is strict: <strong>only blockers are fixed in the feature</strong>. Everything else becomes an issue, labelled for a later phase, so a review never turns into an open-ended rewrite.",
-          "The blockers were real. The mobile app sent a default <em>Origin</em> header that the WebSocket handshake rightly rejected, so mobile chat would never have connected. Uploaded photos kept their <strong>EXIF data, GPS included</strong>, unless they happened to be resized; now every image is re-encoded. A double tap on a quote button could create two bookings. Signing in could create a duplicate profile.",
-          "None of those would have failed a test that the implementer wrote, because the implementer did not think of them. That is the point of a second reader with a different brief."
+          "Each step goes through a chain of agents defined in <em>.claude/agents/</em>, fourteen files, each with one narrow job. The implementation goes to the agent the plan names (web, API or mobile), a test-writer covers it, and a check-runner runs lint, type checking, tests, the translation check and the build without fixing anything. A code reviewer reads every diff. Three more only come in when the step concerns them: one for money, one for authentication and uploads, one for personal data. The first version had the security reviewer reading every diff, whereas the prompt of the 6 to 12 October session only invokes it for its own areas.",
+          "The review rule has not moved: only blockers are fixed within the step, everything else becomes an issue for later. Even scaled back, the blockers of 7 October were real. The security reviewer saw that photos attached in mobile chat kept their EXIF metadata, GPS position included, unless they happened to be resized; the issue was opened at 7:51 am, and at 7:52 a commit re-encoded every image, without exception. That same morning, the app’s chat would not connect: React Native sends a default <em>Origin</em> header equal to the API’s own address, and the WebSocket gateway only accepted the website’s origins.",
+          "Each agent file opens with the chosen model and the reason for it: Haiku for mechanical work, Sonnet for scoped implementation, Opus for design and review. The first version drew a statistic from this, using the co-author trailers at the foot of each commit: “about 490” for the larger models and “about 125” for the smaller ones. I now count 476 and 128, and I am no longer sure what those trailers measure. The mobile agent has been declared Sonnet since day one, and yet 14 mobile commits carried the Opus trailer at 8:11 am on 7 October (34 by 8 November). The only reading I can defend is that a trailer signs the session that wrote the commit message."
         ],
         img: ""
       },
       {
-        title: "The day the loop was wrong",
+        title: "Features first, and a preview that stopped moving",
         paragraphs: [
-          "Halfway through, the reviews had produced a backlog of 26 non-blocking issues. The loop did what its rules said and worked through them: a full day of clean-up, all correct, and <strong>nothing visible</strong> on the preview site. The people testing it had nothing new to try.",
-          "That became a recorded decision, number 28 of 29: features first. The clean-up backlog is parked for the next phase, and reviews fix blockers only. The loop was not broken. It was faithfully optimising for the wrong thing, and only a person looking at the preview could see it."
+          "Halfway through, the reviews had piled up 26 non-blocking issues, and the loop worked through them as its rules said it should. A day of clean-up, correct from start to finish, produced nothing visible on the preview, the demo site the people trying the product had in front of them. On 26 September a decision went into the project’s register, which held 29 by the morning of 7 October: features first, the clean-up labelled <em>phase-2</em>, and after each feature merged with a green CI, a release to the main branch, which the preview follows.",
+          "The first version stopped there, and left out what came next. Between 17 and 27 September, 21 pull requests were merged into the main branch; the last one went in on the 27th at 1:54 pm. At 2:52 pm, a commit adds the API’s Stripe gateway, which refuses to start in production without its secret key rather than quietly falling back to a stub. It is a good rule (the mail service behind this very site has the same one), and it shut the door: without test keys, a release would take the preview down.",
+          "So on 7 October the main branch had not moved for ten days, and on 8 November the revision header the preview sends back still names the same commit. The first version of the article half-knew about the blockage, since it said the release was waiting for test keys only I can create, without drawing the conclusion that nothing new was reaching the testers."
         ],
         img: ""
       },
       {
-        title: "The work is uneven",
+        title: "523 commits in three days",
         paragraphs: [
-          "Three days account for more than half of the commits: 150 on 17 September, 230 on the 18th, and 143 on the 25th. Those are the days when a session ran for hours with a clear plan in front of it. Other days produced ten commits, because they were spent on a question only I could answer.",
-          "The commit trailers record which model wrote what. About 490 commits are from the larger models and about 125 from the smaller ones, which were used for scoped implementation and test-writing, with the larger ones on design, debugging and review. Choosing a model by the job, rather than by habit, is written into every agent file, along with the reason."
+          "Of the 944 commits at 8:11 am on 7 October, 523 come from three days: 150 on 17 September, 230 on the 18th, 143 on the 25th. The first version said the quiet days had “ten” commits. I cannot find a single day with ten: 19 September has 2, the 30th has 3, and the repository does not move at all from 20 to 22 September, nor from 1 to 5 October.",
+          "The same text put those gaps down to questions only I could answer. That may be so, but I have no record that shows it, and I would rather stick to the dates."
         ],
         img: ""
       },
       {
-        title: "What a loop cannot decide",
+        title: "A file for whatever is waiting on a person",
         paragraphs: [
-          "The open questions are not code. Whether the 5% commission is right, for instance: an analysis showed it nets only <strong>3.3 to 3.5% after Stripe’s fees</strong>, because the platform absorbs payment processing out of its own cut. That is a business decision, and no agent should take it.",
-          "The loop handles that by stopping. Anything that needs me goes into a short list in the resume file, and the loop carries on with whatever does not depend on it. Most days, the most useful thing I did for the project was answer one item on that list."
+          "Anything that needs a person goes into a file of human follow-ups, with what has to be done, what it unblocks and what the loop does in the meantime. The loop writes a line there and moves on. It holds service accounts to open, payments, domain settings, publishing the apps, keys, and product choices no agent should make alone.",
+          "On the morning of 7 October, the file had 102 table rows. By the next evening it had 118: the loop had added sixteen, rewritten one, and struck none."
         ],
         img: ""
       },
       {
-        title: "What is not done",
+        title: "Postscript, 8 November",
         paragraphs: [
-          "Nothing has been charged yet. The release to the main branch waits for Stripe test keys, which only I can create. 243 issues are still open, most of them deliberately parked.",
-          "And the number in the title is not a measure of quality. 931 commits say that the loop runs. Whether it built the right thing will be decided by the first photographer who uses it."
+          "After publication, the loop ran for a little over another day. On 8 November, the repository holds 1,147 commits across all branches, 311 pull requests, 281 of them merged, and 386 issues, 314 of them open; the <em>phase-2</em> label is on 151 of them, 150 still open. Of the 203 commits made after 8:11 am on 7 October, twelve come from the dependency update bot, and 132 touch the mobile app or its plan steps, going by their subject lines: chat, notifications, the photographer’s tools, deleting an account from inside the app, and test flows that run in CI on an Android emulator.",
+          "Those flows found the most telling bug of the project. On the evening of the 7th, at 10:21 pm, a commit adds the “request, quote, accept” flow, written for Maestro, a tool that drives the app much as a finger would. At 12:31 am, an issue describes what it saw: on the Android production build, once signed in, every submission comes back 403, <em>Cross-origin request rejected</em>. Signing in sets a session cookie, React Native’s native cookie store keeps it and replays it on every call, and the API receives a cookie, a bearer token and no <em>Origin</em> header all at once. Its cross-site guard treats any submission that carries a cookie as browser traffic, and turns it away.",
+          "Two minutes later, at 12:33 am, a commit of a few lines tells the app’s client never to attach its cookies again (<em>credentials: 'omit'</em>). The client’s unit tests could not have seen it, since they replace <em>fetch</em> with a stub that has no cookie store, and it was the second time in one day that an origin rule written for browsers had stopped the mobile app. On 8 November the issue is still open: in this repository, an issue only closes once its fix reaches the main branch.",
+          "On 8 October the loop stopped twice. Around 2 am it stopped on a usage limit, and when I restarted it at 6:29, I asked why. The second time, at 4:22 pm, nobody had asked it anything. It had just judged a red mobile test on the development branch flaky rather than broken, rerun it, watched it pass, and logged it on the issue that tracks those fragile flows. It then listed the open issues outside phase 2, concluded that each one had its fix on the development branch and that everything else was waiting on a person (payment keys, DNS settings, publishing the apps, service accounts), wrote that down in the resume file and stopped. It was wrong. Its command only fetched the 200 most recent open issues before filtering: of the 164 open issues outside phase 2, it saw 58. As of 8 November, at least three of them have no fix, including two security issues and a worker that runs out of memory instead of backing off when Redis does not answer.",
+          "On the evening of 12 October I asked it for a release anyway. It opened the pull request, which bundles 57 pull requests, announcing that it would merge it and that only payments would fail. A minute later it corrected itself: without a key the API will not start, and the whole preview would have gone down. It did not merge, and the pull request’s description still carries the first version. The mobile app, most of the work since this article, would not have shown up there anyway, since it ships through the app stores. Since then, only the dependency update bot has opened pull requests, seven of them. The development branch is 383 commits ahead of the main branch, and releasing them depends on one row of the file that is waiting for me: create payment keys in test mode. As of 8 November, I have not done it."
         ],
         img: ""
       }
