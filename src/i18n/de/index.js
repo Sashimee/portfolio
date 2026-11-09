@@ -164,6 +164,82 @@ export default {
     cta: "Bauen wir etwas Leichteres",
     top: "Nach oben"
   },
+  blogPost15: {
+    title: "„DO NOT SHIP“, und was ich daraus gemacht habe",
+    title2:
+      "402 Commits in vier Tagen, ein Reviewer, der öfter ablehnte als zustimmte, dann ein Münzspiel, anders gebaut. Gestartet ist keines von beiden.",
+    sections: [
+      {
+        title: "Zwei Wege, einen Händler doppelt zu bezahlen",
+        paragraphs: [
+          "Am 4. November um 14:28 Uhr gab ein Reviewer-Agent zur Aufgabe der Händlerauszahlungen von LetzBuy dieses Urteil ab: <em>„DO NOT SHIP. There are two blockers, and both can pay a vendor twice.“</em> Er fügte hinzu: <em>„I read the code and did not run the tests or typecheck.“</em> Ich zitiere die Agenten und meine eigenen Nachrichten so, wie sie geschrieben wurden, auf Englisch und mitsamt ihren Tippfehlern.",
+          "Der erste Fehler steckte im Test. Bevor der Code eine Überweisung erneut auslöste, fragte er bei Stripe nach, ob sie schon raus war, und filterte dabei auf eine Gruppe; der Stripe-Mock der Tests kopierte diese Gruppe einfach zurück, und der Test bestand in jedem Fall. Der zweite war eine Sperre von 300 Sekunden, die mitten im Lauf ablaufen und zwei Läufe auf demselben Datensatz zurücklassen konnte. Die Korrektur kam um 14:40 Uhr, ein zweites Review sagte um 14:42 Uhr SHIP und vermerkte diesmal, dass 21 Tests bestanden, und PR Nr. 282 wurde um 14:47 Uhr gemergt.",
+          "LetzBuy ist ein luxemburgischer Marktplatz, den Claude Code an vier Tagen im November gebaut hat, und er ist nicht gestartet. Sein <em>main</em>-Branch trägt einen einzigen Commit, das Grundgerüst vom 3. November um 1:00 Uhr; alles andere wartet auf <em>dev</em> oder auf Feature-Branches. Das Repository ist privat, deshalb setze ich keinen Link."
+        ],
+        img: ""
+      },
+      {
+        title: "Neun Agenten und eine Schleife, in der ersten Nacht",
+        paragraphs: [
+          "Alles beginnt mit einer Nachricht vom 3. November um 0:44 Uhr, die mit <em>„make a plan and everything and make agents askUserQuestions for everything“</em> anfängt und mit dem Namen des bestehenden Marktplatzes endet, dem ich Konkurrenz machen wollte. Der erste Commit kommt um 1:00 Uhr: ein Plan, Projektregeln und Agentendefinitionen. Um 1:02 Uhr starte ich die Schleife, die ohne mich eine Aufgabe nach der anderen abarbeitet.",
+          "Es sind neun Agenten, einer pro Rolle: Server, Storefront, Integrationen, Mobile, Deployment, Übersetzung, Prüfungen, Code-Review und Oberflächen-Review. Der Übersetzer wurde nie aufgerufen, was für eine luxemburgische Website ein seltsames Schicksal ist. Aufgaben, bei denen es um Geld geht, liefen zuerst über einen Planungsagenten und dann über einen Implementierer auf Opus, dem stärksten Modell.",
+          "Ich habe im Transkript 324 Starts von Sub-Agenten gezählt, oder 325, je nachdem, wie man Dubletten entfernt, davon 283 im Hintergrund. Auf das Code-Review entfallen 81, auf das Oberflächen-Review 60 und auf den Storefront-Agenten 59. Das Repository zählt 402 Commits über alle Branches.",
+          "Sie verteilen sich sehr ungleich: 305 am 3. November, 82 am 4., 13 am 5., keiner am 6. und 2 am 7., nach Autorendatum und Luxemburger Zeit. Am 5. um 7:36 Uhr habe ich die Schleife angehalten. Der erste Tag hat drei Viertel der Arbeit erledigt, und an ihm hat der Reviewer auch am häufigsten abgelehnt."
+        ],
+        img: ""
+      },
+      {
+        title: "Der Reviewer hatte das letzte Wort, und meistens hieß es nein",
+        paragraphs: [
+          "Seine Definition ist kurz. Er läuft auf Opus, darf keine Datei ändern und muss mit einem von zwei Urteilen schließen: <em>„End with SHIP or DO NOT SHIP.“</em> Laut Transkript kommt seine erste Ablehnung schon in der ersten Nacht, zum Projektgerüst.",
+          "Von den 81 Code-Reviews habe ich jeweils das erste Urteil erfasst: 57 Ablehnungen, 23 SHIP und eines ohne Ergebnis. Am 3. November sind das 43 Ablehnungen gegen 19 Zustimmungen, am 4. 11 gegen 3, am 5. 3 gegen 1. Meine Zählung ist grob, sie sucht die Wörter des Urteils in der Nachricht, die jeder Agent zurückgibt; nehmen Sie sie also als Größenordnung. Das Haupttranskript enthält 487-mal „DO NOT SHIP“, aber diese Zahl vermischt Zitate und Wiederholungen, und ich verwende sie nicht.",
+          "Die Ablehnungen, die ich gelesen habe, betrafen echte Fehler. Eine beginnt mit <em>„finding 1 charges customers 100x for courier delivery“</em>. Eine andere stellte schon bei Aufgabe 0.6 fest, dass die Funktion, die Preise in Cent umrechnet, falsche Beträge lieferte, bevor es überhaupt eine Zahlung gab.",
+          "Man sollte auch wissen, was ein Urteil nicht garantiert. Der Reviewer der Auszahlungen sagte selbst, er habe die Tests nicht ausgeführt, und das zweite Review, das sie ausführte, ließ die Integrationssuite weg. Ein SHIP bedeutete „ich habe es gelesen und nichts Blockierendes gefunden“, und nicht mehr.",
+          "Ein Vorfall hat mich mehr beunruhigt, weil kein Reviewer ihn je zu sehen bekam. Am 3. November um 19:09 Uhr erklärt mir der Hauptagent, dass die Worktrees keine <em>.env</em>-Datei haben und eine Datenbankmigration, die aus einem von ihnen gestartet wurde, auf Port 5432 zielte, wo die Datenbank eines anderen Projekts läuft. Sie sei vor dem Verbindungsaufbau gescheitert, und nichts sei geschrieben worden, sagt der Agent. Über das Transkript hinaus habe ich diese Aussage nicht geprüft."
+        ],
+        img: ""
+      },
+      {
+        title: "Ein Redesign, in einem Satz bestellt",
+        paragraphs: [
+          "Am 5. November um 10:05 Uhr, bei angehaltener Schleife, schreibe ich: <em>„Reviens thé design of thé site i want it not to be seen as made by ai but by the best of thé designers“</em>. Der Rest verlangt, sich die neuesten Awwwards-Gewinner der Kategorie anzusehen und sich davon inspirieren zu lassen. Um 10:18 Uhr füge ich hinzu, dass ich Bilder für die Verkaufsargumente möchte.",
+          "Die Spezifikation steht um 10:24 Uhr, mit fünf Awwwards-Gewinnern als Referenzen. Das Designsystem wird um 10:50 Uhr gemergt: PR Nr. 310, die sich als <em>„PR 1 of 3“</em> ankündigt. Die Eckenradien gehen von 1rem auf 2px, die Schriften werden Newsreader und Archivo, Schatten und umrandete Karten verschwinden. Das Rot der Flagge, #c91a23, bleibt dem Warenkorb, der Bestellung, der Zahlung, den reduzierten Preisen und dem Logo vorbehalten.",
+          "Es wurden vier Redesign-PRs statt drei, dazu eine Korrektur. Die Deployments von <em>dev</em> schlugen seit dem Merge des Auszahlungs-Ledgers für Händler fehl (Nr. 294, am 4. um 18:20 Uhr), fünf Merges in Folge, wegen eines Typfehlers, den die CI nicht sah; der Fix wird um 11:12 Uhr gemergt (Nr. 311). Es folgen die Shopseiten (Nr. 314), die Startseite (Nr. 315) und der Händlerbereich (Nr. 317), gemergt gegen 11:48 Uhr. Zwischen meinem Satz und dem letzten Merge vergingen knapp eindreiviertel Stunden.",
+          "Laut Transkript lehnte der Reviewer drei dieser vier PRs im ersten Durchgang ab. Er fand falsche Werbetexte: ein <em>„Keeps a shop here“</em> bei Händlern, die nur online verkaufen, und eine Lieferung, die im ganzen Land versprochen wurde. Außerdem verwarf er ein Unsplash-Foto, das gegen die Projektregeln verstieß, mit einem lesbaren Weinetikett auf einer rot karierten Tischdecke. Ich bin nicht sicher, ob mir diese drei beim eigenen Gegenlesen aufgefallen wären."
+        ],
+        img: ""
+      },
+      {
+        title: "Was ich mir nicht angesehen habe",
+        paragraphs: [
+          "Das Redesign war um 11:57 Uhr auf Staging online, und ich habe mir nur die Storefront angesehen. Der Händlerbereich wurde nach dem Redesign nicht mehr angeschaut. Die Seiten für Bestellbestätigung, Versandwahl und Zahlung sind nur durch Tests abgedeckt; niemand hat sie im Browser geöffnet.",
+          "Die einzige Leistungszahl, die ich habe, ist 99, 100, 100, 100 auf der mobilen Startseite, Median aus drei Lighthouse-Läufen, gemessen am 4. November in PR Nr. 280. Sie stammt aus der Zeit vor dem Redesign, als die Website noch ihre alten Schriften hatte, und seitdem wurde nichts mehr gemessen. Ich gebe sie deshalb nicht als Wert dessen aus, was online ist.",
+          "Am 6. November um 22:29 Uhr schreibe ich: <em>„how to login as admin on the live site ? credentials don’t work man“</em>. Vier Minuten später: <em>„there is no mailserver how do i enrol a vendor ?“</em>. Am nächsten Tag um 11:25 Uhr richtet PR Nr. 319 ein passwortgeschütztes Entwicklungspostfach ein, und das ist der letzte Commit von LetzBuy. Übrig bleiben 90 gemergte PRs, 217 offene Tickets von 229 und ein Plan mit 95 Aufgaben, von denen 74 abgehakt sind."
+        ],
+        img: ""
+      },
+      {
+        title: "CoinPosh, am selben Morgen",
+        paragraphs: [
+          "Der erste Commit von CoinPosh stammt vom 7. November um 10:38 Uhr, eine Dreiviertelstunde vor dem letzten von LetzBuy. Es ist ein Münzschieber: Man lässt Münzen auf einen Tisch fallen, und ein Schieber drückt sie über die Kante. Gestartet ist es ebenfalls nicht, auch wenn jeder Merge in <em>main</em> eine Version veröffentlicht.",
+          "Gearbeitet wird in Wellen. Jede Aufgabe bekommt ihren eigenen Worktree, auf einem Branch mit ihrem Namen, und eine Liste der Pfade, die sie anfassen darf. Der Reviewer ist geblieben, gewährt aber nur noch eine Korrekturrunde (anfangs zwei, seit dem Abend des 7. November eine): Danach gilt die Aufgabe als blockiert und kommt in einer späteren Welle wieder dran, statt sich im Kreis zu drehen. Nur der Integrationsschritt schreibt die Statusdatei (notfalls auch der Lead-Architekt), und die Schritte, die bei mir liegen, werden gemeldet und nie an meiner Stelle versucht.",
+          "Eine Regel ist die direkte Antwort auf meinen Abend vom 6. November: Der Demomodus muss immer funktionieren, damit ich ohne Konto und ohne Server spielen kann. Eine andere ergibt sich aus der Art des Spiels. Über den Wert der Münzen entscheidet der Server, und die Physiksimulation ist deterministisch, mit Tests auf ihren Hash, damit eine wiederholte Partie genau gleich abläuft.",
+          "Am 8. November um 17:26 Uhr verzeichnet das Protokoll zwölf Wellen, 46 gemergte Aufgaben und 16 Ablehnungen; die dritte Welle kassierte fünf, die zwölfte keine. Ein Merge wurde nachträglich zurückgenommen, als eine Prüfung ohne Cache fehlschlug, und zwei Aufgaben bleiben vom Review blockiert, auf Branches, die nie gemergt wurden. Das Repository zählt 269 Commits und 50 gemergte PRs. Diese Ablehnungen lassen sich nicht mit denen von LetzBuy vergleichen: Dort habe ich das Urteil jedes Reviews gezählt, hier zählt das Protokoll jede abgelehnte Aufgabe einmal pro Welle, egal wie viele Reviews es waren."
+        ],
+        img: ""
+      },
+      {
+        title: "„This is the one that makes the game playable“",
+        paragraphs: [
+          "Am 8. November um 9:21 Uhr stirbt eine vollständige Prüfung mit Exit-Code 137: Der Kernel hat sie mangels Speicher beendet. Neun Vite-Server liefen laut Agent noch, von Agenten etwa einundzwanzig Stunden zuvor für Spieltests gestartet, und belegten ungefähr 3,2 GB von 15. Um 9:25 Uhr weist der Workflow jeden Agenten an, die Server zu stoppen, die er startet. Der Agent räumte selbst ein, dass das nur eine Anweisung in einem Prompt war, also habe ich die Regel in meine globalen Anweisungen aufgenommen, zusammen mit einem stündlichen Job, der inaktive Worktrees löscht; bis zum späten Vormittag waren laut Transkript 156 entfernt, 112 davon aus CoinPosh.",
+          "Währenddessen spielte ich, oder versuchte es. Um 11:02 Uhr: <em>„there are no coinds to drop and none on the table ? when will it at minimum be playable ?!“</em> Um 11:09 Uhr verlange ich, dass der Himmel höchstens fünf Prozent des Bildschirms einnimmt. Um 12:52 Uhr: <em>„still can’t drop a coin on ma pc“</em>. Um 14:39 Uhr stelle ich fest, dass ich nach zwei Stunden fern vom Rechner 1.600 Münzen habe, und um 14:41 Uhr frage ich, ob der Server überhaupt funktioniert.",
+          "Um 16:48 Uhr kündigt mir der Agent wieder einmal die Aufgabe an, die das Spiel spielbar machen wird, und ich schicke ihm seinen Satz zurück: <em>„This is the one that makes the game playable. is something i heard so … often“</em>. P-174 wird um 17:22 Uhr gemergt, nach zwei anderen Aufgaben derselben Welle: Jede Münze, die den Tisch verlässt, zählt jetzt als Absturz oder Fusion, und der Demo-Server zahlt dem Spieler sein Startguthaben aus. Um 17:26 Uhr landet sie auf <em>main</em> (Nr. 62).",
+          "Ich schreibe diese Zeilen gleich danach und habe auf dieser Version noch keine Münze fallen lassen. Der Polish-Backlog hat 221 Einträge, von denen 182 noch warten."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost14: {
     title: "Einundzwanzig Agenten, dann sechs",
     title2:

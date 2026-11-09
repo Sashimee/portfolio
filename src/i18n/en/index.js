@@ -163,6 +163,82 @@ export default {
     cta: "Let's build something lighter",
     top: "Back to top"
   },
+  blogPost15: {
+    title: "“DO NOT SHIP”, and what I did about it",
+    title2:
+      "402 commits in four days, a reviewer that refused more often than it approved, then a coin game built differently. Neither of them has launched.",
+    sections: [
+      {
+        title: "Two ways to pay a vendor twice",
+        paragraphs: [
+          "On 4 November at 14:28, a reviewer agent returned this verdict on LetzBuy’s vendor payout task: <em>“DO NOT SHIP. There are two blockers, and both can pay a vendor twice.”</em> It added: <em>“I read the code and did not run the tests or typecheck.”</em> I quote the agents and my own messages exactly as they were written, typos included.",
+          "The first flaw was hiding in the test. Before sending a transfer again, the code asked Stripe whether it had already gone out, filtering on a group, and the fake Stripe used in the tests copied that group back: the test passed no matter what. The second was a 300-second lock that could expire mid-run and leave two runs working on the same row. The fix landed at 14:40, a second review said SHIP at 14:42, noting this time that 21 tests passed, and PR #282 was merged at 14:47.",
+          "LetzBuy is a Luxembourg marketplace that Claude Code built over four days in November, and it hasn’t launched. Its <em>main</em> branch holds a single commit, the bootstrap from 3 November at 01:00; everything else is waiting on <em>dev</em> or on feature branches. The repository is private, so there’s no link."
+        ],
+        img: ""
+      },
+      {
+        title: "Nine agents and a loop, the first night",
+        paragraphs: [
+          "It all starts with a message sent on 3 November at 00:44, which begins with <em>“make a plan and everything and make agents askUserQuestions for everything”</em> and ends with the name of the existing marketplace I wanted to compete with. The first commit lands at 01:00: a plan, project rules and agent definitions. At 01:02, I start the loop that runs task after task without me.",
+          "There are nine agents, one per role: the server, the storefront, integrations, mobile, deployment, translation, checks, code review and interface review. The translator was never called, which is an odd fate for a Luxembourg website. Tasks that touch money first went through a planning agent, then through an implementer running on Opus, the strongest model.",
+          "I counted 324 sub-agent launches in the transcript, or 325 depending on how you deduplicate, 283 of them in the background. Code review accounts for 81, interface review for 60 and the storefront agent for 59. The repository has 402 commits across all branches.",
+          "They are very unevenly spread: 305 on 3 November, 82 on the 4th, 13 on the 5th, none on the 6th and 2 on the 7th, by author date in Luxembourg time. I paused the loop on the 5th at 07:36. The first day did three quarters of the work, and it’s also the day the reviewer refused the most."
+        ],
+        img: ""
+      },
+      {
+        title: "The reviewer had the last word, and the word was mostly no",
+        paragraphs: [
+          "Its definition is short. It runs on Opus, it isn’t allowed to modify a file, and it has to end with one of two verdicts: <em>“End with SHIP or DO NOT SHIP.”</em> According to the transcript, its first refusal comes on the very first night, on the project skeleton.",
+          "Across the 81 code reviews, I took the first verdict of each: 57 refusals, 23 SHIPs and one that reached no conclusion. On 3 November that’s 43 refusals against 19 approvals; on the 4th, 11 against 3; on the 5th, 3 against 1. My count is crude, it looks for the verdict words in the message each agent hands back, so take it as an order of magnitude. The main transcript contains “DO NOT SHIP” 487 times, but that figure mixes in quotes and repeats, and I don’t use it.",
+          "The ones I read were about real faults. One of them begins with <em>“finding 1 charges customers 100x for courier delivery”</em>. Another found, as early as task 0.6, that the function converting prices to cents returned wrong amounts, before a single payment existed.",
+          "It’s also worth being clear about what a verdict didn’t guarantee. The payout reviewer said itself that it hadn’t run the tests, and the second review, which did run them, didn’t run the integration suite. A SHIP meant “I read it and found nothing blocking”, and no more than that.",
+          "One incident worried me more, because it never went past a reviewer. On 3 November at 19:09, the main agent explains that the worktrees have no <em>.env</em> file, and that a database migration started from one of them was pointed at port 5432, where another project’s database runs. It failed before connecting, and nothing was written, according to the agent. I haven’t checked that claim beyond the transcript."
+        ],
+        img: ""
+      },
+      {
+        title: "A redesign requested in one sentence",
+        paragraphs: [
+          "On 5 November at 10:05, with the loop stopped, I write this: <em>“Reviens thé design of thé site i want it not to be seen as made by ai but by the best of thé designers”</em>. The rest asks to look at the latest Awwwards winners in the category and take inspiration from them. At 10:18, I add that I want images for the selling points.",
+          "The specification is ready at 10:24, with five Awwwards winners as references. The design system is merged at 10:50: that’s PR #310, which announces itself as <em>“PR 1 of 3”</em>. Corner radii go from 1rem to 2px, the fonts become Newsreader and Archivo, and shadows and bordered cards disappear. The flag red, #c91a23, is reserved for add to cart, checkout, payment, sale prices and the logo.",
+          "There were four redesign PRs instead of three, plus a fix. Deployments of <em>dev</em> had been failing since the merchant payout ledger was merged (#294, at 18:20 on the 4th), five merges in a row, on a type error that CI didn’t catch; the fix goes in at 11:12 (#311). Then come the shopping pages (#314), the home page (#315) and the vendor area (#317), merged around 11:48. Between my sentence and the last merge, just under an hour and three quarters went by.",
+          "According to the transcript, the reviewer refused three of those four PRs on the first pass. It found false marketing copy: a <em>“Keeps a shop here”</em> attached to vendors who only sell online, and delivery promised across the whole country. It also rejected an Unsplash photo that broke the project’s rules, with a readable wine label on a red checked tablecloth. I’m not sure I would have caught those three reviewing it myself."
+        ],
+        img: ""
+      },
+      {
+        title: "What I didn’t look at",
+        paragraphs: [
+          "The redesign was live on staging at 11:57, and I only looked at the storefront. Nobody checked the vendor area again after the redesign. The order confirmation, delivery choice and payment pages are only covered by tests; nobody has actually opened them in a browser.",
+          "The only performance figure I have is 99, 100, 100, 100 on the mobile home page, the median of three Lighthouse runs, measured on 4 November by PR #280. It predates the redesign, when the site still had its old fonts, and nothing has been measured since. So I don’t present it as the score of what’s live now.",
+          "On 6 November at 22:29, I write: <em>“how to login as admin on the live site ? credentials don’t work man”</em>. Four minutes later: <em>“there is no mailserver how do i enrol a vendor ?”</em>. The next day at 11:25, PR #319 opens a password-protected development mailbox, and that is LetzBuy’s last commit. What remains is 90 merged PRs, 217 open issues out of 229, and a plan of 95 tasks with 74 ticked off."
+        ],
+        img: ""
+      },
+      {
+        title: "CoinPosh, the same morning",
+        paragraphs: [
+          "CoinPosh’s first commit is from 7 November at 10:38, three quarters of an hour before LetzBuy’s last. It’s a coin pusher: you drop coins onto a table, and a pusher shoves them over the edge. It hasn’t launched either, even though every merge into <em>main</em> publishes a build.",
+          "The work happens in waves. Each task gets its own worktree, on a branch named after it, with the list of paths it is allowed to touch. The reviewer stayed, but it now grants a single round of fixes (two at first, one since the evening of 7 November): past that, the task is marked blocked and goes back into a later wave instead of going round in circles. Only the integration step writes the status file (and the lead architect, as a fallback), and the steps that are mine to do are reported, never attempted on my behalf.",
+          "One rule is a direct answer to my evening of 6 November: demo mode must always work, so that I can play without an account or a server. Another comes from the nature of the game. The server holds the value of the coins, and the physics simulation is deterministic, with tests on its hash, so that a replayed game plays out exactly the same way.",
+          "On 8 November at 17:26, the log counts twelve waves, 46 merged tasks and 16 refusals; the third wave took five, the twelfth none. One merge was reverted afterwards, when an uncached check failed, and two tasks remain blocked by review, on branches that were never merged. The repository has 269 commits and 50 merged PRs. These refusals can’t be compared with LetzBuy’s: there I counted the verdict of every review, here the log counts each refused task once per wave, however many reviews it took."
+        ],
+        img: ""
+      },
+      {
+        title: "“This is the one that makes the game playable”",
+        paragraphs: [
+          "On 8 November at 09:21, a full check dies with exit code 137: the kernel killed it for lack of memory. Nine Vite servers were still running, according to the agent, started by agents for playtests about twenty-one hours earlier, and taking roughly 3.2 GB out of 15. At 09:25, the workflow tells every agent to stop the servers it starts. The agent itself admitted this was only an instruction in a prompt, so I added the rule to my global instructions, along with an hourly job that deletes idle worktrees; by late morning, according to the transcript, 156 had been removed, 112 of them from CoinPosh.",
+          "Meanwhile, I was playing, or trying to. At 11:02: <em>“there are no coinds to drop and none on the table ? when will it at minimum be playable ?!”</em> At 11:09, I ask for the sky to take up at most five percent of the screen. At 12:52: <em>“still can’t drop a coin on ma pc”</em>. At 14:39, I notice that after two hours away from the computer I have 1,600 coins, and at 14:41 I ask whether the server works at all.",
+          "At 16:48, the agent announces once again the task that will make the game playable, and I send its sentence back: <em>“This is the one that makes the game playable. is something i heard so … often”</em>. P-174 is merged at 17:22, after two other tasks from the same wave: every coin leaving the table now counts as a fall or a fusion, and the demo server pays out the player’s starting coins. It reaches <em>main</em> at 17:26 (#62).",
+          "I’m writing this right after, and I haven’t dropped a coin on that build yet. The polish backlog has 221 entries, 182 of them still waiting their turn."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost14: {
     title: "Twenty-one agents, then six",
     title2:

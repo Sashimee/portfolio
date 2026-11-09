@@ -22,6 +22,13 @@
 /** Du plus récent au plus ancien : `Blog.vue` numérote dans cet ordre. */
 export default [
   {
+    slug: 'do-not-ship',
+    key: 'blogPost15',
+    date: '2026-11-08',
+    cover: '/screenshots/letzbuy-coinposh.webp',
+    illustrations: 'article_fifteen'
+  },
+  {
     slug: 'twenty-one-agents-then-six',
     key: 'blogPost14',
     date: '2026-11-08',
