@@ -1346,7 +1346,7 @@ cite l'article sous ce nom. `blogPost4` résume encore l'ancienne affirmation su
 
 La date de modification n'apparaît pas dans les balises : `src/utils/meta.js` accepte
 un `article.modified` que `posts.js` ne fournit pas. Laissé pour la clôture
-(`seo-prerendu`).
+(`seo-prerendu`). **Fait au lot 47.**
 
 **Porte** : rejouée sur la branche avant la PR.
 
@@ -1613,3 +1613,18 @@ au passage.
 *Réserves : **R19** étendue (sept sections allemandes, relues par personne) ; **R21**
 étendue (couverture rendue sans GPU) ; **R49** ouverte (projets non lancés, verdicts
 comptés par une recherche de mots dans des transcriptions, dépôts non liés, CoinPosh#66).*
+
+### Lot 47 — clôture du plan d'articles · fait le 2026-11-09
+
+**Étape 6 de `docs/plan-articles.md`.** L'audit `seo-prerendu` de l'ensemble (75 adresses,
+15 articles en trois langues) ne trouve aucune incohérence entre routes, instantanés,
+`sitemap.xml`, `robots.txt` et balises. Il relève un seul écart : les dix articles
+réécrits le 2026-11-08 annonçaient encore leur date d'origine comme date de
+modification. `posts.js` leur donne désormais `modified: '2026-11-08'`, que l'article,
+le pré-rendu et le sitemap transmettent : `article:modified_time`, `dateModified` et
+`lastmod` portent la date de réécriture, et l'accueil comme `/blog` suivent la plus
+récente des deux dates. Deux tests neufs : les balises d'un article réécrit et d'un
+article intact, et le format des dates (`modified` jamais antérieure à `date`).
+
+*Réserves : aucune ouverte. **R19** reste ouverte (aucun des quinze articles allemands
+n'a été relu par quelqu'un qui le parle).*

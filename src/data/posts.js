@@ -60,6 +60,7 @@ export default [
     slug: 'ball-through-the-goalkeeper',
     key: 'blogPost10',
     date: '2026-10-07',
+    modified: '2026-11-08',
     cover: '/screenshots/royaume-foot.webp',
     illustrations: 'article_ten'
   },
@@ -67,6 +68,7 @@ export default [
     slug: 'merged-is-not-deployed',
     key: 'blogPost9',
     date: '2026-10-07',
+    modified: '2026-11-08',
     cover: '/screenshots/schoulbus.webp',
     illustrations: 'article_nine'
   },
@@ -74,6 +76,7 @@ export default [
     slug: 'one-prompt-931-commits',
     key: 'blogPost8',
     date: '2026-10-07',
+    modified: '2026-11-08',
     cover: '/screenshots/baskewitsch.lu.webp',
     illustrations: 'article_eight'
   },
@@ -81,6 +84,7 @@ export default [
     slug: 'language-in-the-address',
     key: 'blogPost7',
     date: '2026-10-07',
+    modified: '2026-11-08',
     cover: '/screenshots/baskewitsch.lu.webp',
     illustrations: 'article_seven'
   },
@@ -88,6 +92,7 @@ export default [
     slug: 'pic-collage-on-device',
     key: 'blogPost6',
     date: '2026-09-12',
+    modified: '2026-11-08',
     cover: '/screenshots/pic-collage.webp',
     illustrations: 'article_six'
   },
@@ -95,6 +100,7 @@ export default [
     slug: 'royaume-foot-3d-for-children',
     key: 'blogPost5',
     date: '2026-09-08',
+    modified: '2026-11-08',
     cover: '/screenshots/royaume-foot-cover.webp',
     illustrations: 'article_five',
     // Les captures du jeu sont prises sur un téléphone tenu à la verticale,
@@ -105,6 +111,7 @@ export default [
     slug: 'green-coding-own-site',
     key: 'blogPost4',
     date: '2026-09-07',
+    modified: '2026-11-08',
     cover: '/screenshots/baskewitsch.lu.webp',
     // Aucune section n'est illustrée : le dossier n'existe donc pas encore.
     // Le champ reste renseigné, routes.spec.js le voulant non vide.
@@ -114,6 +121,7 @@ export default [
     slug: 'aura-share-cards',
     key: 'blogPost3',
     date: '2026-08-28',
+    modified: '2026-11-08',
     cover: '/screenshots/aura.webp',
     illustrations: 'article_three'
   },
@@ -121,6 +129,7 @@ export default [
     slug: 'schoulbus-claude-code',
     key: 'blogPost2',
     date: '2026-08-26',
+    modified: '2026-11-08',
     cover: '/screenshots/schoulbus.webp',
     illustrations: 'article_two',
     // Les captures de l'application sont verticales (740 × 1648) : au plafond
@@ -131,6 +140,7 @@ export default [
     slug: 'green-coding-fintech',
     key: 'blogPost1',
     date: '2023-07-22',
+    modified: '2026-11-08',
     cover: '/screenshots/gc_info_fr.webp',
     illustrations: 'article_one'
   }

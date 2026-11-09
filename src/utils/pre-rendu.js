@@ -58,15 +58,15 @@ export function prerenderedRoutes() {
         title: paquet[post.key].title,
         description: stripTags(paquet[post.key].title2),
         image: post.cover,
-        lastmod: post.date,
-        article: { published: post.date }
+        lastmod: post.modified || post.date,
+        article: { published: post.date, modified: post.modified }
       })
     }
 
-    // L'accueil et l'index du blog changent avec le dernier article publié : ils
+    // L'accueil et l'index du blog changent avec le dernier article publié ou réécrit : ils
     // ont donc une date réelle à annoncer. Les autres routes n'en ont aucune, et
     // en inventer une vaudrait moins que de n'en donner aucune.
-    const derniere = posts.map(post => post.date).sort().at(-1)
+    const derniere = posts.map(post => post.modified || post.date).sort().at(-1)
 
     for (const page of pages) {
       if (page.path === '/' || page.path === '/blog') page.lastmod = derniere

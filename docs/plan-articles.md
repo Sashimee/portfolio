@@ -112,6 +112,6 @@ peuvent changer. Les articles cessent de partager le même squelette.
       que CoinPosh ait avancé. Non lancé : le dire.
 
 ### 6. Clôture
-- [ ] `seo-prerendu` et `verif-production` sur l'ensemble ; lots et R19 à jour dans
+- [x] `seo-prerendu` et `verif-production` sur l'ensemble ; lots et R19 à jour dans
       `docs/plan.md` ; `RESUME.md` et tableau de bord marqués terminés ; fin de la
       boucle.
