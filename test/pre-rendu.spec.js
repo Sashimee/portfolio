@@ -183,7 +183,11 @@ describe('les routes pré-rendues', () => {
     expect(balises).toContain(`property="article:published_time" content="${reecrit.date}"`)
     expect(balises).toContain(`property="article:modified_time" content="${reecrit.modified}"`)
     expect(ld(balises)).toMatchObject({ datePublished: reecrit.date, dateModified: reecrit.modified })
-    expect(renderSitemap(routes)).toContain(`<lastmod>${reecrit.modified}</lastmod>`)
+    const bloc = renderSitemap(routes)
+      .split('</url>')
+      .find(url => url.includes(`${enLangue(`/blog/${reecrit.slug}`)}</loc>`))
+    expect(bloc).toContain(`<lastmod>${reecrit.modified}</lastmod>`)
+    expect(bloc).not.toContain(`<lastmod>${reecrit.date}</lastmod>`)
 
     expect(ld(renderHeadTags(routeDe(intact))).dateModified).toBe(intact.date)
   })
