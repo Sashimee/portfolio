@@ -166,6 +166,82 @@ export default {
     cta: "Construisons quelque chose de plus léger",
     top: "Haut de page"
   },
+  blogPost15: {
+    title: "« DO NOT SHIP », et ce que j’en ai fait",
+    title2:
+      "402 commits en quatre jours, un relecteur qui refusait plus qu’il n’acceptait, puis un jeu de pièces construit autrement. Ni l’un ni l’autre n’est lancé.",
+    sections: [
+      {
+        title: "Deux façons de payer un vendeur deux fois",
+        paragraphs: [
+          "Le 4 novembre à 14 h 28, un agent relecteur a rendu ce verdict sur la tâche des versements aux vendeurs de LetzBuy : <em>« DO NOT SHIP. There are two blockers, and both can pay a vendor twice. »</em> Il ajoutait : <em>« I read the code and did not run the tests or typecheck. »</em> Je cite les agents et mes propres messages tels qu’ils ont été écrits, en anglais et fautes comprises.",
+          "Le premier défaut se cachait dans le test. Avant de refaire un virement, le code cherchait chez Stripe s’il n’était pas déjà parti, en filtrant sur un groupe, et le faux Stripe des tests recopiait ce groupe : le test passait quoi qu’il arrive. Le second était un verrou de 300 secondes qui pouvait expirer en cours de route et laisser deux exécutions sur la même ligne. Le correctif est arrivé à 14 h 40, une seconde relecture a dit SHIP à 14 h 42, en précisant cette fois que 21 tests passaient, et la PR n° 282 a été fusionnée à 14 h 47.",
+          "LetzBuy est une place de marché luxembourgeoise que Claude Code a construite en quatre jours de novembre, et elle n’est pas lancée. Sa branche <em>main</em> ne porte qu’un commit, l’amorçage du 3 novembre à 1 h 00 ; tout le reste attend sur <em>dev</em> ou sur des branches de travail. Le dépôt est privé, je n’en mets donc pas de lien."
+        ],
+        img: ""
+      },
+      {
+        title: "Neuf agents et une boucle, la première nuit",
+        paragraphs: [
+          "Tout part d’un message envoyé le 3 novembre à 0 h 44, qui commence par <em>« make a plan and everything and make agents askUserQuestions for everything »</em> et finit par le nom de la place de marché existante que je voulais concurrencer. Le premier commit tombe à 1 h 00 : un plan, des règles de projet et des définitions d’agents. À 1 h 02, je lance la boucle qui enchaîne les tâches sans moi.",
+          "Les agents sont neuf, un par métier : le serveur, la vitrine, les intégrations, le mobile, le déploiement, la traduction, les vérifications, la relecture du code et celle de l’interface. Le traducteur n’a jamais été appelé, ce qui est un drôle de sort pour un site luxembourgeois. Les tâches qui touchent à l’argent passaient d’abord par un agent de plan, puis par un implémenteur sur Opus, le modèle le plus fort.",
+          "J’ai compté dans la transcription 324 lancements de sous-agents, ou 325 selon la façon de dédoublonner, dont 283 en arrière-plan. La relecture du code en représente 81, celle de l’interface 60 et l’agent de la vitrine 59. Le dépôt compte 402 commits, toutes branches confondues.",
+          "Ils se répartissent très mal : 305 le 3 novembre, 82 le 4, 13 le 5, aucun le 6 et 2 le 7, en date d’auteur et à l’heure de Luxembourg. J’ai mis la boucle en pause le 5 à 7 h 36. La première journée a fait les trois quarts du travail, et c’est aussi celle où le relecteur a le plus refusé."
+        ],
+        img: ""
+      },
+      {
+        title: "Le relecteur avait le dernier mot, et il disait surtout non",
+        paragraphs: [
+          "Sa définition tient en peu de lignes. Il tourne sur Opus, il n’a pas le droit de modifier un fichier, et il doit conclure par l’un de deux verdicts : <em>« End with SHIP or DO NOT SHIP. »</em> D’après la transcription, son premier refus tombe dès la première nuit, sur le squelette du projet.",
+          "Sur les 81 relectures de code, j’ai relevé le premier verdict de chacune : 57 refus, 23 SHIP et une qui n’a rien conclu. Le 3 novembre, c’est 43 refus contre 19 accords ; le 4, 11 contre 3 ; le 5, 3 contre 1. Mon comptage est grossier, il cherche les mots du verdict dans le message que rend chaque agent, alors tenez-le pour un ordre de grandeur. La transcription principale contient 487 fois « DO NOT SHIP », mais ce chiffre-là mêle les citations et les redites, et je ne m’en sers pas.",
+          "Ceux que j’ai relus portaient sur de vraies fautes. L’un d’eux commence par <em>« finding 1 charges customers 100x for courier delivery »</em>. Un autre a trouvé, dès la tâche 0.6, que la fonction qui convertit les prix en centimes rendait des montants faux, avant qu’un seul paiement existe.",
+          "Il faut aussi lire ce qu’un verdict ne garantit pas. Le relecteur des versements disait lui-même ne pas avoir lancé les tests, et la seconde relecture, qui les a lancés, n’a pas lancé la suite d’intégration. Un SHIP voulait dire « j’ai lu et je n’ai rien trouvé de bloquant », sans plus.",
+          "Un incident m’a davantage inquiété, parce qu’aucun relecteur ne le voyait passer. Le 3 novembre à 19 h 09, l’agent principal m’explique que les worktrees n’ont pas de fichier <em>.env</em>, et qu’une migration de base lancée depuis l’un d’eux visait le port 5432, où tourne la base d’un autre projet. Elle a échoué avant de se connecter, et rien n’a été écrit, selon lui. Je n’ai pas vérifié cette affirmation au-delà de la transcription."
+        ],
+        img: ""
+      },
+      {
+        title: "Une refonte demandée en une phrase",
+        paragraphs: [
+          "Le 5 novembre à 10 h 05, la boucle à l’arrêt, j’écris ceci : <em>« Reviens thé design of thé site i want it not to be seen as made by ai but by the best of thé designers »</em>. La suite demande de regarder les derniers lauréats d’Awwwards dans la catégorie et de s’en inspirer. À 10 h 18, j’ajoute que je veux des images pour les arguments de vente.",
+          "La spécification est prête à 10 h 24, avec cinq lauréats d’Awwwards pour références. Le système de design est fusionné à 10 h 50 : c’est la PR n° 310, qui s’annonce comme <em>« PR 1 of 3 »</em>. Les rayons d’angle passent de 1rem à 2px, les polices deviennent Newsreader et Archivo, les ombres et les cartes à bordure disparaissent. Le rouge du drapeau, #c91a23, est réservé à l’ajout au panier, à la commande, au paiement, aux prix soldés et au logo.",
+          "Il y a eu quatre PR de refonte au lieu de trois, plus un correctif. Les déploiements de <em>dev</em> échouaient depuis la fusion du grand livre des versements marchands (n° 294, le 4 à 18 h 20), cinq fusions d’affilée, sur une erreur de type que la CI ne voyait pas ; le correctif passe à 11 h 12 (n° 311). Suivent les pages de commerce (n° 314), l’accueil (n° 315) et l’espace marchand (n° 317), fusionné vers 11 h 48. Entre ma phrase et la dernière fusion, il s’est écoulé un peu moins d’une heure trois quarts.",
+          "D’après la transcription, le relecteur a refusé trois de ces quatre PR au premier passage. Il a trouvé des textes publicitaires faux : un <em>« Keeps a shop here »</em> accolé à des vendeurs qui ne vendent qu’en ligne, et une livraison promise dans tout le pays. Il a aussi écarté une photo d’Unsplash contraire aux règles du projet, avec une étiquette de vin lisible sur une nappe à carreaux rouges. Je ne suis pas sûr que j’aurais vu ces trois-là en relisant moi-même."
+        ],
+        img: ""
+      },
+      {
+        title: "Ce que je n’ai pas regardé",
+        paragraphs: [
+          "La refonte était en ligne sur la préproduction à 11 h 57, et je n’en ai regardé que la vitrine. L’espace marchand n’a pas été revu après la refonte. Les pages de confirmation de commande, de choix de livraison et de paiement ne sont couvertes que par des tests ; personne ne les a ouvertes dans un navigateur.",
+          "Le seul chiffre de performance dont je dispose est un 99, 100, 100, 100 sur l’accueil en mobile, médiane de trois passages Lighthouse, mesuré le 4 novembre par la PR n° 280. Il date d’avant la refonte, quand le site avait encore ses anciennes polices, et rien n’a été remesuré depuis. Je ne le donne donc pas pour le score de ce qui est en ligne.",
+          "Le 6 novembre à 22 h 29, j’écris : <em>« how to login as admin on the live site ? credentials don’t work man »</em>. Quatre minutes plus tard : <em>« there is no mailserver how do i enrol a vendor ? »</em>. Le lendemain à 11 h 25, la PR n° 319 ouvre une boîte de courrier de développement protégée par un mot de passe, et c’est le dernier commit de LetzBuy. Il en reste 90 PR fusionnées, 217 tickets ouverts sur 229, et un plan de 95 tâches dont 74 sont cochées."
+        ],
+        img: ""
+      },
+      {
+        title: "CoinPosh, le même matin",
+        paragraphs: [
+          "Le premier commit de CoinPosh date du 7 novembre à 10 h 38, trois quarts d’heure avant le dernier de LetzBuy. C’est un jeu de pièces à pousser : on lâche des pièces sur une table, et un poussoir les fait tomber par le bord. Il n’est pas lancé non plus, même si chaque fusion sur <em>main</em> en publie une version.",
+          "Le travail s’y fait par vagues. Chaque tâche reçoit son propre worktree, sur une branche à son nom, avec la liste des chemins qu’elle a le droit de toucher. Le relecteur est resté, mais il n’accorde plus qu’un tour de correction (deux au départ, un depuis le 7 au soir) : au-delà, la tâche est marquée bloquée et repasse dans une vague suivante, au lieu de tourner en rond. Seule l’étape d’intégration écrit le fichier d’état (l’architecte en chef aussi, en dernier recours), et les étapes qui me reviennent sont signalées sans jamais être tentées à ma place.",
+          "Une règle répond directement à ma soirée du 6 novembre : le mode démo doit toujours marcher, pour que je puisse jouer sans compte ni serveur. Une autre tient à la nature du jeu. C’est le serveur qui détient la valeur des pièces, et la simulation physique est déterministe, avec des tests sur son empreinte, pour qu’une partie rejouée retombe exactement de la même façon.",
+          "Le 8 novembre à 17 h 26, le journal compte douze vagues, 46 tâches fusionnées et 16 refus ; la troisième vague en a essuyé cinq, la douzième aucun. Une fusion a été annulée après coup, quand une vérification sans cache a échoué, et deux tâches restent bloquées par la relecture, sur des branches jamais fusionnées. Le dépôt compte 269 commits et 50 PR fusionnées. Ces refus ne se comparent pas à ceux de LetzBuy : là-bas je comptais le verdict de chaque relecture, ici le journal compte chaque tâche refusée une fois par vague, quel que soit le nombre de relectures."
+        ],
+        img: ""
+      },
+      {
+        title: "« This is the one that makes the game playable »",
+        paragraphs: [
+          "Le 8 novembre à 9 h 21, une vérification complète meurt avec le code 137 : le noyau l’a tuée faute de mémoire. Neuf serveurs Vite tournaient encore, selon l’agent, lancés par des agents pour des tests de jeu environ vingt et une heures plus tôt, et occupaient à peu près 3,2 Go sur 15. À 9 h 25, le workflow demande à chaque agent d’arrêter les serveurs qu’il démarre. L’agent a reconnu lui-même que ce n’était qu’une consigne dans un prompt, alors j’ai ajouté la règle à mes instructions globales. Une tâche horaire supprime aussi les worktrees inactifs : dans la matinée, d'après la transcription, 156 avaient été retirés, dont 112 de CoinPosh.",
+          "Pendant ce temps, je jouais, ou j’essayais. À 11 h 02 : <em>« there are no coinds to drop and none on the table ? when will it at minimum be playable ?! »</em> À 11 h 09, je demande que le ciel prenne au plus cinq pour cent de l’écran. À 12 h 52 : <em>« still can’t drop a coin on ma pc »</em>. À 14 h 39, je constate qu’après deux heures loin de l’ordinateur j’ai 1 600 pièces, et à 14 h 41 je demande si le serveur fonctionne seulement.",
+          "À 16 h 48, l’agent m’annonce une fois de plus la tâche qui rendra le jeu jouable, et je lui renvoie sa phrase : <em>« This is the one that makes the game playable. is something i heard so … often »</em>. P-174 est fusionnée à 17 h 22, après deux autres tâches de la même vague : chaque pièce qui quitte la table compte désormais comme une chute ou une fusion, et le serveur de démo verse au joueur son tas de départ. Elle arrive sur <em>main</em> à 17 h 26 (n° 62).",
+          "J’écris ces lignes juste après, et je n’ai pas encore lâché une pièce sur cette version. Le registre des finitions compte 221 entrées, dont 182 attendent leur tour."
+        ],
+        img: ""
+      }
+    ]
+  },
   blogPost14: {
     title: "Vingt et un agents, puis six",
     title2:

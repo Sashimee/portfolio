@@ -106,7 +106,7 @@ peuvent changer. Les articles cessent de partager le même squelette.
 - [x] **Aquarium** — 1 644 commits en trois semaines, un orchestrateur qui n'écrit pas de
       code, vingt et un agents à la fois puis six, et des poissons qui faisaient une
       crise cardiaque. Pas encore en production : le dire.
-- [ ] **LetzBuy, puis CoinPosh** — 402 commits en quatre jours, des relecteurs qui disent
+- [x] **LetzBuy, puis CoinPosh** — 402 commits en quatre jours, des relecteurs qui disent
       « DO NOT SHIP », la refonte « qui ne doit pas avoir l'air faite par une IA » ; puis
       CoinPosh en seconde partie : ce que j'ai changé à la méthode. Écrit en dernier pour
       que CoinPosh ait avancé. Non lancé : le dire.
