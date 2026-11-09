@@ -118,7 +118,7 @@ export default {
       description: () => stripTags(t(`${post.key}.title2`)),
       path: `/blog/${post.slug}`,
       image: post.cover,
-      article: { published: post.date }
+      article: { published: post.date, modified: post.modified }
     })
     useReveal()
 

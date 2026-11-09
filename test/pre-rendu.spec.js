@@ -30,6 +30,13 @@ const enLangue = (chemin, locale = DEFAULT_LOCALE) => localePath(chemin, locale)
 const route = (chemin, locale = DEFAULT_LOCALE) =>
   routes.find(r => r.path === enLangue(chemin, locale))
 
+const ld = balises => {
+  const trouve = balises.match(
+    /<script type="application\/ld\+json" data-prerendered>([\s\S]*?)<\/script>/
+  )
+  return trouve ? JSON.parse(trouve[1].replaceAll('\\u003c', '<')) : null
+}
+
 describe('les routes pré-rendues', () => {
   it('couvre les cinq pages fixes, les démos et tous les articles, dans les trois langues', () => {
     for (const locale of AVAILABLE_LOCALES) {
@@ -97,19 +104,13 @@ describe('les routes pré-rendues', () => {
       }
     }
 
-    const plusRecente = posts.map(post => post.date).sort().at(-1)
+    const plusRecente = posts.map(post => post.modified || post.date).sort().at(-1)
     for (const chemin of datees) {
       expect(routes.find(r => r.path === chemin).lastmod, chemin).toBe(plusRecente)
     }
   })
 
   it('pose des données structurées sur l\'accueil et sur les articles', () => {
-    const ld = balises => {
-      const trouve = balises.match(
-        /<script type="application\/ld\+json" data-prerendered>([\s\S]*?)<\/script>/
-      )
-      return trouve ? JSON.parse(trouve[1].replaceAll('\\u003c', '<')) : null
-    }
 
     const accueil = ld(renderHeadTags(route('/')))
     expect(accueil['@type']).toBe('WebSite')
@@ -161,7 +162,9 @@ describe('les routes pré-rendues', () => {
 
   it("déclare un article comme un article, avec sa date", () => {
     for (const r of routes.filter(r => r.path.includes('/blog/'))) {
-      expect(r.article, r.path).toEqual({ published: r.lastmod })
+      const post = posts.find(p => r.path.endsWith(`/blog/${p.slug}`))
+      expect(r.article, r.path).toEqual({ published: post.date, modified: post.modified })
+      expect(r.lastmod, r.path).toBe(post.modified || post.date)
     }
 
     const balises = renderHeadTags(routes.find(r => r.path.includes('/blog/')))
@@ -169,6 +172,29 @@ describe('les routes pré-rendues', () => {
     expect(balises).toContain('property="article:published_time"')
 
     expect(renderHeadTags(route('/about'))).toContain('property="og:type" content="website"')
+  })
+
+  it("annonce la date de réécriture d'un article réécrit, et la date de publication sinon", () => {
+    const reecrit = posts.find(p => p.modified)
+    const intact = posts.find(p => !p.modified)
+    const routeDe = post => routes.find(r => r.path === enLangue(`/blog/${post.slug}`))
+
+    const balises = renderHeadTags(routeDe(reecrit))
+    expect(balises).toContain(`property="article:published_time" content="${reecrit.date}"`)
+    expect(balises).toContain(`property="article:modified_time" content="${reecrit.modified}"`)
+    expect(ld(balises)).toMatchObject({ datePublished: reecrit.date, dateModified: reecrit.modified })
+    expect(renderSitemap(routes)).toContain(`<lastmod>${reecrit.modified}</lastmod>`)
+
+    expect(ld(renderHeadTags(routeDe(intact))).dateModified).toBe(intact.date)
+  })
+
+  it('date chaque article au jour près, sans réécriture antérieure à la publication', () => {
+    for (const post of posts) {
+      expect(post.date, post.slug).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+      if (post.modified === undefined) continue
+      expect(post.modified, post.slug).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+      expect(post.modified >= post.date, post.slug).toBe(true)
+    }
   })
 })
 
